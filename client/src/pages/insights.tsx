@@ -631,7 +631,11 @@ export default function InsightsPage() {
                         <span className="text-sm font-medium text-indigo-800 dark:text-indigo-200">AI Analysis</span>
                       </div>
                       <p className="text-sm text-indigo-700 dark:text-indigo-300">
-                        Your best week was March 6-12 with 1,245 words and mostly 😊 mood. You tend to write more on {stats.bestMoodDay}s and your creativity peaks in the afternoon.
+                        {stats.totalEntries > 0 ? (
+                          `You've written ${stats.totalEntries} ${stats.totalEntries === 1 ? 'entry' : 'entries'} with ${stats.totalWords} words total. Your current streak is ${stats.currentStreak} ${stats.currentStreak === 1 ? 'day' : 'days'} - keep writing to unlock deeper insights!`
+                        ) : (
+                          "Start writing your first entry to see personalized AI analysis of your patterns, mood trends, and writing habits."
+                        )}
                       </p>
                     </div>
                   </div>
@@ -645,13 +649,26 @@ export default function InsightsPage() {
                     <Trophy className="w-5 h-5 text-amber-600" />
                     <span className="font-medium text-amber-800 dark:text-amber-200">Next Milestone</span>
                   </div>
-                  <Badge className="bg-amber-100 text-amber-800 border-0">3 entries to go!</Badge>
+                  <Badge className="bg-amber-100 text-amber-800 border-0">
+                    {stats.totalEntries < 5 ? `${5 - stats.totalEntries} entries to go!` : 
+                     stats.totalEntries < 10 ? `${10 - stats.totalEntries} entries to go!` : 
+                     stats.totalEntries < 25 ? `${25 - stats.totalEntries} entries to go!` : 
+                     `${50 - stats.totalEntries} entries to go!`}
+                  </Badge>
                 </div>
                 <div className="w-full bg-amber-200 dark:bg-amber-800 rounded-full h-2 mb-2">
-                  <div className="bg-gradient-to-r from-amber-500 to-yellow-500 h-2 rounded-full" style={{ width: "94%" }}></div>
+                  <div className="bg-gradient-to-r from-amber-500 to-yellow-500 h-2 rounded-full" style={{ 
+                    width: `${stats.totalEntries < 5 ? (stats.totalEntries / 5 * 100) : 
+                           stats.totalEntries < 10 ? (stats.totalEntries / 10 * 100) : 
+                           stats.totalEntries < 25 ? (stats.totalEntries / 25 * 100) : 
+                           (stats.totalEntries / 50 * 100)}%` 
+                  }}></div>
                 </div>
                 <p className="text-sm text-amber-700 dark:text-amber-300">
-                  🏆 50 entries for Gold Badge! You're almost there - keep writing!
+                  {stats.totalEntries < 5 ? '📝 5 entries for First Steps Badge!' : 
+                   stats.totalEntries < 10 ? '🌟 10 entries for Regular Writer Badge!' : 
+                   stats.totalEntries < 25 ? '🏆 25 entries for Dedicated Writer Badge!' : 
+                   '👑 50 entries for Gold Badge! You\'re almost there - keep writing!'}
                 </p>
               </div>
             </CardContent>
