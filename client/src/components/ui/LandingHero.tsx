@@ -186,7 +186,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-20 max-w-7xl mx-auto px-6 py-20">
+      <div className="relative z-20 max-w-7xl mx-auto px-6 py-20 pt-32">
         
         {/* Hero Header */}
         <motion.div
@@ -202,15 +202,26 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             transition={{ duration: 1, delay: 0.1 }}
             className="mb-8"
           >
-            <h1 className="text-7xl md:text-9xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-4" 
-                style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)' }}>
-              🦉 JournOwl
+            <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-4 leading-relaxed" 
+                style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)', lineHeight: '1.2' }}>
+              <svg className="inline-block w-16 h-16 md:w-20 md:h-20 mr-3 mb-2" viewBox="0 0 100 100" fill="none">
+                <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+                <circle cx="42" cy="40" r="4" fill="white"/>
+                <circle cx="58" cy="40" r="4" fill="white"/>
+                <circle cx="42" cy="40" r="2" fill="black"/>
+                <circle cx="58" cy="40" r="2" fill="black"/>
+                <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+                <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+                <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+                <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+              </svg>
+              JournOwl
             </h1>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-2xl md:text-3xl font-bold"
+              className="text-xl md:text-2xl font-bold"
               style={{ fontFamily: '"Rock Salt", cursive' }}
             >
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg">
@@ -226,7 +237,17 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="inline-flex items-center gap-2 px-6 py-3 mb-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm"
           >
-            <span className="text-2xl animate-bounce">🦉</span>
+            <svg className="inline-block w-8 h-8 animate-bounce" viewBox="0 0 100 100" fill="none">
+              <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+              <circle cx="42" cy="40" r="4" fill="white"/>
+              <circle cx="58" cy="40" r="4" fill="white"/>
+              <circle cx="42" cy="40" r="2" fill="black"/>
+              <circle cx="58" cy="40" r="2" fill="black"/>
+              <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+              <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+              <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+              <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+            </svg>
             <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-semibold" 
                   style={{ fontFamily: '"Rock Salt", cursive' }}>
               AI-Powered Smart Journaling
@@ -241,7 +262,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-5xl md:text-7xl font-bold mb-8 leading-tight"
+            className="text-4xl md:text-6xl font-bold mb-8 leading-tight"
             style={{ fontFamily: '"Rock Salt", cursive' }}
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-300 to-amber-300 bg-clip-text text-transparent drop-shadow-lg">
@@ -262,11 +283,11 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0 }}
-            className="text-xl md:text-2xl max-w-4xl mx-auto mb-8 leading-relaxed font-semibold"
+            className="text-lg md:text-xl max-w-4xl mx-auto mb-8 leading-relaxed font-semibold"
             style={{ fontFamily: '"Rock Salt", cursive' }}
           >
             <span className="bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-md">
-              🦉 Combines the wisdom of an owl with the power of AI. 
+              Combines the wisdom of an owl with the power of AI. 
               Experience smart journaling with photo analysis, mood tracking, and personalized insights 
               that help you grow wiser every day.
             </span>
@@ -321,7 +342,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 style={{ fontFamily: '"Rock Salt", cursive' }}
               >
                 <BookOpen className="w-5 h-5 mr-2" />
-                🦉 Start Your Wise Journey
+                Start Your Wise Journey
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
@@ -338,7 +359,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 style={{ fontFamily: '"Rock Salt", cursive' }}
               >
                 <Play className="w-5 h-5 mr-2" />
-                🦉 View Live Demo
+                View Live Demo
               </Button>
             </motion.div>
           </motion.div>
