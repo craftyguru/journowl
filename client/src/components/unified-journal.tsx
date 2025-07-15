@@ -42,6 +42,11 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [tags, setTags] = useState<string[]>(entry?.tags || []);
   const [photos, setPhotos] = useState<any[]>(entry?.photos || []);
   const [drawings, setDrawings] = useState<any[]>(entry?.drawings || []);
+  const [selectedPhoto, setSelectedPhoto] = useState<any>(null);
+  const [photoCanvasRef, setPhotoCanvasRef] = useState<HTMLCanvasElement | null>(null);
+  const [isDrawingOnPhoto, setIsDrawingOnPhoto] = useState(false);
+  const [photoDrawingMode, setPhotoDrawingMode] = useState(false);
+  const [photoSize, setPhotoSize] = useState({ width: 300, height: 200 });
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [showAiChat, setShowAiChat] = useState(true);
   const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string}>>([
@@ -337,7 +342,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="w-full max-w-6xl h-[95vh] bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl shadow-2xl overflow-hidden relative flex flex-col"
+        className="w-full max-w-[95vw] h-[95vh] bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl shadow-2xl overflow-hidden relative flex flex-col"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='paper' x='0' y='0' width='100' height='100' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0,0 L100,100 M100,0 L0,100' stroke='%23f59e0b' stroke-width='0.2' opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23paper)'/%3E%3C/svg%3E")`,
         }}
@@ -370,10 +375,10 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
           </div>
         </div>
 
-        {/* Main Journal Layout - Open Book Spread */}
+        {/* Main Journal Layout - Full Width */}
         <div className="flex flex-1 min-h-0">
-          {/* Left Page - Writing Area */}
-          <div className="flex-1 p-4 border-r-4 border-amber-200 relative flex flex-col overflow-hidden">
+          {/* Left Page - Writing Area (Expanded) */}
+          <div className="flex-[2] p-4 border-r-4 border-amber-200 relative flex flex-col overflow-hidden">
             {/* Page shadow effect */}
             <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
             
@@ -599,7 +604,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                 </CardContent>
               </Card>
 
-              {/* Photo Upload Area */}
+              {/* Photo Upload & Edit Area */}
               <Card className="bg-white/80 backdrop-blur-sm flex-shrink-0">
                 <CardContent className="p-3">
                   <div className="flex items-center justify-between mb-2">
@@ -607,14 +612,25 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                       <Camera className="w-3 h-3" />
                       Photos & Media
                     </h3>
-                    <Button
-                      onClick={() => fileInputRef.current?.click()}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <Upload className="w-4 h-4 mr-2" />
-                      Upload
-                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        onClick={() => fileInputRef.current?.click()}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Upload className="w-4 h-4 mr-1" />
+                        Upload
+                      </Button>
+                      {selectedPhoto && (
+                        <Button
+                          onClick={() => setPhotoDrawingMode(!photoDrawingMode)}
+                          variant={photoDrawingMode ? "default" : "outline"}
+                          size="sm"
+                        >
+                          <Brush className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
                   </div>
 
                   <input
@@ -627,21 +643,117 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   />
 
                   {photos.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-1">
-                      {photos.slice(0, 4).map((photo, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={photo.src}
-                            alt={`Upload ${index + 1}`}
-                            className="w-full h-16 object-cover rounded"
-                          />
-                          {photo.analysis && (
-                            <div className="absolute inset-0 bg-black/70 rounded opacity-0 group-hover:opacity-100 transition-opacity p-1">
-                              <p className="text-white text-xs">{photo.analysis.description}</p>
+                    <div className="space-y-2">
+                      {/* Photo Grid */}
+                      <div className="grid grid-cols-2 gap-1">
+                        {photos.slice(0, 4).map((photo, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={photo.src}
+                              alt={`Upload ${index + 1}`}
+                              className={`w-full h-16 object-cover rounded cursor-pointer transition-all ${
+                                selectedPhoto?.index === index ? 'ring-2 ring-amber-400' : ''
+                              }`}
+                              onClick={() => setSelectedPhoto({ ...photo, index })}
+                            />
+                            {photo.analysis && (
+                              <div className="absolute inset-0 bg-black/70 rounded opacity-0 group-hover:opacity-100 transition-opacity p-1">
+                                <p className="text-white text-xs">{photo.analysis.description}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Selected Photo Editor */}
+                      {selectedPhoto && (
+                        <div className="border-2 border-amber-300 rounded-lg p-2 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium">Edit Photo</span>
+                            <Button
+                              onClick={() => setSelectedPhoto(null)}
+                              variant="ghost"
+                              size="sm"
+                            >
+                              <X className="w-3 h-3" />
+                            </Button>
+                          </div>
+                          
+                          {/* Photo Size Controls */}
+                          <div className="space-y-1">
+                            <label className="text-xs">Size: {photoSize.width}x{photoSize.height}</label>
+                            <div className="flex gap-2">
+                              <Slider
+                                value={[photoSize.width]}
+                                onValueChange={(value) => setPhotoSize(prev => ({ ...prev, width: value[0] }))}
+                                min={100}
+                                max={400}
+                                step={10}
+                                className="flex-1"
+                              />
+                              <Slider
+                                value={[photoSize.height]}
+                                onValueChange={(value) => setPhotoSize(prev => ({ ...prev, height: value[0] }))}
+                                min={100}
+                                max={300}
+                                step={10}
+                                className="flex-1"
+                              />
                             </div>
-                          )}
+                          </div>
+
+                          {/* Resizable Photo with Drawing Overlay */}
+                          <div className="relative">
+                            <img
+                              src={selectedPhoto.src}
+                              alt="Selected photo"
+                              className="rounded border"
+                              style={{
+                                width: photoSize.width,
+                                height: photoSize.height,
+                                objectFit: 'cover'
+                              }}
+                            />
+                            {photoDrawingMode && (
+                              <canvas
+                                ref={setPhotoCanvasRef}
+                                width={photoSize.width}
+                                height={photoSize.height}
+                                className="absolute inset-0 cursor-crosshair"
+                                onMouseDown={(e) => {
+                                  setIsDrawingOnPhoto(true);
+                                  if (photoCanvasRef) {
+                                    const rect = photoCanvasRef.getBoundingClientRect();
+                                    const x = e.clientX - rect.left;
+                                    const y = e.clientY - rect.top;
+                                    const ctx = photoCanvasRef.getContext('2d');
+                                    if (ctx) {
+                                      ctx.beginPath();
+                                      ctx.moveTo(x, y);
+                                    }
+                                  }
+                                }}
+                                onMouseMove={(e) => {
+                                  if (!isDrawingOnPhoto || !photoCanvasRef) return;
+                                  const rect = photoCanvasRef.getBoundingClientRect();
+                                  const x = e.clientX - rect.left;
+                                  const y = e.clientY - rect.top;
+                                  const ctx = photoCanvasRef.getContext('2d');
+                                  if (ctx) {
+                                    ctx.lineWidth = brushSize;
+                                    ctx.lineCap = 'round';
+                                    ctx.strokeStyle = brushColor;
+                                    ctx.lineTo(x, y);
+                                    ctx.stroke();
+                                  }
+                                }}
+                                onMouseUp={() => setIsDrawingOnPhoto(false)}
+                                onMouseLeave={() => setIsDrawingOnPhoto(false)}
+                              />
+                            )}
+                          </div>
                         </div>
-                      ))}
+                      )}
                     </div>
                   ) : (
                     <div 
@@ -784,32 +896,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
           </div>
         )}
 
-        {/* Mini Calendar Widget */}
-        <Card className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm">
-          <CardContent className="p-2">
-            <div className="flex items-center gap-1 mb-1">
-              <Calendar className="w-3 h-3 text-amber-600" />
-              <span className="text-xs font-medium">Calendar</span>
-            </div>
-            <div className="grid grid-cols-7 gap-0.5 text-xs">
-              {Array.from({ length: 7 }, (_, i) => (
-                <div key={i} className="w-4 h-4 flex items-center justify-center">
-                  {['S', 'M', 'T', 'W', 'T', 'F', 'S'][i]}
-                </div>
-              ))}
-              {Array.from({ length: 14 }, (_, i) => (
-                <button
-                  key={i}
-                  className={`w-4 h-4 flex items-center justify-center rounded text-xs hover:bg-amber-100 ${
-                    i === 13 ? 'bg-amber-200 font-bold' : ''
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+
       </motion.div>
     </motion.div>
   );
