@@ -767,6 +767,20 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(users.id, userId));
   }
+
+  async updateStorageUsage(userId: number, additionalMB: number): Promise<void> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error('User not found');
+
+    const currentUsage = user.storageUsedMB || 0;
+    const newUsage = currentUsage + additionalMB;
+
+    await db.update(users)
+      .set({ 
+        storageUsedMB: newUsage
+      })
+      .where(eq(users.id, userId));
+  }
 }
 
 export const storage = new DatabaseStorage();
