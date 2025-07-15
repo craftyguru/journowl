@@ -69,7 +69,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
   const user = userResponse?.user;
   
   // Use real user data from API
-  const stats = statsResponse || {
+  const stats = statsResponse?.stats || {
     totalEntries: 0,
     currentStreak: 0,
     totalWords: 0,
@@ -167,7 +167,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
   ];
 
   const goals = goalsResponse?.goals || defaultGoals;
-  const insights = insightsResponse;
+  const insights = insightsResponse?.insights || [];
   const handleSaveEntry = (entryData: any) => {
     console.log('Saving entry:', entryData);
     // Here you would typically save to backend
