@@ -539,17 +539,8 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   </div>
                 </div>
 
-                {/* Voice & AI Controls */}
+                {/* AI & Privacy Controls */}
                 <div className="flex items-center gap-1 ml-auto">
-                  <Button 
-                    onClick={toggleVoiceRecording}
-                    variant={isListening ? "default" : "outline"}
-                    size="sm"
-                    className={isListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : ""}
-                  >
-                    {isListening ? <MicOff className="w-3 h-3" /> : <Mic className="w-3 h-3" />}
-                  </Button>
-                  
                   <Button 
                     onClick={generateAiSuggestions}
                     variant="outline"
@@ -947,6 +938,51 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
             </Panel>
           </PanelGroup>
         </div>
+
+        {/* Voice Recording Bubble - Left of Support Chat bubble */}
+        <motion.div
+          className="fixed bottom-4 right-20 sm:right-24 z-40 group"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
+          <div className="relative">
+            <Button
+              onClick={toggleVoiceRecording}
+              className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                isListening 
+                  ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                  : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
+              } transition-all duration-300 hover:scale-110`}
+            >
+              {isListening ? (
+                <MicOff className="w-6 h-6 text-white" />
+              ) : (
+                <Mic className="w-6 h-6 text-white" />
+              )}
+            </Button>
+            
+            {/* Voice recording indicator */}
+            {isListening && (
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+            )}
+            
+            {/* Tooltip */}
+            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              {isListening ? (
+                <div className="flex flex-col items-center gap-1">
+                  <span>Recording...</span>
+                  <span className="text-xs opacity-75">Click to stop</span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-1">
+                  <span>🎤 Voice Input</span>
+                  <span className="text-xs opacity-75">Record audio for journal</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
 
         {/* AI Sidekick - Centered */}
         <AnimatePresence>
