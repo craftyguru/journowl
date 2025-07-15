@@ -375,7 +375,7 @@ export default function ReferralPage() {
         </motion.div>
 
         {/* Recent Referrals */}
-        {stats.recentReferrals.length > 0 && (
+        {stats.recentReferrals && stats.recentReferrals.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
