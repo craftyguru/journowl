@@ -51,42 +51,30 @@ const mainFeatures = [
 
 const capabilities = [
   {
-    category: "🎨 Smart Writing",
-    emoji: "✍️",
-    color: "from-purple-400 to-pink-500",
+    category: "Smart Writing",
     items: [
-      { icon: PenTool, text: "📝 Rich markdown editor with live preview", highlight: true, emoji: "✨" },
-      { icon: Palette, text: "🎨 Custom fonts, colors & themes", emoji: "🌈" },
-      { icon: Brain, text: "🤖 AI writing suggestions & insights", emoji: "💡" },
-      { icon: Lightbulb, text: "🎯 Context-aware smart prompts", emoji: "🔮" },
-      { icon: Zap, text: "⚡ Real-time grammar & style help", emoji: "✅" },
-      { icon: BookOpen, text: "📚 Personal writing library & templates", emoji: "📖" }
+      { icon: PenTool, text: "Rich markdown editor", highlight: true },
+      { icon: Palette, text: "Custom fonts & colors" },
+      { icon: Brain, text: "AI writing suggestions" },
+      { icon: Lightbulb, text: "Context-aware prompts" }
     ]
   },
   {
-    category: "📱 Multimedia & Social",
-    emoji: "📸", 
-    color: "from-emerald-400 to-teal-500",
+    category: "Multimedia",
     items: [
-      { icon: Camera, text: "📷 Photo upload with AI analysis", highlight: true, emoji: "🔍" },
-      { icon: Smile, text: "😊 Advanced mood tracking system", emoji: "💚" },
-      { icon: Lock, text: "🔒 Private & encrypted entries", emoji: "🛡️" },
-      { icon: Star, text: "🏷️ Smart tagging & organization", emoji: "📋" },
-      { icon: Users, text: "👥 Share insights with friends", emoji: "🤝" },
-      { icon: Heart, text: "❤️ Gratitude & wellness tracking", emoji: "🌟" }
+      { icon: Camera, text: "Photo upload & analysis", highlight: true },
+      { icon: Smile, text: "Mood tracking with emojis" },
+      { icon: Lock, text: "Private & secure entries" },
+      { icon: Star, text: "Tag and organize content" }
     ]
   },
   {
-    category: "📊 Analytics & Growth",
-    emoji: "📈",
-    color: "from-amber-400 to-orange-500", 
+    category: "Analytics",
     items: [
-      { icon: BarChart3, text: "📊 Beautiful progress dashboards", highlight: true, emoji: "🎯" },
-      { icon: Calendar, text: "🗓️ Interactive mood calendar", emoji: "📅" },
-      { icon: Target, text: "🎯 Goal setting & achievement", emoji: "🏆" },
-      { icon: Award, text: "🏅 Gamified badge system", emoji: "🎮" },
-      { icon: TrendingUp, text: "📈 Writing streak & habits", emoji: "🔥" },
-      { icon: Sparkles, text: "⭐ Personal growth insights", emoji: "🌱" }
+      { icon: BarChart3, text: "Detailed progress charts", highlight: true },
+      { icon: Calendar, text: "Interactive calendar view" },
+      { icon: Target, text: "Goal setting & tracking" },
+      { icon: Award, text: "Achievement system" }
     ]
   }
 ];
@@ -327,30 +315,12 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="mb-20"
         >
-          <motion.h2 
-            className="text-5xl font-bold text-center mb-6 font-poppins"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            <span className="bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-              🚀 Everything You Need to 
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-              Level Up Your Writing ✨
-            </span>
-          </motion.h2>
-          <motion.p 
-            className="text-2xl text-center mb-12 max-w-4xl mx-auto font-opensans leading-relaxed"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-          >
-            <span className="text-emerald-300 font-semibold">📝 From beginner to professional writer,</span>{" "}
-            <span className="text-amber-300 font-semibold">our platform adapts to your needs</span>{" "}
-            <span className="text-pink-300 font-semibold">🎯 with AI-powered insights!</span>
-          </motion.p>
+          <h2 className="text-4xl font-bold text-center text-white mb-4">
+            Everything You Need to <span className="text-purple-300">Level Up</span> Your Writing
+          </h2>
+          <p className="text-xl text-gray-400 text-center mb-12 max-w-3xl mx-auto">
+            From beginner to professional writer, our platform adapts to your needs
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             {mainFeatures.map((feature, index) => (
@@ -362,38 +332,20 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 whileHover={{ y: -5, scale: 1.02 }}
                 className="group relative"
               >
-                <Card className="bg-gradient-to-br from-gray-900/95 to-black/90 backdrop-blur-lg border-2 border-purple-500/30 hover:border-cyan-400/60 transition-all duration-500 h-full overflow-hidden shadow-2xl hover:shadow-purple-500/20 group-hover:scale-105">
-                  <CardContent className="p-8 relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-transparent to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10">
-                      <div className="flex items-start gap-4 mb-6">
-                        <motion.div 
-                          className={`p-4 rounded-2xl bg-gradient-to-br ${feature.color} shadow-lg group-hover:scale-125 transition-all duration-500 group-hover:rotate-6`}
-                          whileHover={{ y: -5 }}
-                        >
-                          <feature.icon className="w-7 h-7 text-white drop-shadow-lg" />
-                        </motion.div>
-                        <div className="flex-1">
-                          <motion.h3 
-                            className="text-2xl font-bold bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent mb-3 font-inter"
-                            initial={{ opacity: 0.8 }}
-                            whileHover={{ opacity: 1, scale: 1.02 }}
-                          >
-                            {feature.title}
-                          </motion.h3>
-                          <Badge variant="secondary" className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-cyan-300 border border-cyan-400/30 font-bold text-sm px-3 py-1">
-                            ✨ {feature.stats}
-                          </Badge>
-                        </div>
+                <Card className="bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 hover:border-purple-400/60 transition-all duration-300 h-full overflow-hidden shadow-xl">
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-4 mb-4">
+                      <div className={`p-3 rounded-xl bg-gradient-to-br ${feature.color} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                        <feature.icon className="w-6 h-6 text-white" />
                       </div>
-                      <motion.p 
-                        className="text-gray-200 leading-relaxed font-medium text-lg font-opensans tracking-wide"
-                        initial={{ opacity: 0.9 }}
-                        whileHover={{ opacity: 1, x: 5 }}
-                      >
-                        {feature.description}
-                      </motion.p>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
+                        <Badge variant="secondary" className="bg-white/20 text-white border-0 font-medium">
+                          {feature.stats}
+                        </Badge>
+                      </div>
                     </div>
+                    <p className="text-gray-100 leading-relaxed font-medium">{feature.description}</p>
                   </CardContent>
                   
                   {/* Animated border gradient */}
@@ -413,20 +365,9 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           transition={{ duration: 0.8, delay: 1.2 }}
           className="mb-20"
         >
-          <motion.h3 
-            className="text-4xl font-bold text-center mb-12 font-roboto"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
-          >
-            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
-              🎯 50+ Powerful Features
-            </span>
-            <br />
-            <span className="bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Built for Every Writer ✍️
-            </span>
-          </motion.h3>
+          <h3 className="text-3xl font-bold text-center text-white mb-12">
+            <span className="text-emerald-400">50+</span> Powerful Features
+          </h3>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {capabilities.map((category, categoryIndex) => (
@@ -435,72 +376,25 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.4 + categoryIndex * 0.2 }}
-                className="bg-gradient-to-br from-gray-900/90 to-black/80 backdrop-blur-lg rounded-xl p-6 border-2 border-purple-500/40 hover:border-cyan-400/60 shadow-2xl hover:shadow-purple-500/20 transition-all duration-500"
+                className="bg-white/15 backdrop-blur-md rounded-xl p-6 border border-white/25 shadow-lg"
               >
-                <motion.h4 
-                  className={`text-2xl font-bold mb-6 bg-gradient-to-r ${category.color} bg-clip-text text-transparent font-inter flex items-center gap-3`}
-                  whileHover={{ scale: 1.05 }}
-                  animate={{ 
-                    textShadow: ["0 0 0px rgba(255,255,255,0)", "0 0 20px rgba(255,255,255,0.3)", "0 0 0px rgba(255,255,255,0)"] 
-                  }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                >
-                  <motion.span 
-                    className="text-3xl"
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    {category.emoji}
-                  </motion.span>
-                  {category.category}
-                </motion.h4>
-                <div className="space-y-3">
+                <h4 className="text-xl font-bold text-white mb-6">{category.category}</h4>
+                <div className="space-y-4">
                   {category.items.map((item, itemIndex) => (
                     <motion.div
                       key={itemIndex}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.4, delay: 1.6 + categoryIndex * 0.2 + itemIndex * 0.1 }}
-                      whileHover={{ 
-                        scale: 1.02, 
-                        x: 5,
-                        transition: { duration: 0.2 }
-                      }}
-                      className={`flex items-center gap-3 p-4 rounded-lg transition-all duration-300 cursor-pointer ${
-                        item.highlight 
-                          ? 'bg-gradient-to-r from-white/15 to-white/10 border border-white/30 shadow-lg hover:from-white/20 hover:to-white/15 hover:border-white/40' 
-                          : 'hover:bg-white/8 border border-transparent hover:border-white/20'
-                      }`}
+                      className="flex items-center gap-3"
                     >
-                      <motion.div 
-                        className="flex items-center gap-2"
-                        whileHover={{ scale: 1.1 }}
-                      >
-                        <div className={`p-2 rounded-lg ${item.highlight ? 'bg-purple-500/30' : 'bg-white/15'}`}>
-                          <item.icon className={`w-4 h-4 ${item.highlight ? 'text-purple-300' : 'text-gray-200'}`} />
-                        </div>
-                        <motion.span 
-                          className="text-lg"
-                          animate={{ scale: [1, 1.1, 1] }}
-                          transition={{ duration: 2, repeat: Infinity, delay: itemIndex * 0.3 }}
-                        >
-                          {item.emoji}
-                        </motion.span>
-                      </motion.div>
-                      <span className="text-white/95 font-medium flex-1">{item.text}</span>
-                      {item.highlight && (
-                        <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          animate={{ 
-                            boxShadow: ["0 0 0px rgba(147,51,234,0)", "0 0 15px rgba(147,51,234,0.4)", "0 0 0px rgba(147,51,234,0)"]
-                          }}
-                          transition={{ duration: 1.5, repeat: Infinity }}
-                        >
-                          <Badge variant="secondary" className="bg-purple-500/30 text-purple-200 border border-purple-400/30 text-xs font-semibold">
-                            ⭐ Popular
-                          </Badge>
-                        </motion.div>
-                      )}
+                      <div className={`p-2 rounded-lg ${item.highlight ? 'bg-purple-500/30' : 'bg-white/15'}`}>
+                        <item.icon className={`w-4 h-4 ${item.highlight ? 'text-purple-300' : 'text-gray-200'}`} />
+                      </div>
+                      <span className={`${item.highlight ? 'text-white font-semibold' : 'text-gray-100 font-medium'}`}>
+                        {item.text}
+                      </span>
+                      {item.highlight && <CheckCircle className="w-4 h-4 text-emerald-400 ml-auto" />}
                     </motion.div>
                   ))}
                 </div>
