@@ -492,7 +492,14 @@ Current journal context:
         systemPrompt += `\n- Photos analyzed: ${context.photos.map((p: any) => p.description).join(', ')}`;
       }
 
-      systemPrompt += `\n\nRespond naturally and helpfully. Ask follow-up questions, suggest writing prompts, or help them reflect on their experiences. Keep responses under 150 words.`;
+      // Add full conversation history for context
+      if (context.conversationHistory) {
+        systemPrompt += `\n\nFull conversation history:\n${context.conversationHistory}`;
+      }
+
+      systemPrompt += `\n\nIMPORTANT: When asked to create a journal prompt, use the specific details from our conversation history above. Create prompts that reference the actual events, activities, and experiences the user has shared. Don't give generic prompts - use their real day, real activities, real feelings they've discussed.
+
+Respond naturally and helpfully. Ask follow-up questions, suggest writing prompts, or help them reflect on their experiences. Keep responses under 150 words.`;
 
       // Check if OpenAI API key is available
       if (!process.env.OPENAI_API_KEY) {
