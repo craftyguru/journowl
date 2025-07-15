@@ -1354,110 +1354,112 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           </PanelGroup>
         </div>
 
-        {/* Floating Action Buttons - Evenly Spaced */}
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-40">
-          
-          {/* Voice-to-Text Button */}
-          <motion.div
-            className="group"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="relative">
-              <Button
-                onClick={toggleVoiceRecording}
-                className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
-                  isListening 
-                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
-                } transition-all duration-300 hover:scale-110`}
-              >
-                {isListening ? (
-                  <MicOff className="w-6 h-6 text-white" />
-                ) : (
-                  <Mic className="w-6 h-6 text-white" />
-                )}
-              </Button>
-              
-              {isListening && (
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-              )}
-              
-              <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                <div className="flex flex-col items-center gap-1">
-                  <span>🎤 Voice to Text</span>
-                  <span className="text-xs opacity-75">Convert speech</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Audio Recording Button */}
-          <motion.div
-            className="group"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="relative">
-              <Button
-                onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
-                className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
-                  isRecordingAudio 
-                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
-                } transition-all duration-300 hover:scale-110`}
-              >
-                {isRecordingAudio ? (
-                  <div className="w-4 h-4 bg-white rounded-sm" />
-                ) : (
-                  <div className="w-4 h-4 bg-white rounded-full" />
-                )}
-              </Button>
-              
-              {isRecordingAudio && (
-                <>
+        {/* Floating Action Buttons - Evenly Spaced Across Screen */}
+        <div className="fixed bottom-4 left-0 right-0 flex justify-center items-center z-40">
+          <div className="flex items-center justify-between w-full max-w-md px-4">
+            
+            {/* Voice-to-Text Button */}
+            <motion.div
+              className="group"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <div className="relative">
+                <Button
+                  onClick={toggleVoiceRecording}
+                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                    isListening 
+                      ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
+                  } transition-all duration-300 hover:scale-110`}
+                >
+                  {isListening ? (
+                    <MicOff className="w-6 h-6 text-white" />
+                  ) : (
+                    <Mic className="w-6 h-6 text-white" />
+                  )}
+                </Button>
+                
+                {isListening && (
                   <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-mono">
-                    {Math.floor(recordingTimer / 60)}:{(recordingTimer % 60).toString().padStart(2, '0')}
+                )}
+                
+                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                  <div className="flex flex-col items-center gap-1">
+                    <span>🎤 Voice to Text</span>
+                    <span className="text-xs opacity-75">Convert speech</span>
                   </div>
-                </>
-              )}
-              
-              <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                <div className="flex flex-col items-center gap-1">
-                  <span>🎵 Audio Record</span>
-                  <span className="text-xs opacity-75">Save voice notes</span>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
 
-          {/* Camera Button */}
-          <motion.div
-            className="group"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            <div className="relative">
-              <Button
-                onClick={() => setShowCameraModal(true)}
-                className="w-14 h-14 rounded-full shadow-2xl border-4 border-white bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300 hover:scale-110"
-              >
-                <Camera className="w-6 h-6 text-white" />
-              </Button>
-              
-              <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-                <div className="flex flex-col items-center gap-1">
-                  <span>📷 Camera</span>
-                  <span className="text-xs opacity-75">Photo & Video</span>
+            {/* Audio Recording Button */}
+            <motion.div
+              className="group"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="relative">
+                <Button
+                  onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
+                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                    isRecordingAudio 
+                      ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                      : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
+                  } transition-all duration-300 hover:scale-110`}
+                >
+                  {isRecordingAudio ? (
+                    <div className="w-4 h-4 bg-white rounded-sm" />
+                  ) : (
+                    <div className="w-4 h-4 bg-white rounded-full" />
+                  )}
+                </Button>
+                
+                {isRecordingAudio && (
+                  <>
+                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-mono">
+                      {Math.floor(recordingTimer / 60)}:{(recordingTimer % 60).toString().padStart(2, '0')}
+                    </div>
+                  </>
+                )}
+                
+                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                  <div className="flex flex-col items-center gap-1">
+                    <span>🎵 Audio Record</span>
+                    <span className="text-xs opacity-75">Save voice notes</span>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
 
+            {/* Camera Button */}
+            <motion.div
+              className="group"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="relative">
+                <Button
+                  onClick={() => setShowCameraModal(true)}
+                  className="w-14 h-14 rounded-full shadow-2xl border-4 border-white bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300 hover:scale-110"
+                >
+                  <Camera className="w-6 h-6 text-white" />
+                </Button>
+                
+                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                  <div className="flex flex-col items-center gap-1">
+                    <span>📷 Camera</span>
+                    <span className="text-xs opacity-75">Photo & Video</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
         </div>
 
         {/* AI Sidekick - Centered */}
