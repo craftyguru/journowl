@@ -46,7 +46,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
   }, []);
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Hero Content */}
       <div className="relative z-20 max-w-6xl mx-auto px-6 text-center">
         {/* Main Heading */}
