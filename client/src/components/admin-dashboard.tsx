@@ -85,17 +85,30 @@ export default function AdminDashboard() {
   const loadAdminData = async () => {
     try {
       setLoading(true);
-      const [usersRes, campaignsRes, analyticsRes] = await Promise.all([
-        apiRequest('/api/admin/users'),
-        apiRequest('/api/admin/email-campaigns'),
-        apiRequest('/api/admin/analytics')
-      ]);
-
+      
+      // Load users
+      const usersRes = await apiRequest('/api/admin/users');
       setUsers(usersRes.users || []);
-      setCampaigns(campaignsRes.campaigns || []);
-      setAnalytics(analyticsRes);
-      setActivityLogs(analyticsRes.recentActivity || []);
+      
+      // Load campaigns
+      try {
+        const campaignsRes = await apiRequest('/api/admin/email-campaigns');
+        setCampaigns(campaignsRes.campaigns || []);
+      } catch (e) {
+        console.log('Failed to load campaigns:', e);
+      }
+      
+      // Load analytics
+      try {
+        const analyticsRes = await apiRequest('/api/admin/analytics');
+        setAnalytics(analyticsRes);
+        setActivityLogs(analyticsRes.recentActivity || []);
+      } catch (e) {
+        console.log('Failed to load analytics:', e);
+      }
+      
     } catch (error: any) {
+      console.error('Admin data load error:', error);
       toast({
         title: "Error",
         description: "Failed to load admin data: " + error.message,
