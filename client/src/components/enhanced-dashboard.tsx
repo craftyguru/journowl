@@ -96,7 +96,27 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
     { id: 24, title: "Master Chronicler", description: "Write 50,000 words lifetime", icon: "👑", rarity: "legendary", unlockedAt: null, type: "legendary" }
   ];
 
-  const achievements = achievementsResponse?.achievements || defaultAchievements;
+  // Process achievements with real-time unlock checking
+  const processedAchievements = (achievementsResponse?.achievements || defaultAchievements).map(achievement => {
+    // Check if achievement should be unlocked based on current stats
+    const shouldUnlock = 
+      (achievement.title === "First Steps" && (stats?.totalEntries || 0) >= 1) ||
+      (achievement.title === "Daily Writer" && (stats?.currentStreak || 0) >= 3) ||
+      (achievement.title === "Word Explorer" && (stats?.totalWords || 0) >= 100) ||
+      (achievement.title === "Weekly Warrior" && (stats?.currentStreak || 0) >= 7) ||
+      (achievement.title === "Storyteller" && (stats?.totalWords || 0) >= 500) ||
+      (achievement.title === "Monthly Champion" && (stats?.currentStreak || 0) >= 30) ||
+      (achievement.title === "Novel Writer" && (stats?.totalWords || 0) >= 10000) ||
+      (achievement.title === "Memory Keeper" && (stats?.totalEntries || 0) >= 100) ||
+      (achievement.title === "Master Chronicler" && (stats?.totalWords || 0) >= 50000);
+      
+    return {
+      ...achievement,
+      unlockedAt: shouldUnlock && !achievement.unlockedAt ? new Date() : achievement.unlockedAt
+    };
+  });
+
+  const achievements = processedAchievements;
   // Fresh goals - all start at zero progress  
   const defaultGoals = [
     // Beginner goals (daily habits) - ALL START AT 0 PROGRESS
@@ -1194,7 +1214,13 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   className="bg-gradient-to-r from-yellow-300 to-amber-300 h-full rounded-full"
                 />
               </div>
-              <div className="text-amber-100 text-sm">{achievements.length > 0 ? Math.round((achievements.filter(a => a.unlockedAt).length / achievements.length) * 100) : 0}% complete - {achievements.filter(a => !a.unlockedAt).length} more to unlock!</div>
+              <div className="text-amber-100 text-sm">
+                {achievements.length > 0 ? Math.round((achievements.filter(a => a.unlockedAt).length / achievements.length) * 100) : 0}% complete - 
+                {achievements.filter(a => !a.unlockedAt).length > 0 
+                  ? ` ${achievements.filter(a => !a.unlockedAt).length} more to unlock!`
+                  : " All achievements unlocked! Amazing work!"
+                }
+              </div>
             </div>
 
             {/* Achievement Grid */}
@@ -1346,14 +1372,51 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       <div className="mt-4 pt-4 border-t border-gray-300">
                         <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                           <span>Progress</span>
-                          <span>0/1 complete</span>
+                          <span>
+                            {achievement.title === "First Steps" ? `${stats?.totalEntries || 0}/1 entries` :
+                             achievement.title === "Daily Writer" ? `${stats?.currentStreak || 0}/3 days` :
+                             achievement.title === "Word Explorer" ? `${stats?.totalWords || 0}/100 words` :
+                             achievement.title === "Mood Tracker" ? `0/5 moods` :
+                             achievement.title === "Early Bird" ? `0/1 morning entries` :
+                             achievement.title === "Night Owl" ? `0/1 evening entries` :
+                             achievement.title === "Grateful Heart" ? `0/3 gratitude entries` :
+                             achievement.title === "Weather Reporter" ? `0/5 weather mentions` :
+                             achievement.title === "Weekly Warrior" ? `${stats?.currentStreak || 0}/7 days` :
+                             achievement.title === "Storyteller" ? `${stats?.totalWords || 0}/500 words` :
+                             achievement.title === "Photo Memory" ? `0/10 photos` :
+                             achievement.title === "Emoji Master" ? `0/50 emojis` :
+                             achievement.title === "Deep Thinker" ? `0/10 reflective entries` :
+                             achievement.title === "Adventure Logger" ? `0/15 activities` :
+                             achievement.title === "Mood Rainbow" ? `0/7 mood types` :
+                             achievement.title === "Time Traveler" ? `0/20 memory entries` :
+                             achievement.title === "Monthly Champion" ? `${stats?.currentStreak || 0}/30 days` :
+                             achievement.title === "Novel Writer" ? `${stats?.totalWords || 0}/10000 words` :
+                             achievement.title === "Memory Keeper" ? `${stats?.totalEntries || 0}/100 entries` :
+                             achievement.title === "Artist" ? `0/20 drawings` :
+                             achievement.title === "Wisdom Seeker" ? `0/25 philosophical entries` :
+                             achievement.title === "Social Butterfly" ? `0/30 relationship entries` :
+                             achievement.title === "Goal Crusher" ? `0/50 goals completed` :
+                             achievement.title === "Master Chronicler" ? `${stats?.totalWords || 0}/50000 words` :
+                             "0/1 complete"}
+                          </span>
                         </div>
                         <div className="bg-gray-200 rounded-full h-2">
                           <motion.div
                             initial={{ width: 0 }}
-                            animate={{ width: "0%" }}
+                            animate={{ 
+                              width: achievement.title === "First Steps" ? `${Math.min(100, ((stats?.totalEntries || 0) / 1) * 100)}%` :
+                                     achievement.title === "Daily Writer" ? `${Math.min(100, ((stats?.currentStreak || 0) / 3) * 100)}%` :
+                                     achievement.title === "Word Explorer" ? `${Math.min(100, ((stats?.totalWords || 0) / 100) * 100)}%` :
+                                     achievement.title === "Weekly Warrior" ? `${Math.min(100, ((stats?.currentStreak || 0) / 7) * 100)}%` :
+                                     achievement.title === "Storyteller" ? `${Math.min(100, ((stats?.totalWords || 0) / 500) * 100)}%` :
+                                     achievement.title === "Monthly Champion" ? `${Math.min(100, ((stats?.currentStreak || 0) / 30) * 100)}%` :
+                                     achievement.title === "Novel Writer" ? `${Math.min(100, ((stats?.totalWords || 0) / 10000) * 100)}%` :
+                                     achievement.title === "Memory Keeper" ? `${Math.min(100, ((stats?.totalEntries || 0) / 100) * 100)}%` :
+                                     achievement.title === "Master Chronicler" ? `${Math.min(100, ((stats?.totalWords || 0) / 50000) * 100)}%` :
+                                     "0%"
+                            }}
                             transition={{ duration: 1, delay: index * 0.1 }}
-                            className="bg-gradient-to-r from-gray-400 to-gray-500 h-full rounded-full"
+                            className="bg-gradient-to-r from-blue-400 to-purple-500 h-full rounded-full"
                           />
                         </div>
                       </div>
