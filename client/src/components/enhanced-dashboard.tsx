@@ -480,71 +480,175 @@ export default function EnhancedDashboard() {
 
         <TabsContent value="analytics">
           <div className="space-y-6">
-            {/* Enhanced Analytics Header with Quick Stats */}
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-6">
+            {/* Premium Analytics Header with Animated Stats */}
+            <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white rounded-3xl p-8 shadow-2xl">
+              <div className="flex items-center justify-between mb-8">
                 <div>
-                  <h2 className="text-3xl font-bold">📊 Analytics Dashboard</h2>
-                  <p className="text-blue-100 text-lg">Discover patterns in your journaling journey</p>
+                  <motion.h2 
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="text-4xl font-bold bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent"
+                  >
+                    📊 Premium Analytics
+                  </motion.h2>
+                  <p className="text-purple-100 text-xl mt-2">Your complete journaling insights dashboard</p>
                 </div>
                 <div className="flex gap-3">
-                  <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
+                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-lg">
                     <Calendar className="w-4 h-4 mr-2" />
                     Last 30 Days
                   </Button>
-                  <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
-                    📥 Export
+                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-lg">
+                    📥 Export Report
+                  </Button>
+                  <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Quick Entry
                   </Button>
                 </div>
               </div>
               
-              {/* Quick Stats Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              {/* Animated Metric Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
                 <motion.div
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  className="bg-white/20 rounded-xl p-4 backdrop-blur-lg border border-white/10"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
                 >
-                  <div className="text-3xl font-bold">2,847</div>
-                  <div className="text-blue-100 text-sm font-medium">Total Words</div>
-                  <div className="text-xs text-green-300 flex items-center gap-1 mt-1">
-                    <TrendingUp className="w-3 h-3" />
-                    +15% this month
+                  <motion.div
+                    animate={{ x: [-20, 100], opacity: [0, 1, 0] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
+                    className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-xl"
+                  />
+                  <div className="relative z-10">
+                    <div className="text-4xl font-bold mb-2">47</div>
+                    <div className="text-white/90 text-sm font-medium mb-1">Total Entries</div>
+                    <div className="flex items-center gap-1 text-xs text-green-300">
+                      <motion.div
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        🔥
+                      </motion.div>
+                      <span>+8 this week</span>
+                    </div>
                   </div>
                 </motion.div>
+
                 <motion.div
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  className="bg-white/20 rounded-xl p-4 backdrop-blur-lg border border-white/10"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
                 >
-                  <div className="text-3xl font-bold">4.2</div>
-                  <div className="text-blue-100 text-sm font-medium">Avg Mood Score</div>
-                  <div className="text-xs text-green-300 flex items-center gap-1 mt-1">
-                    <Heart className="w-3 h-3" />
-                    +0.3 improvement
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    className="absolute top-2 right-2 text-2xl"
+                  >
+                    ✨
+                  </motion.div>
+                  <div className="relative z-10">
+                    <div className="text-4xl font-bold mb-2">12,847</div>
+                    <div className="text-white/90 text-sm font-medium mb-1">Total Words</div>
+                    <div className="flex items-center gap-1 text-xs text-blue-300">
+                      <TrendingUp className="w-3 h-3" />
+                      <span>Average: 273/entry</span>
+                    </div>
                   </div>
                 </motion.div>
+
                 <motion.div
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  className="bg-white/20 rounded-xl p-4 backdrop-blur-lg border border-white/10"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
                 >
-                  <div className="text-3xl font-bold">28</div>
-                  <div className="text-blue-100 text-sm font-medium">Current Streak</div>
-                  <div className="text-xs text-orange-300 flex items-center gap-1 mt-1">
-                    <Zap className="w-3 h-3" />
-                    Personal Best!
+                  <motion.div
+                    animate={{ scale: [1, 1.3, 1], rotate: [0, 360, 0] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    className="absolute top-2 right-2 text-2xl"
+                  >
+                    🔥
+                  </motion.div>
+                  <div className="relative z-10">
+                    <div className="text-4xl font-bold mb-2">28</div>
+                    <div className="text-white/90 text-sm font-medium mb-1">Current Streak</div>
+                    <div className="flex items-center gap-1 text-xs text-orange-300">
+                      <Trophy className="w-3 h-3" />
+                      <span>Personal Best!</span>
+                    </div>
                   </div>
                 </motion.div>
+
                 <motion.div
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  className="bg-white/20 rounded-xl p-4 backdrop-blur-lg border border-white/10"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
                 >
-                  <div className="text-3xl font-bold">42</div>
-                  <div className="text-blue-100 text-sm font-medium">Entries This Month</div>
-                  <div className="text-xs text-green-300 flex items-center gap-1 mt-1">
-                    <Plus className="w-3 h-3" />
-                    +6 vs last month
+                  <motion.div
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2.5, repeat: Infinity }}
+                    className="absolute top-2 right-2 text-2xl"
+                  >
+                    😊
+                  </motion.div>
+                  <div className="relative z-10">
+                    <div className="text-4xl font-bold mb-2">4.7</div>
+                    <div className="text-white/90 text-sm font-medium mb-1">Avg Mood</div>
+                    <div className="flex items-center gap-1 text-xs text-emerald-300">
+                      <Heart className="w-3 h-3" />
+                      <span>Feeling great!</span>
+                    </div>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
+                >
+                  <motion.div
+                    animate={{ y: [-5, 5, -5] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className="absolute top-2 right-2 text-2xl"
+                  >
+                    📸
+                  </motion.div>
+                  <div className="relative z-10">
+                    <div className="text-4xl font-bold mb-2">156</div>
+                    <div className="text-white/90 text-sm font-medium mb-1">Photos Added</div>
+                    <div className="flex items-center gap-1 text-xs text-pink-300">
+                      <Star className="w-3 h-3" />
+                      <span>Memory keeper</span>
+                    </div>
                   </div>
                 </motion.div>
               </div>
+
+              {/* Quick Insights Banner */}
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="mt-6 bg-white/15 rounded-xl p-4 backdrop-blur-lg border border-white/20"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="text-2xl">🤖</div>
+                  <div>
+                    <div className="text-white font-semibold">AI Quick Insight</div>
+                    <div className="text-purple-100 text-sm">You're 85% more positive when writing in the morning. Your happiest day this month was Friday, July 12th!</div>
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
             {/* Enhanced Charts Grid */}
@@ -603,100 +707,305 @@ export default function EnhancedDashboard() {
                 </Card>
               </motion.div>
 
-              {/* Writing Progress - Enhanced */}
+              {/* Enhanced Daily Writing Activity */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
               >
-                <Card className="bg-white shadow-xl hover:shadow-2xl transition-all border border-purple-100">
+                <Card className="bg-gradient-to-br from-emerald-50 to-teal-50 shadow-xl hover:shadow-2xl transition-all border border-emerald-200">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-purple-700">
-                      <TrendingUp className="w-5 h-5" />
-                      Writing Growth
+                    <CardTitle className="flex items-center gap-2 text-emerald-700">
+                      <TrendingUp className="w-6 h-6" />
+                      Daily Writing Activity
                     </CardTitle>
-                    <p className="text-gray-500 text-sm">Your creative output over time</p>
+                    <p className="text-emerald-600 text-sm">Interactive chart showing your writing patterns</p>
+                    <div className="flex gap-2 mt-3">
+                      <Button variant="outline" size="sm" className="text-xs border-emerald-300 text-emerald-600">Week</Button>
+                      <Button size="sm" className="text-xs bg-emerald-500 text-white">Month</Button>
+                      <Button variant="outline" size="sm" className="text-xs border-emerald-300 text-emerald-600">Year</Button>
+                    </div>
                   </CardHeader>
                   <CardContent>
-                    <ResponsiveContainer width="100%" height={280}>
-                      <BarChart data={progressData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                        <XAxis dataKey="month" stroke="#64748b" />
-                        <YAxis stroke="#64748b" />
+                    <ResponsiveContainer width="100%" height={300}>
+                      <AreaChart data={progressData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" />
+                        <XAxis dataKey="month" stroke="#059669" />
+                        <YAxis stroke="#059669" />
                         <Tooltip 
                           contentStyle={{ 
-                            backgroundColor: '#f8fafc', 
-                            border: '1px solid #e2e8f0',
+                            backgroundColor: '#f0fdf4', 
+                            border: '1px solid #10b981',
                             borderRadius: '12px',
                             boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
-                          }} 
+                          }}
+                          formatter={(value, name) => [
+                            `${value} entries`,
+                            'Daily Activity'
+                          ]}
+                          labelFormatter={(label) => `Week of ${label}`}
                         />
-                        <Bar 
+                        <Area
+                          type="monotone" 
                           dataKey="entries" 
-                          fill="url(#entryGradient)" 
-                          radius={[6, 6, 0, 0]}
+                          stroke="#10b981" 
+                          fill="url(#activityGradient)" 
+                          strokeWidth={3}
+                          dot={{ fill: '#10b981', strokeWidth: 2, r: 5 }}
+                          activeDot={{ r: 8, fill: '#059669', stroke: '#ffffff', strokeWidth: 3 }}
                         />
                         <defs>
-                          <linearGradient id="entryGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.9}/>
-                            <stop offset="95%" stopColor="#EC4899" stopOpacity={0.7}/>
+                          <linearGradient id="activityGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
+                            <stop offset="95%" stopColor="#10b981" stopOpacity={0.1}/>
                           </linearGradient>
                         </defs>
-                      </BarChart>
+                      </AreaChart>
                     </ResponsiveContainer>
-                    <div className="text-sm text-gray-600 mt-3 flex items-center gap-2">
-                      <Star className="w-4 h-4 text-amber-500" />
-                      <span><strong className="text-purple-600">Achievement:</strong> May was your most productive month!</span>
+                    <div className="bg-white rounded-lg p-4 mt-4 border border-emerald-200">
+                      <div className="text-sm text-emerald-600 mb-2 flex items-center gap-2">
+                        <Sparkles className="w-4 h-4" />
+                        <span><strong>Peak Writing Times:</strong></span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 text-xs">
+                        <div className="text-center">
+                          <div className="font-bold text-emerald-700">Morning</div>
+                          <div className="text-gray-600">7-9 AM: 65%</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-emerald-700">Evening</div>
+                          <div className="text-gray-600">7-9 PM: 25%</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-bold text-emerald-700">Night</div>
+                          <div className="text-gray-600">10 PM+: 10%</div>
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
 
-              {/* Activity Heatmap */}
+              {/* Enhanced Mood Distribution */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
               >
-                <Card className="bg-white shadow-xl hover:shadow-2xl transition-all">
+                <Card className="bg-gradient-to-br from-amber-50 to-orange-50 shadow-xl hover:shadow-2xl transition-all border border-amber-200">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-purple-700">
-                      <Calendar className="w-5 h-5" />
-                      Activity Heatmap
+                    <CardTitle className="flex items-center gap-2 text-amber-700">
+                      <Heart className="w-6 h-6" />
+                      Mood Distribution
                     </CardTitle>
-                    <p className="text-gray-500 text-sm">Your writing consistency pattern</p>
+                    <p className="text-amber-600 text-sm">Your emotional journey visualized</p>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-7 gap-2 mb-4">
-                      {Array.from({ length: 28 }, (_, i) => {
-                        const intensity = Math.random();
+                    <div className="flex items-center justify-center mb-6">
+                      <ResponsiveContainer width="100%" height={250}>
+                        <PieChart>
+                          <Pie
+                            data={[
+                              { name: 'Happy 😊', value: 35, fill: '#10b981' },
+                              { name: 'Excited 😄', value: 25, fill: '#f59e0b' },
+                              { name: 'Good 🙂', value: 20, fill: '#3b82f6' },
+                              { name: 'Neutral 😐', value: 15, fill: '#6b7280' },
+                              { name: 'Sad 😔', value: 5, fill: '#ef4444' }
+                            ]}
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={80}
+                            innerRadius={40}
+                            paddingAngle={2}
+                            dataKey="value"
+                          >
+                            {[
+                              { name: 'Happy 😊', value: 35, fill: '#10b981' },
+                              { name: 'Excited 😄', value: 25, fill: '#f59e0b' },
+                              { name: 'Good 🙂', value: 20, fill: '#3b82f6' },
+                              { name: 'Neutral 😐', value: 15, fill: '#6b7280' },
+                              { name: 'Sad 😔', value: 5, fill: '#ef4444' }
+                            ].map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.fill} />
+                            ))}
+                          </Pie>
+                          <Tooltip 
+                            formatter={(value) => [`${value}%`, 'Mood Percentage']}
+                            contentStyle={{
+                              backgroundColor: '#fffbeb',
+                              border: '1px solid #f59e0b',
+                              borderRadius: '8px'
+                            }}
+                          />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    
+                    {/* Mood Legend */}
+                    <div className="grid grid-cols-2 gap-2 mb-4">
+                      {[
+                        { emoji: '😊', name: 'Happy', percentage: 35, color: 'bg-green-500' },
+                        { emoji: '😄', name: 'Excited', percentage: 25, color: 'bg-amber-500' },
+                        { emoji: '🙂', name: 'Good', percentage: 20, color: 'bg-blue-500' },
+                        { emoji: '😐', name: 'Neutral', percentage: 15, color: 'bg-gray-500' },
+                        { emoji: '😔', name: 'Sad', percentage: 5, color: 'bg-red-500' }
+                      ].map((mood, index) => (
+                        <motion.div
+                          key={mood.name}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.4 + index * 0.1 }}
+                          className="flex items-center gap-2 p-2 bg-white rounded-lg border border-amber-200"
+                        >
+                          <div className="text-lg">{mood.emoji}</div>
+                          <div className="flex-1">
+                            <div className="text-sm font-medium text-gray-700">{mood.name}</div>
+                            <div className="text-xs text-gray-500">{mood.percentage}%</div>
+                          </div>
+                          <div className={`w-3 h-3 ${mood.color} rounded-full`}></div>
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* AI Mood Insight */}
+                    <div className="bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg p-4 border border-amber-300">
+                      <div className="flex items-start gap-3">
+                        <div className="text-2xl">🤖</div>
+                        <div>
+                          <div className="font-semibold text-amber-800">AI Mood Insight</div>
+                          <div className="text-sm text-amber-700 mt-1">You're happiest on Fridays and most reflective on Sunday evenings. Your mood significantly improves when you include photos in your entries!</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Enhanced Mood Calendar/Heatmap */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="lg:col-span-2"
+              >
+                <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 shadow-xl hover:shadow-2xl transition-all border border-indigo-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-indigo-700">
+                      <Calendar className="w-6 h-6" />
+                      Interactive Mood Calendar
+                    </CardTitle>
+                    <p className="text-indigo-600 text-sm">Click any day to see your entries, mood patterns, and memories</p>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Calendar Header */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <Button variant="outline" size="sm">← Previous</Button>
+                        <h3 className="text-xl font-bold text-indigo-800">July 2025</h3>
+                        <Button variant="outline" size="sm">Next →</Button>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs">
+                        <span className="text-gray-600">Mood Scale:</span>
+                        <div className="flex gap-1">
+                          <div className="w-4 h-4 bg-red-200 rounded-full" title="😔 Sad"></div>
+                          <div className="w-4 h-4 bg-orange-200 rounded-full" title="😐 Neutral"></div>
+                          <div className="w-4 h-4 bg-yellow-200 rounded-full" title="🙂 Good"></div>
+                          <div className="w-4 h-4 bg-green-200 rounded-full" title="😊 Happy"></div>
+                          <div className="w-4 h-4 bg-emerald-300 rounded-full" title="😄 Excited"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Calendar Grid */}
+                    <div className="grid grid-cols-7 gap-3 mb-6">
+                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                        <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
+                          {day}
+                        </div>
+                      ))}
+                      
+                      {Array.from({ length: 35 }, (_, i) => {
+                        const dayNum = i - 5; // Offset for calendar start
+                        const isCurrentMonth = dayNum > 0 && dayNum <= 31;
+                        const hasEntry = isCurrentMonth && Math.random() > 0.3;
+                        const mood = ['😔', '😐', '🙂', '😊', '😄'][Math.floor(Math.random() * 5)];
+                        const moodColors = {
+                          '😔': 'bg-red-100 border-red-300 hover:bg-red-200',
+                          '😐': 'bg-orange-100 border-orange-300 hover:bg-orange-200',
+                          '🙂': 'bg-yellow-100 border-yellow-300 hover:bg-yellow-200',
+                          '😊': 'bg-green-100 border-green-300 hover:bg-green-200',
+                          '😄': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300'
+                        };
+                        
                         return (
                           <motion.div
                             key={i}
-                            whileHover={{ scale: 1.2, y: -2 }}
-                            className={`w-8 h-8 rounded-lg cursor-pointer transition-all ${
-                              intensity > 0.7 ? 'bg-purple-600 shadow-lg' :
-                              intensity > 0.4 ? 'bg-purple-400' :
-                              intensity > 0.2 ? 'bg-purple-200' : 'bg-gray-100'
+                            whileHover={{ scale: 1.1, y: -2 }}
+                            whileTap={{ scale: 0.95 }}
+                            className={`relative h-12 rounded-xl cursor-pointer transition-all border-2 flex items-center justify-center ${
+                              isCurrentMonth 
+                                ? hasEntry 
+                                  ? moodColors[mood]
+                                  : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                                : 'bg-transparent'
                             }`}
-                            title={`Day ${i + 1}: ${Math.round(intensity * 5)} entries`}
-                          />
+                            title={hasEntry ? `${dayNum}: ${mood} mood, 2 entries, 450 words` : `${dayNum}: No entries`}
+                          >
+                            {isCurrentMonth && (
+                              <>
+                                <span className="text-sm font-medium text-gray-700">{dayNum}</span>
+                                {hasEntry && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: i * 0.02 }}
+                                    className="absolute -top-1 -right-1 text-lg"
+                                  >
+                                    {mood}
+                                  </motion.div>
+                                )}
+                                {hasEntry && Math.random() > 0.7 && (
+                                  <motion.div
+                                    animate={{ scale: [1, 1.2, 1] }}
+                                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
+                                    className="absolute -bottom-1 -left-1 text-xs"
+                                  >
+                                    📸
+                                  </motion.div>
+                                )}
+                              </>
+                            )}
+                          </motion.div>
                         );
                       })}
                     </div>
-                    <div className="flex justify-between items-center text-xs text-gray-500">
-                      <span>Less active</span>
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 bg-gray-100 rounded"></div>
-                        <div className="w-3 h-3 bg-purple-200 rounded"></div>
-                        <div className="w-3 h-3 bg-purple-400 rounded"></div>
-                        <div className="w-3 h-3 bg-purple-600 rounded"></div>
+
+                    {/* Calendar Insights */}
+                    <div className="bg-white rounded-xl p-4 border border-indigo-200">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-indigo-600">18</div>
+                          <div className="text-sm text-gray-600">Active Days</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-green-600">😊</div>
+                          <div className="text-sm text-gray-600">Happiest: Fridays</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-2xl font-bold text-purple-600">7</div>
+                          <div className="text-sm text-gray-600">Longest Streak</div>
+                        </div>
                       </div>
-                      <span>More active</span>
                     </div>
-                    <Button className="w-full mt-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
-                      View Detailed History
-                    </Button>
+
+                    <div className="flex gap-3 mt-4">
+                      <Button className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white">
+                        View Detailed Calendar
+                      </Button>
+                      <Button variant="outline" className="border-indigo-300 text-indigo-600 hover:bg-indigo-50">
+                        Export Calendar
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
