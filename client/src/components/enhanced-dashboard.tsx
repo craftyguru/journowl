@@ -1128,7 +1128,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
             {/* Achievement Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {achievements.map((achievement, index) => (
+              {(achievements || []).map((achievement, index) => (
                 <motion.div
                   key={achievement.id}
                   initial={{ opacity: 0, scale: 0.8, y: 20 }}

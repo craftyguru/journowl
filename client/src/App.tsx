@@ -55,7 +55,10 @@ function App() {
   // Check authentication status on app load
   useEffect(() => {
     getCurrentUser()
-      .then(() => setIsAuthenticated(true))
+      .then(() => {
+        setIsAuthenticated(true);
+        setCurrentView("dashboard"); // Always show dashboard for authenticated users
+      })
       .catch((error) => {
         console.log('Auth check failed:', error);
         setIsAuthenticated(false);
@@ -253,16 +256,19 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
   }
 
   // Regular app interface for standard users
+  // Ensure we always show dashboard as default for authenticated users
+  const validView = (currentView === "dashboard" || currentView === "insights") ? currentView : "dashboard";
+  
   return (
     <div className="min-h-screen bg-background">
-      {!isKidMode && <Navbar currentView={currentView} onNavigate={onNavigate} />}
+      {!isKidMode && <Navbar currentView={validView} onNavigate={onNavigate} />}
       <main>
         {isKidMode ? (
           <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
         ) : (
           <>
-            {currentView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} />}
-            {currentView === "insights" && <InsightsPage />}
+            {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} />}
+            {validView === "insights" && <InsightsPage />}
           </>
         )}
       </main>
