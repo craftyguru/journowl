@@ -188,12 +188,16 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           const newContent = lastFinalTranscript + finalTranscript;
           setLastFinalTranscript(newContent);
           
-          // Send the complete message to AI for real-time interaction
-          setTimeout(() => {
-            sendToAi(newContent);
-            setAiInput(''); // Clear input after sending
-            setLastFinalTranscript(''); // Reset for next interaction
-          }, 500);
+          console.log('AI Recognition received:', newContent);
+          
+          // Stop recognition and send message immediately for quick prompts
+          aiRecognitionInstance.stop();
+          setIsAiListening(false);
+          
+          // Send the complete message to AI
+          sendToAi(newContent.trim());
+          setAiInput(''); // Clear input after sending
+          setLastFinalTranscript(''); // Reset for next interaction
         }
       };
 
