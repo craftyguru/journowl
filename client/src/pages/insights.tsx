@@ -211,7 +211,7 @@ export default function InsightsPage() {
             },
             { 
               title: "Total Words", 
-              value: stats.totalWords.toLocaleString(), 
+              value: (stats?.totalWords || 0).toLocaleString(), 
               icon: Target, 
               color: "from-emerald-500 to-teal-600",
               suffix: "",
