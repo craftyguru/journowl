@@ -215,6 +215,8 @@ function App() {
 
 // Authenticated App Component with Role-Based Access
 function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, onNavigate: (view: string) => void }) {
+  const [isKidMode, setIsKidMode] = useState(false);
+  
   const { data: user, isLoading, error } = useQuery({
     queryKey: ['/api/auth/me'],
     refetchInterval: false,
@@ -247,13 +249,19 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
     );
   }
 
-  // Regular app interface for standard users - use enhanced dashboard for everyone
+  // Regular app interface for standard users
   return (
     <div className="min-h-screen bg-background">
-      <Navbar currentView={currentView} onNavigate={onNavigate} />
+      {!isKidMode && <Navbar currentView={currentView} onNavigate={onNavigate} />}
       <main>
-        {currentView === "dashboard" && <EnhancedDashboard />}
-        {currentView === "insights" && <InsightsPage />}
+        {isKidMode ? (
+          <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
+        ) : (
+          <>
+            {currentView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} />}
+            {currentView === "insights" && <InsightsPage />}
+          </>
+        )}
       </main>
     </div>
   );

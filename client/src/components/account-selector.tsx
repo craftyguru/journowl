@@ -10,18 +10,6 @@ interface AccountSelectorProps {
 
 const testAccounts = [
   {
-    type: "admin",
-    username: "admin",
-    displayName: "Sarah Wilson",
-    role: "Platform Administrator",
-    description: "Full administrative access with analytics, user management, and platform insights",
-    avatar: "👩‍💼",
-    features: ["User Analytics", "Platform Management", "AI Insights", "Revenue Tracking", "Content Moderation"],
-    color: "from-purple-600 to-indigo-600",
-    icon: Crown,
-    stats: { users: "2,847", entries: "18,425", revenue: "$24,680" }
-  },
-  {
     type: "user",
     username: "emma.johnson",
     displayName: "Emma Johnson",
@@ -71,7 +59,7 @@ export default function AccountSelector({ onSelectAccount }: AccountSelectorProp
         </motion.div>
 
         {/* Account Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {testAccounts.map((account, index) => (
             <motion.div
               key={account.type}

@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle } from "lucide-react";
@@ -87,7 +88,11 @@ const prompts = [
   "What does success mean to you right now?"
 ];
 
-export default function EnhancedDashboard() {
+interface EnhancedDashboardProps {
+  onSwitchToKid?: () => void;
+}
+
+export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardProps) {
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
@@ -171,6 +176,27 @@ export default function EnhancedDashboard() {
         <div className="absolute bottom-40 left-1/3 w-40 h-40 bg-gradient-to-r from-emerald-500/15 to-teal-500/15 rounded-full blur-2xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/3 right-1/4 w-20 h-20 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-full blur-lg animate-bounce delay-500"></div>
       </div>
+      
+      {/* Interface Switcher */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-end mb-4 relative z-10"
+      >
+        <Card className="bg-slate-800/90 backdrop-blur-sm border border-purple-500/30 shadow-lg">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium text-gray-300">Adult Mode</span>
+              <Switch 
+                checked={false}
+                onCheckedChange={onSwitchToKid}
+                className="data-[state=checked]:bg-purple-500"
+              />
+              <span className="text-sm font-medium text-purple-300">Kid Mode</span>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
       {/* Welcome Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
