@@ -30,6 +30,7 @@ import {
 
 import EnhancedEmailCampaigns from "./enhanced-email-campaigns";
 import AdvancedRevenueDashboard from "./advanced-revenue-dashboard";
+import AdvancedActivityDashboard from "./advanced-activity-dashboard";
 
 interface User {
   id: number;
@@ -814,35 +815,10 @@ export default function AdminDashboard() {
 
           {/* Activity Tab */}
           <TabsContent value="activity">
-            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
-              <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
-                <CardDescription>Monitor user actions and system events</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {activityLogs.length === 0 ? (
-                    <p className="text-gray-500 text-center py-8">No recent activity</p>
-                  ) : (
-                    activityLogs.map((log) => (
-                      <div key={log.id} className="flex items-center justify-between p-3 border rounded-lg bg-white/50 dark:bg-gray-700/50">
-                        <div>
-                          <span className="font-medium">{log.action}</span>
-                          {log.details && (
-                            <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">
-                              {JSON.stringify(log.details)}
-                            </span>
-                          )}
-                        </div>
-                        <span className="text-xs text-gray-500">
-                          {new Date(log.createdAt).toLocaleString()}
-                        </span>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+            <AdvancedActivityDashboard 
+              activityLogs={activityLogs}
+              refreshActivity={loadAdminData}
+            />
           </TabsContent>
         </Tabs>
       </div>

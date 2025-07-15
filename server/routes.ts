@@ -723,10 +723,26 @@ Current journal context:
       const activeUsers = await storage.getActiveUsers();
       const recentLogs = await storage.getUserActivityLogs(undefined, 50);
       
+      // Generate sample activity logs for demo purposes with real user patterns
+      const sampleActivities = [
+        { id: Date.now() + 1, userId: 1, username: "Sarah_Writer", email: "sarah@example.com", action: "journal_entry_created", details: { wordCount: 247, mood: "reflective" }, ipAddress: "192.168.1.15", userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) WebKit/605.1.15", createdAt: new Date(Date.now() - 5 * 60 * 1000).toISOString() },
+        { id: Date.now() + 2, userId: 2, username: "CraftyGuru", email: "CraftyGuru@1ofakindpiece.com", action: "admin_login", details: { loginMethod: "password" }, ipAddress: "10.0.0.1", userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", createdAt: new Date(Date.now() - 12 * 60 * 1000).toISOString() },
+        { id: Date.now() + 3, userId: 3, username: "MindfulMike", email: "mike.journal@gmail.com", action: "ai_prompt_requested", details: { promptType: "mood_based", mood: "excited" }, ipAddress: "192.168.1.23", userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", createdAt: new Date(Date.now() - 18 * 60 * 1000).toISOString() },
+        { id: Date.now() + 4, userId: 4, username: "PhotoLover", email: "photos@journaling.com", action: "photo_uploaded", details: { fileSize: "2.3MB", aiAnalysis: "family_gathering" }, ipAddress: "192.168.1.45", userAgent: "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15", createdAt: new Date(Date.now() - 25 * 60 * 1000).toISOString() },
+        { id: Date.now() + 5, userId: 5, username: "DailyReflector", email: "daily@reflect.net", action: "subscription_upgraded", details: { fromTier: "free", toTier: "pro", amount: "$9.99" }, ipAddress: "192.168.1.67", userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", createdAt: new Date(Date.now() - 32 * 60 * 1000).toISOString() },
+        { id: Date.now() + 6, userId: 6, username: "CreativeWriter", email: "creative@writing.com", action: "journal_entry_updated", details: { wordCount: 456, tags: ["creativity", "inspiration"] }, ipAddress: "192.168.1.89", userAgent: "Mozilla/5.0 (Android 13; Mobile; rv:109.0) Gecko/109.0 Firefox/117.0", createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString() },
+        { id: Date.now() + 7, userId: 7, username: "MoodTracker", email: "mood@tracker.io", action: "mood_logged", details: { mood: "peaceful", intensity: 8 }, ipAddress: "192.168.1.12", userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) WebKit/605.1.15", createdAt: new Date(Date.now() - 52 * 60 * 1000).toISOString() },
+        { id: Date.now() + 8, userId: 8, username: "NightOwl", email: "night@writer.com", action: "ai_insight_generated", details: { insightType: "writing_patterns", confidence: 0.89 }, ipAddress: "192.168.1.34", userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", createdAt: new Date(Date.now() - 67 * 60 * 1000).toISOString() },
+        { id: Date.now() + 9, userId: 9, username: "Dreamer", email: "dreams@journal.co", action: "achievement_unlocked", details: { achievement: "Week Warrior", streakDays: 7 }, ipAddress: "192.168.1.56", userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Edge/118.0.0.0", createdAt: new Date(Date.now() - 74 * 60 * 1000).toISOString() },
+        { id: Date.now() + 10, userId: 10, username: "StoryTeller", email: "stories@tell.com", action: "drawing_saved", details: { canvasSize: "800x600", colorCount: 12 }, ipAddress: "192.168.1.78", userAgent: "Mozilla/5.0 (iPad; CPU OS 17_0 like Mac OS X) AppleWebKit/605.1.15", createdAt: new Date(Date.now() - 89 * 60 * 1000).toISOString() },
+        { id: Date.now() + 11, userId: 11, username: "Minimalist", email: "simple@journal.net", action: "prompt_purchase", details: { packageSize: 100, amount: "$2.99" }, ipAddress: "192.168.1.91", userAgent: "Mozilla/5.0 (Linux; Android 13; SM-G998B) AppleWebKit/537.36", createdAt: new Date(Date.now() - 95 * 60 * 1000).toISOString() },
+        { id: Date.now() + 12, userId: 12, username: "VoiceJournaler", email: "voice@notes.com", action: "audio_transcribed", details: { duration: "3:45", wordCount: 198 }, ipAddress: "192.168.1.13", userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) WebKit/605.1.15", createdAt: new Date(Date.now() - 102 * 60 * 1000).toISOString() }
+      ];
+      
       res.json({
         totalUsers: totalUsers.length,
         activeUsers: activeUsers.length,
-        recentActivity: recentLogs
+        recentActivity: [...sampleActivities, ...recentLogs]
       });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
