@@ -366,26 +366,56 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="journal" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6 bg-slate-800/90 backdrop-blur-lg border border-purple-500/20 shadow-2xl">
-          <TabsTrigger value="journal" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
-            📖 Journal
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
-            📊 Analytics
-          </TabsTrigger>
-          <TabsTrigger value="achievements" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
-            🏆 Achievements
-          </TabsTrigger>
-          <TabsTrigger value="goals" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
-            🎯 Goals
-          </TabsTrigger>
-          <TabsTrigger value="insights" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
-            🤖 AI Insights
-          </TabsTrigger>
-          <TabsTrigger value="calendar" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
-            📅 Memory Calendar
-          </TabsTrigger>
-        </TabsList>
+        {/* Mobile-Responsive Horizontal Scrolling Tabs */}
+        <div className="relative w-full">
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-2 gap-2 md:grid md:grid-cols-6 md:gap-0">
+            <TabsTrigger 
+              value="journal" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              📖 Journal
+            </TabsTrigger>
+            <TabsTrigger 
+              value="analytics" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              📊 Analytics
+            </TabsTrigger>
+            <TabsTrigger 
+              value="achievements" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              🏆 Achievements
+            </TabsTrigger>
+            <TabsTrigger 
+              value="goals" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              🎯 Goals
+            </TabsTrigger>
+            <TabsTrigger 
+              value="insights" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              🤖 AI Insights
+            </TabsTrigger>
+            <TabsTrigger 
+              value="calendar" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              📅 Memory Calendar
+            </TabsTrigger>
+          </TabsList>
+          
+          {/* Mobile scroll indicator */}
+          <div className="md:hidden absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+            <div className="flex items-center gap-1 px-3 py-1 bg-purple-500/20 backdrop-blur-sm rounded-full border border-purple-400/30">
+              <span className="text-xs text-purple-300">←</span>
+              <span className="text-xs text-purple-200 font-medium">Swipe</span>
+              <span className="text-xs text-purple-300">→</span>
+            </div>
+          </div>
+        </div>
 
         <TabsContent value="journal">
           <div className="space-y-6">
