@@ -192,6 +192,13 @@ Current journal context:
 
       systemPrompt += `\n\nRespond naturally and helpfully. Ask follow-up questions, suggest writing prompts, or help them reflect on their experiences. Keep responses under 150 words.`;
 
+      // Check if OpenAI API key is available
+      if (!process.env.OPENAI_API_KEY) {
+        return res.json({ 
+          reply: "I'm sorry, but I need an OpenAI API key to provide intelligent responses. Please contact the administrator to set up the API key, or I can help you with basic writing prompts!" 
+        });
+      }
+
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -210,7 +217,28 @@ Current journal context:
       });
 
       if (!response.ok) {
-        throw new Error(`OpenAI API error: ${response.status}`);
+        const errorData = await response.text();
+        console.error(`OpenAI API error: ${response.status} - ${errorData}`);
+        
+        // Provide helpful fallback responses based on the message
+        const fallbackResponses = {
+          "hello": "Hello! I'm your AI writing assistant. While I'm having trouble connecting to my main AI service right now, I can still help you brainstorm ideas for your journal. What would you like to write about today?",
+          "help": "I'd love to help you with your journal! Even though my main AI is temporarily unavailable, I can suggest some great writing prompts: Try writing about your favorite memory from this week, or describe what made you smile today.",
+          "ideas": "Here are some writing ideas to get you started: 1) Write about someone who inspired you recently, 2) Describe a place that makes you feel peaceful, 3) What's one thing you're grateful for today?",
+          "default": "I'm having trouble connecting to my AI service right now, but I'm still here to help! Try writing about your day, your feelings, or anything on your mind. Sometimes the best journal entries come from just letting your thoughts flow freely."
+        };
+        
+        const lowerMessage = message.toLowerCase();
+        let fallback = fallbackResponses.default;
+        
+        for (const [key, response] of Object.entries(fallbackResponses)) {
+          if (lowerMessage.includes(key)) {
+            fallback = response;
+            break;
+          }
+        }
+        
+        return res.json({ reply: fallback });
       }
 
       const data = await response.json();
