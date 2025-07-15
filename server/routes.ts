@@ -274,12 +274,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       
       // Track the journal entry for achievements and goals
-      const { AchievementTracker } = await import("./services/achievement-tracker");
-      await AchievementTracker.trackJournalEntry(req.session.userId, entry);
-      
-      // Track mood if provided
-      if (entry.mood) {
-        await AchievementTracker.trackMoodEntry(req.session.userId, entry.mood);
+      try {
+        const { AchievementTracker } = await import("./services/achievement-tracker");
+        await AchievementTracker.trackJournalEntry(req.session.userId, entry);
+        
+        // Track mood if provided
+        if (entry.mood) {
+          await AchievementTracker.trackMoodEntry(req.session.userId, entry.mood);
+        }
+      } catch (achievementError) {
+        console.error("Achievement tracking error:", achievementError);
+        // Continue without achievement tracking if it fails
       }
       
       res.json(entry);
@@ -721,6 +726,30 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
     } catch (error: any) {
       console.error("Error resetting prompts:", error);
       res.status(500).json({ message: "Failed to reset prompts" });
+    }
+  });
+
+  // Reset user XP to normal values
+  app.post("/api/admin/reset-user-xp", requireAuth, async (req: any, res) => {
+    try {
+      const { userId } = req.body;
+      const targetUserId = userId || req.session.userId;
+      
+      // Reset XP to 1000 and level to 1
+      await db.update(users).set({ 
+        xp: 1000,
+        level: 1
+      }).where(eq(users.id, targetUserId));
+      
+      res.json({ 
+        success: true, 
+        message: "User XP reset successfully",
+        xp: 1000,
+        level: 1
+      });
+    } catch (error: any) {
+      console.error("Error resetting XP:", error);
+      res.status(500).json({ message: "Failed to reset XP" });
     }
   });
 

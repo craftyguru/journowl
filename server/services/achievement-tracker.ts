@@ -25,13 +25,13 @@ const ACHIEVEMENT_DEFINITIONS = [
   
   // Epic achievements (challenging)
   { id: "monthly_champion", title: "Monthly Champion", description: "Write every day for 30 days", icon: "🏆", rarity: "epic", type: "streak", targetValue: 30 },
-  { id: "novel_writer", title: "Novel Writer", description: "Write 10,000 words total", icon: "📜", rarity: "epic", type: "writing", targetValue: 10000 },
+  { id: "novel_writer", title: "Novel Writer", description: "Write 5,000 words total", icon: "📜", rarity: "epic", type: "writing", targetValue: 5000 },
   { id: "memory_keeper", title: "Memory Keeper", description: "Create 100 journal entries", icon: "🗂️", rarity: "epic", type: "milestone", targetValue: 100 },
   { id: "artist", title: "Artist", description: "Add drawings to 20 entries", icon: "🎨", rarity: "epic", type: "creative", targetValue: 20 },
   { id: "wisdom_seeker", title: "Wisdom Seeker", description: "Write philosophical thoughts 25 times", icon: "🧠", rarity: "epic", type: "wisdom", targetValue: 25 },
   { id: "social_butterfly", title: "Social Butterfly", description: "Write about relationships 30 times", icon: "🦋", rarity: "epic", type: "social", targetValue: 30 },
   { id: "goal_crusher", title: "Goal Crusher", description: "Complete 50 personal goals", icon: "💪", rarity: "epic", type: "achievement", targetValue: 50 },
-  { id: "master_chronicler", title: "Master Chronicler", description: "Write 50,000 words lifetime", icon: "👑", rarity: "legendary", type: "legendary", targetValue: 50000 }
+  { id: "master_chronicler", title: "Master Chronicler", description: "Write 10,000 words lifetime", icon: "👑", rarity: "legendary", type: "legendary", targetValue: 10000 }
 ];
 
 // Define all 24 goals with their tracking criteria
@@ -58,13 +58,13 @@ const GOAL_DEFINITIONS = [
   
   // Advanced goals (long-term achievements)
   { id: "monthly_champion", title: "Monthly Champion", description: "Write every day for 30 days", type: "streak", targetValue: 30, difficulty: "advanced" },
-  { id: "novel_writer", title: "Novel Writer", description: "Write a total of 10,000 words", type: "writing", targetValue: 10000, difficulty: "advanced" },
+  { id: "novel_writer", title: "Novel Writer", description: "Write a total of 5,000 words", type: "writing", targetValue: 5000, difficulty: "advanced" },
   { id: "memory_keeper", title: "Memory Keeper", description: "Create 50 journal entries", type: "milestone", targetValue: 50, difficulty: "advanced" },
   { id: "mindfulness_journey", title: "Mindfulness Journey", description: "Practice mindful writing for 21 days", type: "mindfulness", targetValue: 21, difficulty: "advanced" },
   { id: "wisdom_collector", title: "Wisdom Collector", description: "Write 100 life lessons learned", type: "wisdom", targetValue: 100, difficulty: "advanced" },
-  { id: "year_of_growth", title: "Year of Growth", description: "Maintain 365-day writing streak", type: "epic", targetValue: 365, difficulty: "advanced" },
-  { id: "master_storyteller", title: "Master Storyteller", description: "Write 25,000 words total", type: "mastery", targetValue: 25000, difficulty: "advanced" },
-  { id: "life_chronicler", title: "Life Chronicler", description: "Document 200 significant moments", type: "chronicle", targetValue: 200, difficulty: "advanced" }
+  { id: "year_of_growth", title: "Year of Growth", description: "Maintain 100-day writing streak", type: "epic", targetValue: 100, difficulty: "advanced" },
+  { id: "master_storyteller", title: "Master Storyteller", description: "Write 8,000 words total", type: "mastery", targetValue: 8000, difficulty: "advanced" },
+  { id: "life_chronicler", title: "Life Chronicler", description: "Document 150 significant moments", type: "chronicle", targetValue: 150, difficulty: "advanced" }
 ];
 
 export class AchievementTracker {
@@ -75,10 +75,15 @@ export class AchievementTracker {
       try {
         await storage.createAchievement({
           userId,
+          achievementId: achievement.id,
           title: achievement.title,
           description: achievement.description,
           icon: achievement.icon,
-          type: achievement.type
+          rarity: achievement.rarity,
+          type: achievement.type,
+          targetValue: achievement.targetValue,
+          currentValue: 0,
+          unlockedAt: null
         });
       } catch (error) {
         // Ignore if already exists
@@ -90,9 +95,11 @@ export class AchievementTracker {
       try {
         await storage.createGoal({
           userId,
+          goalId: goal.id,
           title: goal.title,
           description: goal.description || '',
           type: goal.type,
+          difficulty: goal.difficulty,
           targetValue: goal.targetValue,
           currentValue: 0,
           isCompleted: false
@@ -106,10 +113,14 @@ export class AchievementTracker {
     try {
       await storage.createAchievement({
         userId,
+        achievementId: "welcome_owl",
         title: "Welcome to JournOwl!",
         description: "You've taken your first step on the journey to wise journaling",
         icon: "🦉",
+        rarity: "common",
         type: "milestone",
+        targetValue: 1,
+        currentValue: 1,
         unlockedAt: new Date()
       });
     } catch (error) {
@@ -122,7 +133,10 @@ export class AchievementTracker {
     // For now, just award XP based on achievement type until database schema is updated
     const user = await storage.getUser(userId);
     if (user && newValue > 0) {
-      await storage.updateUserXP(userId, user.xp + 25); // Small XP bonus for progress
+      // Prevent integer overflow by capping XP at a reasonable limit
+      const maxXP = 2000000000; // Safe limit well below PostgreSQL's integer max
+      const newXP = Math.min(user.xp + 25, maxXP);
+      await storage.updateUserXP(userId, newXP);
     }
   }
 
@@ -131,7 +145,10 @@ export class AchievementTracker {
     // For now, just award XP based on goal progress until database schema is updated
     const user = await storage.getUser(userId);
     if (user && newValue > 0) {
-      await storage.updateUserXP(userId, user.xp + 10); // Small XP bonus for goal progress
+      // Prevent integer overflow by capping XP at a reasonable limit
+      const maxXP = 2000000000; // Safe limit well below PostgreSQL's integer max
+      const newXP = Math.min(user.xp + 10, maxXP);
+      await storage.updateUserXP(userId, newXP);
     }
   }
 
