@@ -382,7 +382,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
         <div className="flex flex-1 min-h-0">
           <PanelGroup direction="horizontal" className="w-full">
             {/* Left Page - Writing Area (Expanded) */}
-            <Panel defaultSize={65} minSize={40}>
+            <Panel defaultSize={65} minSize={0}>
               <div className="p-4 relative flex flex-col overflow-hidden h-full">
                 {/* Page shadow effect */}
                 <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
@@ -581,7 +581,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   <MDEditor
                     value={content}
                     onChange={(val) => setContent(val || "")}
-                    preview="live"
+                    preview="edit"
                     hideToolbar={false}
                     data-color-mode="light"
                     height="100%"
@@ -607,7 +607,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
             </PanelResizeHandle>
 
             {/* Right Page - Creative Area with Resizable Panels */}
-            <Panel defaultSize={35} minSize={25}>
+            <Panel defaultSize={35} minSize={0}>
               <div className="p-4 relative overflow-hidden h-full">
                 <PanelGroup direction="vertical" className="h-full">
               {/* Drawing Canvas Panel */}
