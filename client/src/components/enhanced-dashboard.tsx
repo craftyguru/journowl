@@ -934,13 +934,32 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       <ResponsiveContainer width="100%" height={250}>
                         <PieChart>
                           <Pie
-                            data={[
-                              { name: 'Happy 😊', value: 35, fill: '#10b981' },
-                              { name: 'Excited 😄', value: 25, fill: '#f59e0b' },
-                              { name: 'Good 🙂', value: 20, fill: '#3b82f6' },
-                              { name: 'Neutral 😐', value: 15, fill: '#6b7280' },
-                              { name: 'Sad 😔', value: 5, fill: '#ef4444' }
-                            ]}
+                            data={(() => {
+                              // Calculate real mood distribution from user entries
+                              const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
+                              const totalEntries = entries?.length || 0;
+                              
+                              entries?.forEach(entry => {
+                                const mood = entry.mood?.toLowerCase();
+                                if (mood === 'happy' || mood === '😊') moodCounts.happy++;
+                                else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
+                                else if (mood === 'good' || mood === '🙂') moodCounts.good++;
+                                else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
+                                else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
+                              });
+
+                              if (totalEntries === 0) {
+                                return [{ name: 'No entries yet', value: 100, fill: '#e5e7eb' }];
+                              }
+
+                              return [
+                                { name: 'Happy 😊', value: Math.round((moodCounts.happy / totalEntries) * 100), fill: '#10b981' },
+                                { name: 'Excited 😄', value: Math.round((moodCounts.excited / totalEntries) * 100), fill: '#f59e0b' },
+                                { name: 'Good 🙂', value: Math.round((moodCounts.good / totalEntries) * 100), fill: '#3b82f6' },
+                                { name: 'Neutral 😐', value: Math.round((moodCounts.neutral / totalEntries) * 100), fill: '#6b7280' },
+                                { name: 'Sad 😔', value: Math.round((moodCounts.sad / totalEntries) * 100), fill: '#ef4444' }
+                              ].filter(mood => mood.value > 0);
+                            })()}
                             cx="50%"
                             cy="50%"
                             outerRadius={80}
@@ -948,15 +967,35 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                             paddingAngle={2}
                             dataKey="value"
                           >
-                            {[
-                              { name: 'Happy 😊', value: 35, fill: '#10b981' },
-                              { name: 'Excited 😄', value: 25, fill: '#f59e0b' },
-                              { name: 'Good 🙂', value: 20, fill: '#3b82f6' },
-                              { name: 'Neutral 😐', value: 15, fill: '#6b7280' },
-                              { name: 'Sad 😔', value: 5, fill: '#ef4444' }
-                            ].map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={entry.fill} />
-                            ))}
+                            {(() => {
+                              const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
+                              const totalEntries = entries?.length || 0;
+                              
+                              entries?.forEach(entry => {
+                                const mood = entry.mood?.toLowerCase();
+                                if (mood === 'happy' || mood === '😊') moodCounts.happy++;
+                                else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
+                                else if (mood === 'good' || mood === '🙂') moodCounts.good++;
+                                else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
+                                else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
+                              });
+
+                              if (totalEntries === 0) {
+                                return [{ name: 'No entries yet', value: 100, fill: '#e5e7eb' }].map((entry, index) => (
+                                  <Cell key={`cell-${index}`} fill={entry.fill} />
+                                ));
+                              }
+
+                              return [
+                                { name: 'Happy 😊', value: Math.round((moodCounts.happy / totalEntries) * 100), fill: '#10b981' },
+                                { name: 'Excited 😄', value: Math.round((moodCounts.excited / totalEntries) * 100), fill: '#f59e0b' },
+                                { name: 'Good 🙂', value: Math.round((moodCounts.good / totalEntries) * 100), fill: '#3b82f6' },
+                                { name: 'Neutral 😐', value: Math.round((moodCounts.neutral / totalEntries) * 100), fill: '#6b7280' },
+                                { name: 'Sad 😔', value: Math.round((moodCounts.sad / totalEntries) * 100), fill: '#ef4444' }
+                              ].filter(mood => mood.value > 0).map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.fill} />
+                              ));
+                            })()}
                           </Pie>
                           <Tooltip 
                             formatter={(value) => [`${value}%`, 'Mood Percentage']}
@@ -970,15 +1009,37 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       </ResponsiveContainer>
                     </div>
                     
-                    {/* Mood Legend */}
+                    {/* Mood Legend - Real User Data */}
                     <div className="grid grid-cols-2 gap-2 mb-4">
-                      {[
-                        { emoji: '😊', name: 'Happy', percentage: 35, color: 'bg-green-500' },
-                        { emoji: '😄', name: 'Excited', percentage: 25, color: 'bg-amber-500' },
-                        { emoji: '🙂', name: 'Good', percentage: 20, color: 'bg-blue-500' },
-                        { emoji: '😐', name: 'Neutral', percentage: 15, color: 'bg-gray-500' },
-                        { emoji: '😔', name: 'Sad', percentage: 5, color: 'bg-red-500' }
-                      ].map((mood, index) => (
+                      {(() => {
+                        // Calculate real mood distribution from user entries
+                        const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
+                        const totalEntries = entries?.length || 0;
+                        
+                        entries?.forEach(entry => {
+                          const mood = entry.mood?.toLowerCase();
+                          if (mood === 'happy' || mood === '😊') moodCounts.happy++;
+                          else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
+                          else if (mood === 'good' || mood === '🙂') moodCounts.good++;
+                          else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
+                          else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
+                        });
+
+                        if (totalEntries === 0) {
+                          return [
+                            { emoji: '📝', name: 'No entries yet', percentage: 0, color: 'bg-gray-300' },
+                            { emoji: '✨', name: 'Start writing!', percentage: 0, color: 'bg-blue-300' }
+                          ];
+                        }
+
+                        return [
+                          { emoji: '😊', name: 'Happy', count: moodCounts.happy, percentage: Math.round((moodCounts.happy / totalEntries) * 100), color: 'bg-green-500' },
+                          { emoji: '😄', name: 'Excited', count: moodCounts.excited, percentage: Math.round((moodCounts.excited / totalEntries) * 100), color: 'bg-amber-500' },
+                          { emoji: '🙂', name: 'Good', count: moodCounts.good, percentage: Math.round((moodCounts.good / totalEntries) * 100), color: 'bg-blue-500' },
+                          { emoji: '😐', name: 'Neutral', count: moodCounts.neutral, percentage: Math.round((moodCounts.neutral / totalEntries) * 100), color: 'bg-gray-500' },
+                          { emoji: '😔', name: 'Sad', count: moodCounts.sad, percentage: Math.round((moodCounts.sad / totalEntries) * 100), color: 'bg-red-500' }
+                        ].filter(mood => mood.count > 0);
+                      })().map((mood, index) => (
                         <motion.div
                           key={mood.name}
                           initial={{ opacity: 0, x: -10 }}
@@ -996,13 +1057,40 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       ))}
                     </div>
 
-                    {/* AI Mood Insight */}
+                    {/* AI Mood Insight - Real User Data */}
                     <div className="bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg p-4 border border-amber-300">
                       <div className="flex items-start gap-3">
                         <div className="text-2xl">🤖</div>
                         <div>
                           <div className="font-semibold text-amber-800">AI Mood Insight</div>
-                          <div className="text-sm text-amber-700 mt-1">You're happiest on Fridays and most reflective on Sunday evenings. Your mood significantly improves when you include photos in your entries!</div>
+                          <div className="text-sm text-amber-700 mt-1">
+                            {(() => {
+                              const totalEntries = entries?.length || 0;
+                              if (totalEntries === 0) {
+                                return "Start journaling to discover personalized mood patterns and insights! Your AI companion will analyze your emotional journey as you write.";
+                              }
+                              
+                              // Calculate dominant mood
+                              const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
+                              entries?.forEach(entry => {
+                                const mood = entry.mood?.toLowerCase();
+                                if (mood === 'happy' || mood === '😊') moodCounts.happy++;
+                                else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
+                                else if (mood === 'good' || mood === '🙂') moodCounts.good++;
+                                else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
+                                else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
+                              });
+                              
+                              const dominantMood = Object.entries(moodCounts).reduce((a, b) => moodCounts[a[0]] > moodCounts[b[0]] ? a : b);
+                              const moodEmojis = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
+                              
+                              if (totalEntries < 3) {
+                                return `Great start! You've written ${totalEntries} ${totalEntries === 1 ? 'entry' : 'entries'}. Keep journaling to unlock deeper mood insights and patterns.`;
+                              }
+                              
+                              return `Based on your ${totalEntries} entries, you tend to feel ${dominantMood[0]} ${moodEmojis[dominantMood[0]]} most often. ${stats?.currentStreak > 0 ? `Your ${stats.currentStreak}-day streak shows great consistency!` : 'Try writing daily to build momentum and track patterns.'}`;
+                            })()}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1053,18 +1141,75 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                         </div>
                       ))}
                       
-                      {Array.from({ length: 35 }, (_, i) => {
-                        const dayNum = i - 5; // Offset for calendar start
-                        const isCurrentMonth = dayNum > 0 && dayNum <= 31;
-                        const hasEntry = isCurrentMonth && Math.random() > 0.3;
-                        const mood = ['😔', '😐', '🙂', '😊', '😄'][Math.floor(Math.random() * 5)];
+                      {(() => {
+                        // Generate calendar data based on real user entries
+                        const today = new Date();
+                        const currentMonth = today.getMonth();
+                        const currentYear = today.getFullYear();
+                        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+                        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+                        const firstDayOfWeek = firstDayOfMonth.getDay();
+                        
+                        // Create calendar days array
+                        const calendarDays = [];
+                        
+                        // Add previous month days if needed
+                        for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                          const date = new Date(firstDayOfMonth);
+                          date.setDate(date.getDate() - (i + 1));
+                          calendarDays.push({ date, isCurrentMonth: false });
+                        }
+                        
+                        // Add current month days
+                        for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+                          const date = new Date(currentYear, currentMonth, day);
+                          calendarDays.push({ date, isCurrentMonth: true });
+                        }
+                        
+                        // Add next month days if needed
+                        const remainingDays = 35 - calendarDays.length;
+                        for (let day = 1; day <= remainingDays; day++) {
+                          const date = new Date(currentYear, currentMonth + 1, day);
+                          calendarDays.push({ date, isCurrentMonth: false });
+                        }
+                        
+                        return calendarDays;
+                      })().map((calendarDay, i) => {
+                        const dayNum = calendarDay.date.getDate();
+                        const isCurrentMonth = calendarDay.isCurrentMonth;
+                        
+                        // Find entries for this day
+                        const dayEntries = entries?.filter(entry => {
+                          const entryDate = new Date(entry.createdAt);
+                          return entryDate.toDateString() === calendarDay.date.toDateString();
+                        }) || [];
+                        
+                        const hasEntry = dayEntries.length > 0;
+                        const primaryEntry = dayEntries[0];
+                        const mood = primaryEntry?.mood || '';
+                        
                         const moodColors = {
                           '😔': 'bg-red-100 border-red-300 hover:bg-red-200',
+                          'sad': 'bg-red-100 border-red-300 hover:bg-red-200',
                           '😐': 'bg-orange-100 border-orange-300 hover:bg-orange-200',
+                          'neutral': 'bg-orange-100 border-orange-300 hover:bg-orange-200',
                           '🙂': 'bg-yellow-100 border-yellow-300 hover:bg-yellow-200',
+                          'good': 'bg-yellow-100 border-yellow-300 hover:bg-yellow-200',
                           '😊': 'bg-green-100 border-green-300 hover:bg-green-200',
-                          '😄': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300'
+                          'happy': 'bg-green-100 border-green-300 hover:bg-green-200',
+                          '😄': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300',
+                          'excited': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300'
                         };
+                        
+                        const moodEmojis = {
+                          'sad': '😔',
+                          'neutral': '😐', 
+                          'good': '🙂',
+                          'happy': '😊',
+                          'excited': '😄'
+                        };
+                        
+                        const displayMood = moodEmojis[mood.toLowerCase()] || mood;
                         
                         return (
                           <motion.div
@@ -1074,26 +1219,26 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                             className={`relative h-12 rounded-xl cursor-pointer transition-all border-2 flex items-center justify-center ${
                               isCurrentMonth 
                                 ? hasEntry 
-                                  ? moodColors[mood]
+                                  ? moodColors[mood.toLowerCase()] || moodColors[displayMood] || 'bg-blue-100 border-blue-300 hover:bg-blue-200'
                                   : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
                                 : 'bg-transparent'
                             }`}
-                            title={hasEntry ? `${dayNum}: ${mood} mood, 2 entries, 450 words` : `${dayNum}: No entries`}
+                            title={hasEntry ? `${dayNum}: ${displayMood} mood, ${dayEntries.length} ${dayEntries.length === 1 ? 'entry' : 'entries'}, ${dayEntries.reduce((total, entry) => total + (entry.content?.length || 0), 0)} characters` : `${dayNum}: No entries`}
                           >
                             {isCurrentMonth && (
                               <>
                                 <span className="text-sm font-medium text-gray-700">{dayNum}</span>
-                                {hasEntry && (
+                                {hasEntry && displayMood && (
                                   <motion.div
                                     initial={{ scale: 0 }}
                                     animate={{ scale: 1 }}
                                     transition={{ delay: i * 0.02 }}
                                     className="absolute -top-1 -right-1 text-lg"
                                   >
-                                    {mood}
+                                    {displayMood}
                                   </motion.div>
                                 )}
-                                {hasEntry && Math.random() > 0.7 && (
+                                {hasEntry && dayEntries.some(entry => entry.photoAnalysis) && (
                                   <motion.div
                                     animate={{ scale: [1, 1.2, 1] }}
                                     transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
@@ -1109,16 +1254,37 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       })}
                     </div>
 
-                    {/* Calendar Insights */}
+                    {/* Calendar Insights - Real User Data */}
                     <div className="bg-white rounded-xl p-4 border border-indigo-200">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="text-center">
                           <div className="text-2xl font-bold text-indigo-600">{stats?.totalEntries || 0}</div>
-                          <div className="text-sm text-gray-600">Active Days</div>
+                          <div className="text-sm text-gray-600">Journal Entries</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-green-600">😊</div>
-                          <div className="text-sm text-gray-600">{stats?.totalEntries > 0 ? 'Most Common Mood' : 'Start writing!'}</div>
+                          <div className="text-2xl font-bold text-green-600">
+                            {(() => {
+                              // Calculate most common mood from real user data
+                              const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
+                              entries?.forEach(entry => {
+                                const mood = entry.mood?.toLowerCase();
+                                if (mood === 'happy' || mood === '😊') moodCounts.happy++;
+                                else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
+                                else if (mood === 'good' || mood === '🙂') moodCounts.good++;
+                                else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
+                                else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
+                              });
+                              
+                              if (entries?.length === 0) return '✨';
+                              
+                              const mostCommon = Object.entries(moodCounts).reduce((a, b) => moodCounts[a[0]] > moodCounts[b[0]] ? a : b);
+                              const moodEmojis = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
+                              return moodEmojis[mostCommon[0]] || '😊';
+                            })()}
+                          </div>
+                          <div className="text-sm text-gray-600">
+                            {entries?.length > 0 ? 'Most Common Mood' : 'Start writing!'}
+                          </div>
                         </div>
                         <div className="text-center">
                           <div className="text-2xl font-bold text-purple-600">{stats?.longestStreak || 0}</div>
