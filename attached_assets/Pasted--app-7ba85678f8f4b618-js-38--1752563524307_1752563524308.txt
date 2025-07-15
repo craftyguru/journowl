@@ -1,0 +1,296 @@
+_app-7ba85678f8f4b618.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-7ba85678f8f4b618.js:38 [LaunchDarkly] LaunchDarkly client initialized
+analytics.tiktok.com/i18n/pixel/events.js?sdkid=D004GE3C77U8PIVDSDJG&lib=ttq:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:402720)
+www.google-analytics.com/analytics.js:1  Failed to load resource: net::ERR_UNSAFE_REDIRECT
+www.googletagmanager.com/gtag/js?id=AW-11411994397:1  Failed to load resource: net::ERR_UNSAFE_REDIRECT
+@CraftyGuru/1kindpiece:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'battery'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-b257afd8a9a4fc10.js:1
+framework-b257afd8a9a4fc10.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-b257afd8a9a4fc10.js:1
+web-client-content-script.js:2 TypeError: e.getRootNode(...).getElementById is not a function
+    at web-client-content-script.js:2:405800
+    at web-client-content-script.js:2:405025
+    at web-client-content-script.js:2:437043
+    at e (web-client-content-script.js:2:437057)
+    at Array.forEach (<anonymous>)
+    at web-client-content-script.js:2:437130
+    at nu (web-client-content-script.js:2:139076)
+    at kl (web-client-content-script.js:2:159303)
+    at ul (web-client-content-script.js:2:151560)
+    at Wa (web-client-content-script.js:2:92268)
+ds @ web-client-content-script.js:2
+web-client-content-script.js:2 TypeError: Cannot read properties of undefined (reading 'disconnect')
+    at web-client-content-script.js:2:404560
+    at eu (web-client-content-script.js:2:138711)
+    at ru (web-client-content-script.js:2:138907)
+    at kl (web-client-content-script.js:2:158554)
+    at web-client-content-script.js:2:155893
+    at k (web-client-content-script.js:2:197112)
+    at MessagePort.L (web-client-content-script.js:2:197646)
+ds @ web-client-content-script.js:2
+@CraftyGuru/1kindpiece:1 Access to fetch at 'https://sp.replit.com/v1/t' from origin 'https://replit.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+sp.replit.com/v1/t:1  Failed to load resource: net::ERR_FAILED
+_app-7ba85678f8f4b618.js:38 Measure loop restarted more than 5 times
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 Measure loop restarted more than 5 times
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 Measure loop restarted more than 5 times
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 Viewport failed to stabilize
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 Viewport failed to stabilize
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 Measure loop restarted more than 5 times
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 Measure loop restarted more than 5 times
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 Measure loop restarted more than 5 times
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 Measure loop restarted more than 5 times
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+usage?paymentMethod=true:1 Each dictionary in the list "icons" should contain a non-empty UTF8 string field "sizes".
+usage?paymentMethod=true:1 Each dictionary in the list "icons" should contain a non-empty UTF8 string field "type".
+usage?paymentMethod=true:1 Each dictionary in the list "icons" should contain a non-empty UTF8 string field "sizes".
+usage?paymentMethod=true:1 Each dictionary in the list "icons" should contain a non-empty UTF8 string field "type".
+ Coinbase Wallet no longer injects web3.
+get @ requestProvider.js:2
+ Coinbase Wallet no longer injects web3.
+get @ requestProvider.js:2
+@CraftyGuru/1kindpiece:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+_app-7ba85678f8f4b618.js:38 Measure loop restarted more than 5 times
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+_app-7ba85678f8f4b618.js:38 task queue exceeded allotted deadline by 253ms
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+692-fc60532588f1c2d9.js:1 Uncaught (in promise) Error: Committing while reconnecting
+    at r.b [as debounceCommit] (692-fc60532588f1c2d9.js:1:19408)
+    at C.handlePacket (692-fc60532588f1c2d9.js:1:8891)
+    at r.<anonymous> (692-fc60532588f1c2d9.js:1:15355)
+    at Object.next (main-a4e4334e471663cd.js:1:174131)
+    at n (main-a4e4334e471663cd.js:1:57526)
+    at u (main-a4e4334e471663cd.js:1:57723)
+stallwart.build.js:1 stallwart: failed ping 1
+_app-7ba85678f8f4b618.js:38 task queue exceeded allotted deadline by 32ms
+(anonymous) @ _app-7ba85678f8f4b618.js:38
+stallwart.build.js:1 stallwart: failed ping 1
+image_1752555100019.png:1  Failed to load resource: the server responded with a status of 404 ()
+image_1752555100019.png:1  Failed to load resource: the server responded with a status of 404 ()
+image_1752554991458.png:1  Failed to load resource: the server responded with a status of 404 ()
+image_1752554998248.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752557275893.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752557473094.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752557275893.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752557473094.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752560458412.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752560623238.png:1  Failed to load resource: the server responded with a status of 404 ()
+stallwart.build.js:1 stallwart: failed ping 1
+attached_assets/image_1752560913652.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752561668866.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752561817428.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752562013306.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752562201931.png:1  Failed to load resource: the server responded with a status of 404 ()
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+Console.js:61 Auth check failed: Error: 401: {"message":"Authentication required"}
+    at throwIfResNotOk (queryClient.ts:6:11)
+    at async apiRequest (queryClient.ts:22:3)
+    at async getCurrentUser (auth.ts:30:20)
+Console.js:61 Rendering Landing page, currentView: landing
+Console.js:61 Start Your Journey clicked - switching to auth view
+Console.js:61 Rendering Auth page, currentView: auth

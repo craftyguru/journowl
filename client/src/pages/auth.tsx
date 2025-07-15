@@ -17,7 +17,7 @@ interface AuthPageProps {
 }
 
 export default function AuthPage({ onAuthenticated }: AuthPageProps) {
-  const [showAuth, setShowAuth] = useState(false);
+  const [showAuth, setShowAuth] = useState(true);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [registerData, setRegisterData] = useState({ email: "", username: "", password: "", confirmPassword: "" });
   const { toast } = useToast();
