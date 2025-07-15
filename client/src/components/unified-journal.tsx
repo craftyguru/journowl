@@ -1619,13 +1619,19 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   Review
                 </Button>
                 
-                {/* AI Prompt Counter */}
+                {/* AI Prompt Counter - Clickable to buy more */}
                 {promptUsageData && (
-                  <div className="ml-auto bg-gradient-to-r from-purple-100 to-pink-100 px-2 py-1 rounded-full border border-purple-200">
+                  <Button
+                    onClick={() => window.open('https://buy.stripe.com/test_28og0M1gg9Xh9eU7ss', '_blank')}
+                    variant="outline"
+                    size="sm"
+                    className="ml-auto bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 border-purple-200 hover:border-purple-300 transition-all duration-200"
+                    title="Click to purchase more AI prompts ($2.99 for 100 prompts)"
+                  >
                     <span className="text-xs font-medium text-purple-700">
                       ✨ {promptUsageData.promptsRemaining}/100
                     </span>
-                  </div>
+                  </Button>
                 )}
                 {photos.length > 0 && (
                   <Button 
