@@ -111,15 +111,14 @@ export default function EnhancedDashboard() {
   
   const user = userResponse?.user;
   
-  // Determine if this is a demo/test user (anyone with "test" in username/email)
-  const isTestUser = user?.username?.toLowerCase().includes('test') || 
-                     user?.email?.toLowerCase().includes('test') ||
-                     user?.username === 'djfluent'; // Include djfluent as demo user
+  // Check if demo mode is enabled via URL parameter
+  const urlParams = new URLSearchParams(window.location.search);
+  const isDemoMode = urlParams.get('demo') === 'true';
   
-  // Use Emma's demo data for test users, real data for others
-  const stats = isTestUser ? emmaDemoStats : (statsResponse?.stats || {});
-  const entries = isTestUser ? emmaDemoEntries : (entriesResponse || []);
-  const userAchievements = isTestUser ? emmaDemoAchievements : (achievementsResponse?.achievements || []);
+  // Use Emma's demo data when ?demo=true, real data otherwise
+  const stats = isDemoMode ? emmaDemoStats : (statsResponse?.stats || {});
+  const entries = isDemoMode ? emmaDemoEntries : (entriesResponse || []);
+  const userAchievements = isDemoMode ? emmaDemoAchievements : (achievementsResponse?.achievements || []);
 
   const handleSaveEntry = (entryData: any) => {
     console.log('Saving entry:', entryData);
@@ -156,10 +155,10 @@ export default function EnhancedDashboard() {
       ...entry,
       date: date,
       createdAt: date.toISOString(),
-      photos: isTestUser && index === 1 ? ["photo1.jpg", "photo2.jpg"] : [], // Add photos for demo user
+      photos: isDemoMode && index === 1 ? ["photo1.jpg", "photo2.jpg"] : [], // Add photos for demo mode
       isPinned: index === 0, // Pin the first entry
       isPrivate: index === 3, // Make one entry private
-      tags: isTestUser ? ["mood", "reflection", "daily"] : (entry.tags || [])
+      tags: isDemoMode ? ["mood", "reflection", "daily"] : (entry.tags || [])
     };
   });
 
@@ -188,7 +187,7 @@ export default function EnhancedDashboard() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-3"
           >
-            Welcome back, {user?.username || 'User'}! ✨
+            Welcome back, {isDemoMode ? 'Emma' : (user?.username || 'User')}! ✨
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
