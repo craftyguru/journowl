@@ -15,11 +15,11 @@ import EnhancedDashboard from "@/components/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
 
 function App() {
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "demo">("demo");
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "demo" | "landing">("landing");
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   
   const handleNavigate = (view: string) => {
-    if (view === "dashboard" || view === "insights" || view === "demo") {
+    if (view === "dashboard" || view === "insights" || view === "demo" || view === "landing") {
       setCurrentView(view);
     }
   };
@@ -34,34 +34,96 @@ function App() {
     setCurrentView("demo");
   };
 
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(false); // Start with demo mode
+  const handleBackToLanding = () => {
+    setSelectedAccount(null);
+    setCurrentView("landing");
+  };
+
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Check auth status on load
 
   const handleAuthenticated = () => {
     setIsAuthenticated(true);
   };
 
+  // Check authentication status on app load
+  useEffect(() => {
+    getCurrentUser()
+      .then(() => setIsAuthenticated(true))
+      .catch(() => setIsAuthenticated(false));
+  }, []);
+
   if (isAuthenticated === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
       </div>
     );
   }
 
+  // Landing page for new users
+  if (!isAuthenticated && currentView === "landing") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <LandingPage 
+              onGetStarted={() => setCurrentView("auth")} 
+              onTryDemo={() => setCurrentView("demo")}
+            />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  // Authentication page
+  if (!isAuthenticated && currentView === "auth") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+              <div className="fixed top-4 left-4 z-50">
+                <button
+                  onClick={() => setCurrentView("landing")}
+                  className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-white hover:bg-white/20 transition-all"
+                >
+                  ← Back to Home
+                </button>
+              </div>
+              <AuthPage onAuthenticated={handleAuthenticated} />
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
   // Demo mode - show account selector or demo dashboards
-  if (!isAuthenticated) {
-    if (currentView === "demo" && !selectedAccount) {
-      return (
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider>
-            <TooltipProvider>
-              <Toaster />
+  if (!isAuthenticated && currentView === "demo" && !selectedAccount) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+              <div className="fixed top-4 left-4 z-50">
+                <button
+                  onClick={() => setCurrentView("landing")}
+                  className="px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-white hover:bg-white/20 transition-all"
+                >
+                  ← Back to Home
+                </button>
+              </div>
               <AccountSelector onSelectAccount={handleSelectAccount} />
-            </TooltipProvider>
-          </ThemeProvider>
-        </QueryClientProvider>
-      );
-    }
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
 
     if (selectedAccount) {
       return (
