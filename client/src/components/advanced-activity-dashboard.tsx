@@ -134,17 +134,17 @@ export default function AdvancedActivityDashboard({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="mobile-spacing space-y-4 sm:space-y-6">
       {/* Activity Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-200">
-          <CardContent className="p-4">
+          <CardContent className="p-3 sm:p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-blue-600">Total Activity Today</p>
-                <p className="text-2xl font-bold text-blue-700">{activityStats.totalToday}</p>
+                <p className="text-xs sm:text-sm font-medium text-blue-600">Total Activity Today</p>
+                <p className="text-lg sm:text-2xl font-bold text-blue-700">{activityStats.totalToday}</p>
               </div>
-              <Activity className="h-8 w-8 text-blue-600" />
+              <Activity className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
             </div>
           </CardContent>
         </Card>

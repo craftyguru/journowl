@@ -210,44 +210,47 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 p-2 sm:p-4 lg:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8 flex justify-between items-center">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-              🦉 JournOwl Admin Dashboard
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300">
-              Welcome back, {user?.username?.replace('_Admin', '') || 'Admin'}! Manage your wise journaling community
-            </p>
+        <div className="mb-4 sm:mb-6 lg:mb-8">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-1 sm:mb-2">
+                🦉 JournOwl Admin Dashboard
+              </h1>
+              <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                Welcome back, {user?.username?.replace('_Admin', '') || 'Admin'}! Manage your wise journaling community
+              </p>
+            </div>
+            <Button 
+              variant="outline" 
+              onClick={async () => {
+                try {
+                  await fetch('/api/auth/logout', { method: 'POST' });
+                  window.location.href = '/';
+                } catch (e) {
+                  console.error('Logout failed:', e);
+                  window.location.href = '/';
+                }
+              }}
+              className="border-red-300 text-red-600 hover:bg-red-50 w-full sm:w-auto"
+              size="sm"
+            >
+              Logout
+            </Button>
           </div>
-          <Button 
-            variant="outline" 
-            onClick={async () => {
-              try {
-                await fetch('/api/auth/logout', { method: 'POST' });
-                window.location.href = '/';
-              } catch (e) {
-                console.error('Logout failed:', e);
-                window.location.href = '/';
-              }
-            }}
-            className="border-red-300 text-red-600 hover:bg-red-50"
-          >
-            Logout
-          </Button>
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8">
           <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-              <Users className="h-4 w-4 text-purple-600" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium">Total Users</CardTitle>
+              <Users className="h-3 w-3 sm:h-4 sm:w-4 text-purple-600" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-purple-600">{analytics.totalUsers || 0}</div>
+            <CardContent className="pt-1 sm:pt-2">
+              <div className="text-lg sm:text-2xl font-bold text-purple-600">{analytics.totalUsers || 0}</div>
             </CardContent>
           </Card>
 

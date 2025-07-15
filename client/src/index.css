@@ -2,6 +2,154 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile-First Responsive Design */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Mobile optimizations */
+  html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+
+  /* Touch targets for mobile */
+  button, a, input, select, textarea {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent zoom on input focus (iOS) */
+  input, select, textarea {
+    font-size: 16px;
+  }
+
+  /* Mobile-friendly scrollbars */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+}
+
+/* Mobile utility classes */
+@layer utilities {
+  .mobile-safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .mobile-container {
+    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+  }
+
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;
+  }
+
+  .mobile-card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4;
+  }
+
+  .mobile-button {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 min-h-[44px] flex items-center justify-center;
+  }
+
+  .mobile-text-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .mobile-text-base {
+    @apply text-base sm:text-lg;
+  }
+
+  .mobile-text-lg {
+    @apply text-lg sm:text-xl lg:text-2xl;
+  }
+
+  .mobile-text-xl {
+    @apply text-xl sm:text-2xl lg:text-3xl;
+  }
+
+  .mobile-spacing {
+    @apply space-y-4 sm:space-y-6 lg:space-y-8;
+  }
+
+  /* Hide scrollbars but keep functionality */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Mobile-specific animations */
+@layer components {
+  .mobile-fade-in {
+    animation: mobileSlideIn 0.3s ease-out;
+  }
+
+  @keyframes mobileSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .mobile-bounce {
+    animation: mobileBounce 0.6s ease-out;
+  }
+
+  @keyframes mobileBounce {
+    0%, 20%, 53%, 80%, 100% {
+      transform: translate3d(0,0,0);
+    }
+    40%, 43% {
+      transform: translate3d(0,-8px,0);
+    }
+    70% {
+      transform: translate3d(0,-4px,0);
+    }
+    90% {
+      transform: translate3d(0,-2px,0);
+    }
+  }
+}
+
+/* Mobile dark mode optimizations */
+@media (prefers-color-scheme: dark) {
+  .dark-mobile {
+    @apply bg-gray-900 text-white;
+  }
+}
+
 /* Custom Font Families */
 .font-montserrat { font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
 .font-poppins { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }

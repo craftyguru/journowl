@@ -245,7 +245,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative text-center bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-purple-500/20 overflow-hidden"
+        className="relative text-center bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-purple-500/20 overflow-hidden"
       >
         {/* Animated border effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-3xl blur-sm animate-pulse"></div>
@@ -254,7 +254,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-3"
+            className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-2 sm:mb-3"
           >
             Welcome back to JournOwl, {user?.username || 'User'}! 🦉✨
           </motion.h1>
@@ -262,7 +262,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="text-gray-300 text-lg"
+            className="text-gray-300 text-sm sm:text-base lg:text-lg"
           >
             Ready to gain wisdom through your journaling journey? 🦉
           </motion.p>
@@ -271,7 +271,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="flex items-center justify-center gap-3 mt-6"
+            className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mt-4 sm:mt-6"
           >
             <div className="px-6 py-3 bg-gradient-to-r from-purple-500/80 to-pink-500/80 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-purple-300/30 hover:scale-105 transition-transform">
               Level {user?.level || 1} - {user?.level >= 10 ? 'Expert Writer' : 'Budding Writer'} ✨
@@ -288,7 +288,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-4 gap-6"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6"
       >
         <motion.div
           whileHover={{ scale: 1.05, rotateY: 5 }}

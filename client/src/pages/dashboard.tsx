@@ -69,9 +69,9 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="mobile-container mobile-safe-area py-4 sm:py-6 lg:py-8">
       {/* Welcome Section */}
-      <div className="mb-8 animate-fade-in">
+      <div className="mb-4 sm:mb-6 lg:mb-8 animate-fade-in mobile-fade-in">
         <Card className="gradient-bg text-white relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>

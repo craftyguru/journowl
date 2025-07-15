@@ -37,29 +37,29 @@ const testAccounts = [
 
 export default function AccountSelector({ onSelectAccount }: AccountSelectorProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center mobile-safe-area p-3 sm:p-6">
       <div className="max-w-6xl w-full">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-6 sm:mb-8 lg:mb-12"
         >
-          <div className="inline-flex items-center gap-3 mb-4">
-            <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl">
-              <Sparkles className="w-8 h-8 text-white" />
+          <div className="flex flex-col sm:inline-flex sm:flex-row items-center gap-2 sm:gap-3 mb-3 sm:mb-4">
+            <div className="p-2 sm:p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl sm:rounded-2xl">
+              <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Choose Your Experience
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent text-center">
+              🦉 Choose Your JournOwl Experience
             </h1>
           </div>
-          <p className="text-gray-300 text-lg">
-            Select a test account to explore the complete MoodJournal experience
+          <p className="text-gray-300 text-sm sm:text-base lg:text-lg px-4">
+            Select a demo account to explore the complete JournOwl experience
           </p>
         </motion.div>
 
         {/* Account Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto">
           {testAccounts.map((account, index) => (
             <motion.div
               key={account.type}
