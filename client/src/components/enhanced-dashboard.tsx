@@ -4,10 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import InteractiveJournal from "./interactive-journal";
 import SmartJournalEditor from "./smart-journal-editor";
@@ -24,6 +29,10 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
+  const [showNewGoalModal, setShowNewGoalModal] = useState(false);
+  const [showGoalDetailsModal, setShowGoalDetailsModal] = useState(false);
+  const [showEditGoalModal, setShowEditGoalModal] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState<any>(null);
   
   // Fetch real user data instead of hardcoded demo data
   const { data: userResponse } = useQuery({
@@ -1464,7 +1473,10 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   <h2 className="text-3xl font-bold">🎯 Goals & Tracking</h2>
                   <p className="text-emerald-100 text-lg">Stay motivated with personalized challenges</p>
                 </div>
-                <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                <Button 
+                  onClick={() => setShowNewGoalModal(true)}
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                >
                   <Plus className="w-4 h-4 mr-2" />
                   New Goal
                 </Button>
@@ -1601,10 +1613,26 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     {/* Goal Actions */}
                     <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="text-xs">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-xs"
+                          onClick={() => {
+                            setSelectedGoal(goal);
+                            setShowGoalDetailsModal(true);
+                          }}
+                        >
                           📊 View Details
                         </Button>
-                        <Button variant="outline" size="sm" className="text-xs">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-xs"
+                          onClick={() => {
+                            setSelectedGoal(goal);
+                            setShowEditGoalModal(true);
+                          }}
+                        >
                           ✏️ Edit Goal
                         </Button>
                       </div>
@@ -2059,6 +2087,324 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
           />
         )}
       </AnimatePresence>
+
+      {/* New Goal Modal */}
+      <Dialog open={showNewGoalModal} onOpenChange={setShowNewGoalModal}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-emerald-700">
+              <Target className="w-5 h-5" />
+              Create New Goal
+            </DialogTitle>
+          </DialogHeader>
+          <NewGoalForm onClose={() => setShowNewGoalModal(false)} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Goal Details Modal */}
+      <Dialog open={showGoalDetailsModal} onOpenChange={setShowGoalDetailsModal}>
+        <DialogContent className="sm:max-w-[700px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-blue-700">
+              <TrendingUp className="w-5 h-5" />
+              Goal Details
+            </DialogTitle>
+          </DialogHeader>
+          {selectedGoal && <GoalDetailsView goal={selectedGoal} onClose={() => setShowGoalDetailsModal(false)} />}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Goal Modal */}
+      <Dialog open={showEditGoalModal} onOpenChange={setShowEditGoalModal}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-purple-700">
+              <Target className="w-5 h-5" />
+              Edit Goal
+            </DialogTitle>
+          </DialogHeader>
+          {selectedGoal && <EditGoalForm goal={selectedGoal} onClose={() => setShowEditGoalModal(false)} />}
+        </DialogContent>
+      </Dialog>
     </div>
+  );
+}
+
+// New Goal Form Component
+function NewGoalForm({ onClose }: { onClose: () => void }) {
+  const [goalType, setGoalType] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [targetValue, setTargetValue] = useState("");
+  const [difficulty, setDifficulty] = useState("");
+
+  const trackableGoalTypes = [
+    { value: "streak", label: "📅 Daily Writing Streak", description: "Track consecutive days of journaling", unit: "days" },
+    { value: "words", label: "📝 Word Count Goal", description: "Reach a specific word count", unit: "words" },
+    { value: "entries", label: "📚 Journal Entries", description: "Write a certain number of entries", unit: "entries" },
+    { value: "mood", label: "😊 Mood Tracking", description: "Track mood for consecutive days", unit: "days" },
+    { value: "photos", label: "📸 Photo Journaling", description: "Add photos to journal entries", unit: "photos" },
+    { value: "reflection", label: "🧘 Deep Reflection", description: "Write thoughtful, reflective entries", unit: "entries" },
+    { value: "creative", label: "🎨 Creative Writing", description: "Focus on creative expression", unit: "entries" },
+    { value: "gratitude", label: "🙏 Gratitude Practice", description: "Write gratitude-focused entries", unit: "entries" },
+    { value: "reading_time", label: "⏰ Reading Time", description: "Spend time reading past entries", unit: "minutes" },
+    { value: "consistency", label: "⚡ Weekly Consistency", description: "Write at least X times per week", unit: "weeks" }
+  ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically make an API call to create the goal
+    console.log("Creating goal:", { goalType, title, description, targetValue, difficulty });
+    onClose();
+  };
+
+  const selectedGoalType = trackableGoalTypes.find(t => t.value === goalType);
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="goalType">Goal Type</Label>
+          <Select value={goalType} onValueChange={setGoalType}>
+            <SelectTrigger>
+              <SelectValue placeholder="Choose a trackable goal type..." />
+            </SelectTrigger>
+            <SelectContent>
+              {trackableGoalTypes.map((type) => (
+                <SelectItem key={type.value} value={type.value}>
+                  <div className="flex flex-col">
+                    <span>{type.label}</span>
+                    <span className="text-xs text-gray-500">{type.description}</span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {selectedGoalType && (
+            <p className="text-sm text-gray-600 mt-1">
+              💡 This goal will track: {selectedGoalType.description}
+            </p>
+          )}
+        </div>
+
+        <div>
+          <Label htmlFor="title">Goal Title</Label>
+          <Input
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder={selectedGoalType ? `My ${selectedGoalType.label.split(' ').slice(1).join(' ')} Goal` : "Enter goal title..."}
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="description">Description</Label>
+          <Textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Describe what you want to achieve and why it matters to you..."
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="targetValue">Target ({selectedGoalType?.unit || "value"})</Label>
+            <Input
+              id="targetValue"
+              type="number"
+              value={targetValue}
+              onChange={(e) => setTargetValue(e.target.value)}
+              placeholder={goalType === "streak" ? "7" : goalType === "words" ? "1000" : goalType === "entries" ? "10" : "Enter target..."}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="difficulty">Difficulty</Label>
+            <Select value={difficulty} onValueChange={setDifficulty}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose difficulty..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="beginner">🟢 Beginner</SelectItem>
+                <SelectItem value="intermediate">🟡 Intermediate</SelectItem>
+                <SelectItem value="advanced">🔴 Advanced</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button type="button" variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button type="submit" disabled={!goalType || !title || !targetValue || !difficulty} className="bg-emerald-500 hover:bg-emerald-600">
+          <Plus className="w-4 h-4 mr-2" />
+          Create Goal
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+// Goal Details View Component
+function GoalDetailsView({ goal, onClose }: { goal: any; onClose: () => void }) {
+  const progressPercentage = Math.round((goal.currentValue / goal.targetValue) * 100);
+  
+  return (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">
+            {goal.type === 'streak' ? '🔥' : goal.type === 'words' ? '📝' : goal.type === 'mood' ? '😊' : '🎯'}
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-blue-800">{goal.title}</h3>
+            <p className="text-blue-600">{goal.description}</p>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="text-2xl font-bold text-blue-700">{goal.currentValue}</div>
+            <div className="text-sm text-blue-600">Current Progress</div>
+          </div>
+          <div className="bg-white rounded-lg p-3 border border-blue-200">
+            <div className="text-2xl font-bold text-blue-700">{goal.targetValue}</div>
+            <div className="text-sm text-blue-600">Target Goal</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-4">
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <span className="font-medium">Progress</span>
+            <span className="text-lg font-bold text-blue-600">{progressPercentage}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-4">
+            <div 
+              className="bg-gradient-to-r from-blue-400 to-cyan-500 h-full rounded-full transition-all duration-500"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="text-sm text-gray-600">Difficulty</div>
+            <Badge className={`mt-1 ${
+              goal.difficulty === 'beginner' ? 'bg-green-500' :
+              goal.difficulty === 'intermediate' ? 'bg-blue-500' : 'bg-purple-500'
+            } text-white`}>
+              {goal.difficulty.toUpperCase()}
+            </Badge>
+          </div>
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="text-sm text-gray-600">Remaining</div>
+            <div className="font-semibold">{goal.targetValue - goal.currentValue} to go</div>
+          </div>
+        </div>
+
+        <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
+          <h4 className="font-semibold text-yellow-800 mb-2">💡 AI Insights</h4>
+          <p className="text-sm text-yellow-700">
+            {progressPercentage >= 80 ? "You're almost there! Keep up the excellent momentum." :
+             progressPercentage >= 50 ? "Great progress! You're halfway to your goal." :
+             progressPercentage >= 25 ? "Good start! Stay consistent to build momentum." :
+             "Every journey begins with a single step. You've got this!"}
+          </p>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button onClick={onClose}>Close</Button>
+      </DialogFooter>
+    </div>
+  );
+}
+
+// Edit Goal Form Component
+function EditGoalForm({ goal, onClose }: { goal: any; onClose: () => void }) {
+  const [title, setTitle] = useState(goal.title);
+  const [description, setDescription] = useState(goal.description);
+  const [targetValue, setTargetValue] = useState(goal.targetValue.toString());
+  const [currentValue, setCurrentValue] = useState(goal.currentValue.toString());
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically make an API call to update the goal
+    console.log("Updating goal:", { title, description, targetValue, currentValue });
+    onClose();
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="editTitle">Goal Title</Label>
+          <Input
+            id="editTitle"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="editDescription">Description</Label>
+          <Textarea
+            id="editDescription"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="editCurrentValue">Current Progress</Label>
+            <Input
+              id="editCurrentValue"
+              type="number"
+              value={currentValue}
+              onChange={(e) => setCurrentValue(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="editTargetValue">Target Value</Label>
+            <Input
+              id="editTargetValue"
+              type="number"
+              value={targetValue}
+              onChange={(e) => setTargetValue(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div className="text-sm text-blue-700">
+            <strong>Progress Preview:</strong> {Math.round((parseInt(currentValue) / parseInt(targetValue)) * 100)}% complete
+          </div>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button type="button" variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button type="submit" className="bg-purple-500 hover:bg-purple-600">
+          <CheckCircle className="w-4 h-4 mr-2" />
+          Update Goal
+        </Button>
+      </DialogFooter>
+    </form>
   );
 }
