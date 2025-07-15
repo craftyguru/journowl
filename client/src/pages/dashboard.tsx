@@ -59,6 +59,13 @@ export default function Dashboard() {
     try {
       console.log('Saving entry:', entryData);
       
+      // Check if user is authenticated first
+      if (!user) {
+        console.error('User not authenticated');
+        alert('Please refresh the page and log in again');
+        return;
+      }
+
       // Remove unnecessary fields that might cause issues
       const cleanedData = {
         title: entryData.title || "Untitled Entry",
@@ -74,21 +81,37 @@ export default function Dashboard() {
         drawings: entryData.drawings || []
       };
 
+      console.log('Sending API request with data:', cleanedData);
+
+      let response;
       if (editingEntry) {
         // Update existing entry
-        await apiRequest("PUT", `/api/journal/entries/${editingEntry.id}`, cleanedData);
+        console.log('Updating existing entry:', editingEntry.id);
+        response = await apiRequest("PUT", `/api/journal/entries/${editingEntry.id}`, cleanedData);
       } else {
         // Create new entry
-        await apiRequest("POST", "/api/journal/entries", cleanedData);
+        console.log('Creating new entry');
+        response = await apiRequest("POST", "/api/journal/entries", cleanedData);
       }
+
+      console.log('API response:', response);
 
       // Invalidate and refetch the journal entries
       queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       
+      console.log('Entry saved successfully, closing journal');
       closeJournal();
     } catch (error) {
       console.error('Error saving entry:', error);
+      
+      // Show user-friendly error message
+      if (error.message.includes('401')) {
+        alert('Authentication expired. Please refresh the page and log in again.');
+      } else {
+        alert(`Failed to save entry: ${error.message}`);
+      }
+      
       // Keep the journal open so user can try again
     }
   };
