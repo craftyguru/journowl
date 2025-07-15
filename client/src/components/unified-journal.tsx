@@ -1517,8 +1517,17 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     <p className="text-xs text-gray-500">Photo analyzer • Idea generator</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm" onClick={() => setShowAiChat(false)}>
-                  <X className="w-4 h-4" />
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setShowAiChat(false)}
+                  className="text-red-500 hover:text-red-600 hover:bg-red-50 transition-colors duration-200"
+                  style={{ 
+                    textShadow: '0 0 8px #ef4444, 0 0 12px #ef4444',
+                    filter: 'brightness(1.2)'
+                  }}
+                >
+                  <X className="w-5 h-5 font-bold" />
                 </Button>
               </div>
 
