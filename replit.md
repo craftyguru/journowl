@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack journaling application built with React and Express that allows users to write journal entries, track their mood, and gain insights from their writing patterns. The app includes gamification features with XP, levels, and achievements to encourage regular journaling.
+This is a comprehensive, multi-dashboard journaling application that provides personalized experiences for different user types. Features include animated backgrounds, AI-powered insights, comprehensive analytics, role-based dashboards, and an inviting user interface designed to encourage daily journaling habits.
 
 ## User Preferences
 
@@ -30,11 +30,21 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 
 ## Key Components
 
-### Database Schema
-- **Users**: Stores user credentials, level, and XP
-- **Journal Entries**: Contains journal content, mood, word count, and timestamps
-- **Achievements**: Tracks unlocked achievements for gamification
-- **User Stats**: Aggregates user statistics like total entries, streaks, and word counts
+### Multi-Dashboard Architecture
+- **Admin Dashboard**: Comprehensive analytics, user management, live activity feeds, AI insights, and platform metrics
+- **Professional Dashboard**: Advanced features with analytics, goal tracking, achievements, mood trends, and personalized AI insights  
+- **Kid Dashboard**: Colorful, safe interface with fun prompts, badges, simplified stats, and encouraging messaging
+- **Account Selector**: Beautiful demo interface showcasing all dashboard types with live previews
+
+### Enhanced Database Schema
+- **Users**: Extended with roles (admin/user/kid), themes, avatars, bios, and quotes
+- **Journal Entries**: Content, mood tracking, word counts, and timestamps
+- **Achievements**: Comprehensive badge system with rarity levels and unlock conditions
+- **User Stats**: Detailed analytics including streaks, word counts, and progress metrics
+- **Goals**: Personal goal setting and tracking system
+- **Mood Trends**: Time-series mood data for analytics
+- **Journal Prompts**: Categorized prompts with difficulty levels and kid-friendly flags
+- **Admin Analytics**: Platform-wide statistics and insights
 
 ### Authentication System
 - Session-based authentication using express-session

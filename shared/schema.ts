@@ -9,6 +9,11 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   level: integer("level").default(1),
   xp: integer("xp").default(0),
+  role: text("role").default("user"), // "admin", "user", "kid"
+  avatar: text("avatar"),
+  theme: text("theme").default("purple"),
+  bio: text("bio"),
+  favoriteQuote: text("favorite_quote"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -44,6 +49,47 @@ export const userStats = pgTable("user_stats", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+export const moodTrends = pgTable("mood_trends", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  date: timestamp("date").defaultNow().notNull(),
+  mood: text("mood").notNull(),
+  value: integer("value").notNull(), // 1-5 scale
+});
+
+export const goals = pgTable("goals", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  title: text("title").notNull(),
+  description: text("description"),
+  targetValue: integer("target_value").notNull(),
+  currentValue: integer("current_value").default(0),
+  type: text("type").notNull(), // "streak", "entries", "words"
+  isCompleted: boolean("is_completed").default(false),
+  deadline: timestamp("deadline"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const journalPrompts = pgTable("journal_prompts", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  category: text("category").notNull(), // "reflection", "gratitude", "creativity", "mindfulness"
+  difficulty: text("difficulty").notNull(), // "beginner", "intermediate", "advanced"
+  tags: json("tags").$type<string[]>().default([]),
+  isKidFriendly: boolean("is_kid_friendly").default(false),
+});
+
+export const adminAnalytics = pgTable("admin_analytics", {
+  id: serial("id").primaryKey(),
+  totalUsers: integer("total_users").default(0),
+  totalEntries: integer("total_entries").default(0),
+  activeUsers: integer("active_users").default(0),
+  newUsersToday: integer("new_users_today").default(0),
+  averageWordsPerEntry: integer("average_words_per_entry").default(0),
+  date: timestamp("date").defaultNow().notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
   username: true,
@@ -63,6 +109,23 @@ export const insertAchievementSchema = createInsertSchema(achievements).pick({
   icon: true,
 });
 
+export const insertGoalSchema = createInsertSchema(goals).pick({
+  title: true,
+  description: true,
+  targetValue: true,
+  type: true,
+  deadline: true,
+});
+
+export const insertJournalPromptSchema = createInsertSchema(journalPrompts).pick({
+  title: true,
+  content: true,
+  category: true,
+  difficulty: true,
+  tags: true,
+  isKidFriendly: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type JournalEntry = typeof journalEntries.$inferSelect;
@@ -70,3 +133,9 @@ export type InsertJournalEntry = z.infer<typeof insertJournalEntrySchema>;
 export type Achievement = typeof achievements.$inferSelect;
 export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
 export type UserStats = typeof userStats.$inferSelect;
+export type Goal = typeof goals.$inferSelect;
+export type InsertGoal = z.infer<typeof insertGoalSchema>;
+export type JournalPrompt = typeof journalPrompts.$inferSelect;
+export type InsertJournalPrompt = z.infer<typeof insertJournalPromptSchema>;
+export type MoodTrend = typeof moodTrends.$inferSelect;
+export type AdminAnalytics = typeof adminAnalytics.$inferSelect;

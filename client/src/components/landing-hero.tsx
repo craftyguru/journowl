@@ -67,6 +67,17 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             <span className="animate-pulse">Mind & Mood</span>
           </h1>
           
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="flex -space-x-2">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold border-2 border-white">👩‍💼</div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center text-white font-bold border-2 border-white">👩‍💻</div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 flex items-center justify-center text-white font-bold border-2 border-white">🧒</div>
+            </div>
+            <div className="text-gray-300 text-sm">
+              <span className="text-purple-400 font-semibold">2,847</span> writers already transforming their lives
+            </div>
+          </div>
+          
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
             Discover the power of journaling with AI insights, mood tracking, and gamified progress. 
             Your personal wellness companion awaits.
@@ -78,7 +89,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+          className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
         >
           <Button
             onClick={onGetStarted}
@@ -93,8 +104,31 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             className="px-8 py-4 text-lg font-semibold border-2 border-purple-500/50 text-purple-300 hover:bg-purple-500/10 rounded-xl backdrop-blur-sm transition-all duration-300"
           >
             <Heart className="w-5 h-5 mr-2" />
-            Learn More
+            View Live Demos
           </Button>
+        </motion.div>
+
+        {/* Live Demo Preview */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.3 }}
+          className="mb-16"
+        >
+          <div className="text-center mb-6">
+            <p className="text-gray-300 text-lg mb-4">See it in action - Choose your experience:</p>
+            <div className="flex justify-center gap-4 flex-wrap">
+              <div className="px-6 py-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl text-purple-300 hover:bg-white/10 transition-all cursor-pointer">
+                👩‍💼 Admin Dashboard
+              </div>
+              <div className="px-6 py-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl text-emerald-300 hover:bg-white/10 transition-all cursor-pointer">
+                👩‍💻 Professional Writer
+              </div>
+              <div className="px-6 py-3 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl text-pink-300 hover:bg-white/10 transition-all cursor-pointer">
+                🧒 Kid-Friendly Mode
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         {/* Feature Cards */}
