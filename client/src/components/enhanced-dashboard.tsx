@@ -698,7 +698,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={280}>
-                      <AreaChart data={moodData}>
+                      <AreaChart data={[]}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                         <XAxis dataKey="day" stroke="#9CA3AF" />
                         <YAxis domain={[1, 5]} stroke="#9CA3AF" />
@@ -757,7 +757,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
-                      <AreaChart data={progressData}>
+                      <AreaChart data={[]}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" />
                         <XAxis dataKey="month" stroke="#059669" />
                         <YAxis stroke="#059669" />
@@ -1358,7 +1358,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
             {/* Active Goals */}
             <div className="space-y-6">
-              {goals.map((goal, index) => (
+              {[].map((goal, index) => (
                 <motion.div
                   key={goal.id}
                   initial={{ opacity: 0, x: -30 }}
