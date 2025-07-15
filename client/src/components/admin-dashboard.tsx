@@ -87,12 +87,12 @@ export default function AdminDashboard() {
       setLoading(true);
       
       // Load users
-      const usersRes = await apiRequest('/api/admin/users');
+      const usersRes = await fetch('/api/admin/users').then(r => r.json());
       setUsers(usersRes.users || []);
       
       // Load campaigns
       try {
-        const campaignsRes = await apiRequest('/api/admin/email-campaigns');
+        const campaignsRes = await fetch('/api/admin/email-campaigns').then(r => r.json());
         setCampaigns(campaignsRes.campaigns || []);
       } catch (e) {
         console.log('Failed to load campaigns:', e);
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
       
       // Load analytics
       try {
-        const analyticsRes = await apiRequest('/api/admin/analytics');
+        const analyticsRes = await fetch('/api/admin/analytics').then(r => r.json());
         setAnalytics(analyticsRes);
         setActivityLogs(analyticsRes.recentActivity || []);
       } catch (e) {
@@ -130,8 +130,9 @@ export default function AdminDashboard() {
         return;
       }
 
-      await apiRequest('/api/admin/email-campaigns', {
+      await fetch('/api/admin/email-campaigns', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(campaignForm)
       });
 
