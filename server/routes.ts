@@ -651,9 +651,69 @@ Current journal context:
   app.get("/api/admin/users", requireAdmin, async (req: any, res) => {
     try {
       const users = await storage.getAllUsers();
-      res.json({ users: users.map(u => ({ ...u, password: undefined })) });
+      
+      // Enhance users with comprehensive data
+      const enhancedUsers = await Promise.all(users.map(async (user) => {
+        try {
+          const stats = await storage.getUserStats(user.id);
+          const promptUsage = await storage.getUserPromptUsage(user.id);
+          
+          return {
+            ...user,
+            password: undefined, // Remove password from response
+            totalEntries: stats?.totalEntries || 0,
+            totalWords: stats?.totalWords || 0,
+            currentStreak: stats?.currentStreak || 0,
+            promptsRemaining: promptUsage.promptsRemaining,
+            promptsUsedThisMonth: promptUsage.promptsUsedThisMonth,
+            currentPlan: promptUsage.currentPlan,
+            storageUsedMB: user.storageUsedMB || 0,
+            storageLimit: user.storageLimit || 100
+          };
+        } catch (error) {
+          console.error(`Error getting user ${user.id} stats:`, error);
+          return {
+            ...user,
+            password: undefined,
+            totalEntries: 0,
+            totalWords: 0,
+            currentStreak: 0,
+            promptsRemaining: 100,
+            promptsUsedThisMonth: 0,
+            currentPlan: 'free',
+            storageUsedMB: 0,
+            storageLimit: 100
+          };
+        }
+      }));
+      
+      res.json({ users: enhancedUsers });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Reset user prompts to 100 for testing (admin only)
+  app.post("/api/admin/reset-prompts/:userId", requireAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      
+      // Reset prompts to 100 and usage to 0
+      await db.update(users).set({ 
+        promptsRemaining: 100,
+        promptsUsedThisMonth: 0,
+        lastUsageReset: new Date()
+      }).where(eq(users.id, parseInt(userId)));
+      
+      res.json({ 
+        success: true, 
+        message: "User prompts reset to 100",
+        promptsRemaining: 100,
+        promptsUsedThisMonth: 0
+      });
+    } catch (error: any) {
+      console.error("Error resetting prompts:", error);
+      res.status(500).json({ message: "Failed to reset prompts" });
     }
   });
 

@@ -21,7 +21,11 @@ import {
   TrendingUp,
   UserCheck,
   UserX,
-  Activity
+  Activity,
+  Sparkles,
+  Cloud,
+  Zap,
+  Crown
 } from "lucide-react";
 
 interface User {
@@ -303,29 +307,150 @@ export default function AdminDashboard() {
                 <CardDescription>View and manage all registered users</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-6">
                   {users.map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg bg-white/50 dark:bg-gray-700/50">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                          <div>
-                            <h3 className="font-semibold">{user.username}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
+                    <Card key={user.id} className="border-2 border-gray-200 dark:border-gray-700 bg-gradient-to-r from-white/90 to-gray-50/90 dark:from-gray-800/90 dark:to-gray-900/90">
+                      <CardContent className="p-6">
+                        {/* User Header */}
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                              {user.username?.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-bold text-gray-800 dark:text-white">{user.username}</h3>
+                              <p className="text-sm text-gray-600 dark:text-gray-400">{user.email}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Badge variant={user.role === 'admin' ? 'default' : user.currentPlan === 'pro' ? 'destructive' : 'secondary'} className="text-xs">
+                                  {user.role === 'admin' ? 'Admin' : user.currentPlan || 'Free'}
+                                </Badge>
+                                <span className="text-xs text-gray-500">Level {user.level} • {user.xp} XP</span>
+                              </div>
+                            </div>
                           </div>
-                          <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
-                            {user.role}
-                          </Badge>
+                          
+                          {/* Admin Actions */}
+                          <div className="flex gap-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={async () => {
+                                try {
+                                  const response = await fetch(`/api/admin/reset-prompts/${user.id}`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' }
+                                  });
+                                  const result = await response.json();
+                                  if (response.ok) {
+                                    toast({
+                                      title: "Success",
+                                      description: `Reset prompts for ${user.username}`,
+                                    });
+                                    loadAdminData(); // Refresh data
+                                  } else {
+                                    throw new Error(result.message);
+                                  }
+                                } catch (error: any) {
+                                  toast({
+                                    title: "Error",
+                                    description: error.message,
+                                    variant: "destructive"
+                                  });
+                                }
+                              }}
+                              className="text-purple-600 border-purple-300 hover:bg-purple-50"
+                            >
+                              <Zap className="w-3 h-3 mr-1" />
+                              Reset Prompts
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => {
+                                // Future: Add upgrade subscription functionality
+                                toast({
+                                  title: "Feature Coming Soon",
+                                  description: "Subscription management will be available soon",
+                                });
+                              }}
+                              className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                            >
+                              <Crown className="w-3 h-3 mr-1" />
+                              Manage Sub
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                          <span>Level {user.level}</span>
-                          <span>{user.xp} XP</span>
+
+                        {/* Usage Metrics */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                          {/* AI Prompts Usage */}
+                          <div className="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium text-purple-700 dark:text-purple-300">AI Prompts</span>
+                              <Sparkles className="w-4 h-4 text-purple-600" />
+                            </div>
+                            <div className="text-2xl font-bold text-purple-600 mb-1">
+                              {user.promptsRemaining || 0}/100
+                            </div>
+                            <div className="w-full bg-purple-200 dark:bg-purple-800 rounded-full h-2">
+                              <div
+                                className="bg-gradient-to-r from-purple-500 to-purple-600 h-2 rounded-full transition-all duration-500"
+                                style={{ width: `${Math.max(0, Math.min(100, ((user.promptsRemaining || 0) / 100) * 100))}%` }}
+                              ></div>
+                            </div>
+                            <div className="text-xs text-purple-600 mt-1">
+                              {user.promptsUsedThisMonth || 0} used this month
+                            </div>
+                          </div>
+
+                          {/* Storage Usage */}
+                          <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Storage</span>
+                              <Cloud className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <div className="text-2xl font-bold text-blue-600 mb-1">
+                              {user.storageUsedMB || 0}/{user.storageLimit || 100} MB
+                            </div>
+                            <div className="w-full bg-blue-200 dark:bg-blue-800 rounded-full h-2">
+                              <div
+                                className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-500"
+                                style={{ width: `${Math.max(0, Math.min(100, ((user.storageUsedMB || 0) / (user.storageLimit || 100)) * 100))}%` }}
+                              ></div>
+                            </div>
+                            <div className="text-xs text-blue-600 mt-1">
+                              {Math.round(100 - ((user.storageUsedMB || 0) / (user.storageLimit || 100)) * 100)}% available
+                            </div>
+                          </div>
+
+                          {/* Account Stats */}
+                          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium text-green-700 dark:text-green-300">Activity</span>
+                              <Activity className="w-4 h-4 text-green-600" />
+                            </div>
+                            <div className="text-2xl font-bold text-green-600 mb-1">
+                              {user.totalEntries || 0}
+                            </div>
+                            <div className="text-xs text-green-600">
+                              entries • {user.totalWords || 0} words
+                            </div>
+                            <div className="text-xs text-green-600 mt-1">
+                              {user.currentStreak || 0} day streak
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Account Details */}
+                        <div className="flex items-center gap-6 text-xs text-gray-500 pt-3 border-t border-gray-200 dark:border-gray-700">
                           <span>Joined {new Date(user.createdAt).toLocaleDateString()}</span>
                           {user.lastLoginAt && (
                             <span>Last active {new Date(user.lastLoginAt).toLocaleDateString()}</span>
                           )}
+                          <span>Subscription: {user.currentPlan || 'Free'}</span>
                         </div>
-                      </div>
-                    </div>
+                      </CardContent>
+                    </Card>
                   ))}
                 </div>
               </CardContent>
