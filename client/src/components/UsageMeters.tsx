@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Sparkles, Cloud, Zap, Crown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -198,9 +199,17 @@ export default function UsageMeters() {
       </div>
 
       {/* Subscription Management Modal */}
-      {showSubscriptionModal && (
-        <SubscriptionManager onClose={() => setShowSubscriptionModal(false)} />
-      )}
+      <Dialog open={showSubscriptionModal} onOpenChange={setShowSubscriptionModal}>
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-2xl">
+              <Crown className="w-6 h-6 text-purple-600" />
+              Upgrade Your Subscription
+            </DialogTitle>
+          </DialogHeader>
+          <SubscriptionManager onClose={() => setShowSubscriptionModal(false)} />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

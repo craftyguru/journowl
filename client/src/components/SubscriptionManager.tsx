@@ -270,14 +270,86 @@ export default function SubscriptionManager() {
 
   return (
     <>
-      {/* Subscription Upgrade Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl p-6 mb-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold mb-2">Upgrade Your Plan</h2>
-            <p className="text-purple-100">Get more AI prompts and storage space</p>
-          </div>
-          <Crown className="w-12 h-12 text-yellow-300" />
+      {/* Subscription Tier Selection */}
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Choose Your Plan</h2>
+          <p className="text-gray-600">Upgrade to unlock more AI prompts and storage</p>
+        </div>
+
+        {/* Billing Toggle */}
+        <div className="flex items-center justify-center gap-4 p-1 bg-gray-100 rounded-lg">
+          <span className={`text-sm font-medium ${!isYearly ? 'text-gray-900' : 'text-gray-500'}`}>Monthly</span>
+          <Switch checked={isYearly} onCheckedChange={setIsYearly} />
+          <span className={`text-sm font-medium ${isYearly ? 'text-gray-900' : 'text-gray-500'}`}>
+            Yearly
+            <Badge variant="secondary" className="ml-2 bg-green-100 text-green-700">Save 17%</Badge>
+          </span>
+        </div>
+
+        {/* Tier Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {subscriptionTiers.map((tier) => (
+            <motion.div
+              key={tier.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              whileHover={{ scale: 1.02 }}
+              className={`relative rounded-2xl p-6 border-2 cursor-pointer transition-all ${
+                tier.popular 
+                  ? 'border-purple-500 bg-gradient-to-b from-purple-50 to-pink-50 shadow-xl' 
+                  : 'border-gray-200 hover:border-gray-300 bg-white'
+              }`}
+              onClick={() => handleTierSelect(tier)}
+            >
+              {tier.popular && (
+                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                  <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1">
+                    Most Popular
+                  </Badge>
+                </div>
+              )}
+              
+              <div className="text-center">
+                <div className="text-4xl mb-2">{tier.icon}</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">{tier.name}</h3>
+                <div className="mb-4">
+                  <span className="text-3xl font-bold text-gray-900">
+                    ${isYearly ? tier.yearlyPrice : tier.monthlyPrice}
+                  </span>
+                  <span className="text-gray-500">
+                    {isYearly ? '/year' : '/month'}
+                  </span>
+                  {isYearly && tier.yearlyPrice < tier.monthlyPrice * 12 && (
+                    <div className="text-sm text-green-600 font-medium">
+                      Save ${(tier.monthlyPrice * 12 - tier.yearlyPrice).toFixed(2)} per year!
+                    </div>
+                  )}
+                </div>
+                
+                <ul className="space-y-3 text-sm text-gray-600 mb-6">
+                  {tier.features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+                
+                <Button 
+                  className={`w-full ${
+                    tier.popular 
+                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700' 
+                      : 'bg-gray-900 hover:bg-gray-800'
+                  }`}
+                  onClick={() => handleTierSelect(tier)}
+                >
+                  {subscription?.tier === tier.id ? 'Current Plan' : 'Select Plan'}
+                </Button>
+              </div>
+            </motion.div>
+          ))}
         </div>
       </div>
 
