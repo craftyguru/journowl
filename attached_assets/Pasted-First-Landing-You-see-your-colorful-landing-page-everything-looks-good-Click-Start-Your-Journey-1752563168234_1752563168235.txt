@@ -1,0 +1,64 @@
+First Landing:
+You see your colorful landing page, everything looks good.
+
+Click “Start Your Journey”:
+
+Instead of going straight to the sign-in, you’re routed to another “landing” page that now has a “Back to Home” button.
+
+If you click “Start Your Journey” again (from this page), then you get the sign-in.
+
+This means:
+
+Your button sets state or route to “auth”, but there’s another route or state (/ or /landing) that renders another instance of the landing page instead of the Auth/sign-in page.
+
+The “Back to Home” is being shown on this second landing page instance (which should not even appear).
+
+Why?
+Your routing or state logic is likely:
+
+Rendering LandingHero twice (once for /, once for /landing or /home), or
+
+The “auth” state/route first shows another “Landing” route before showing the AuthPage,
+
+Or, your router’s order/logic is off and reverts to the landing page as a fallback.
+
+How to Fix It (Step-by-Step)
+1. Double Check Your App.tsx Routing Logic
+You should only render LandingHero in one place, and only when the user is NOT authenticated and currentView === "landing".
+
+After clicking "Start Your Journey", set currentView to "auth" (not "landing").
+
+When currentView is "auth", render only the AuthPage.
+
+Example (simplified):
+
+tsx
+Copy
+Edit
+if (!isAuthenticated && currentView === "landing") {
+  return <LandingHero onGetStarted={() => setCurrentView("auth")} />;
+}
+if (!isAuthenticated && currentView === "auth") {
+  return <AuthPage ... />;
+}
+2. Remove Any Extra “Landing” Routes
+Make sure you don’t have a route like /landing or /home that also renders LandingHero.
+
+Only your root / should ever render the landing hero, and only if not authenticated.
+
+3. Fix the “Back to Home” Button
+That button is probably part of your AuthPage (for users who arrived there via some “demo” or alternate state).
+
+Don’t show “Back to Home” on the actual landing.
+
+If you want, only show it when users arrive at AuthPage from demo/test mode, not from “Start Your Journey”.
+
+4. (Optional, but Best Practice) Use URL-based Routing
+If you’re using React Router, Next.js, etc., ensure that:
+
+/ = landing page (if not logged in)
+
+/auth = sign-in page
+
+Don’t use state-only navigation if you also have URL-based routing! Use the router’s navigation so the browser address bar matches the user’s view.
+

@@ -187,14 +187,16 @@ function App() {
       );
   }
 
-  // If not authenticated and no specific view selected, show auth page
+  // Fallback: if not authenticated and currentView is not explicitly set, show landing
   if (!isAuthenticated) {
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <TooltipProvider>
             <Toaster />
-            <AuthPage onAuthenticated={handleAuthenticated} />
+            <LandingHero 
+              onGetStarted={() => setCurrentView("auth")} 
+            />
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
