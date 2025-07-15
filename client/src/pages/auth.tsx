@@ -188,6 +188,63 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                       )}
                     </Button>
                   </motion.form>
+
+                  {/* Social Login Divider */}
+                  <div className="relative my-6">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-white/20"></div>
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                      <span className="px-4 text-gray-400 bg-transparent">Or continue with</span>
+                    </div>
+                  </div>
+
+                  {/* Social Login Buttons */}
+                  <div className="grid grid-cols-1 gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full bg-white/5 border-white/20 text-white hover:bg-white/10 transition-colors"
+                      onClick={() => window.location.href = '/api/auth/google'}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-5 h-5 bg-white rounded-full flex items-center justify-center">
+                          <div className="text-xs font-bold text-red-500">G</div>
+                        </div>
+                        <span>Continue with Google</span>
+                      </div>
+                    </Button>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="bg-white/5 border-white/20 text-white hover:bg-white/10 transition-colors"
+                        onClick={() => window.location.href = '/api/auth/facebook'}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 bg-blue-600 rounded flex items-center justify-center">
+                            <div className="text-xs font-bold text-white">f</div>
+                          </div>
+                          <span className="text-sm">Facebook</span>
+                        </div>
+                      </Button>
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="bg-white/5 border-white/20 text-white hover:bg-white/10 transition-colors"
+                        onClick={() => window.location.href = '/api/auth/linkedin'}
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 bg-blue-700 rounded flex items-center justify-center">
+                            <div className="text-xs font-bold text-white">in</div>
+                          </div>
+                          <span className="text-sm">LinkedIn</span>
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
                 </TabsContent>
                 
                 <TabsContent value="register" className="space-y-4 mt-6">

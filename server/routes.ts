@@ -4,8 +4,10 @@ import { storage } from "./storage";
 import { generateJournalPrompt, generatePersonalizedPrompt, generateInsight } from "./services/openai";
 import { createUser, authenticateUser } from "./services/auth";
 import { insertUserSchema, insertJournalEntrySchema } from "@shared/schema";
+import { EmailService } from "./email";
 import session from "express-session";
-import MemoryStore from "memorystore";
+import ConnectPgSimple from "connect-pg-simple";
+import { setupOAuth, passport } from "./oauth";
 
 // Extend session types
 declare module 'express-session' {
@@ -14,15 +16,17 @@ declare module 'express-session' {
   }
 }
 
-const MemoryStoreSession = MemoryStore(session);
+const PgSession = ConnectPgSimple(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session middleware
+  // Session middleware with PostgreSQL store
   app.use(session({
-    store: new MemoryStoreSession({
-      checkPeriod: 86400000 // prune expired entries every 24h
+    store: new PgSession({
+      conString: `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}?sslmode=require`,
+      tableName: 'session',
+      createTableIfMissing: true
     }),
-    secret: process.env.SESSION_SECRET || 'your-secret-key',
+    secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -31,6 +35,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
     }
   }));
+
+  // Initialize Passport OAuth
+  setupOAuth();
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   // Auth middleware
   const requireAuth = (req: any, res: any, next: any) => {
@@ -71,6 +80,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Logged out successfully" });
     });
   });
+
+  // OAuth Routes
+  app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+  app.get('/api/auth/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/auth?error=google_failed' }),
+    async (req: any, res) => {
+      req.session.userId = req.user.id;
+      
+      // Send welcome email for new users
+      if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
+        await EmailService.sendWelcomeEmail(req.user);
+      }
+      
+      res.redirect('/dashboard');
+    }
+  );
+
+  app.get('/api/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+  app.get('/api/auth/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/auth?error=facebook_failed' }),
+    async (req: any, res) => {
+      req.session.userId = req.user.id;
+      
+      if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
+        await EmailService.sendWelcomeEmail(req.user);
+      }
+      
+      res.redirect('/dashboard');
+    }
+  );
+
+  app.get('/api/auth/linkedin', passport.authenticate('linkedin', { scope: ['r_emailaddress', 'r_liteprofile'] }));
+  app.get('/api/auth/linkedin/callback',
+    passport.authenticate('linkedin', { failureRedirect: '/auth?error=linkedin_failed' }),
+    async (req: any, res) => {
+      req.session.userId = req.user.id;
+      
+      if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
+        await EmailService.sendWelcomeEmail(req.user);
+      }
+      
+      res.redirect('/dashboard');
+    }
+  );
 
   app.get("/api/auth/me", requireAuth, async (req: any, res) => {
     try {
@@ -308,6 +361,131 @@ Current journal context:
       const stats = await storage.getUserStats(req.session.userId);
       const achievements = await storage.getUserAchievements(req.session.userId);
       res.json({ stats, achievements });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Admin middleware
+  const requireAdmin = async (req: any, res: any, next: any) => {
+    if (!req.session?.userId) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    
+    const user = await storage.getUser(req.session.userId);
+    if (!user || user.role !== 'admin') {
+      return res.status(403).json({ message: "Admin access required" });
+    }
+    
+    next();
+  };
+
+  // Admin Routes
+  app.get("/api/admin/users", requireAdmin, async (req: any, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      res.json({ users: users.map(u => ({ ...u, password: undefined })) });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/admin/analytics", requireAdmin, async (req: any, res) => {
+    try {
+      const totalUsers = await storage.getAllUsers();
+      const activeUsers = await storage.getActiveUsers();
+      const recentLogs = await storage.getUserActivityLogs(undefined, 50);
+      
+      res.json({
+        totalUsers: totalUsers.length,
+        activeUsers: activeUsers.length,
+        recentActivity: recentLogs
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Email Campaign Routes
+  app.get("/api/admin/email-campaigns", requireAdmin, async (req: any, res) => {
+    try {
+      const campaigns = await storage.getEmailCampaigns();
+      res.json({ campaigns });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/email-campaigns", requireAdmin, async (req: any, res) => {
+    try {
+      const { title, subject, content, htmlContent, targetAudience } = req.body;
+      const campaign = await storage.createEmailCampaign({
+        title,
+        subject,
+        content,
+        htmlContent,
+        targetAudience,
+        createdBy: req.session.userId
+      });
+      res.json({ campaign });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/email-campaigns/:id/send", requireAdmin, async (req: any, res) => {
+    try {
+      const campaignId = parseInt(req.params.id);
+      const result = await EmailService.sendEmailCampaign(campaignId);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Site Settings Routes
+  app.get("/api/admin/settings", requireAdmin, async (req: any, res) => {
+    try {
+      const settings = await storage.getSiteSettings();
+      res.json({ settings });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put("/api/admin/settings/:key", requireAdmin, async (req: any, res) => {
+    try {
+      const { key } = req.params;
+      const { value } = req.body;
+      await storage.updateSiteSetting(key, value, req.session.userId);
+      res.json({ message: "Setting updated successfully" });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Announcements Routes
+  app.post("/api/admin/announcements", requireAdmin, async (req: any, res) => {
+    try {
+      const { title, content, type, targetAudience, expiresAt } = req.body;
+      const announcement = await storage.createAnnouncement({
+        title,
+        content,
+        type,
+        targetAudience,
+        expiresAt: expiresAt ? new Date(expiresAt) : undefined,
+        createdBy: req.session.userId
+      });
+      res.json({ announcement });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/announcements", async (req: any, res) => {
+    try {
+      const announcements = await storage.getActiveAnnouncements('all');
+      res.json({ announcements });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

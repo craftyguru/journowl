@@ -5,13 +5,21 @@ import {
   journalEntries, 
   achievements, 
   userStats,
+  emailCampaigns,
+  siteSettings,
+  userActivityLogs,
+  announcements,
   type User, 
   type InsertUser, 
   type JournalEntry, 
   type InsertJournalEntry,
   type Achievement,
   type InsertAchievement,
-  type UserStats
+  type UserStats,
+  type EmailCampaign,
+  type SiteSetting,
+  type UserActivityLog,
+  type Announcement
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
@@ -25,8 +33,13 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  createUser(user: Partial<User>): Promise<User>;
+  updateUser(id: number, updates: Partial<User>): Promise<void>;
   updateUserXP(userId: number, xp: number): Promise<void>;
+  getAllUsers(): Promise<User[]>;
+  getActiveUsers(): Promise<User[]>;
+  getInactiveUsers(): Promise<User[]>;
+  getUsersByRole(role: string): Promise<User[]>;
 
   // Journal operations
   createJournalEntry(entry: InsertJournalEntry & { userId: number }): Promise<JournalEntry>;
@@ -43,6 +56,18 @@ export interface IStorage {
   getUserStats(userId: number): Promise<UserStats | undefined>;
   updateUserStats(userId: number, stats: Partial<UserStats>): Promise<void>;
   createUserStats(userId: number): Promise<UserStats>;
+
+  // Admin operations
+  logUserActivity(userId: number, action: string, details?: any, ipAddress?: string, userAgent?: string): Promise<void>;
+  getEmailCampaign(id: number): Promise<EmailCampaign | undefined>;
+  updateEmailCampaign(id: number, updates: Partial<EmailCampaign>): Promise<void>;
+  createEmailCampaign(campaign: Partial<EmailCampaign>): Promise<EmailCampaign>;
+  getEmailCampaigns(): Promise<EmailCampaign[]>;
+  getSiteSettings(): Promise<SiteSetting[]>;
+  updateSiteSetting(key: string, value: string, updatedBy: number): Promise<void>;
+  getUserActivityLogs(userId?: number, limit?: number): Promise<UserActivityLog[]>;
+  createAnnouncement(announcement: Partial<Announcement>): Promise<Announcement>;
+  getActiveAnnouncements(targetAudience?: string): Promise<Announcement[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -185,6 +210,115 @@ export class DatabaseStorage implements IStorage {
   async createUserStats(userId: number): Promise<UserStats> {
     const result = await db.insert(userStats).values({ userId }).returning();
     return result[0];
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<void> {
+    await db.update(users)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(users.id, id));
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getActiveUsers(): Promise<User[]> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    return await db.select().from(users)
+      .where(gte(users.lastLoginAt, thirtyDaysAgo))
+      .orderBy(desc(users.lastLoginAt));
+  }
+
+  async getInactiveUsers(): Promise<User[]> {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    
+    return await db.select().from(users)
+      .where(sql`${users.lastLoginAt} IS NULL OR ${users.lastLoginAt} < ${thirtyDaysAgo}`)
+      .orderBy(desc(users.createdAt));
+  }
+
+  async getUsersByRole(role: string): Promise<User[]> {
+    return await db.select().from(users)
+      .where(eq(users.role, role))
+      .orderBy(desc(users.createdAt));
+  }
+
+  async logUserActivity(userId: number, action: string, details?: any, ipAddress?: string, userAgent?: string): Promise<void> {
+    await db.insert(userActivityLogs).values({
+      userId,
+      action,
+      details,
+      ipAddress,
+      userAgent
+    });
+  }
+
+  async getEmailCampaign(id: number): Promise<EmailCampaign | undefined> {
+    const result = await db.select().from(emailCampaigns).where(eq(emailCampaigns.id, id)).limit(1);
+    return result[0];
+  }
+
+  async updateEmailCampaign(id: number, updates: Partial<EmailCampaign>): Promise<void> {
+    await db.update(emailCampaigns)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(emailCampaigns.id, id));
+  }
+
+  async createEmailCampaign(campaign: Partial<EmailCampaign>): Promise<EmailCampaign> {
+    const result = await db.insert(emailCampaigns).values(campaign as any).returning();
+    return result[0];
+  }
+
+  async getEmailCampaigns(): Promise<EmailCampaign[]> {
+    return await db.select().from(emailCampaigns).orderBy(desc(emailCampaigns.createdAt));
+  }
+
+  async getSiteSettings(): Promise<SiteSetting[]> {
+    return await db.select().from(siteSettings).orderBy(siteSettings.key);
+  }
+
+  async updateSiteSetting(key: string, value: string, updatedBy: number): Promise<void> {
+    await db.insert(siteSettings)
+      .values({ key, value, updatedBy })
+      .onConflictDoUpdate({
+        target: siteSettings.key,
+        set: { value, updatedBy, updatedAt: new Date() }
+      });
+  }
+
+  async getUserActivityLogs(userId?: number, limit = 100): Promise<UserActivityLog[]> {
+    if (userId) {
+      return await db.select().from(userActivityLogs)
+        .where(eq(userActivityLogs.userId, userId))
+        .orderBy(desc(userActivityLogs.createdAt))
+        .limit(limit);
+    }
+    
+    return await db.select().from(userActivityLogs)
+      .orderBy(desc(userActivityLogs.createdAt))
+      .limit(limit);
+  }
+
+  async createAnnouncement(announcement: Partial<Announcement>): Promise<Announcement> {
+    const result = await db.insert(announcements).values(announcement as any).returning();
+    return result[0];
+  }
+
+  async getActiveAnnouncements(targetAudience = 'all'): Promise<Announcement[]> {
+    const now = new Date();
+    
+    return await db.select().from(announcements)
+      .where(
+        and(
+          eq(announcements.isActive, true),
+          sql`(${announcements.expiresAt} IS NULL OR ${announcements.expiresAt} > ${now})`,
+          sql`${announcements.targetAudience} = ${targetAudience} OR ${announcements.targetAudience} = 'all'`
+        )
+      )
+      .orderBy(desc(announcements.createdAt));
   }
 }
 

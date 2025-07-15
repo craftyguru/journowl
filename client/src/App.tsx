@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getCurrentUser } from "@/lib/auth";
+import { apiRequest } from "@/lib/queryClient";
 import AuthPage from "@/pages/auth";
 import Dashboard from "@/pages/dashboard";
 import InsightsPage from "@/pages/insights";
@@ -202,16 +203,53 @@ function App() {
       <ThemeProvider>
         <TooltipProvider>
           <Toaster />
-          <div className="min-h-screen bg-background">
-            <Navbar currentView={currentView} onNavigate={handleNavigate} />
-            <main>
-              {currentView === "dashboard" && <Dashboard />}
-              {currentView === "insights" && <InsightsPage />}
-            </main>
-          </div>
+          <AuthenticatedApp currentView={currentView} onNavigate={handleNavigate} />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
+  );
+}
+
+// Authenticated App Component with Role-Based Access
+function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, onNavigate: (view: string) => void }) {
+  const { data: user, isLoading, error } = useQuery({
+    queryKey: ['/api/auth/me'],
+    queryFn: () => apiRequest('/api/auth/me'),
+    retry: false
+  });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
+      </div>
+    );
+  }
+
+  if (error || !user) {
+    // User is not authenticated, redirect to auth
+    window.location.reload();
+    return null;
+  }
+
+  // Admin Dashboard for admin users
+  if (user.role === 'admin') {
+    return (
+      <div className="min-h-screen">
+        <AdminDashboard />
+      </div>
+    );
+  }
+
+  // Regular app interface for standard users
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar currentView={currentView} onNavigate={onNavigate} />
+      <main>
+        {currentView === "dashboard" && <Dashboard />}
+        {currentView === "insights" && <InsightsPage />}
+      </main>
+    </div>
   );
 }
 

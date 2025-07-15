@@ -6,7 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password"), // Optional for OAuth users
   level: integer("level").default(1),
   xp: integer("xp").default(0),
   role: text("role").default("user"), // "admin", "user", "kid"
@@ -16,7 +16,16 @@ export const users = pgTable("users", {
   favoriteQuote: text("favorite_quote"),
   preferences: json("preferences"), // Journal customization preferences
   aiPersonality: text("ai_personality").default("friendly"), // AI sidekick personality
+  provider: text("provider").default("local"), // local, google, facebook, linkedin
+  providerId: text("provider_id"),
+  profileImageUrl: text("profile_image_url"),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  isActive: boolean("is_active").default(true),
+  lastLoginAt: timestamp("last_login_at"),
+  emailVerified: boolean("email_verified").default(false),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const journalEntries = pgTable("journal_entries", {
@@ -103,6 +112,75 @@ export const adminAnalytics = pgTable("admin_analytics", {
   date: timestamp("date").defaultNow().notNull(),
 });
 
+// Email blast system
+export const emailCampaigns = pgTable("email_campaigns", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  subject: text("subject").notNull(),
+  content: text("content").notNull(),
+  htmlContent: text("html_content"),
+  targetAudience: text("target_audience").default("all"), // all, active, inactive, role-based
+  status: text("status").default("draft"), // draft, scheduled, sending, sent, failed
+  scheduledAt: timestamp("scheduled_at"),
+  sentAt: timestamp("sent_at"),
+  recipientCount: integer("recipient_count").default(0),
+  openRate: integer("open_rate").default(0),
+  clickRate: integer("click_rate").default(0),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Site configuration management
+export const siteSettings = pgTable("site_settings", {
+  id: serial("id").primaryKey(),
+  key: text("key").notNull().unique(),
+  value: text("value"),
+  type: text("type").default("string"), // string, number, boolean, json
+  description: text("description"),
+  updatedBy: integer("updated_by").references(() => users.id),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// User activity logs for admin monitoring
+export const userActivityLogs = pgTable("user_activity_logs", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  action: text("action").notNull(), // login, logout, entry_created, entry_updated, etc.
+  details: json("details"), // Additional context
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Content moderation queue
+export const moderationQueue = pgTable("moderation_queue", {
+  id: serial("id").primaryKey(),
+  contentType: text("content_type").notNull(), // journal_entry, user_profile, etc.
+  contentId: integer("content_id").notNull(),
+  reportedBy: integer("reported_by").references(() => users.id),
+  reason: text("reason").notNull(),
+  status: text("status").default("pending"), // pending, approved, rejected
+  reviewedBy: integer("reviewed_by").references(() => users.id),
+  reviewedAt: timestamp("reviewed_at"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// System announcements
+export const announcements = pgTable("announcements", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  type: text("type").default("info"), // info, warning, success, error
+  targetAudience: text("target_audience").default("all"), // all, users, admins
+  isActive: boolean("is_active").default(true),
+  expiresAt: timestamp("expires_at"),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
   username: true,
@@ -152,3 +230,8 @@ export type JournalPrompt = typeof journalPrompts.$inferSelect;
 export type InsertJournalPrompt = z.infer<typeof insertJournalPromptSchema>;
 export type MoodTrend = typeof moodTrends.$inferSelect;
 export type AdminAnalytics = typeof adminAnalytics.$inferSelect;
+export type EmailCampaign = typeof emailCampaigns.$inferSelect;
+export type SiteSetting = typeof siteSettings.$inferSelect;
+export type UserActivityLog = typeof userActivityLogs.$inferSelect;
+export type ModerationQueue = typeof moderationQueue.$inferSelect;
+export type Announcement = typeof announcements.$inferSelect;
