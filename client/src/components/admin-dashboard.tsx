@@ -807,7 +807,7 @@ export default function AdminDashboard() {
             <EnhancedEmailCampaigns 
               campaignForm={campaignForm}
               setCampaignForm={setCampaignForm}
-              sendEmailCampaign={sendEmailCampaign}
+              sendEmailCampaign={createEmailCampaign}
               campaigns={campaigns}
             />
           </TabsContent>

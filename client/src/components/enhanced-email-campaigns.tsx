@@ -41,6 +41,18 @@ export default function EnhancedEmailCampaigns({
 }: EnhancedEmailCampaignsProps) {
   const { toast } = useToast();
 
+  const handleSendCampaign = async () => {
+    if (!campaignForm.title || !campaignForm.subject || !campaignForm.content) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all campaign fields before sending",
+        variant: "destructive",
+      });
+      return;
+    }
+    sendEmailCampaign();
+  };
+
   return (
     <div className="space-y-6">
       {/* AI Email Assistant */}
@@ -210,7 +222,7 @@ The JournOwl Team 🦉`
                 placeholder="Unlock Your Creative Potential - 100 Free AI Prompts Inside! ✨"
               />
               <div className="text-xs text-gray-500 mt-1">
-                💡 Tip: Use emojis and personalization like {{firstName}} for better engagement
+                💡 Tip: Use emojis and personalization like {"{{firstName}}"} for better engagement
               </div>
             </div>
 
@@ -238,13 +250,13 @@ The JournOwl Team 🦉`
                 id="content"
                 value={campaignForm.content}
                 onChange={(e) => setCampaignForm({...campaignForm, content: e.target.value})}
-                placeholder="Hi {{firstName}}! 🌟&#10;&#10;Ready to supercharge your journaling journey?&#10;&#10;🎯 What's Inside:&#10;• 100 FREE AI-generated writing prompts&#10;• Personalized mood insights&#10;• Photo memory analysis&#10;&#10;✨ Your Stats: {{totalEntries}} entries so far!&#10;&#10;Happy Writing! ✍️&#10;The JournOwl Team 🦉"
+                placeholder="Hi {{firstName}}! 🌟\n\nReady to supercharge your journaling journey?\n\n🎯 What's Inside:\n• 100 FREE AI-generated writing prompts\n• Personalized mood insights\n• Photo memory analysis\n\n✨ Your Stats: {{totalEntries}} entries so far!\n\nHappy Writing! ✍️\nThe JournOwl Team 🦉"
                 rows={12}
                 className="font-mono text-sm"
               />
               <div className="text-xs text-gray-500 mt-2 space-y-1">
                 <div><strong>Available Variables:</strong></div>
-                <div>{{firstName}}, {{username}}, {{totalEntries}}, {{promptsRemaining}}, {{currentStreak}}</div>
+                <div>{"{{firstName}}, {{username}}, {{totalEntries}}, {{promptsRemaining}}, {{currentStreak}}"}</div>
                 <div><strong>Emoji Tips:</strong> 🚀🌟✨🎯💎🔥⚡👑🦉✍️📱💙🎉👋🎁</div>
               </div>
             </div>
@@ -273,11 +285,11 @@ The JournOwl Team 🦉`
               </Button>
               
               <Button 
-                onClick={sendEmailCampaign}
+                onClick={handleSendCampaign}
                 className="bg-gradient-to-r from-purple-500 to-blue-500 text-white"
               >
                 <Send className="w-4 h-4 mr-2" />
-                Send Campaign
+                Create Campaign
               </Button>
             </div>
 
