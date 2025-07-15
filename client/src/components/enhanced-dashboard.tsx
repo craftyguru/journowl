@@ -47,11 +47,29 @@ const goals = [
   { id: 3, title: "Mood Tracker", description: "Track mood for 21 days", progress: 90, target: 21, current: 19, type: "consistency" },
 ];
 
-const recentEntries = [
+// Emma's demo data for test users
+const emmaDemoEntries = [
   { id: 1, title: "Morning Reflections", mood: "😊", date: "Today", wordCount: 287, tags: ["gratitude", "morning"] },
   { id: 2, title: "Work Breakthrough", mood: "🎉", date: "Yesterday", wordCount: 423, tags: ["career", "success"] },
   { id: 3, title: "Weekend Adventures", mood: "😄", date: "2 days ago", wordCount: 356, tags: ["fun", "family"] },
   { id: 4, title: "Quiet Contemplation", mood: "🤔", date: "3 days ago", wordCount: 198, tags: ["thoughts", "philosophy"] },
+];
+
+const emmaDemoStats = {
+  totalEntries: 47,
+  currentStreak: 12,
+  totalWords: 8420,
+  averageMood: 4.2,
+  longestStreak: 23,
+  wordsThisWeek: 1250
+};
+
+const emmaDemoAchievements = [
+  { id: 1, title: "First Steps", description: "Wrote your first journal entry", icon: "🎯", unlocked: true, rarity: "common" },
+  { id: 2, title: "Consistent Writer", description: "7-day writing streak", icon: "🔥", unlocked: true, rarity: "rare" },
+  { id: 3, title: "Wordsmith", description: "Wrote 1000+ words in a single entry", icon: "✍️", unlocked: true, rarity: "epic" },
+  { id: 4, title: "Mood Master", description: "Used all mood types", icon: "🌈", unlocked: true, rarity: "legendary" },
+  { id: 5, title: "AI Collaborator", description: "Used 50 AI prompts", icon: "🤖", unlocked: true, rarity: "rare" },
 ];
 
 const aiInsights = [
@@ -92,9 +110,16 @@ export default function EnhancedDashboard() {
   });
   
   const user = userResponse?.user;
-  const stats = statsResponse?.stats;
-  const entries = entriesResponse || [];
-  const userAchievements = achievementsResponse?.achievements || [];
+  
+  // Determine if this is a demo/test user (anyone with "test" in username/email)
+  const isTestUser = user?.username?.toLowerCase().includes('test') || 
+                     user?.email?.toLowerCase().includes('test') ||
+                     user?.username === 'djfluent'; // Include djfluent as demo user
+  
+  // Use Emma's demo data for test users, real data for others
+  const stats = isTestUser ? emmaDemoStats : (statsResponse?.stats || {});
+  const entries = isTestUser ? emmaDemoEntries : (entriesResponse || []);
+  const userAchievements = isTestUser ? emmaDemoAchievements : (achievementsResponse?.achievements || []);
 
   const handleSaveEntry = (entryData: any) => {
     console.log('Saving entry:', entryData);
@@ -123,7 +148,7 @@ export default function EnhancedDashboard() {
     openUnifiedJournal(entry);
   };
 
-  // Convert actual user entries to calendar format with varied dates
+  // Convert entries to calendar format with varied dates
   const calendarEntries = entries.map((entry, index) => {
     const date = new Date();
     date.setDate(date.getDate() - index); // Spread entries across recent days
@@ -131,10 +156,10 @@ export default function EnhancedDashboard() {
       ...entry,
       date: date,
       createdAt: date.toISOString(),
-      photos: index === 1 ? ["photo1.jpg", "photo2.jpg"] : [], // Add photos to some entries
+      photos: isTestUser && index === 1 ? ["photo1.jpg", "photo2.jpg"] : [], // Add photos for demo user
       isPinned: index === 0, // Pin the first entry
       isPrivate: index === 3, // Make one entry private
-      tags: ["mood", "reflection", "daily"]
+      tags: isTestUser ? ["mood", "reflection", "daily"] : (entry.tags || [])
     };
   });
 
@@ -377,7 +402,7 @@ export default function EnhancedDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {recentEntries.map((entry, index) => (
+                  {entries.length > 0 ? entries.map((entry, index) => (
                     <motion.div
                       key={entry.id}
                       initial={{ opacity: 0, y: 10 }}
@@ -409,7 +434,20 @@ export default function EnhancedDashboard() {
                         </div>
                       </div>
                     </motion.div>
-                  ))}
+                  )) : (
+                    <div className="text-center py-8">
+                      <div className="text-4xl mb-3">📝</div>
+                      <h3 className="text-white font-semibold mb-2">No entries yet</h3>
+                      <p className="text-gray-400 text-sm mb-4">Start your journaling journey by creating your first entry</p>
+                      <Button 
+                        onClick={() => openUnifiedJournal()}
+                        className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Write First Entry
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="mt-6 text-center">
