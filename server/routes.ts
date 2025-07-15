@@ -267,33 +267,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Debug endpoint to create test entry
-  app.post("/api/debug/create-test-entry", async (req: any, res) => {
-    try {
-      const entry = await storage.createJournalEntry({
-        userId: 1, // djfluent user ID
-        title: 'Test Entry for djfluent',
-        content: 'This is a test entry created directly through the debug endpoint to verify the djfluent account can see journal entries.',
-        mood: '😊',
-        fontFamily: 'Inter',
-        fontSize: 16,
-        textColor: '#1f2937',
-        backgroundColor: '#ffffff',
-        isPrivate: false,
-        tags: [],
-        photos: [],
-        drawings: [],
-        wordCount: 20
-      });
-      
-      console.log('Test entry created successfully:', entry);
-      res.json({ success: true, entry });
-    } catch (error: any) {
-      console.error('Error creating test entry:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
-
   // Journal routes
   app.post("/api/journal/entries", requireAuth, async (req: any, res) => {
     try {

@@ -207,6 +207,13 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       };
 
       setAiRecognition(aiRecognitionInstance);
+      console.log('AI speech recognition initialized successfully');
+    } else {
+      console.error('Speech recognition not supported in this browser');
+      setAiMessages([{
+        type: 'ai',
+        message: '❌ Speech recognition is not supported in your browser. You can still type messages to chat with me!'
+      }]);
     }
   }, []);
 
@@ -455,10 +462,12 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     
     if (isHoldingMic && !showUsageWarning) {
       // Quick press/release - single prompt mode
+      console.log('Quick press detected:', { aiRecognition, isAiListening });
       if (aiRecognition && !isAiListening) {
         setAiInput('');
         setLastFinalTranscript('');
         try {
+          console.log('Starting AI speech recognition for quick prompt...');
           aiRecognition.start();
           setIsAiListening(true);
           setAiMessages(prev => [...prev, {
@@ -467,7 +476,17 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           }]);
         } catch (error) {
           console.error('Error starting AI speech recognition:', error);
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '❌ Speech recognition error. Please try typing your message instead.'
+          }]);
         }
+      } else if (!aiRecognition) {
+        console.error('AI recognition not initialized');
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '❌ Speech recognition not available. Please try typing your message instead.'
+        }]);
       }
     }
     setIsHoldingMic(false);
