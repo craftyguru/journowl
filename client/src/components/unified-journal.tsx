@@ -82,6 +82,13 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [isHoldingMic, setIsHoldingMic] = useState(false);
   const [holdTimeout, setHoldTimeout] = useState<NodeJS.Timeout | null>(null);
   const [promptUsage, setPromptUsage] = useState<{promptsRemaining: number; promptsUsedThisMonth: number} | null>(null);
+  const [isRecordingAudio, setIsRecordingAudio] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const [recordingStartTime, setRecordingStartTime] = useState<number>(0);
+  const [recordingDuration, setRecordingDuration] = useState<number>(0);
+  const [audioRecordings, setAudioRecordings] = useState<{url: string, duration: number, timestamp: Date}[]>([]);
+  const [recordingTimer, setRecordingTimer] = useState<number>(0);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -97,9 +104,10 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
       const userName = user.username || user.email?.split('@')[0] || 'there';
       const welcomeMessage = `Hi ${userName}! 🦉 Welcome to your AI-powered journal companion!
 
-🎤 MICROPHONE FEATURES:
-• Quick tap: Add voice notes to your journal entry
-• Hold for 1 second: Enter full conversation mode for back-and-forth chat
+🎤 VOICE FEATURES:
+• Blue mic: Convert speech to text for your journal
+• Hold 1 second: Enter full conversation mode
+• Green button: Record & save audio clips (up to 60 seconds)
 
 🧠 I CAN HELP YOU:
 • Write journal entries with personalized prompts
@@ -266,6 +274,82 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       console.error('Failed to fetch prompt usage:', error);
     }
   };
+
+  // Start audio recording
+  const startAudioRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          setAudioChunks(prev => [...prev, event.data]);
+        }
+      };
+
+      recorder.onstop = () => {
+        stream.getTracks().forEach(track => track.stop());
+      };
+
+      setMediaRecorder(recorder);
+      setAudioChunks([]);
+      setRecordingStartTime(Date.now());
+      setRecordingTimer(0);
+      setIsRecordingAudio(true);
+      recorder.start();
+
+      // Update timer every second
+      const timerInterval = setInterval(() => {
+        setRecordingTimer(prev => {
+          const newTime = prev + 1;
+          if (newTime >= 60) {
+            stopAudioRecording();
+            clearInterval(timerInterval);
+            return 60;
+          }
+          return newTime;
+        });
+      }, 1000);
+
+      // Auto-stop after 60 seconds
+      setTimeout(() => {
+        if (recorder.state === 'recording') {
+          stopAudioRecording();
+          clearInterval(timerInterval);
+        }
+      }, 60000);
+
+    } catch (error) {
+      console.error('Error starting audio recording:', error);
+    }
+  };
+
+  // Stop audio recording
+  const stopAudioRecording = () => {
+    if (mediaRecorder && mediaRecorder.state === 'recording') {
+      mediaRecorder.stop();
+      setIsRecordingAudio(false);
+      
+      const duration = Math.round((Date.now() - recordingStartTime) / 1000);
+      setRecordingDuration(duration);
+    }
+  };
+
+  // Handle recording completion
+  useEffect(() => {
+    if (audioChunks.length > 0 && !isRecordingAudio) {
+      const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      
+      setAudioRecordings(prev => [...prev, {
+        url: audioUrl,
+        duration: recordingDuration,
+        timestamp: new Date()
+      }]);
+      
+      setAudioChunks([]);
+    }
+  }, [audioChunks, isRecordingAudio, recordingDuration]);
 
   // Handle mic button mouse down (start hold-to-speak)
   const handleMicMouseDown = () => {
@@ -1109,6 +1193,37 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                       <p className="text-gray-500 text-xs">Upload photos</p>
                     </div>
                   )}
+
+                  {/* Audio Recordings Section */}
+                  {audioRecordings.length > 0 && (
+                    <div className="mt-4 pt-4 border-t">
+                      <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                        🎵 Audio Recordings
+                        <Badge variant="secondary">{audioRecordings.length}</Badge>
+                      </h3>
+                      <div className="space-y-2">
+                        {audioRecordings.map((recording, index) => (
+                          <div key={index} className="bg-gray-50 rounded-lg p-3 border">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-xs text-gray-500">
+                                Recording {index + 1} • {recording.duration}s
+                              </span>
+                              <span className="text-xs text-gray-400">
+                                {recording.timestamp.toLocaleTimeString()}
+                              </span>
+                            </div>
+                            <audio 
+                              controls 
+                              className="w-full h-8"
+                              src={recording.url}
+                            >
+                              Your browser does not support audio playback.
+                            </audio>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
                 </Card>
               </Panel>
@@ -1157,6 +1272,58 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 <div className="flex flex-col items-center gap-1">
                   <span>🎤 Voice Input</span>
                   <span className="text-xs opacity-75">Record audio for journal</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Audio Recording Bubble - Next to Voice Input */}
+        <motion.div
+          className="fixed bottom-4 right-36 sm:right-40 z-40 group"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
+          <div className="relative">
+            <Button
+              onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
+              className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                isRecordingAudio 
+                  ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                  : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
+              } transition-all duration-300 hover:scale-110`}
+            >
+              {isRecordingAudio ? (
+                <div className="w-4 h-4 bg-white rounded-sm" />
+              ) : (
+                <div className="w-4 h-4 bg-white rounded-full" />
+              )}
+            </Button>
+            
+            {/* Audio recording indicator with timer */}
+            {isRecordingAudio && (
+              <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+            )}
+            
+            {/* Recording Timer Display */}
+            {isRecordingAudio && (
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-mono">
+                {Math.floor(recordingTimer / 60)}:{(recordingTimer % 60).toString().padStart(2, '0')}
+              </div>
+            )}
+            
+            {/* Tooltip */}
+            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+              {isRecordingAudio ? (
+                <div className="flex flex-col items-center gap-1">
+                  <span>Recording Audio... {recordingTimer}s</span>
+                  <span className="text-xs opacity-75">Max 60 seconds</span>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-1">
+                  <span>🎵 Audio Record</span>
+                  <span className="text-xs opacity-75">Save voice notes</span>
                 </div>
               )}
             </div>
