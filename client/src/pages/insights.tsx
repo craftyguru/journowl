@@ -17,6 +17,8 @@ import {
   BarChart3, PieChart as PieChartIcon, Activity, Users
 } from "lucide-react";
 import { type JournalEntry, type UserStats } from "@/lib/types";
+import { useLocation } from "wouter";
+import { useToast } from "@/hooks/use-toast";
 
 // Real data from API
 
@@ -28,6 +30,8 @@ export default function InsightsPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [aiQuestion, setAiQuestion] = useState("");
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [, setLocation] = useLocation();
+  const { toast } = useToast();
 
   // Fetch real user data
   const { data: entriesData = [], isLoading: entriesLoading } = useQuery({
@@ -120,6 +124,77 @@ export default function InsightsPage() {
 
   const calendarData = generateCalendarData();
 
+  // Button handlers
+  const handleAddEntry = () => {
+    setLocation("/dashboard");
+    toast({
+      title: "Redirecting to Dashboard",
+      description: "Opening Smart Journal to create a new entry",
+    });
+  };
+
+  const handleExport = () => {
+    const exportData = {
+      stats: stats,
+      entries: entries,
+      insights: insightsData,
+      exportDate: new Date().toISOString(),
+      totalEntries: stats.totalEntries,
+      totalWords: stats.totalWords,
+      currentStreak: stats.currentStreak
+    };
+    
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = `journal-insights-${new Date().toISOString().split('T')[0]}.json`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast({
+      title: "Export Complete",
+      description: "Your journal insights have been exported successfully",
+    });
+  };
+
+  const handleShare = async () => {
+    const shareText = `📊 My JournOwl Journey\n\n✏️ ${stats.totalEntries} entries written\n📝 ${stats.totalWords} words total\n🔥 ${stats.currentStreak} day streak\n\nDiscover your own patterns with JournOwl!`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'My JournOwl Journey',
+          text: shareText,
+          url: window.location.href
+        });
+        toast({
+          title: "Shared Successfully",
+          description: "Your journal insights have been shared",
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      // Fallback: copy to clipboard
+      try {
+        await navigator.clipboard.writeText(shareText);
+        toast({
+          title: "Copied to Clipboard",
+          description: "Your journal insights have been copied to clipboard",
+        });
+      } catch (err) {
+        toast({
+          title: "Share Failed",
+          description: "Unable to share insights. Please try again.",
+          variant: "destructive"
+        });
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-purple-900 dark:to-indigo-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -141,15 +216,24 @@ export default function InsightsPage() {
               </p>
             </div>
             <div className="flex gap-3 mt-4 sm:mt-0">
-              <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600">
+              <Button 
+                onClick={handleAddEntry}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
                 <Plus className="w-4 h-4 mr-2" />
                 Add Entry
               </Button>
-              <Button variant="outline">
+              <Button 
+                variant="outline" 
+                onClick={handleExport}
+              >
                 <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
-              <Button variant="outline">
+              <Button 
+                variant="outline" 
+                onClick={handleShare}
+              >
                 <Share2 className="w-4 h-4 mr-2" />
                 Share
               </Button>
