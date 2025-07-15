@@ -10,6 +10,7 @@ import {
   siteSettings,
   userActivityLogs,
   announcements,
+  supportMessages,
   type User, 
   type InsertUser, 
   type JournalEntry, 
@@ -22,7 +23,8 @@ import {
   type EmailCampaign,
   type SiteSetting,
   type UserActivityLog,
-  type Announcement
+  type Announcement,
+  type SupportMessage
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
@@ -76,6 +78,12 @@ export interface IStorage {
   getUserActivityLogs(userId?: number, limit?: number): Promise<UserActivityLog[]>;
   createAnnouncement(announcement: Partial<Announcement>): Promise<Announcement>;
   getActiveAnnouncements(targetAudience?: string): Promise<Announcement[]>;
+  
+  // Support operations
+  createSupportMessage(message: Partial<SupportMessage>): Promise<SupportMessage>;
+  getSupportMessages(userId: number): Promise<SupportMessage[]>;
+  getAllSupportMessages(): Promise<SupportMessage[]>;
+  markSupportMessageAsRead(id: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -534,6 +542,37 @@ export class DatabaseStorage implements IStorage {
     }));
 
     await db.insert(achievements).values(achievementsToInsert);
+  }
+
+  // Support operations
+  async createSupportMessage(message: Partial<SupportMessage>): Promise<SupportMessage> {
+    const [newMessage] = await db
+      .insert(supportMessages)
+      .values(message)
+      .returning();
+    return newMessage;
+  }
+
+  async getSupportMessages(userId: number): Promise<SupportMessage[]> {
+    return await db
+      .select()
+      .from(supportMessages)
+      .where(eq(supportMessages.userId, userId))
+      .orderBy(desc(supportMessages.createdAt));
+  }
+
+  async getAllSupportMessages(): Promise<SupportMessage[]> {
+    return await db
+      .select()
+      .from(supportMessages)
+      .orderBy(desc(supportMessages.createdAt));
+  }
+
+  async markSupportMessageAsRead(id: number): Promise<void> {
+    await db
+      .update(supportMessages)
+      .set({ isRead: true })
+      .where(eq(supportMessages.id, id));
   }
 }
 

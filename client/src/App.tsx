@@ -15,6 +15,8 @@ import AdminDashboard from "@/components/admin-dashboard";
 import EnhancedDashboard from "@/components/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
 import LandingHero from "@/components/ui/LandingHero";
+import { HelpBubble } from "@/components/HelpBubble";
+import { SupportChatBubble } from "@/components/SupportChatBubble";
 
 function App() {
   // Check if demo mode is requested from URL params
@@ -272,6 +274,9 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
           </>
         )}
       </main>
+      {/* Help and Support Bubbles */}
+      <HelpBubble />
+      <SupportChatBubble />
     </div>
   );
 }

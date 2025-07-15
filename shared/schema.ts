@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, varchar } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -189,6 +189,19 @@ export const announcements = pgTable("announcements", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Support chat messages table
+export const supportMessages = pgTable("support_messages", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  message: text("message").notNull(),
+  sender: varchar("sender", { length: 10 }).notNull(), // 'user' or 'admin'
+  attachmentUrl: varchar("attachment_url"),
+  attachmentType: varchar("attachment_type", { length: 20 }), // 'image' or 'video'
+  adminName: varchar("admin_name"),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
   username: true,
@@ -243,3 +256,4 @@ export type SiteSetting = typeof siteSettings.$inferSelect;
 export type UserActivityLog = typeof userActivityLogs.$inferSelect;
 export type ModerationQueue = typeof moderationQueue.$inferSelect;
 export type Announcement = typeof announcements.$inferSelect;
+export type SupportMessage = typeof supportMessages.$inferSelect;

@@ -813,6 +813,83 @@ Current journal context:
     }
   });
 
+  // Support message routes
+  app.post("/api/support/messages", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const { message, attachmentUrl, attachmentType } = req.body;
+      
+      const supportMessage = await storage.createSupportMessage({
+        userId,
+        message,
+        sender: 'user',
+        attachmentUrl,
+        attachmentType
+      });
+      
+      res.json(supportMessage);
+    } catch (error) {
+      console.error("Error creating support message:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
+  app.get("/api/support/messages", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const messages = await storage.getSupportMessages(userId);
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching support messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  // Admin support routes
+  app.get("/api/admin/support/messages", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const user = await storage.getUser(userId);
+      
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const messages = await storage.getAllSupportMessages();
+      res.json(messages);
+    } catch (error) {
+      console.error("Error fetching admin support messages:", error);
+      res.status(500).json({ message: "Failed to fetch messages" });
+    }
+  });
+
+  app.post("/api/admin/support/messages", requireAuth, async (req, res) => {
+    try {
+      const userId = req.session.userId!;
+      const user = await storage.getUser(userId);
+      
+      if (user?.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const { userId: targetUserId, message, attachmentUrl, attachmentType } = req.body;
+      
+      const supportMessage = await storage.createSupportMessage({
+        userId: targetUserId,
+        message,
+        sender: 'admin',
+        attachmentUrl,
+        attachmentType,
+        adminName: user.username
+      });
+      
+      res.json(supportMessage);
+    } catch (error) {
+      console.error("Error creating admin support message:", error);
+      res.status(500).json({ message: "Failed to send message" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
