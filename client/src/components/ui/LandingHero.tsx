@@ -491,214 +491,544 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           </div>
         </motion.div>
 
-        {/* Interactive Live Demo Section */}
+        {/* Ultimate App Showcase */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 2.0 }}
           className="text-center mb-20"
         >
-          <h3 className="text-4xl font-bold text-white mb-4">
-            Experience It Live - <span className="text-cyan-400">Interactive Demo</span>
-          </h3>
-          <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
-            See exactly how our AI-powered journaling transforms your writing experience
-          </p>
+          <motion.h3 
+            className="text-6xl font-bold text-center mb-6 font-montserrat"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 2.2 }}
+          >
+            <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              🚀 Experience the Magic
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent text-4xl">
+              ✨ Interactive Live Preview ✨
+            </span>
+          </motion.h3>
+          <motion.p 
+            className="text-2xl text-center mb-16 max-w-5xl mx-auto font-opensans leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 2.4 }}
+          >
+            <span className="text-cyan-300 font-bold">🎯 See every feature in action!</span>{" "}
+            <span className="text-yellow-300 font-bold">🎨 AI analysis, mood tracking, achievements,</span>{" "}
+            <span className="text-pink-300 font-bold">📊 analytics, and so much more!</span>
+          </motion.p>
           
-          {/* Live Demo Interface */}
+          {/* Revolutionary App Preview */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 2.2 }}
-            className="max-w-6xl mx-auto bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-lg rounded-2xl border border-white/30 shadow-2xl overflow-hidden"
+            transition={{ duration: 0.8, delay: 2.6 }}
+            className="max-w-7xl mx-auto bg-gradient-to-br from-gray-900/95 to-black/90 backdrop-blur-xl rounded-3xl border-2 border-purple-500/40 shadow-2xl overflow-hidden"
           >
-            {/* Demo Header */}
-            <div className="bg-gradient-to-r from-purple-600/50 to-pink-600/50 p-6 border-b border-white/20">
+            {/* Epic Header */}
+            <div className="bg-gradient-to-r from-purple-600/80 via-pink-600/80 to-cyan-600/80 p-6 border-b-2 border-purple-400/50">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <div className="flex gap-2">
-                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                    <motion.div 
+                      className="w-4 h-4 rounded-full bg-red-400"
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                    <motion.div 
+                      className="w-4 h-4 rounded-full bg-yellow-400"
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
+                    />
+                    <motion.div 
+                      className="w-4 h-4 rounded-full bg-green-400"
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
+                    />
                   </div>
-                  <span className="text-white font-semibold">MoodJournal - Smart Editor</span>
+                  <span className="text-white font-bold text-xl font-inter">🌟 MoodJournal - Complete Experience</span>
                 </div>
-                <div className="flex items-center gap-2 text-white/80">
-                  <Brain className="w-4 h-4" />
-                  <span className="text-sm">AI Assistant Active</span>
+                <div className="flex items-center gap-3 text-white/90">
+                  <motion.div 
+                    className="flex items-center gap-2 bg-green-500/30 px-3 py-1 rounded-full border border-green-400/50"
+                    animate={{ opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                    <span className="text-sm font-medium">🤖 AI Assistant Online</span>
+                  </motion.div>
+                  <Badge className="bg-purple-500/30 text-purple-200 border border-purple-400/50 font-bold">
+                    ✨ Live Demo
+                  </Badge>
                 </div>
               </div>
             </div>
 
-            {/* Demo Content */}
-            <div className="p-8">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Comprehensive App Showcase */}
+            <div className="p-10">
+              {/* Tab Navigation */}
+              <motion.div 
+                className="flex justify-center mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 2.8 }}
+              >
+                <div className="flex bg-gray-800/50 backdrop-blur-lg rounded-2xl p-2 border border-purple-500/30">
+                  {[
+                    { id: 'write', name: '✍️ Write', icon: PenTool, color: 'from-purple-500 to-pink-500' },
+                    { id: 'analyze', name: '📊 Analytics', icon: BarChart3, color: 'from-cyan-500 to-blue-500' },
+                    { id: 'ai', name: '🤖 AI Magic', icon: Brain, color: 'from-green-500 to-emerald-500' },
+                    { id: 'rewards', name: '🏆 Rewards', icon: Trophy, color: 'from-yellow-500 to-orange-500' }
+                  ].map((tab, i) => (
+                    <motion.button
+                      key={tab.id}
+                      className={`px-6 py-3 rounded-xl text-white font-bold transition-all duration-300 bg-gradient-to-r ${tab.color} hover:scale-105 hover:shadow-lg`}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.98 }}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: 3 + i * 0.1 }}
+                    >
+                      <tab.icon className="w-5 h-5 inline mr-2" />
+                      {tab.name}
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Main Showcase Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
                 
-                {/* Left: Writing Interface */}
-                <div className="space-y-6">
-                  <div className="bg-white/10 rounded-xl p-6 border border-white/20">
-                    <div className="flex items-center gap-3 mb-4">
-                      <PenTool className="w-5 h-5 text-purple-400" />
-                      <h4 className="text-white font-semibold">Smart Writing Assistant</h4>
+                {/* Smart Writing Assistant - Enhanced */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 3.2 }}
+                  className="lg:col-span-2 bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-2xl p-8 border-2 border-purple-500/50 hover:border-cyan-400/60 transition-all duration-500 shadow-2xl"
+                >
+                  <div className="flex items-center gap-4 mb-6">
+                    <motion.div 
+                      className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-xl"
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                    >
+                      <PenTool className="w-8 h-8 text-white" />
+                    </motion.div>
+                    <div>
+                      <h4 className="text-2xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-inter">
+                        ✨ Smart AI Writing Assistant
+                      </h4>
+                      <p className="text-gray-300 font-opensans">Real-time suggestions as you write</p>
+                    </div>
+                  </div>
+                  
+                  {/* Enhanced Editor Simulation */}
+                  <div className="bg-gray-900/60 rounded-xl p-6 border border-purple-400/30 backdrop-blur-sm">
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-gray-300 font-medium font-inter">📝 Today's Entry - March 15, 2024</span>
+                      <div className="flex gap-2">
+                        <Badge className="bg-green-500/20 text-green-300 border-0">🟢 Auto-Save</Badge>
+                        <Badge className="bg-blue-500/20 text-blue-300 border-0">📊 524 words</Badge>
+                      </div>
                     </div>
                     
-                    {/* Simulated Editor */}
-                    <div className="bg-white/5 rounded-lg p-4 min-h-[200px] border border-white/10">
-                      <div className="text-gray-300 text-sm mb-2">Today's Entry - March 15, 2024</div>
-                      <div className="space-y-3">
-                        <motion.div
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: "100%" }}
-                          transition={{ duration: 2, delay: 2.5 }}
-                          className="h-4 bg-gradient-to-r from-purple-400/30 to-transparent rounded"
-                        />
-                        <motion.div
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: "80%" }}
-                          transition={{ duration: 2, delay: 3 }}
-                          className="h-4 bg-gradient-to-r from-purple-400/30 to-transparent rounded"
-                        />
-                        <motion.div
-                          initial={{ opacity: 0, width: 0 }}
-                          animate={{ opacity: 1, width: "90%" }}
-                          transition={{ duration: 2, delay: 3.5 }}
-                          className="h-4 bg-gradient-to-r from-purple-400/30 to-transparent rounded"
-                        />
-                      </div>
-                      
-                      {/* AI Suggestion Popup */}
+                    <div className="space-y-4 mb-6">
+                      <motion.div
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: "100%" }}
+                        transition={{ duration: 2, delay: 3.5 }}
+                        className="h-5 bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-lg flex items-center px-3"
+                      >
+                        <span className="text-white text-sm font-opensans">Today was absolutely amazing! I finally got to try that new cafe...</span>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: "85%" }}
+                        transition={{ duration: 2, delay: 4 }}
+                        className="h-5 bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-lg flex items-center px-3"
+                      >
+                        <span className="text-white text-sm font-opensans">The coffee was incredible and the atmosphere was so peaceful...</span>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, width: 0 }}
+                        animate={{ opacity: 1, width: "70%" }}
+                        transition={{ duration: 2, delay: 4.5 }}
+                        className="h-5 bg-gradient-to-r from-emerald-400/40 via-cyan-400/40 to-blue-400/40 rounded-lg animate-pulse"
+                      >
+                        <div className="flex items-center px-3 h-full">
+                          <span className="text-white text-sm font-opensans">I feel so grateful for</span>
+                          <div className="w-2 h-4 bg-cyan-400 ml-1 animate-pulse" />
+                        </div>
+                      </motion.div>
+                    </div>
+                    
+                    {/* Multiple AI Suggestions */}
+                    <div className="space-y-3">
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: 4 }}
-                        className="mt-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-lg p-3"
+                        transition={{ duration: 0.5, delay: 5 }}
+                        className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/50 rounded-xl p-4"
                       >
-                        <div className="flex items-start gap-2">
-                          <Lightbulb className="w-4 h-4 text-yellow-400 mt-0.5" />
+                        <div className="flex items-start gap-3">
+                          <Lightbulb className="w-5 h-5 text-yellow-400 mt-0.5" />
                           <div>
-                            <div className="text-white text-sm font-medium">AI Suggestion</div>
-                            <div className="text-gray-300 text-xs">Try writing about what made you smile today...</div>
+                            <div className="text-white font-bold text-sm">💡 AI Writing Suggestion</div>
+                            <div className="text-gray-200 text-sm font-opensans">Try expanding on what made this moment special - your emotions, the details...</div>
+                          </div>
+                        </div>
+                      </motion.div>
+                      
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 5.3 }}
+                        className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/50 rounded-xl p-4"
+                      >
+                        <div className="flex items-start gap-3">
+                          <Sparkles className="w-5 h-5 text-purple-400 mt-0.5" />
+                          <div>
+                            <div className="text-white font-bold text-sm">🎯 Mood Insight</div>
+                            <div className="text-gray-200 text-sm font-opensans">Your writing shows joy and gratitude - perfect for a happiness entry!</div>
                           </div>
                         </div>
                       </motion.div>
                     </div>
                   </div>
+                </motion.div>
 
-                  {/* Photo Analysis Demo */}
-                  <div className="bg-white/10 rounded-xl p-6 border border-white/20">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Camera className="w-5 h-5 text-pink-400" />
-                      <h4 className="text-white font-semibold">Photo Analysis</h4>
-                    </div>
-                    
-                    <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                      <div className="w-20 h-20 bg-gradient-to-br from-pink-400 to-purple-500 rounded-lg mb-3 flex items-center justify-center">
-                        <Camera className="w-8 h-8 text-white" />
-                      </div>
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 1, delay: 4.5 }}
-                        className="space-y-2"
-                      >
-                        <div className="text-white text-sm">AI detected: Sunset, Friends, Happy</div>
-                        <div className="flex gap-2">
-                          <Badge className="bg-purple-500/20 text-purple-300 border-0">😊 Joy</Badge>
-                          <Badge className="bg-pink-500/20 text-pink-300 border-0">🌅 Nature</Badge>
-                        </div>
-                      </motion.div>
+                {/* Live Analytics Dashboard */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 3.4 }}
+                  className="bg-gradient-to-br from-cyan-900/40 to-blue-900/40 rounded-2xl p-6 border-2 border-cyan-500/50 hover:border-green-400/60 transition-all duration-500 shadow-2xl"
+                >
+                  <div className="flex items-center gap-3 mb-6">
+                    <motion.div 
+                      className="p-3 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500"
+                      whileHover={{ scale: 1.1, rotate: -5 }}
+                    >
+                      <BarChart3 className="w-6 h-6 text-white" />
+                    </motion.div>
+                    <div>
+                      <h4 className="text-xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent font-inter">
+                        📊 Live Analytics
+                      </h4>
+                      <p className="text-gray-300 text-sm font-opensans">Real-time insights</p>
                     </div>
                   </div>
-                </div>
-
-                {/* Right: Analytics & Features */}
-                <div className="space-y-6">
                   
-                  {/* Mood Tracking */}
-                  <div className="bg-white/10 rounded-xl p-6 border border-white/20">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Smile className="w-5 h-5 text-emerald-400" />
-                      <h4 className="text-white font-semibold">Mood Analytics</h4>
+                  {/* Mood Trend Chart */}
+                  <div className="bg-gray-900/60 rounded-xl p-4 mb-4 border border-cyan-400/30">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-cyan-300 font-bold text-sm">🎭 This Week's Mood</span>
+                      <span className="text-emerald-400 font-bold text-xs">📈 Trending Up!</span>
                     </div>
-                    
-                    <div className="bg-white/5 rounded-lg p-4 border border-white/10">
-                      <div className="flex justify-between items-center mb-3">
-                        <span className="text-gray-300 text-sm">This Week</span>
-                        <span className="text-emerald-400 text-sm font-medium">↗ Trending Up</span>
-                      </div>
-                      <div className="space-y-2">
-                        {['😊', '🤔', '😄', '😐', '🎉'].map((emoji, i) => (
-                          <motion.div
-                            key={i}
-                            initial={{ width: 0 }}
-                            animate={{ width: `${Math.random() * 60 + 20}%` }}
-                            transition={{ duration: 1, delay: 5 + i * 0.2 }}
-                            className="flex items-center gap-3"
-                          >
-                            <span className="text-lg">{emoji}</span>
-                            <div className="flex-1 bg-white/10 rounded-full h-2">
-                              <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full" />
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Achievements */}
-                  <div className="bg-white/10 rounded-xl p-6 border border-white/20">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Trophy className="w-5 h-5 text-amber-400" />
-                      <h4 className="text-white font-semibold">Achievements</h4>
-                    </div>
-                    
-                    <div className="space-y-3">
+                    <div className="space-y-2">
                       {[
-                        { icon: "🏆", title: "7-Day Streak", desc: "Keep it up!" },
-                        { icon: "📝", title: "100 Words", desc: "Just unlocked" },
-                        { icon: "🎯", title: "Goal Crusher", desc: "Coming soon..." }
-                      ].map((achievement, i) => (
+                        { emoji: '😊', value: 85, color: 'from-green-400 to-emerald-500' },
+                        { emoji: '🤔', value: 45, color: 'from-yellow-400 to-orange-500' },
+                        { emoji: '😄', value: 92, color: 'from-pink-400 to-purple-500' },
+                        { emoji: '😐', value: 30, color: 'from-gray-400 to-gray-500' },
+                        { emoji: '🎉', value: 78, color: 'from-cyan-400 to-blue-500' }
+                      ].map((mood, i) => (
                         <motion.div
                           key={i}
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.5, delay: 6 + i * 0.3 }}
-                          className="flex items-center gap-3 bg-white/5 rounded-lg p-3 border border-white/10"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${mood.value}%` }}
+                          transition={{ duration: 1.5, delay: 5.5 + i * 0.2 }}
+                          className="flex items-center gap-3"
                         >
-                          <span className="text-2xl">{achievement.icon}</span>
-                          <div>
-                            <div className="text-white text-sm font-medium">{achievement.title}</div>
-                            <div className="text-gray-400 text-xs">{achievement.desc}</div>
+                          <span className="text-xl">{mood.emoji}</span>
+                          <div className="flex-1 bg-gray-700/50 rounded-full h-3 overflow-hidden">
+                            <motion.div 
+                              className={`h-full bg-gradient-to-r ${mood.color} rounded-full shadow-lg`}
+                              initial={{ width: 0 }}
+                              animate={{ width: "100%" }}
+                              transition={{ duration: 1, delay: 5.5 + i * 0.2 }}
+                            />
                           </div>
+                          <span className="text-white text-xs font-bold w-8">{mood.value}%</span>
                         </motion.div>
                       ))}
                     </div>
                   </div>
-                </div>
+
+                  {/* Quick Stats */}
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { icon: '📝', label: 'Entries', value: '47', color: 'text-purple-300' },
+                      { icon: '🔥', label: 'Streak', value: '12', color: 'text-orange-300' },
+                      { icon: '📊', label: 'Words', value: '8.2k', color: 'text-green-300' },
+                      { icon: '🎯', label: 'Goals', value: '3/5', color: 'text-cyan-300' }
+                    ].map((stat, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5, delay: 6.5 + i * 0.1 }}
+                        className="bg-gray-800/60 rounded-lg p-3 border border-cyan-400/30 text-center hover:scale-105 transition-transform"
+                      >
+                        <div className="text-lg mb-1">{stat.icon}</div>
+                        <div className={`text-lg font-bold ${stat.color}`}>{stat.value}</div>
+                        <div className="text-gray-400 text-xs font-opensans">{stat.label}</div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
               </div>
 
-              {/* Demo Action Buttons */}
+              {/* Bottom Feature Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                {/* AI Photo Analysis */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 3.6 }}
+                  className="bg-gradient-to-br from-pink-900/40 to-red-900/40 rounded-2xl p-6 border-2 border-pink-500/50 hover:border-yellow-400/60 transition-all duration-500 shadow-2xl"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <motion.div 
+                      className="p-3 rounded-xl bg-gradient-to-br from-pink-500 to-red-500"
+                      whileHover={{ scale: 1.1, rotate: 10 }}
+                    >
+                      <Camera className="w-6 h-6 text-white" />
+                    </motion.div>
+                    <h4 className="text-lg font-bold bg-gradient-to-r from-pink-300 to-red-300 bg-clip-text text-transparent font-inter">
+                      📸 AI Photo Magic
+                    </h4>
+                  </div>
+                  
+                  <div className="bg-gray-900/60 rounded-xl p-4 border border-pink-400/30">
+                    <div className="w-full h-24 bg-gradient-to-br from-pink-400 via-purple-500 to-blue-500 rounded-lg mb-3 flex items-center justify-center relative overflow-hidden">
+                      <motion.div
+                        className="absolute inset-0 bg-white/20"
+                        animate={{ 
+                          background: [
+                            'linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0.1) 100%)',
+                            'linear-gradient(45deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%)'
+                          ]
+                        }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                      <Camera className="w-10 h-10 text-white/80" />
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 1, delay: 7 }}
+                    >
+                      <div className="text-white font-bold text-sm mb-2">🤖 AI Analysis Complete:</div>
+                      <div className="text-gray-200 text-xs mb-3 font-opensans">Beach sunset, friends laughing, pure joy detected!</div>
+                      <div className="flex flex-wrap gap-1">
+                        <Badge className="bg-yellow-500/20 text-yellow-300 border-0 text-xs">😊 Happy</Badge>
+                        <Badge className="bg-orange-500/20 text-orange-300 border-0 text-xs">🌅 Sunset</Badge>
+                        <Badge className="bg-blue-500/20 text-blue-300 border-0 text-xs">👥 Friends</Badge>
+                      </div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                {/* Achievement System */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 3.8 }}
+                  className="bg-gradient-to-br from-yellow-900/40 to-orange-900/40 rounded-2xl p-6 border-2 border-yellow-500/50 hover:border-purple-400/60 transition-all duration-500 shadow-2xl"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <motion.div 
+                      className="p-3 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-500"
+                      whileHover={{ scale: 1.1, rotate: -10 }}
+                    >
+                      <Trophy className="w-6 h-6 text-white" />
+                    </motion.div>
+                    <h4 className="text-lg font-bold bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent font-inter">
+                      🏆 Achievements
+                    </h4>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {[
+                      { icon: "🔥", title: "7-Day Streak!", desc: "Keep the momentum!", color: "from-red-500/20 to-orange-500/20", border: "border-red-400/50", new: true },
+                      { icon: "📚", title: "Story Master", desc: "100+ entries written", color: "from-purple-500/20 to-pink-500/20", border: "border-purple-400/50", new: false },
+                      { icon: "🎯", title: "Goal Achiever", desc: "5 goals completed", color: "from-green-500/20 to-emerald-500/20", border: "border-green-400/50", new: false }
+                    ].map((achievement, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, delay: 7.5 + i * 0.2 }}
+                        className={`flex items-center gap-3 bg-gradient-to-r ${achievement.color} rounded-lg p-3 border ${achievement.border} relative overflow-hidden`}
+                      >
+                        {achievement.new && (
+                          <motion.div
+                            className="absolute top-0 right-0 bg-gradient-to-r from-yellow-400 to-orange-400 text-black text-xs font-bold px-2 py-1 rounded-bl-lg"
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            NEW!
+                          </motion.div>
+                        )}
+                        <span className="text-2xl">{achievement.icon}</span>
+                        <div>
+                          <div className="text-white font-bold text-sm">{achievement.title}</div>
+                          <div className="text-gray-300 text-xs font-opensans">{achievement.desc}</div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Smart Insights */}
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 4.0 }}
+                  className="bg-gradient-to-br from-green-900/40 to-emerald-900/40 rounded-2xl p-6 border-2 border-green-500/50 hover:border-cyan-400/60 transition-all duration-500 shadow-2xl"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <motion.div 
+                      className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500"
+                      whileHover={{ scale: 1.1 }}
+                      animate={{ rotate: [0, 5, -5, 0] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                    >
+                      <Brain className="w-6 h-6 text-white" />
+                    </motion.div>
+                    <h4 className="text-lg font-bold bg-gradient-to-r from-green-300 to-emerald-300 bg-clip-text text-transparent font-inter">
+                      🧠 AI Insights
+                    </h4>
+                  </div>
+                  
+                  <div className="bg-gray-900/60 rounded-xl p-4 border border-green-400/30">
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 1, delay: 8 }}
+                      className="space-y-3"
+                    >
+                      <div className="text-green-300 font-bold text-sm">🎯 Today's Insight:</div>
+                      <div className="text-white text-sm font-opensans leading-relaxed">
+                        "Your writing shows increased positivity this week! You mention gratitude 40% more than usual."
+                      </div>
+                      <div className="flex items-center gap-2 mt-3">
+                        <div className="flex gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <motion.div
+                              key={i}
+                              className="w-2 h-2 bg-green-400 rounded-full"
+                              animate={{ scale: [1, 1.3, 1] }}
+                              transition={{ duration: 1, delay: 8.5 + i * 0.1, repeat: Infinity }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-green-300 text-xs font-bold">Analyzing patterns...</span>
+                      </div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Epic Call-to-Action Section */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 7 }}
-                className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
+                transition={{ duration: 0.8, delay: 9 }}
+                className="mt-12 text-center bg-gradient-to-r from-purple-900/30 via-pink-900/30 to-cyan-900/30 rounded-3xl p-8 border-2 border-gradient-to-r border-purple-500/50"
               >
-                <Button
-                  onClick={handleDemo}
-                  className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-xl transition-all duration-300"
+                <motion.h3
+                  className="text-4xl font-bold mb-4 font-montserrat"
+                  animate={{ scale: [1, 1.02, 1] }}
+                  transition={{ duration: 3, repeat: Infinity }}
                 >
-                  <Play className="w-4 h-4 mr-2" />
-                  Try Full Demo
-                </Button>
-                <Button
-                  onClick={onGetStarted}
-                  variant="outline"
-                  className="px-6 py-3 border-2 border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/10 rounded-xl backdrop-blur-sm transition-all duration-300"
+                  <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent">
+                    🚀 Ready to Transform Your Writing?
+                  </span>
+                </motion.h3>
+                <motion.p
+                  className="text-xl text-gray-200 mb-8 font-opensans"
+                  initial={{ opacity: 0.8 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
                 >
-                  <ArrowRight className="w-4 h-4 mr-2" />
-                  Start Writing Now
-                </Button>
+                  <span className="text-cyan-300 font-bold">Join thousands of writers</span> who've discovered the power of AI-assisted journaling!
+                </motion.p>
+                
+                <div className="flex flex-col lg:flex-row gap-6 justify-center items-center">
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      onClick={handleDemo}
+                      className="px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white border-0 rounded-2xl text-lg font-bold shadow-2xl shadow-purple-500/30 transition-all duration-300 font-inter"
+                    >
+                      <Play className="w-5 h-5 mr-2" />
+                      🎯 Try Full Interactive Demo
+                    </Button>
+                  </motion.div>
+                  
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      onClick={onGetStarted}
+                      className="px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white border-0 rounded-2xl text-lg font-bold shadow-2xl shadow-cyan-500/30 transition-all duration-300 font-inter"
+                    >
+                      <ArrowRight className="w-5 h-5 mr-2" />
+                      ✨ Start Writing Now - FREE!
+                    </Button>
+                  </motion.div>
+                  
+                  <motion.div
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Button
+                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                      variant="outline"
+                      className="px-8 py-4 border-2 border-yellow-400/60 text-yellow-300 hover:bg-yellow-500/10 hover:border-yellow-300 rounded-2xl text-lg font-bold backdrop-blur-sm transition-all duration-300 font-inter"
+                    >
+                      <Sparkles className="w-5 h-5 mr-2" />
+                      🎨 Explore More Features
+                    </Button>
+                  </motion.div>
+                </div>
+                
+                {/* Feature Highlights */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.8, delay: 9.5 }}
+                  className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4"
+                >
+                  {[
+                    { icon: '🤖', text: 'AI-Powered', color: 'text-purple-300' },
+                    { icon: '📊', text: 'Smart Analytics', color: 'text-cyan-300' },
+                    { icon: '🎯', text: 'Goal Tracking', color: 'text-green-300' },
+                    { icon: '🏆', text: 'Achievements', color: 'text-yellow-300' }
+                  ].map((feature, i) => (
+                    <motion.div
+                      key={i}
+                      className="flex items-center gap-2 justify-center"
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 9.7 + i * 0.1 }}
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <span className="text-2xl">{feature.icon}</span>
+                      <span className={`font-bold text-sm ${feature.color} font-inter`}>{feature.text}</span>
+                    </motion.div>
+                  ))}
+                </motion.div>
               </motion.div>
             </div>
           </motion.div>
