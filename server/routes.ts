@@ -56,28 +56,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await createUser(userData);
       req.session.userId = user.id;
       
-      // Create initial user stats for new user
+      // Initialize user progress tracking
       try {
         await storage.createUserStats(user.id);
-      } catch (statsError) {
-        console.error('Failed to create user stats:', statsError);
-      }
-      
-      // Create "First Steps" achievement for new users
-      try {
-        await storage.createAchievement({
-          userId: user.id,
-          title: "Welcome to JournOwl!",
-          description: "You've taken your first step on the journey to wise journaling",
-          icon: "🦉",
-          type: "milestone",
-          category: "getting_started",
-          rarity: "common",
-          xpReward: 100,
-          unlockedAt: new Date()
-        });
-      } catch (achievementError) {
-        console.error('Failed to create welcome achievement:', achievementError);
+        const { AchievementTracker } = await import("./services/achievement-tracker");
+        await AchievementTracker.initializeUserProgress(user.id);
+      } catch (initError) {
+        console.error('Failed to initialize user progress:', initError);
       }
       
       // Send welcome email
@@ -278,6 +263,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...entryData,
         userId: req.session.userId,
       });
+      
+      // Track the journal entry for achievements and goals
+      const { AchievementTracker } = await import("./services/achievement-tracker");
+      await AchievementTracker.trackJournalEntry(req.session.userId, entry);
+      
+      // Track mood if provided
+      if (entry.mood) {
+        await AchievementTracker.trackMoodEntry(req.session.userId, entry.mood);
+      }
+      
       res.json(entry);
     } catch (error: any) {
       res.status(400).json({ message: error.message });

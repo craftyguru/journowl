@@ -198,6 +198,12 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
+  async updateAchievement(id: number, updates: Partial<Achievement>): Promise<void> {
+    await db.update(achievements)
+      .set(updates)
+      .where(eq(achievements.id, id));
+  }
+
   async getUserAchievements(userId: number): Promise<Achievement[]> {
     const result = await db.select().from(achievements)
       .where(eq(achievements.userId, userId))
@@ -366,6 +372,20 @@ export class DatabaseStorage implements IStorage {
     await db.update(goals)
       .set({ ...updates, updatedAt: new Date() })
       .where(and(eq(goals.id, id), eq(goals.userId, userId)));
+  }
+
+  async getGoalByGoalId(userId: number, goalId: string): Promise<Goal | undefined> {
+    const result = await db.select().from(goals)
+      .where(and(eq(goals.userId, userId), eq(goals.goalId, goalId)))
+      .limit(1);
+    return result[0];
+  }
+
+  async getAchievementByAchievementId(userId: number, achievementId: string): Promise<Achievement | undefined> {
+    const result = await db.select().from(achievements)
+      .where(and(eq(achievements.userId, userId), eq(achievements.achievementId, achievementId)))
+      .limit(1);
+    return result[0];
   }
 
   private async createDefaultGoals(userId: number): Promise<void> {

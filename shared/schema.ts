@@ -53,11 +53,16 @@ export const journalEntries = pgTable("journal_entries", {
 export const achievements = pgTable("achievements", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  type: text("type").notNull(), // 'streak', 'wordcount', 'level', etc.
+  achievementId: text("achievement_id").notNull(), // unique identifier for the achievement type
   title: text("title").notNull(),
   description: text("description").notNull(),
   icon: text("icon").notNull(),
-  unlockedAt: timestamp("unlocked_at").defaultNow(),
+  rarity: text("rarity").notNull(), // common, rare, epic, legendary
+  type: text("type").notNull(), // 'streak', 'writing', 'mood', etc.
+  targetValue: integer("target_value"), // what they need to achieve
+  currentValue: integer("current_value").default(0), // their current progress
+  unlockedAt: timestamp("unlocked_at"), // null if not unlocked yet
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const userStats = pgTable("user_stats", {
@@ -82,14 +87,17 @@ export const moodTrends = pgTable("mood_trends", {
 export const goals = pgTable("goals", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
+  goalId: text("goal_id").notNull(), // unique identifier for the goal type
   title: text("title").notNull(),
   description: text("description"),
+  type: text("type").notNull(), // "streak", "writing", "mood", etc.
+  difficulty: text("difficulty").notNull(), // beginner, intermediate, advanced
   targetValue: integer("target_value").notNull(),
   currentValue: integer("current_value").default(0),
-  type: text("type").notNull(), // "streak", "entries", "words"
   isCompleted: boolean("is_completed").default(false),
   deadline: timestamp("deadline"),
   createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
 });
 
 export const journalPrompts = pgTable("journal_prompts", {
