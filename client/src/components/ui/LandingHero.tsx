@@ -186,25 +186,25 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-20 max-w-7xl mx-auto px-6 py-20 pt-32">
+      <div className="relative z-20 mobile-container py-8 sm:py-12 lg:py-20 pt-16 sm:pt-24 lg:pt-32">
         
         {/* Hero Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-8 sm:mb-12 lg:mb-16"
         >
           {/* JournOwl Brand Title - Most Prominent */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.1 }}
-            className="mb-8"
+            className="mb-4 sm:mb-6 lg:mb-8"
           >
-            <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-4 leading-relaxed" 
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-2 sm:mb-4 leading-tight" 
                 style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)', lineHeight: '1.2' }}>
-              <svg className="inline-block w-16 h-16 md:w-20 md:h-20 mr-3 mb-2" viewBox="0 0 100 100" fill="none">
+              <svg className="inline-block w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 mr-2 sm:mr-3 mb-1 sm:mb-2" viewBox="0 0 100 100" fill="none">
                 <circle cx="50" cy="45" r="25" fill="#8B4513"/>
                 <circle cx="42" cy="40" r="4" fill="white"/>
                 <circle cx="58" cy="40" r="4" fill="white"/>
@@ -221,7 +221,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl md:text-2xl font-bold"
+              className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold"
               style={{ fontFamily: '"Rock Salt", cursive' }}
             >
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg">
@@ -235,9 +235,9 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="inline-flex items-center gap-2 px-6 py-3 mb-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm"
+            className="inline-flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 lg:mb-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm"
           >
-            <svg className="inline-block w-8 h-8 animate-bounce" viewBox="0 0 100 100" fill="none">
+            <svg className="inline-block w-6 h-6 sm:w-8 sm:h-8 animate-bounce" viewBox="0 0 100 100" fill="none">
               <circle cx="50" cy="45" r="25" fill="#8B4513"/>
               <circle cx="42" cy="40" r="4" fill="white"/>
               <circle cx="58" cy="40" r="4" fill="white"/>
@@ -248,7 +248,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
               <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
             </svg>
-            <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-semibold" 
+            <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-semibold text-xs sm:text-sm" 
                   style={{ fontFamily: '"Rock Salt", cursive' }}>
               AI-Powered Smart Journaling
             </span>
@@ -262,7 +262,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-4xl md:text-6xl font-bold mb-8 leading-tight"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 lg:mb-8 leading-tight"
             style={{ fontFamily: '"Rock Salt", cursive' }}
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-300 to-amber-300 bg-clip-text text-transparent drop-shadow-lg">
@@ -283,7 +283,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.0 }}
-            className="text-lg md:text-xl max-w-4xl mx-auto mb-8 leading-relaxed font-semibold"
+            className="text-sm sm:text-base md:text-lg lg:text-xl max-w-4xl mx-auto mb-4 sm:mb-6 lg:mb-8 leading-relaxed font-semibold px-4"
             style={{ fontFamily: '"Rock Salt", cursive' }}
           >
             <span className="bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-md">
@@ -298,7 +298,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="flex items-center justify-center gap-4 mb-12"
+            className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 mb-6 sm:mb-8 lg:mb-12"
           >
             <div className="flex -space-x-3">
               {['👩‍💼', '👨‍💻', '🧒', '👩‍🎨', '👨‍🏫'].map((emoji, i) => (
@@ -307,7 +307,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   initial={{ scale: 0, rotate: 180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ delay: 0.8 + i * 0.1, type: "spring" }}
-                  className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xl border-4 border-white shadow-lg"
+                  className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-sm sm:text-lg lg:text-xl border-2 sm:border-4 border-white shadow-lg"
                 >
                   {emoji}
                 </motion.div>
@@ -316,9 +316,9 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             <div className="text-gray-300">
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                <span className="text-lg font-semibold bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent" 
+                <span className="text-sm sm:text-lg font-semibold bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent" 
                       style={{ fontFamily: '"Rock Salt", cursive' }}>4.9/5</span>
-                <span className="text-sm bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-medium" 
+                <span className="text-xs sm:text-sm bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-medium" 
                       style={{ fontFamily: '"Rock Salt", cursive' }}>from 2,847+ happy writers</span>
               </div>
             </div>
@@ -329,7 +329,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center mb-20"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 lg:mb-20"
           >
             <motion.div
               whileHover={{ scale: 1.05 }}
@@ -338,7 +338,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               <Button
                 onClick={onGetStarted}
                 size="lg"
-                className="px-8 py-4 text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
+                className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 w-full sm:w-auto"
                 style={{ fontFamily: '"Rock Salt", cursive' }}
               >
                 <BookOpen className="w-5 h-5 mr-2" />
@@ -355,7 +355,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 variant="outline"
                 size="lg"
                 onClick={handleDemo}
-                className="px-8 py-4 text-lg font-semibold border-2 border-purple-400/50 text-purple-200 hover:bg-purple-500/10 rounded-xl backdrop-blur-sm transition-all duration-300"
+                className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold border-2 border-purple-400/50 text-purple-200 hover:bg-purple-500/10 rounded-xl backdrop-blur-sm transition-all duration-300 w-full sm:w-auto"
                 style={{ fontFamily: '"Rock Salt", cursive' }}
               >
                 <Play className="w-5 h-5 mr-2" />
@@ -370,10 +370,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="mb-20"
+          className="mb-8 sm:mb-12 lg:mb-20"
         >
           <motion.h2 
-            className="text-5xl font-bold text-center mb-6"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-3 sm:mb-4 lg:mb-6"
             style={{ fontFamily: '"Rock Salt", cursive' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -388,7 +388,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             </span>
           </motion.h2>
           <motion.p 
-            className="text-2xl text-center mb-12 max-w-4xl mx-auto font-opensans leading-relaxed"
+            className="text-sm sm:text-base md:text-lg lg:text-2xl text-center mb-6 sm:mb-8 lg:mb-12 max-w-4xl mx-auto font-opensans leading-relaxed px-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
@@ -398,7 +398,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             <span className="text-pink-300 font-semibold">🎯 with AI-powered insights!</span>
           </motion.p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8 lg:mb-12">
             {mainFeatures.map((feature, index) => (
               <motion.div
                 key={index}
@@ -409,31 +409,31 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 className="group relative"
               >
                 <Card className="bg-gradient-to-br from-gray-900/95 to-black/90 backdrop-blur-lg border-2 border-purple-500/30 hover:border-cyan-400/60 transition-all duration-500 h-full overflow-hidden shadow-2xl hover:shadow-purple-500/20 group-hover:scale-105">
-                  <CardContent className="p-8 relative">
+                  <CardContent className="p-4 sm:p-6 lg:p-8 relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-transparent to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     <div className="relative z-10">
-                      <div className="flex items-start gap-4 mb-6">
+                      <div className="flex items-start gap-2 sm:gap-3 lg:gap-4 mb-3 sm:mb-4 lg:mb-6">
                         <motion.div 
-                          className={`p-4 rounded-2xl bg-gradient-to-br ${feature.color} shadow-lg group-hover:scale-125 transition-all duration-500 group-hover:rotate-6`}
+                          className={`p-2 sm:p-3 lg:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br ${feature.color} shadow-lg group-hover:scale-125 transition-all duration-500 group-hover:rotate-6`}
                           whileHover={{ y: -5 }}
                         >
-                          <feature.icon className="w-7 h-7 text-white drop-shadow-lg" />
+                          <feature.icon className="w-4 h-4 sm:w-6 sm:h-6 lg:w-7 lg:h-7 text-white drop-shadow-lg" />
                         </motion.div>
                         <div className="flex-1">
                           <motion.h3 
-                            className="text-2xl font-bold bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent mb-3 font-inter"
+                            className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent mb-2 sm:mb-3 font-inter"
                             initial={{ opacity: 0.8 }}
                             whileHover={{ opacity: 1, scale: 1.02 }}
                           >
                             {feature.title}
                           </motion.h3>
-                          <Badge variant="secondary" className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-cyan-300 border border-cyan-400/30 font-bold text-sm px-3 py-1">
+                          <Badge variant="secondary" className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-cyan-300 border border-cyan-400/30 font-bold text-xs sm:text-sm px-2 sm:px-3 py-1">
                             ✨ {feature.stats}
                           </Badge>
                         </div>
                       </div>
                       <motion.p 
-                        className="text-gray-200 leading-relaxed font-medium text-lg font-opensans tracking-wide"
+                        className="text-gray-200 leading-relaxed font-medium text-sm sm:text-base lg:text-lg font-opensans tracking-wide"
                         initial={{ opacity: 0.9 }}
                         whileHover={{ opacity: 1, x: 5 }}
                       >
@@ -457,10 +457,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.2 }}
-          className="mb-20"
+          className="mb-8 sm:mb-12 lg:mb-20"
         >
           <motion.h3 
-            className="text-4xl font-bold text-center mb-12 font-roboto"
+            className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center mb-6 sm:mb-8 lg:mb-12 font-roboto"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 1.2 }}
@@ -474,34 +474,34 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             </span>
           </motion.h3>
           
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {capabilities.map((category, categoryIndex) => (
               <motion.div
                 key={categoryIndex}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.4 + categoryIndex * 0.2 }}
-                className="bg-gradient-to-br from-gray-900/90 to-black/80 backdrop-blur-lg rounded-xl p-6 border-2 border-purple-500/40 hover:border-cyan-400/60 shadow-2xl hover:shadow-purple-500/20 transition-all duration-500"
+                className="bg-gradient-to-br from-gray-900/90 to-black/80 backdrop-blur-lg rounded-xl p-4 sm:p-6 border-2 border-purple-500/40 hover:border-cyan-400/60 shadow-2xl hover:shadow-purple-500/20 transition-all duration-500"
               >
                 <motion.h4 
-                  className="text-2xl font-bold mb-6 bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent font-inter"
+                  className="text-lg sm:text-xl lg:text-2xl font-bold mb-3 sm:mb-4 lg:mb-6 bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent font-inter"
                   whileHover={{ scale: 1.05 }}
                 >
                   🌟 {category.category}
                 </motion.h4>
-                <div className="space-y-4">
+                <div className="space-y-2 sm:space-y-3 lg:space-y-4">
                   {category.items.map((item, itemIndex) => (
                     <motion.div
                       key={itemIndex}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.4, delay: 1.6 + categoryIndex * 0.2 + itemIndex * 0.1 }}
-                      className="flex items-center gap-3"
+                      className="flex items-center gap-2 sm:gap-3"
                     >
-                      <div className={`p-2 rounded-lg ${item.highlight ? 'bg-purple-500/30' : 'bg-white/15'}`}>
-                        <item.icon className={`w-4 h-4 ${item.highlight ? 'text-purple-300' : 'text-gray-200'}`} />
+                      <div className={`p-1.5 sm:p-2 rounded-lg ${item.highlight ? 'bg-purple-500/30' : 'bg-white/15'}`}>
+                        <item.icon className={`w-3 h-3 sm:w-4 sm:h-4 ${item.highlight ? 'text-purple-300' : 'text-gray-200'}`} />
                       </div>
-                      <span className={`${item.highlight ? 'text-white font-semibold' : 'text-gray-100 font-medium'}`}>
+                      <span className={`text-sm sm:text-base ${item.highlight ? 'text-white font-semibold' : 'text-gray-100 font-medium'}`}>
                         {item.text}
                       </span>
                       {item.highlight && <CheckCircle className="w-4 h-4 text-emerald-400 ml-auto" />}
