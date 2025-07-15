@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -54,6 +55,12 @@ interface ActivityLog {
 }
 
 export default function AdminDashboard() {
+  // Fetch admin user data
+  const { data: userResponse } = useQuery({
+    queryKey: ["/api/auth/me"],
+  });
+  
+  const user = userResponse?.user;
   const [users, setUsers] = useState<User[]>([]);
   const [campaigns, setCampaigns] = useState<EmailCampaign[]>([]);
   const [analytics, setAnalytics] = useState<any>({});
@@ -184,13 +191,22 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900 dark:to-blue-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-            Admin Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Manage users, analytics, and email campaigns
-          </p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+              Admin Dashboard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">
+              Welcome back, {user?.username?.replace('_Admin', '') || 'Admin'}! Manage users, analytics, and email campaigns
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => window.location.href = '/api/auth/logout'}
+            className="border-red-300 text-red-600 hover:bg-red-50"
+          >
+            Logout
+          </Button>
         </div>
 
         {/* Quick Stats */}
