@@ -469,13 +469,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       }
     }
     
-    // Set timeout for full conversation mode (after holding for 2 seconds)
-    const timeout = setTimeout(async () => {
-      console.log('Long hold detected - enabling full conversation mode');
-      await fetchPromptUsage();
-      setShowUsageWarning(true);
-    }, 2000);
-    setHoldTimeout(timeout);
+    // No timeout needed - just regular click and hold to record
   };
 
   // Handle AI mic button mouse up (end hold-to-speak)
@@ -484,11 +478,6 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     if (e.button !== 0) return; // Only left mouse button
     
     console.log('AI mic button released');
-    
-    if (holdTimeout) {
-      clearTimeout(holdTimeout);
-      setHoldTimeout(null);
-    }
     
     // Stop recording and process the speech
     if (isAiListening && aiRecognition) {
@@ -1600,6 +1589,18 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   title={isAiListening ? "Recording... Release to send" : "Hold to record voice message"}
                 >
                   {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </Button>
+                <Button 
+                  onClick={async () => {
+                    await fetchPromptUsage();
+                    setShowUsageWarning(true);
+                  }}
+                  size="sm"
+                  variant="outline"
+                  className="bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
+                  title="Enable full conversation mode"
+                >
+                  <MessageSquare className="w-4 h-4" />
                 </Button>
                 <Button 
                   onClick={() => sendToAi(aiInput)}
