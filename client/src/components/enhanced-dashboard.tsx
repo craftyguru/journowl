@@ -73,12 +73,7 @@ const emmaDemoAchievements = [
   { id: 5, title: "AI Collaborator", description: "Used 50 AI prompts", icon: "🤖", unlocked: true, rarity: "rare" },
 ];
 
-const aiInsights = [
-  "Your writing style shows increased positivity over the past month",
-  "You tend to write longer entries when discussing personal growth",
-  "Evening entries often contain more reflective content",
-  "Your vocabulary has expanded by 15% since starting"
-];
+// AI insights will be fetched from backend instead of hardcoded
 
 const prompts = [
   "What are three things you're grateful for today?",
@@ -113,6 +108,10 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
   const { data: achievementsResponse } = useQuery({
     queryKey: ["/api/achievements"],
   });
+
+  const { data: insightsResponse } = useQuery({
+    queryKey: ["/api/insights"],
+  });
   
   const user = userResponse?.user;
   
@@ -121,7 +120,14 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
   const isDemoMode = urlParams.get('demo') === 'true';
   
   // Use Emma's demo data when ?demo=true, real data otherwise
-  const stats = isDemoMode ? emmaDemoStats : (statsResponse?.stats || {});
+  const stats = isDemoMode ? emmaDemoStats : (statsResponse?.stats || {
+    totalEntries: 0,
+    currentStreak: 0,
+    totalWords: 0,
+    averageMood: 0,
+    longestStreak: 0,
+    wordsThisWeek: 0
+  });
   const entries = isDemoMode ? emmaDemoEntries : (entriesResponse || []);
   const userAchievements = isDemoMode ? emmaDemoAchievements : (achievementsResponse?.achievements || []);
 
@@ -614,7 +620,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-xl"
                   />
                   <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">47</div>
+                    <div className="text-4xl font-bold mb-2">{stats.totalEntries || 0}</div>
                     <div className="text-white/90 text-sm font-medium mb-1">Total Entries</div>
                     <div className="flex items-center gap-1 text-xs text-green-300">
                       <motion.div
@@ -623,7 +629,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       >
                         🔥
                       </motion.div>
-                      <span>+8 this week</span>
+                      <span>Keep writing!</span>
                     </div>
                   </div>
                 </motion.div>
@@ -643,11 +649,11 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     ✨
                   </motion.div>
                   <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">12,847</div>
+                    <div className="text-4xl font-bold mb-2">{(stats.totalWords || 0).toLocaleString()}</div>
                     <div className="text-white/90 text-sm font-medium mb-1">Total Words</div>
                     <div className="flex items-center gap-1 text-xs text-blue-300">
                       <TrendingUp className="w-3 h-3" />
-                      <span>Average: 273/entry</span>
+                      <span>Average: {stats.totalEntries > 0 ? Math.round((stats.totalWords || 0) / stats.totalEntries) : 0}/entry</span>
                     </div>
                   </div>
                 </motion.div>
@@ -667,11 +673,11 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     🔥
                   </motion.div>
                   <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">28</div>
+                    <div className="text-4xl font-bold mb-2">{stats.currentStreak || 0}</div>
                     <div className="text-white/90 text-sm font-medium mb-1">Current Streak</div>
                     <div className="flex items-center gap-1 text-xs text-orange-300">
                       <Trophy className="w-3 h-3" />
-                      <span>Personal Best!</span>
+                      <span>{stats.currentStreak >= stats.longestStreak ? "Personal Best!" : "Keep going!"}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -691,11 +697,11 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     😊
                   </motion.div>
                   <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">4.7</div>
+                    <div className="text-4xl font-bold mb-2">{stats.averageMood ? stats.averageMood.toFixed(1) : "0.0"}</div>
                     <div className="text-white/90 text-sm font-medium mb-1">Avg Mood</div>
                     <div className="flex items-center gap-1 text-xs text-emerald-300">
                       <Heart className="w-3 h-3" />
-                      <span>Feeling great!</span>
+                      <span>{stats.averageMood > 4 ? "Feeling great!" : stats.averageMood > 3 ? "Pretty good!" : "Getting better!"}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -715,11 +721,11 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     📸
                   </motion.div>
                   <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">156</div>
-                    <div className="text-white/90 text-sm font-medium mb-1">Photos Added</div>
+                    <div className="text-4xl font-bold mb-2">{stats.longestStreak || 0}</div>
+                    <div className="text-white/90 text-sm font-medium mb-1">Longest Streak</div>
                     <div className="flex items-center gap-1 text-xs text-pink-300">
                       <Star className="w-3 h-3" />
-                      <span>Memory keeper</span>
+                      <span>Personal record</span>
                     </div>
                   </div>
                 </motion.div>
@@ -736,7 +742,12 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   <div className="text-2xl">🤖</div>
                   <div>
                     <div className="text-white font-semibold">AI Quick Insight</div>
-                    <div className="text-purple-100 text-sm">You're 85% more positive when writing in the morning. Your happiest day this month was Friday, July 12th!</div>
+                    <div className="text-purple-100 text-sm">
+                      {isDemoMode 
+                        ? "You're 85% more positive when writing in the morning. Your happiest day this month was Friday, July 12th!" 
+                        : (insightsResponse?.insights?.[0] || "Start writing to unlock personalized insights!")
+                      }
+                    </div>
                   </div>
                 </div>
               </motion.div>

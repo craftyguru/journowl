@@ -56,6 +56,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await createUser(userData);
       req.session.userId = user.id;
       
+      // Create initial user stats for new user
+      try {
+        await storage.createUserStats(user.id);
+      } catch (statsError) {
+        console.error('Failed to create user stats:', statsError);
+      }
+      
+      // Create "First Steps" achievement for new users
+      try {
+        await storage.createAchievement({
+          userId: user.id,
+          title: "Welcome to JournOwl!",
+          description: "You've taken your first step on the journey to wise journaling",
+          icon: "🦉",
+          category: "getting_started",
+          rarity: "common",
+          xpReward: 100,
+          unlockedAt: new Date()
+        });
+      } catch (achievementError) {
+        console.error('Failed to create welcome achievement:', achievementError);
+      }
+      
       // Send welcome email
       try {
         await EmailService.sendWelcomeEmail(user);
@@ -107,8 +130,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     async (req: any, res) => {
       req.session.userId = req.user.id;
       
-      // Send welcome email for new users
+      // Send welcome email for new users and create initial data
       if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
+        // Create initial user stats
+        try {
+          await storage.createUserStats(req.user.id);
+        } catch (statsError) {
+          console.error('Failed to create user stats:', statsError);
+        }
+        
+        // Create welcome achievement
+        try {
+          await storage.createAchievement({
+            userId: req.user.id,
+            title: "Welcome to JournOwl!",
+            description: "You've taken your first step on the journey to wise journaling",
+            icon: "🦉",
+            category: "getting_started",
+            rarity: "common",
+            xpReward: 100,
+            unlockedAt: new Date()
+          });
+        } catch (achievementError) {
+          console.error('Failed to create welcome achievement:', achievementError);
+        }
+        
         await EmailService.sendWelcomeEmail(req.user);
       }
       
@@ -123,6 +169,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.userId = req.user.id;
       
       if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
+        // Create initial user stats
+        try {
+          await storage.createUserStats(req.user.id);
+        } catch (statsError) {
+          console.error('Failed to create user stats:', statsError);
+        }
+        
+        // Create welcome achievement
+        try {
+          await storage.createAchievement({
+            userId: req.user.id,
+            title: "Welcome to JournOwl!",
+            description: "You've taken your first step on the journey to wise journaling",
+            icon: "🦉",
+            category: "getting_started",
+            rarity: "common",
+            xpReward: 100,
+            unlockedAt: new Date()
+          });
+        } catch (achievementError) {
+          console.error('Failed to create welcome achievement:', achievementError);
+        }
+        
         await EmailService.sendWelcomeEmail(req.user);
       }
       
@@ -137,6 +206,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       req.session.userId = req.user.id;
       
       if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
+        // Create initial user stats
+        try {
+          await storage.createUserStats(req.user.id);
+        } catch (statsError) {
+          console.error('Failed to create user stats:', statsError);
+        }
+        
+        // Create welcome achievement
+        try {
+          await storage.createAchievement({
+            userId: req.user.id,
+            title: "Welcome to JournOwl!",
+            description: "You've taken your first step on the journey to wise journaling",
+            icon: "🦉",
+            category: "getting_started",
+            rarity: "common",
+            xpReward: 100,
+            unlockedAt: new Date()
+          });
+        } catch (achievementError) {
+          console.error('Failed to create welcome achievement:', achievementError);
+        }
+        
         await EmailService.sendWelcomeEmail(req.user);
       }
       
@@ -175,6 +267,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const limit = req.query.limit ? parseInt(req.query.limit) : 10;
       const entries = await storage.getJournalEntries(req.session.userId, limit);
       res.json(entries);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Stats endpoint
+  app.get("/api/stats", requireAuth, async (req: any, res) => {
+    try {
+      let stats = await storage.getUserStats(req.session.userId);
+      
+      // Create stats if they don't exist
+      if (!stats) {
+        stats = await storage.createUserStats(req.session.userId);
+      }
+      
+      res.json({ stats });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Achievements endpoint
+  app.get("/api/achievements", requireAuth, async (req: any, res) => {
+    try {
+      const achievements = await storage.getUserAchievements(req.session.userId);
+      res.json({ achievements });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Insights endpoint
+  app.get("/api/insights", requireAuth, async (req: any, res) => {
+    try {
+      const entries = await storage.getJournalEntries(req.session.userId, 10);
+      const stats = await storage.getUserStats(req.session.userId);
+      
+      // Generate basic insights based on user data
+      const insights = [];
+      
+      if (entries.length === 0) {
+        insights.push("Welcome to JournOwl! Start your first entry to unlock personalized insights.");
+        insights.push("Regular journaling helps improve mental clarity and emotional well-being.");
+        insights.push("Try writing about what you're grateful for today.");
+      } else {
+        if (stats?.currentStreak && stats.currentStreak > 0) {
+          insights.push(`Great job! You're on a ${stats.currentStreak}-day writing streak. Keep it going!`);
+        }
+        
+        if (stats?.totalWords && stats.totalWords > 1000) {
+          insights.push(`You've written ${stats.totalWords.toLocaleString()} words so far. That's impressive progress!`);
+        }
+        
+        if (entries.length >= 5) {
+          insights.push("You're developing a consistent journaling habit. This self-reflection practice is valuable for personal growth.");
+        }
+        
+        if (stats?.averageMood && stats.averageMood > 4) {
+          insights.push("Your average mood is quite positive! Journaling might be helping you maintain a good outlook.");
+        }
+      }
+      
+      // Add wisdom prompts
+      insights.push("🦉 Owl Wisdom: Regular reflection helps you understand patterns in your thoughts and emotions.");
+      
+      res.json({ insights });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
