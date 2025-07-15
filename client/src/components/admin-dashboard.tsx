@@ -208,10 +208,10 @@ export default function AdminDashboard() {
         <div className="mb-8 flex justify-between items-center">
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-              Admin Dashboard
+              🦉 JournOwl Admin Dashboard
             </h1>
             <p className="text-gray-600 dark:text-gray-300">
-              Welcome back, {user?.username?.replace('_Admin', '') || 'Admin'}! Manage users, analytics, and email campaigns
+              Welcome back, {user?.username?.replace('_Admin', '') || 'Admin'}! Manage your wise journaling community
             </p>
           </div>
           <Button 

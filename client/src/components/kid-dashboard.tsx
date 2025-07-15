@@ -125,11 +125,11 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       >
         <div className="relative inline-block">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Hey there, {isDemoMode ? 'Little Timmy' : (user?.username || 'Little Writer')}! 🌟
+            Hey there, {isDemoMode ? 'Little Timmy' : (user?.username || 'Little Writer')}! 🦉🌟
           </h1>
           <div className="absolute -top-4 -right-4 text-2xl animate-bounce">✨</div>
         </div>
-        <p className="text-gray-600 text-lg mt-2">Ready to share what's in your heart today?</p>
+        <p className="text-gray-600 text-lg mt-2">Welcome to JournOwl! Ready to share what's in your heart today? 🦉</p>
       </motion.div>
 
       {/* Stats Cards */}

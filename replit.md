@@ -1,8 +1,8 @@
-# MoodJournal Application
+# JournOwl Application
 
 ## Overview
 
-This is a comprehensive, multi-dashboard journaling application that provides personalized experiences for different user types. Features include animated backgrounds, AI-powered insights, comprehensive analytics, role-based dashboards, and an inviting user interface designed to encourage daily journaling habits.
+JournOwl is a comprehensive, multi-dashboard journaling application that combines the wisdom of an owl with AI-powered insights to provide personalized experiences for different user types. Features include animated backgrounds, AI-powered insights, comprehensive analytics, role-based dashboards, and an inviting user interface designed to encourage daily journaling habits.
 
 ## User Preferences
 
@@ -131,6 +131,16 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 ## Recent Changes
 
 ### July 15, 2025
+- ✅ **JournOwl Rebranding Complete**: Updated entire app to use clever "JournOwl" name (journal + owl for wisdom)
+- ✅ **Owl Emoji Integration**: Added 🦉 emojis throughout interface for smart journaling theme
+- ✅ **Landing Page Updated**: "JournOwl" branding with animated owl emoji and wisdom messaging
+- ✅ **Auth Page Enhanced**: Beautiful "🦉 JournOwl" title with owl icon and "Your Wise Writing Companion" tagline
+- ✅ **Dashboard Branding**: All dashboard types now feature JournOwl branding and owl elements
+- ✅ **Admin Interface Updated**: Admin dashboard shows "🦉 JournOwl Admin Dashboard" with community messaging
+- ✅ **Navigation Consistency**: Navbar and all components consistently use JournOwl branding
+- ✅ **Critical Bug Fixed**: Resolved AuthPage duplicate landing page issue by setting showAuth state to true
+
+### Previous Updates - July 15, 2025
 - ✅ **Database Schema Fixed**: Resolved all column missing errors by updating PostgreSQL schema
 - ✅ **Welcome Email System**: Implemented comprehensive, colorful welcome emails with app tutorial
 - ✅ **Admin Account Created**: CraftyGuru@1ofakindpiece.com set up with admin privileges

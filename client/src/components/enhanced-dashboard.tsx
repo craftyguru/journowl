@@ -213,7 +213,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-3"
           >
-            Welcome back, {isDemoMode ? 'Emma' : (user?.username || 'User')}! ✨
+            Welcome back to JournOwl, {isDemoMode ? 'Emma' : (user?.username || 'User')}! 🦉✨
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -221,7 +221,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             transition={{ delay: 0.4 }}
             className="text-gray-300 text-lg"
           >
-            Ready to continue your creative journaling journey?
+            Ready to gain wisdom through your journaling journey? 🦉
           </motion.p>
           
           <motion.div 

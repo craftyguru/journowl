@@ -101,7 +101,7 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                 className="relative mx-auto mb-6"
               >
                 <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Sparkles className="w-10 h-10 text-white" />
+                  <span className="text-4xl animate-bounce">🦉</span>
                 </div>
                 <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
                   <Heart className="w-3 h-3 text-white" />
@@ -114,9 +114,9 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                 transition={{ delay: 0.4 }}
               >
                 <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2">
-                  MoodJournal
+                  🦉 JournOwl
                 </CardTitle>
-                <p className="text-gray-300">Your Personal Wellness Companion</p>
+                <p className="text-gray-300">Your Wise Writing Companion</p>
                 <div className="flex items-center justify-center gap-2 mt-3 text-sm text-gray-400">
                   <Brain className="w-4 h-4 text-purple-400" />
                   <span>AI-Powered Insights</span>

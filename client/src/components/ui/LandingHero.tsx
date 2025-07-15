@@ -202,8 +202,8 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="inline-flex items-center gap-2 px-6 py-3 mb-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm"
           >
-            <Sparkles className="w-5 h-5 text-purple-300 animate-pulse" />
-            <span className="text-purple-200 font-medium">The Future of Journaling is Here</span>
+            <span className="text-2xl animate-bounce">🦉</span>
+            <span className="text-purple-200 font-medium">Meet JournOwl - Your Wise Writing Companion</span>
             <Badge variant="secondary" className="bg-purple-500/20 text-purple-200 border-0">
               AI-Powered
             </Badge>
@@ -236,8 +236,9 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             transition={{ duration: 0.8, delay: 0.5 }}
             className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed"
           >
-            The most advanced journaling app with AI insights, photo analysis, mood tracking, 
-            and gamified progress. Transform your thoughts into actionable self-discovery.
+            🦉 <strong>JournOwl</strong> combines the wisdom of an owl with the power of AI. 
+            Experience smart journaling with photo analysis, mood tracking, and personalized insights 
+            that help you grow wiser every day.
           </motion.p>
 
           {/* Social Proof */}
