@@ -332,7 +332,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 whileHover={{ y: -5, scale: 1.02 }}
                 className="group relative"
               >
-                <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 hover:border-purple-400/40 transition-all duration-300 h-full overflow-hidden">
+                <Card className="bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 hover:border-purple-400/60 transition-all duration-300 h-full overflow-hidden shadow-xl">
                   <CardContent className="p-8">
                     <div className="flex items-start gap-4 mb-4">
                       <div className={`p-3 rounded-xl bg-gradient-to-br ${feature.color} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
@@ -340,12 +340,12 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                        <Badge variant="secondary" className={`${feature.textColor} bg-opacity-20 border-0`}>
+                        <Badge variant="secondary" className="bg-white/20 text-white border-0 font-medium">
                           {feature.stats}
                         </Badge>
                       </div>
                     </div>
-                    <p className="text-gray-300 leading-relaxed">{feature.description}</p>
+                    <p className="text-gray-100 leading-relaxed font-medium">{feature.description}</p>
                   </CardContent>
                   
                   {/* Animated border gradient */}
@@ -376,9 +376,9 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.4 + categoryIndex * 0.2 }}
-                className="bg-white/5 backdrop-blur-md rounded-xl p-6 border border-white/10"
+                className="bg-white/15 backdrop-blur-md rounded-xl p-6 border border-white/25 shadow-lg"
               >
-                <h4 className="text-xl font-bold text-purple-300 mb-6">{category.category}</h4>
+                <h4 className="text-xl font-bold text-white mb-6">{category.category}</h4>
                 <div className="space-y-4">
                   {category.items.map((item, itemIndex) => (
                     <motion.div
@@ -388,10 +388,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                       transition={{ duration: 0.4, delay: 1.6 + categoryIndex * 0.2 + itemIndex * 0.1 }}
                       className="flex items-center gap-3"
                     >
-                      <div className={`p-2 rounded-lg ${item.highlight ? 'bg-purple-500/20' : 'bg-white/10'}`}>
-                        <item.icon className={`w-4 h-4 ${item.highlight ? 'text-purple-400' : 'text-gray-400'}`} />
+                      <div className={`p-2 rounded-lg ${item.highlight ? 'bg-purple-500/30' : 'bg-white/15'}`}>
+                        <item.icon className={`w-4 h-4 ${item.highlight ? 'text-purple-300' : 'text-gray-200'}`} />
                       </div>
-                      <span className={`${item.highlight ? 'text-white font-medium' : 'text-gray-300'}`}>
+                      <span className={`${item.highlight ? 'text-white font-semibold' : 'text-gray-100 font-medium'}`}>
                         {item.text}
                       </span>
                       {item.highlight && <CheckCircle className="w-4 h-4 text-emerald-400 ml-auto" />}
@@ -439,48 +439,217 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           </div>
         </motion.div>
 
-        {/* Demo Preview Section */}
+        {/* Interactive Live Demo Section */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 2.0 }}
-          className="text-center"
+          className="text-center mb-20"
         >
-          <h3 className="text-3xl font-bold text-white mb-8">
-            Try It Now - <span className="text-cyan-400">No Signup Required</span>
+          <h3 className="text-4xl font-bold text-white mb-4">
+            Experience It Live - <span className="text-cyan-400">Interactive Demo</span>
           </h3>
+          <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto">
+            See exactly how our AI-powered journaling transforms your writing experience
+          </p>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {[
-              { icon: Users, title: "Admin Dashboard", desc: "Analytics & Management", color: "from-purple-500 to-violet-600" },
-              { icon: PenTool, title: "Professional Writer", desc: "Advanced Features", color: "from-emerald-500 to-teal-600" },
-              { icon: Heart, title: "Kid-Friendly Mode", desc: "Safe & Fun Interface", color: "from-pink-500 to-rose-600" }
-            ].map((demo, index) => (
+          {/* Live Demo Interface */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 2.2 }}
+            className="max-w-6xl mx-auto bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-lg rounded-2xl border border-white/30 shadow-2xl overflow-hidden"
+          >
+            {/* Demo Header */}
+            <div className="bg-gradient-to-r from-purple-600/50 to-pink-600/50 p-6 border-b border-white/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
+                  </div>
+                  <span className="text-white font-semibold">MoodJournal - Smart Editor</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/80">
+                  <Brain className="w-4 h-4" />
+                  <span className="text-sm">AI Assistant Active</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Demo Content */}
+            <div className="p-8">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                {/* Left: Writing Interface */}
+                <div className="space-y-6">
+                  <div className="bg-white/10 rounded-xl p-6 border border-white/20">
+                    <div className="flex items-center gap-3 mb-4">
+                      <PenTool className="w-5 h-5 text-purple-400" />
+                      <h4 className="text-white font-semibold">Smart Writing Assistant</h4>
+                    </div>
+                    
+                    {/* Simulated Editor */}
+                    <div className="bg-white/5 rounded-lg p-4 min-h-[200px] border border-white/10">
+                      <div className="text-gray-300 text-sm mb-2">Today's Entry - March 15, 2024</div>
+                      <div className="space-y-3">
+                        <motion.div
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "100%" }}
+                          transition={{ duration: 2, delay: 2.5 }}
+                          className="h-4 bg-gradient-to-r from-purple-400/30 to-transparent rounded"
+                        />
+                        <motion.div
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "80%" }}
+                          transition={{ duration: 2, delay: 3 }}
+                          className="h-4 bg-gradient-to-r from-purple-400/30 to-transparent rounded"
+                        />
+                        <motion.div
+                          initial={{ opacity: 0, width: 0 }}
+                          animate={{ opacity: 1, width: "90%" }}
+                          transition={{ duration: 2, delay: 3.5 }}
+                          className="h-4 bg-gradient-to-r from-purple-400/30 to-transparent rounded"
+                        />
+                      </div>
+                      
+                      {/* AI Suggestion Popup */}
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 4 }}
+                        className="mt-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 rounded-lg p-3"
+                      >
+                        <div className="flex items-start gap-2">
+                          <Lightbulb className="w-4 h-4 text-yellow-400 mt-0.5" />
+                          <div>
+                            <div className="text-white text-sm font-medium">AI Suggestion</div>
+                            <div className="text-gray-300 text-xs">Try writing about what made you smile today...</div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* Photo Analysis Demo */}
+                  <div className="bg-white/10 rounded-xl p-6 border border-white/20">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Camera className="w-5 h-5 text-pink-400" />
+                      <h4 className="text-white font-semibold">Photo Analysis</h4>
+                    </div>
+                    
+                    <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                      <div className="w-20 h-20 bg-gradient-to-br from-pink-400 to-purple-500 rounded-lg mb-3 flex items-center justify-center">
+                        <Camera className="w-8 h-8 text-white" />
+                      </div>
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 1, delay: 4.5 }}
+                        className="space-y-2"
+                      >
+                        <div className="text-white text-sm">AI detected: Sunset, Friends, Happy</div>
+                        <div className="flex gap-2">
+                          <Badge className="bg-purple-500/20 text-purple-300 border-0">😊 Joy</Badge>
+                          <Badge className="bg-pink-500/20 text-pink-300 border-0">🌅 Nature</Badge>
+                        </div>
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Analytics & Features */}
+                <div className="space-y-6">
+                  
+                  {/* Mood Tracking */}
+                  <div className="bg-white/10 rounded-xl p-6 border border-white/20">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Smile className="w-5 h-5 text-emerald-400" />
+                      <h4 className="text-white font-semibold">Mood Analytics</h4>
+                    </div>
+                    
+                    <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                      <div className="flex justify-between items-center mb-3">
+                        <span className="text-gray-300 text-sm">This Week</span>
+                        <span className="text-emerald-400 text-sm font-medium">↗ Trending Up</span>
+                      </div>
+                      <div className="space-y-2">
+                        {['😊', '🤔', '😄', '😐', '🎉'].map((emoji, i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.random() * 60 + 20}%` }}
+                            transition={{ duration: 1, delay: 5 + i * 0.2 }}
+                            className="flex items-center gap-3"
+                          >
+                            <span className="text-lg">{emoji}</span>
+                            <div className="flex-1 bg-white/10 rounded-full h-2">
+                              <div className="h-full bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full" />
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Achievements */}
+                  <div className="bg-white/10 rounded-xl p-6 border border-white/20">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Trophy className="w-5 h-5 text-amber-400" />
+                      <h4 className="text-white font-semibold">Achievements</h4>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {[
+                        { icon: "🏆", title: "7-Day Streak", desc: "Keep it up!" },
+                        { icon: "📝", title: "100 Words", desc: "Just unlocked" },
+                        { icon: "🎯", title: "Goal Crusher", desc: "Coming soon..." }
+                      ].map((achievement, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.5, delay: 6 + i * 0.3 }}
+                          className="flex items-center gap-3 bg-white/5 rounded-lg p-3 border border-white/10"
+                        >
+                          <span className="text-2xl">{achievement.icon}</span>
+                          <div>
+                            <div className="text-white text-sm font-medium">{achievement.title}</div>
+                            <div className="text-gray-400 text-xs">{achievement.desc}</div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Demo Action Buttons */}
               <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 2.2 + index * 0.1 }}
-                whileHover={{ y: -5, scale: 1.05 }}
-                onClick={handleDemo}
-                className="cursor-pointer group"
+                transition={{ duration: 0.8, delay: 7 }}
+                className="mt-8 flex flex-col sm:flex-row gap-4 justify-center"
               >
-                <Card className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-md border border-white/20 hover:border-cyan-400/40 transition-all duration-300 overflow-hidden">
-                  <CardContent className="p-6 text-center">
-                    <div className={`inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br ${demo.color} mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                      <demo.icon className="w-8 h-8 text-white" />
-                    </div>
-                    <h4 className="text-lg font-bold text-white mb-2">{demo.title}</h4>
-                    <p className="text-gray-400 text-sm mb-4">{demo.desc}</p>
-                    <div className="flex items-center justify-center gap-2 text-cyan-400 group-hover:text-cyan-300 transition-colors">
-                      <Play className="w-4 h-4" />
-                      <span className="text-sm font-medium">Try Now</span>
-                    </div>
-                  </CardContent>
-                </Card>
+                <Button
+                  onClick={handleDemo}
+                  className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-xl transition-all duration-300"
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  Try Full Demo
+                </Button>
+                <Button
+                  onClick={onGetStarted}
+                  variant="outline"
+                  className="px-6 py-3 border-2 border-cyan-400/50 text-cyan-300 hover:bg-cyan-500/10 rounded-xl backdrop-blur-sm transition-all duration-300"
+                >
+                  <ArrowRight className="w-4 h-4 mr-2" />
+                  Start Writing Now
+                </Button>
               </motion.div>
-            ))}
-          </div>
+            </div>
+          </motion.div>
         </motion.div>
       </div>
     </div>
