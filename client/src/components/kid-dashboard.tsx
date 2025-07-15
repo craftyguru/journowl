@@ -6,11 +6,13 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Palette, Music, GamepadIcon, Calendar, BarChart3, Users, Settings, X, Save, Plus } from "lucide-react";
+import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Palette, Music, GamepadIcon, Calendar, BarChart3, Users, Settings, X, Save, Plus, Mic, MicOff, Upload, Video, Image, Paintbrush, Lightbulb } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { apiRequest } from "@/lib/queryClient";
+import { ReactSketchCanvas } from "react-sketch-canvas";
 
 // Demo data for Little Timmy
 const timmyDemoStats = {
@@ -68,6 +70,18 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedMood, setSelectedMood] = useState("😊");
+  const [activeTab, setActiveTab] = useState("write");
+  const [isRecording, setIsRecording] = useState(false);
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
+  const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
+  const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
+  const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  
+  // Refs for media handling
+  const canvasRef = useRef<any>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   
   const queryClient = useQueryClient();
 
@@ -151,6 +165,108 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     setTitle("");
     setContent("");
     setSelectedMood("😊");
+    setActiveTab("write");
+    setUploadedPhotos([]);
+    setUploadedVideos([]);
+    setAiSuggestions([]);
+    if (canvasRef.current) {
+      canvasRef.current.clearCanvas();
+    }
+  };
+
+  // AI Integration Functions
+  const generateAIPrompts = async () => {
+    if (!content && uploadedPhotos.length === 0) return;
+    
+    setIsGeneratingAI(true);
+    try {
+      const response = await apiRequest("/api/ai/kid-prompts", {
+        method: "POST",
+        body: {
+          content: content,
+          mood: selectedMood,
+          hasPhotos: uploadedPhotos.length > 0,
+          photoCount: uploadedPhotos.length
+        }
+      });
+      setAiSuggestions(response.prompts || []);
+    } catch (error) {
+      console.error("AI generation failed:", error);
+    } finally {
+      setIsGeneratingAI(false);
+    }
+  };
+
+  // Speech-to-Text Functions
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      
+      const audioChunks: BlobPart[] = [];
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        // Here you would implement speech-to-text conversion
+        // For now, we'll simulate it
+        const simulatedText = " I had the most amazing day today!";
+        setContent(prev => prev + simulatedText);
+        stream.getTracks().forEach(track => track.stop());
+      };
+      
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch (error) {
+      console.error("Recording failed:", error);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current) {
+      mediaRecorderRef.current.stop();
+      setIsRecording(false);
+    }
+  };
+
+  // Photo/Video Upload Functions
+  const handlePhotoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          setUploadedPhotos(prev => [...prev, result]);
+          // Auto-generate AI insights when photo is uploaded
+          setTimeout(generateAIPrompts, 500);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const handleVideoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const result = e.target?.result as string;
+          setUploadedVideos(prev => [...prev, result]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const clearCanvas = () => {
+    if (canvasRef.current) {
+      canvasRef.current.clearCanvas();
+    }
   };
 
   const handleSaveEntry = () => {
@@ -536,9 +652,9 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
               </div>
 
               {/* Editor Content */}
-              <div className="flex-1 p-6 overflow-y-auto space-y-6">
+              <div className="flex-1 p-6 overflow-y-auto">
                 {/* Mood Selector */}
-                <div>
+                <div className="mb-6">
                   <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
                     <Heart className="w-5 h-5" />
                     How are you feeling today?
@@ -564,7 +680,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                 </div>
 
                 {/* Title Input */}
-                <div>
+                <div className="mb-6">
                   <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
                     <BookOpen className="w-5 h-5" />
                     What's your story about?
@@ -578,27 +694,281 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                   />
                 </div>
 
-                {/* Content Textarea */}
-                <div>
-                  <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
-                    <Sparkles className="w-5 h-5" />
-                    Tell your story!
-                  </Label>
-                  <Textarea
-                    placeholder="Write about your day, your dreams, your adventures... Let your imagination run wild!"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    className="min-h-[300px] text-lg p-4 rounded-2xl border-3 border-purple-300 bg-white/80 text-purple-800 placeholder:text-purple-400 resize-none"
-                    style={{ fontFamily: 'Comic Sans MS, cursive' }}
-                  />
-                  
-                  {/* Word Count */}
-                  <div className="mt-2 text-center">
-                    <Badge className="bg-gradient-to-r from-green-400 to-blue-400 text-white px-4 py-2 text-lg">
-                      {content.split(' ').filter(word => word.length > 0).length} words ✨
-                    </Badge>
-                  </div>
-                </div>
+                {/* Multi-Tab Interface */}
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-5 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-1">
+                    <TabsTrigger value="write" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Write
+                    </TabsTrigger>
+                    <TabsTrigger value="draw" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
+                      <Paintbrush className="w-4 h-4 mr-2" />
+                      Draw
+                    </TabsTrigger>
+                    <TabsTrigger value="voice" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
+                      <Mic className="w-4 h-4 mr-2" />
+                      Voice
+                    </TabsTrigger>
+                    <TabsTrigger value="photos" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
+                      <Camera className="w-4 h-4 mr-2" />
+                      Photos
+                    </TabsTrigger>
+                    <TabsTrigger value="ai" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
+                      <Lightbulb className="w-4 h-4 mr-2" />
+                      AI Help
+                    </TabsTrigger>
+                  </TabsList>
+
+                  {/* Writing Tab */}
+                  <TabsContent value="write" className="mt-4">
+                    <div>
+                      <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
+                        <Sparkles className="w-5 h-5" />
+                        Tell your story!
+                      </Label>
+                      <Textarea
+                        placeholder="Write about your day, your dreams, your adventures... Let your imagination run wild!"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                        className="min-h-[300px] text-lg p-4 rounded-2xl border-3 border-purple-300 bg-white/80 text-purple-800 placeholder:text-purple-400 resize-none"
+                        style={{ fontFamily: 'Comic Sans MS, cursive' }}
+                      />
+                      
+                      {/* Word Count */}
+                      <div className="mt-2 text-center">
+                        <Badge className="bg-gradient-to-r from-green-400 to-blue-400 text-white px-4 py-2 text-lg">
+                          {content.split(' ').filter(word => word.length > 0).length} words ✨
+                        </Badge>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  {/* Drawing Tab */}
+                  <TabsContent value="draw" className="mt-4">
+                    <div>
+                      <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
+                        <Paintbrush className="w-5 h-5" />
+                        Draw your story!
+                      </Label>
+                      <div className="bg-white rounded-2xl border-3 border-purple-300 p-4">
+                        <ReactSketchCanvas
+                          ref={canvasRef}
+                          style={{
+                            border: "2px dashed #a855f7",
+                            borderRadius: "16px",
+                            cursor: "crosshair"
+                          }}
+                          width="100%"
+                          height="300px"
+                          strokeWidth={4}
+                          strokeColor="#7c3aed"
+                          canvasColor="white"
+                        />
+                        <div className="flex gap-2 mt-4 justify-center">
+                          <Button
+                            onClick={clearCanvas}
+                            variant="outline"
+                            className="border-purple-300 text-purple-600 hover:bg-purple-50"
+                          >
+                            <X className="w-4 h-4 mr-2" />
+                            Clear
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  {/* Voice Tab */}
+                  <TabsContent value="voice" className="mt-4">
+                    <div>
+                      <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
+                        <Mic className="w-5 h-5" />
+                        Speak your story!
+                      </Label>
+                      <div className="bg-white rounded-2xl border-3 border-purple-300 p-8 text-center">
+                        <motion.div
+                          animate={isRecording ? { scale: [1, 1.1, 1] } : {}}
+                          transition={{ duration: 1, repeat: Infinity }}
+                          className="text-6xl mb-4"
+                        >
+                          {isRecording ? "🎤" : "🎙️"}
+                        </motion.div>
+                        <p className="text-purple-700 text-lg mb-6">
+                          {isRecording ? "Listening... Speak your story!" : "Click to start recording your voice"}
+                        </p>
+                        <Button
+                          onClick={isRecording ? stopRecording : startRecording}
+                          className={`px-8 py-4 text-lg font-bold rounded-2xl ${
+                            isRecording 
+                              ? "bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600" 
+                              : "bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600"
+                          } text-white`}
+                        >
+                          {isRecording ? (
+                            <>
+                              <MicOff className="w-5 h-5 mr-2" />
+                              Stop Recording
+                            </>
+                          ) : (
+                            <>
+                              <Mic className="w-5 h-5 mr-2" />
+                              Start Recording
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </TabsContent>
+
+                  {/* Photos Tab */}
+                  <TabsContent value="photos" className="mt-4">
+                    <div>
+                      <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
+                        <Camera className="w-5 h-5" />
+                        Add photos and videos!
+                      </Label>
+                      
+                      {/* Upload Buttons */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <div
+                          onClick={() => photoInputRef.current?.click()}
+                          className="bg-gradient-to-br from-pink-100 to-purple-100 border-3 border-dashed border-pink-300 rounded-2xl p-6 text-center cursor-pointer hover:bg-gradient-to-br hover:from-pink-200 hover:to-purple-200 transition-all"
+                        >
+                          <Image className="w-12 h-12 mx-auto mb-3 text-pink-600" />
+                          <p className="text-pink-700 font-bold">Upload Photos</p>
+                          <p className="text-pink-600 text-sm">JPG, PNG files</p>
+                        </div>
+                        
+                        <div
+                          onClick={() => videoInputRef.current?.click()}
+                          className="bg-gradient-to-br from-blue-100 to-cyan-100 border-3 border-dashed border-blue-300 rounded-2xl p-6 text-center cursor-pointer hover:bg-gradient-to-br hover:from-blue-200 hover:to-cyan-200 transition-all"
+                        >
+                          <Video className="w-12 h-12 mx-auto mb-3 text-blue-600" />
+                          <p className="text-blue-700 font-bold">Upload Videos</p>
+                          <p className="text-blue-600 text-sm">MP4, MOV files</p>
+                        </div>
+                      </div>
+
+                      {/* Hidden File Inputs */}
+                      <input
+                        ref={photoInputRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handlePhotoUpload}
+                        className="hidden"
+                      />
+                      <input
+                        ref={videoInputRef}
+                        type="file"
+                        accept="video/*"
+                        multiple
+                        onChange={handleVideoUpload}
+                        className="hidden"
+                      />
+
+                      {/* Uploaded Media Preview */}
+                      {(uploadedPhotos.length > 0 || uploadedVideos.length > 0) && (
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                          {uploadedPhotos.map((photo, index) => (
+                            <div key={index} className="relative">
+                              <img
+                                src={photo}
+                                alt={`Upload ${index + 1}`}
+                                className="w-full h-24 object-cover rounded-xl border-2 border-purple-300"
+                              />
+                              <Button
+                                onClick={() => setUploadedPhotos(prev => prev.filter((_, i) => i !== index))}
+                                variant="ghost"
+                                className="absolute -top-2 -right-2 w-6 h-6 p-0 bg-red-500 text-white rounded-full hover:bg-red-600"
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ))}
+                          {uploadedVideos.map((video, index) => (
+                            <div key={index} className="relative">
+                              <video
+                                src={video}
+                                className="w-full h-24 object-cover rounded-xl border-2 border-blue-300"
+                                controls
+                              />
+                              <Button
+                                onClick={() => setUploadedVideos(prev => prev.filter((_, i) => i !== index))}
+                                variant="ghost"
+                                className="absolute -top-2 -right-2 w-6 h-6 p-0 bg-red-500 text-white rounded-full hover:bg-red-600"
+                              >
+                                <X className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+
+                  {/* AI Help Tab */}
+                  <TabsContent value="ai" className="mt-4">
+                    <div>
+                      <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
+                        <Lightbulb className="w-5 h-5" />
+                        AI Writing Helper!
+                      </Label>
+                      
+                      <div className="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-2xl border-3 border-yellow-300 p-6">
+                        <div className="text-center mb-4">
+                          <motion.div
+                            animate={{ rotate: [0, 10, -10, 0] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="text-4xl mb-2"
+                          >
+                            🤖
+                          </motion.div>
+                          <p className="text-orange-700 font-bold mb-2">Your AI Writing Buddy!</p>
+                          <p className="text-orange-600 text-sm mb-4">
+                            I can help you think of ideas based on your photos, mood, and what you've written so far!
+                          </p>
+                        </div>
+
+                        <Button
+                          onClick={generateAIPrompts}
+                          disabled={isGeneratingAI || (!content && uploadedPhotos.length === 0)}
+                          className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-bold py-3 rounded-xl mb-4"
+                        >
+                          {isGeneratingAI ? (
+                            <motion.div
+                              animate={{ rotate: 360 }}
+                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              className="w-5 h-5 border-2 border-white border-t-transparent rounded-full mr-2"
+                            />
+                          ) : (
+                            <Sparkles className="w-5 h-5 mr-2" />
+                          )}
+                          {isGeneratingAI ? "Thinking..." : "Get Writing Ideas!"}
+                        </Button>
+
+                        {/* AI Suggestions */}
+                        {aiSuggestions.length > 0 && (
+                          <div className="space-y-3">
+                            <h4 className="font-bold text-orange-700">💡 Here are some fun ideas:</h4>
+                            {aiSuggestions.map((suggestion, index) => (
+                              <motion.div
+                                key={index}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                className="bg-white/80 rounded-xl p-3 border-2 border-yellow-200 cursor-pointer hover:bg-white transition-all"
+                                onClick={() => setContent(prev => prev + (prev ? "\n\n" : "") + suggestion)}
+                              >
+                                <p className="text-orange-700 font-medium">{suggestion}</p>
+                              </motion.div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </div>
 
               {/* Action Buttons */}

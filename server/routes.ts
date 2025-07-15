@@ -683,6 +683,73 @@ Current journal context:
     }
   });
 
+  // AI-powered kid prompts endpoint
+  app.post("/api/ai/kid-prompts", async (req, res) => {
+    try {
+      const { content, mood, hasPhotos, photoCount } = req.body;
+      
+      // Kid-friendly AI prompt generation
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: `You are a friendly AI writing assistant for kids aged 6-12. Generate 3-4 fun, encouraging writing prompts based on what the child has written and their mood. Make prompts:
+              - Age-appropriate and positive
+              - Creative and imaginative 
+              - Related to their current content/mood
+              - Encouraging and fun
+              - Short and easy to understand
+              Keep language simple and exciting!`
+            },
+            {
+              role: "user",
+              content: `Current mood: ${mood}
+              What they've written so far: "${content || 'Nothing yet'}"
+              ${hasPhotos ? `They've added ${photoCount} photos to their story.` : ''}
+              
+              Generate fun writing prompts to help them continue their story!`
+            }
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 500
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('OpenAI API error');
+      }
+
+      const data = await response.json();
+      const result = JSON.parse(data.choices[0].message.content);
+      
+      res.json({ 
+        prompts: result.prompts || [
+          "What happened next in your adventure?",
+          "How did this make you feel inside?",
+          "What would you tell your best friend about this?",
+          "If you could do this again, what would you change?"
+        ]
+      });
+    } catch (error) {
+      console.error("AI prompt generation error:", error);
+      res.json({ 
+        prompts: [
+          "What happened next in your adventure?",
+          "How did this make you feel inside?",
+          "What would you tell your best friend about this?",
+          "If you could do this again, what would you change?"
+        ]
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

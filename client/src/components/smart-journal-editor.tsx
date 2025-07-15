@@ -69,6 +69,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
   const { toast } = useToast();
   const canvasRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   
   // Editor state
   const [title, setTitle] = useState(entry?.title || "");
@@ -90,6 +91,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
   
   // Photo state
   const [photos, setPhotos] = useState(entry?.photos || []);
+  const [videos, setVideos] = useState<any[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   
   // AI state
@@ -152,6 +154,33 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
         } finally {
           setIsAnalyzing(false);
         }
+      };
+      reader.readAsDataURL(file);
+    }
+  }, [toast]);
+
+  const handleVideoUpload = useCallback(async (files: FileList) => {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (!file.type.startsWith('video/')) continue;
+      
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64 = e.target?.result as string;
+        const newVideo = {
+          id: Date.now() + i,
+          url: base64,
+          filename: file.name,
+          uploadedAt: new Date().toISOString(),
+          duration: 0 // Could be calculated with video metadata
+        };
+        
+        setVideos(prev => [...prev, newVideo]);
+        
+        toast({
+          title: "Video uploaded!",
+          description: `${file.name} has been added to your entry.`,
+        });
       };
       reader.readAsDataURL(file);
     }
@@ -222,6 +251,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
       backgroundColor,
       drawings,
       photos,
+      videos,
       tags,
       aiInsights,
       isPrivate
@@ -376,7 +406,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
               <div className="space-y-4">
                 <h4 className="font-medium text-white">Media & Drawing</h4>
                 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <Button
                     variant="outline"
                     size="sm"
@@ -385,6 +415,16 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                   >
                     <Upload className="w-4 h-4 mr-2" />
                     Photo
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => videoInputRef.current?.click()}
+                    className="border-slate-600 text-white hover:bg-slate-700"
+                  >
+                    <Video className="w-4 h-4 mr-2" />
+                    Video
                   </Button>
                   
                   <Button
@@ -435,6 +475,14 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                   accept="image/*"
                   multiple
                   onChange={(e) => e.target.files && handlePhotoUpload(e.target.files)}
+                  className="hidden"
+                />
+                <input
+                  ref={videoInputRef}
+                  type="file"
+                  accept="video/*"
+                  multiple
+                  onChange={(e) => e.target.files && handleVideoUpload(e.target.files)}
                   className="hidden"
                 />
               </div>
