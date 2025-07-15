@@ -247,12 +247,12 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
     );
   }
 
-  // Regular app interface for standard users
+  // Regular app interface for standard users - use enhanced dashboard for everyone
   return (
     <div className="min-h-screen bg-background">
       <Navbar currentView={currentView} onNavigate={onNavigate} />
       <main>
-        {currentView === "dashboard" && <Dashboard />}
+        {currentView === "dashboard" && <EnhancedDashboard />}
         {currentView === "insights" && <InsightsPage />}
       </main>
     </div>
