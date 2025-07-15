@@ -3,10 +3,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Palette, Music, GamepadIcon, Calendar, BarChart3, Users, Settings } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Palette, Music, GamepadIcon, Calendar, BarChart3, Users, Settings, X, Save, Plus } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { apiRequest } from "@/lib/queryClient";
 
 // Demo data for Little Timmy
 const timmyDemoStats = {
@@ -57,6 +61,15 @@ interface KidDashboardProps {
 export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const [selectedPrompt, setSelectedPrompt] = useState(kidPrompts[0]);
   const [showAllAchievements, setShowAllAchievements] = useState(false);
+  const [showJournalEditor, setShowJournalEditor] = useState(false);
+  const [currentEntry, setCurrentEntry] = useState<any>(null);
+  
+  // Journal editor state
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [selectedMood, setSelectedMood] = useState("😊");
+  
+  const queryClient = useQueryClient();
 
   // Fetch user data
   const { data: userResponse } = useQuery({
@@ -93,6 +106,66 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     const randomPrompt = kidPrompts[Math.floor(Math.random() * kidPrompts.length)];
     setSelectedPrompt(randomPrompt);
   };
+
+  // Journal mutation for saving entries
+  const saveEntryMutation = useMutation({
+    mutationFn: async (entryData: any) => {
+      if (currentEntry?.id) {
+        return apiRequest(`/api/journal/entries/${currentEntry.id}`, {
+          method: "PATCH",
+          body: entryData,
+        });
+      } else {
+        return apiRequest("/api/journal/entries", {
+          method: "POST",
+          body: entryData,
+        });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/achievements"] });
+      setShowJournalEditor(false);
+      resetEditor();
+    },
+  });
+
+  const openJournalEditor = (entry?: any, prompt?: string) => {
+    if (entry) {
+      setCurrentEntry(entry);
+      setTitle(entry.title || "");
+      setContent(entry.content || "");
+      setSelectedMood(entry.mood || "😊");
+    } else {
+      setCurrentEntry(null);
+      setTitle("");
+      setContent(prompt ? `Prompt: ${prompt}\n\n` : "");
+      setSelectedMood("😊");
+    }
+    setShowJournalEditor(true);
+  };
+
+  const resetEditor = () => {
+    setCurrentEntry(null);
+    setTitle("");
+    setContent("");
+    setSelectedMood("😊");
+  };
+
+  const handleSaveEntry = () => {
+    if (!title.trim() || !content.trim()) return;
+    
+    const entryData = {
+      title: title.trim(),
+      content: content.trim(),
+      mood: selectedMood,
+    };
+    
+    saveEntryMutation.mutate(entryData);
+  };
+
+  const kidMoodEmojis = ["😊", "😄", "🤔", "😐", "😔", "🌈", "🎉", "😴"];
 
   return (
     <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen">
@@ -196,7 +269,10 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                   <p className="text-purple-700 text-lg">"{selectedPrompt}"</p>
                 </div>
                 <div className="flex gap-3">
-                  <Button className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg">
+                  <Button 
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg"
+                    onClick={() => openJournalEditor(null, selectedPrompt)}
+                  >
                     <BookOpen className="w-4 h-4 mr-2" />
                     Start Writing
                   </Button>
@@ -295,6 +371,72 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         </Card>
       </motion.div>
 
+      {/* My Stories Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+      >
+        <Card className="bg-white shadow-lg border-2 border-cyan-200">
+          <CardHeader className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-t-lg">
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <BookOpen className="w-6 h-6" />
+              📚 My Stories
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            {entries.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {entries.slice(0, 6).map((entry: any, index: number) => (
+                  <motion.div
+                    key={entry.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.1 * index }}
+                    whileHover={{ scale: 1.05, y: -5 }}
+                    className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 border-2 border-blue-200 cursor-pointer hover:shadow-lg transition-all"
+                    onClick={() => openJournalEditor(entry)}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-3xl">{entry.mood || "😊"}</div>
+                      <Badge className="bg-blue-500 text-white text-xs">{entry.date || "Today"}</Badge>
+                    </div>
+                    <h4 className="font-bold text-blue-800 mb-2 line-clamp-1">{entry.title}</h4>
+                    <p className="text-blue-600 text-sm line-clamp-2 mb-3">{entry.preview || entry.content}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs text-blue-500">{entry.wordCount || 0} words</span>
+                      <div className="flex gap-1">
+                        {entry.hasPhoto && <Camera className="w-4 h-4 text-pink-500" />}
+                        {entry.hasDrawing && <Palette className="w-4 h-4 text-orange-500" />}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="text-6xl mb-4"
+                >
+                  📖
+                </motion.div>
+                <h3 className="text-lg font-bold text-cyan-700 mb-2">No stories yet!</h3>
+                <p className="text-cyan-600 mb-4">Start writing your first amazing story!</p>
+                <Button
+                  onClick={() => openJournalEditor()}
+                  className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-xl"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Write First Story
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </motion.div>
+
       {/* Fun Prompts */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -317,6 +459,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 + index * 0.1 }}
                   className="p-3 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 hover:shadow-md transition-all cursor-pointer"
+                  onClick={() => openJournalEditor(null, prompt)}
                 >
                   <p className="text-emerald-700 font-medium">{prompt}</p>
                 </motion.div>
@@ -337,6 +480,163 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         <h3 className="text-lg font-semibold text-purple-800 mb-1">You're doing amazing!</h3>
         <p className="text-purple-600">Keep writing and sharing your wonderful thoughts. Every story makes you a better writer!</p>
       </motion.div>
+
+      {/* Kid-Friendly Journal Editor Modal */}
+      <AnimatePresence>
+        {showJournalEditor && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 50 }}
+              className="w-full max-w-4xl max-h-[95vh] bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50 rounded-3xl shadow-2xl overflow-hidden relative flex flex-col border-4 border-rainbow"
+              style={{
+                background: `linear-gradient(135deg, 
+                  #fef3c7 0%, 
+                  #fed7d7 25%, 
+                  #e0e7ff 50%, 
+                  #dcfce7 75%, 
+                  #fef3c7 100%)`,
+                borderImage: 'linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57) 1',
+              }}
+            >
+              {/* Fun Header */}
+              <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white p-6 text-center relative overflow-hidden">
+                <motion.div
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute top-2 left-4 text-3xl"
+                >
+                  ✨
+                </motion.div>
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="absolute top-2 right-4 text-3xl"
+                >
+                  🌟
+                </motion.div>
+                <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Comic Sans MS, cursive' }}>
+                  {currentEntry ? "✏️ Edit Your Story" : "📝 Write Your Story!"}
+                </h2>
+                <p className="text-pink-100">Share your thoughts and let your creativity shine!</p>
+                
+                <Button
+                  onClick={() => setShowJournalEditor(false)}
+                  variant="ghost"
+                  className="absolute top-4 right-4 text-white hover:bg-white/20 rounded-full p-2"
+                >
+                  <X className="w-6 h-6" />
+                </Button>
+              </div>
+
+              {/* Editor Content */}
+              <div className="flex-1 p-6 overflow-y-auto space-y-6">
+                {/* Mood Selector */}
+                <div>
+                  <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
+                    <Heart className="w-5 h-5" />
+                    How are you feeling today?
+                  </Label>
+                  <div className="flex flex-wrap gap-3">
+                    {kidMoodEmojis.map((emoji) => (
+                      <motion.button
+                        key={emoji}
+                        type="button"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        className={`text-4xl p-3 rounded-2xl border-3 transition-all ${
+                          selectedMood === emoji 
+                            ? "bg-gradient-to-br from-yellow-200 to-orange-200 border-orange-400 shadow-lg transform scale-110" 
+                            : "bg-white/80 border-gray-300 hover:bg-gradient-to-br hover:from-yellow-100 hover:to-orange-100"
+                        }`}
+                        onClick={() => setSelectedMood(emoji)}
+                      >
+                        {emoji}
+                      </motion.button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Title Input */}
+                <div>
+                  <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
+                    <BookOpen className="w-5 h-5" />
+                    What's your story about?
+                  </Label>
+                  <Input
+                    placeholder="Give your story a fun title!"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="text-xl p-4 rounded-2xl border-3 border-purple-300 bg-white/80 font-bold text-purple-800 placeholder:text-purple-400"
+                    style={{ fontFamily: 'Comic Sans MS, cursive' }}
+                  />
+                </div>
+
+                {/* Content Textarea */}
+                <div>
+                  <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
+                    <Sparkles className="w-5 h-5" />
+                    Tell your story!
+                  </Label>
+                  <Textarea
+                    placeholder="Write about your day, your dreams, your adventures... Let your imagination run wild!"
+                    value={content}
+                    onChange={(e) => setContent(e.target.value)}
+                    className="min-h-[300px] text-lg p-4 rounded-2xl border-3 border-purple-300 bg-white/80 text-purple-800 placeholder:text-purple-400 resize-none"
+                    style={{ fontFamily: 'Comic Sans MS, cursive' }}
+                  />
+                  
+                  {/* Word Count */}
+                  <div className="mt-2 text-center">
+                    <Badge className="bg-gradient-to-r from-green-400 to-blue-400 text-white px-4 py-2 text-lg">
+                      {content.split(' ').filter(word => word.length > 0).length} words ✨
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="p-6 bg-gradient-to-r from-purple-100 to-pink-100 border-t-4 border-purple-300">
+                <div className="flex gap-4 justify-center">
+                  <Button
+                    onClick={() => setShowJournalEditor(false)}
+                    variant="outline"
+                    className="px-8 py-3 text-lg font-bold border-3 border-gray-400 text-gray-600 hover:bg-gray-100 rounded-2xl"
+                    style={{ fontFamily: 'Comic Sans MS, cursive' }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleSaveEntry}
+                    disabled={!title.trim() || !content.trim() || saveEntryMutation.isPending}
+                    className="px-8 py-3 text-lg font-bold bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white rounded-2xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    style={{ fontFamily: 'Comic Sans MS, cursive' }}
+                  >
+                    {saveEntryMutation.isPending ? (
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5 mr-2" />
+                        Save My Story! 🎉
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
