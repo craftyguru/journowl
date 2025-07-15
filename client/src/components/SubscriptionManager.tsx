@@ -270,91 +270,15 @@ export default function SubscriptionManager() {
 
   return (
     <>
-      {/* Usage Meters */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* AI Prompts Usage Meter */}
-        <Card className="border-2 border-gradient-to-r from-purple-200 to-pink-200">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-600" />
-              AI Prompts Usage
-              <Badge variant={subscription?.tier === 'free' ? "secondary" : "default"}>
-                {currentTier.name}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Prompts Remaining</span>
-                <span className={`font-bold ${promptUsagePercentage < 20 ? 'text-red-600' : 'text-green-600'}`}>
-                  {subscription?.promptsRemaining || 0} / {currentTier.limits.prompts === -1 ? '∞' : currentTier.limits.prompts}
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div 
-                  className={`h-3 rounded-full transition-all duration-300 ${
-                    promptUsagePercentage < 20 ? 'bg-red-500' : 'bg-gradient-to-r from-purple-500 to-pink-500'
-                  }`}
-                  style={{ width: `${100 - promptUsagePercentage}%` }}
-                ></div>
-              </div>
-              <div className="text-xs text-gray-500">
-                Resets monthly • {100 - promptUsagePercentage}% remaining
-              </div>
-            </div>
-
-            <Button 
-              onClick={() => setShowTierModal(true)}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            >
-              <Zap className="w-4 h-4 mr-2" />
-              Top Off Prompts
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Storage Usage Meter */}
-        <Card className="border-2 border-gradient-to-r from-blue-200 to-cyan-200">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Cloud className="w-5 h-5 text-blue-600" />
-              Storage Usage
-              <Badge variant={subscription?.tier === 'free' ? "secondary" : "default"}>
-                {currentTier.name}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Storage Used</span>
-                <span className={`font-bold ${storageUsagePercentage > 80 ? 'text-red-600' : 'text-green-600'}`}>
-                  {subscription?.storageUsed || 0} MB / {subscription?.storageLimit || 100} MB
-                </span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div 
-                  className={`h-3 rounded-full transition-all duration-300 ${
-                    storageUsagePercentage > 80 ? 'bg-red-500' : 'bg-gradient-to-r from-blue-500 to-cyan-500'
-                  }`}
-                  style={{ width: `${storageUsagePercentage}%` }}
-                ></div>
-              </div>
-              <div className="text-xs text-gray-500">
-                Photos & attachments • {(100 - storageUsagePercentage).toFixed(1)}% available
-              </div>
-            </div>
-
-            <Button 
-              onClick={() => setShowTierModal(true)}
-              className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
-            >
-              <Crown className="w-4 h-4 mr-2" />
-              Upgrade Subscription
-            </Button>
-          </CardContent>
-        </Card>
+      {/* Subscription Upgrade Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-2xl p-6 mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">Upgrade Your Plan</h2>
+            <p className="text-purple-100">Get more AI prompts and storage space</p>
+          </div>
+          <Crown className="w-12 h-12 text-yellow-300" />
+        </div>
       </div>
 
       {/* Subscription Tier Modal */}
