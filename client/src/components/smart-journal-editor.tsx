@@ -411,7 +411,6 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                       onChange={(val) => setContent(val || "")}
                       height={window.innerHeight > 600 ? 400 : 300}
                       data-color-mode="dark"
-                      visibleDragBar={false}
                     />
                   </div>
                 </TabsContent>
