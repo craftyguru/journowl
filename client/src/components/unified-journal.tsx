@@ -623,53 +623,111 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     </div>
                     
                     {/* Mobile-Friendly Controls */}
-                    <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className="h-10 px-3 w-full sm:w-auto">
-                            <Palette className="w-4 h-4 mr-1" />
-                            <span className="text-xs">Color</span>
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-48">
-                          <div className="space-y-2">
-                            <HexColorPicker color={brushColor} onChange={setBrushColor} />
-                            <div>
-                              <label className="text-xs font-medium">Size: {brushSize}px</label>
-                              <Slider
-                                value={[brushSize]}
-                                onValueChange={(value) => setBrushSize(value[0])}
-                                min={1}
-                                max={15}
-                                step={1}
-                                className="mt-1"
-                              />
+                    <div className="space-y-2">
+                      {/* Top Row - Main Tools */}
+                      <div className="grid grid-cols-3 gap-2">
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button variant="outline" size="sm" className="h-12 px-2 w-full">
+                              <div className="flex flex-col items-center gap-1">
+                                <Palette className="w-4 h-4" />
+                                <span className="text-xs">Color</span>
+                              </div>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-48">
+                            <div className="space-y-2">
+                              <HexColorPicker color={brushColor} onChange={setBrushColor} />
+                              <div>
+                                <label className="text-xs font-medium">Size: {brushSize}px</label>
+                                <Slider
+                                  value={[brushSize]}
+                                  onValueChange={(value) => setBrushSize(value[0])}
+                                  min={1}
+                                  max={15}
+                                  step={1}
+                                  className="mt-1"
+                                />
+                              </div>
                             </div>
+                          </PopoverContent>
+                        </Popover>
+                        
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="h-12 px-2 w-full"
+                          onClick={() => {
+                            // Undo functionality - you'll need to implement canvas history
+                          }}
+                        >
+                          <div className="flex flex-col items-center gap-1">
+                            <Undo className="w-4 h-4" />
+                            <span className="text-xs">Undo</span>
                           </div>
-                        </PopoverContent>
-                      </Popover>
+                        </Button>
+                        
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="h-12 px-2 w-full"
+                          onClick={() => {
+                            // Redo functionality - you'll need to implement canvas history
+                          }}
+                        >
+                          <div className="flex flex-col items-center gap-1">
+                            <Redo className="w-4 h-4" />
+                            <span className="text-xs">Redo</span>
+                          </div>
+                        </Button>
+                      </div>
                       
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="h-10 px-3 w-full sm:w-auto"
-                        onClick={() => {
-                          const ctx = canvasRef.current?.getContext('2d');
-                          if (ctx && canvasRef.current) {
-                            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-                          }
-                        }}
-                      >
-                        <Eraser className="w-4 h-4 mr-1" />
-                        <span className="text-xs">Clear</span>
-                      </Button>
-                      
-                      <div className="col-span-2 sm:col-span-1 flex items-center justify-center gap-2 p-2 bg-gray-50 rounded-lg">
-                        <span className="text-xs text-gray-600">Size: {brushSize}px</span>
-                        <div 
-                          className="w-5 h-5 rounded-full border-2 border-gray-300 shadow-sm" 
-                          style={{ backgroundColor: brushColor }}
-                        />
+                      {/* Bottom Row - Secondary Tools */}
+                      <div className="grid grid-cols-3 gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="h-12 px-2 w-full"
+                          onClick={() => {
+                            const ctx = canvasRef.current?.getContext('2d');
+                            if (ctx && canvasRef.current) {
+                              ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+                            }
+                          }}
+                        >
+                          <div className="flex flex-col items-center gap-1">
+                            <Eraser className="w-4 h-4" />
+                            <span className="text-xs">Clear</span>
+                          </div>
+                        </Button>
+                        
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          className="h-12 px-2 w-full"
+                          onClick={() => {
+                            const canvas = canvasRef.current;
+                            if (canvas) {
+                              const link = document.createElement('a');
+                              link.download = 'drawing.png';
+                              link.href = canvas.toDataURL();
+                              link.click();
+                            }
+                          }}
+                        >
+                          <div className="flex flex-col items-center gap-1">
+                            <Download className="w-4 h-4" />
+                            <span className="text-xs">Save</span>
+                          </div>
+                        </Button>
+                        
+                        <div className="flex flex-col items-center justify-center gap-1 p-2 bg-gray-50 rounded-lg">
+                          <div 
+                            className="w-6 h-6 rounded-full border-2 border-gray-300 shadow-sm" 
+                            style={{ backgroundColor: brushColor }}
+                          />
+                          <span className="text-xs text-gray-600">{brushSize}px</span>
+                        </div>
                       </div>
                     </div>
                   </div>
