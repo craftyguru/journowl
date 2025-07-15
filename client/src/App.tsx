@@ -187,20 +187,12 @@ function App() {
       );
   }
 
-  // Fallback: if not authenticated and currentView is not explicitly set, show landing
+  // Fallback: if not authenticated and no specific view, redirect to landing
   if (!isAuthenticated) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <TooltipProvider>
-            <Toaster />
-            <LandingHero 
-              onGetStarted={() => setCurrentView("auth")} 
-            />
-          </TooltipProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
-    );
+    // This shouldn't happen with proper state management, but just in case
+    console.log('Fallback triggered, redirecting to landing. CurrentView:', currentView);
+    setCurrentView("landing");
+    return null;
   }
 
   return (
