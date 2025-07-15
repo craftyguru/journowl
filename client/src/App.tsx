@@ -13,13 +13,14 @@ import AccountSelector from "@/components/account-selector";
 import AdminDashboard from "@/components/admin-dashboard";
 import EnhancedDashboard from "@/components/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
+import LandingHero from "@/components/landing-hero";
 
 function App() {
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "demo" | "landing">("landing");
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "demo" | "landing" | "auth">("landing");
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   
   const handleNavigate = (view: string) => {
-    if (view === "dashboard" || view === "insights" || view === "demo" || view === "landing") {
+    if (view === "dashboard" || view === "insights" || view === "demo" || view === "landing" || view === "auth") {
       setCurrentView(view);
     }
   };
@@ -67,9 +68,8 @@ function App() {
         <ThemeProvider>
           <TooltipProvider>
             <Toaster />
-            <LandingPage 
+            <LandingHero 
               onGetStarted={() => setCurrentView("auth")} 
-              onTryDemo={() => setCurrentView("demo")}
             />
           </TooltipProvider>
         </ThemeProvider>
@@ -125,7 +125,7 @@ function App() {
     );
   }
 
-    if (selectedAccount) {
+  if (!isAuthenticated && selectedAccount) {
       return (
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
@@ -159,7 +159,7 @@ function App() {
                     Insights
                   </button>
                   <button
-                    onClick={() => handleAuthenticated()}
+                    onClick={() => setCurrentView("auth")}
                     className="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all"
                   >
                     Try Real Auth
@@ -177,8 +177,10 @@ function App() {
           </ThemeProvider>
         </QueryClientProvider>
       );
-    }
+  }
 
+  // If not authenticated and no specific view selected, show auth page
+  if (!isAuthenticated) {
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
