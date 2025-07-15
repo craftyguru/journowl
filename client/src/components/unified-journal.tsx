@@ -614,16 +614,21 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
               <Panel defaultSize={60} minSize={30}>
                 <Card className="h-full bg-white/80 backdrop-blur-sm">
                 <CardContent className="p-3 h-full flex flex-col">
-                  <div className="flex items-center justify-between mb-2 flex-shrink-0">
-                    <h3 className="text-sm font-semibold flex items-center gap-1">
-                      <Brush className="w-3 h-3" />
-                      Drawing Canvas
-                    </h3>
-                    <div className="flex items-center gap-1">
+                  <div className="mb-2 flex-shrink-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="text-sm font-semibold flex items-center gap-1">
+                        <Brush className="w-3 h-3" />
+                        Drawing Canvas
+                      </h3>
+                    </div>
+                    
+                    {/* Mobile-Friendly Controls */}
+                    <div className="flex flex-wrap items-center gap-2">
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm">
-                            <Palette className="w-3 h-3" />
+                          <Button variant="outline" size="sm" className="h-8 px-2">
+                            <Palette className="w-3 h-3 mr-1" />
+                            <span className="hidden sm:inline">Color</span>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-48">
@@ -643,14 +648,29 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                           </div>
                         </PopoverContent>
                       </Popover>
-                      <Button variant="outline" size="sm" onClick={() => {
-                        const ctx = canvasRef.current?.getContext('2d');
-                        if (ctx && canvasRef.current) {
-                          ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-                        }
-                      }}>
-                        <Eraser className="w-3 h-3" />
+                      
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="h-8 px-2"
+                        onClick={() => {
+                          const ctx = canvasRef.current?.getContext('2d');
+                          if (ctx && canvasRef.current) {
+                            ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+                          }
+                        }}
+                      >
+                        <Eraser className="w-3 h-3 mr-1" />
+                        <span className="hidden sm:inline">Clear</span>
                       </Button>
+                      
+                      <div className="flex items-center gap-1 text-xs text-gray-600">
+                        <span>Size: {brushSize}px</span>
+                        <div 
+                          className="w-4 h-4 rounded-full border border-gray-300" 
+                          style={{ backgroundColor: brushColor }}
+                        />
+                      </div>
                     </div>
                   </div>
                   
