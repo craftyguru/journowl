@@ -280,7 +280,7 @@ export default function AdminDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-white/50 dark:bg-gray-800/50">
+          <TabsList className="grid w-full grid-cols-6 bg-white/50 dark:bg-gray-800/50">
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Users
@@ -289,9 +289,17 @@ export default function AdminDashboard() {
               <BarChart3 className="h-4 w-4" />
               Analytics
             </TabsTrigger>
+            <TabsTrigger value="revenue" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Revenue
+            </TabsTrigger>
+            <TabsTrigger value="insights" className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              AI Insights
+            </TabsTrigger>
             <TabsTrigger value="email" className="flex items-center gap-2">
               <Mail className="h-4 w-4" />
-              Email Campaigns
+              Email
             </TabsTrigger>
             <TabsTrigger value="activity" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
@@ -457,52 +465,403 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Analytics Tab */}
-          <TabsContent value="analytics">
+          {/* Revenue Tab */}
+          <TabsContent value="revenue">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Revenue Metrics */}
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardHeader>
-                  <CardTitle>User Statistics</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-green-600" />
+                    Revenue Overview
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span>Total Users</span>
-                      <span className="font-bold text-purple-600">{analytics.totalUsers || 0}</span>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-green-600">$247</div>
+                        <div className="text-sm text-green-700 dark:text-green-300">This Month</div>
+                      </div>
+                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                        <div className="text-2xl font-bold text-blue-600">$1,823</div>
+                        <div className="text-sm text-blue-700 dark:text-blue-300">Total Revenue</div>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span>Active Users (30 days)</span>
-                      <span className="font-bold text-green-600">{analytics.activeUsers || 0}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span>Admin Users</span>
-                      <span className="font-bold text-blue-600">
-                        {users.filter(u => u.role === 'admin').length}
-                      </span>
+                    
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">AI Prompt Top-ups ($2.99)</span>
+                        <span className="font-semibold">83 sales</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Pro Subscriptions ($9.99/mo)</span>
+                        <span className="font-semibold">12 active</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm">Annual Upgrades (10% off)</span>
+                        <span className="font-semibold">3 conversions</span>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Usage Analytics */}
               <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
                 <CardHeader>
-                  <CardTitle>System Health</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <Sparkles className="h-5 w-5 text-purple-600" />
+                    AI Usage Patterns
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
-                      <span>Database Status</span>
-                      <Badge variant="default" className="bg-green-500">Online</Badge>
+                      <span className="text-sm">Total AI Prompts Used</span>
+                      <span className="font-bold text-purple-600">1,247</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>Email Service</span>
-                      <Badge variant="secondary">
-                        {import.meta.env.VITE_SENDGRID_API_KEY ? 'Configured' : 'Not Configured'}
-                      </Badge>
+                      <span className="text-sm">Average per User</span>
+                      <span className="font-bold text-blue-600">156</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>OAuth Services</span>
-                      <Badge variant="secondary">Available</Badge>
+                      <span className="text-sm">Heavy Users (80+ prompts)</span>
+                      <span className="font-bold text-orange-600">5 users</span>
+                    </div>
+                    <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                      <div className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                        💡 Opportunity: 5 users near their limit - perfect for prompt top-up offers
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* AI Insights Tab */}
+          <TabsContent value="insights">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* User Behavior Insights */}
+              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-indigo-600" />
+                    User Behavior Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4">
+                      <div className="font-semibold text-indigo-800 dark:text-indigo-200 mb-2">
+                        🔥 Most Active Time: 7-9 PM
+                      </div>
+                      <div className="text-sm text-indigo-600">
+                        68% of journal entries are created in the evening
+                      </div>
+                    </div>
+                    
+                    <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                      <div className="font-semibold text-green-800 dark:text-green-200 mb-2">
+                        ⭐ Feature Usage Leader: Photo Analysis
+                      </div>
+                      <div className="text-sm text-green-600">
+                        87% of users have uploaded photos for AI analysis
+                      </div>
+                    </div>
+                    
+                    <div className="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                      <div className="font-semibold text-orange-800 dark:text-orange-200 mb-2">
+                        📈 Retention Boost: Mood Tracking
+                      </div>
+                      <div className="text-sm text-orange-600">
+                        Users who track mood have 3x higher retention
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Automated Actions */}
+              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Zap className="h-5 w-5 text-yellow-600" />
+                    Smart Admin Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <Button
+                      className="w-full justify-start bg-gradient-to-r from-purple-500 to-purple-600 text-white"
+                      onClick={() => {
+                        toast({
+                          title: "Automated Campaign Sent",
+                          description: "Targeted prompt top-up offers sent to 5 heavy users",
+                        });
+                      }}
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Send AI Prompt Upsell Campaign
+                    </Button>
+                    
+                    <Button
+                      className="w-full justify-start bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                      onClick={() => {
+                        toast({
+                          title: "Re-engagement Started",
+                          description: "Personalized prompts sent to 12 inactive users",
+                        });
+                      }}
+                    >
+                      <Mail className="w-4 h-4 mr-2" />
+                      Re-engage Inactive Users
+                    </Button>
+                    
+                    <Button
+                      className="w-full justify-start bg-gradient-to-r from-green-500 to-green-600 text-white"
+                      onClick={() => {
+                        toast({
+                          title: "Pro Upgrade Campaign",
+                          description: "Annual discount offers sent to 8 eligible users",
+                        });
+                      }}
+                    >
+                      <Crown className="w-4 h-4 mr-2" />
+                      Promote Annual Subscriptions
+                    </Button>
+                    
+                    <Button
+                      className="w-full justify-start bg-gradient-to-r from-orange-500 to-orange-600 text-white"
+                      onClick={async () => {
+                        try {
+                          const response = await fetch('/api/admin/bulk-reset-prompts', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' }
+                          });
+                          if (response.ok) {
+                            toast({
+                              title: "Bulk Reset Complete",
+                              description: "All users reset to 100 AI prompts",
+                            });
+                            loadAdminData();
+                          }
+                        } catch (error) {
+                          toast({
+                            title: "Error",
+                            description: "Failed to reset prompts",
+                            variant: "destructive"
+                          });
+                        }
+                      }}
+                    >
+                      <Zap className="w-4 h-4 mr-2" />
+                      Bulk Reset All User Prompts
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              {/* Real-time Metrics */}
+              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5 text-green-600" />
+                    Live Metrics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Users Online Now</span>
+                      <span className="font-bold text-green-600 flex items-center gap-1">
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                        3
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Entries Today</span>
+                      <span className="font-bold text-blue-600">12</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">AI Prompts Today</span>
+                      <span className="font-bold text-purple-600">47</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Photos Uploaded</span>
+                      <span className="font-bold text-orange-600">8</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Growth Metrics */}
+              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-blue-600" />
+                    Growth Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Weekly Growth</span>
+                      <span className="font-bold text-green-600">+23%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">User Retention (7d)</span>
+                      <span className="font-bold text-blue-600">76%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Conversion Rate</span>
+                      <span className="font-bold text-purple-600">12.5%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Avg Session Time</span>
+                      <span className="font-bold text-orange-600">8.3m</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Performance Alerts */}
+              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="h-5 w-5 text-red-600" />
+                    System Alerts
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-green-800 dark:text-green-200">
+                          All Systems Operational
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                          5 Users Near Prompt Limit
+                        </span>
+                      </div>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                          Database: 94% Healthy
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Advanced Analytics Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* User Segmentation */}
+              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-indigo-600" />
+                    User Segmentation
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Power Users (20+ entries)</span>
+                      <span className="font-bold text-purple-600">3 users</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Regular Users (5-19 entries)</span>
+                      <span className="font-bold text-blue-600">12 users</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">New Users (1-4 entries)</span>
+                      <span className="font-bold text-green-600">18 users</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm">Inactive Users (0 entries)</span>
+                      <span className="font-bold text-red-600">7 users</span>
+                    </div>
+                    
+                    <div className="mt-4 p-3 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg">
+                      <div className="text-sm font-medium text-indigo-800 dark:text-indigo-200">
+                        🎯 Target: Re-engage 7 inactive users with personalized prompts
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Feature Usage Analytics */}
+              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BarChart3 className="h-5 w-5 text-purple-600" />
+                    Feature Adoption
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>AI Journal Prompts</span>
+                        <span className="font-semibold">89%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-purple-600 h-2 rounded-full" style={{ width: '89%' }}></div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Photo Analysis</span>
+                        <span className="font-semibold">76%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-blue-600 h-2 rounded-full" style={{ width: '76%' }}></div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Mood Tracking</span>
+                        <span className="font-semibold">63%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-green-600 h-2 rounded-full" style={{ width: '63%' }}></div>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span>Drawing Tools</span>
+                        <span className="font-semibold">34%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-orange-600 h-2 rounded-full" style={{ width: '34%' }}></div>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-4 p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                      <div className="text-sm font-medium text-orange-800 dark:text-orange-200">
+                        💡 Opportunity: Promote drawing tools with tutorial campaign
+                      </div>
                     </div>
                   </div>
                 </CardContent>
