@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Save, Camera, Palette, Type, Smile, Calendar, Sparkles, 
-  MessageCircle, Star, Heart, BookOpen, Settings, Upload,
+  MessageCircle, MessageSquare, Star, Heart, BookOpen, Settings, Upload,
   Bold, Italic, Underline, List, Quote, Brush, Eraser,
   Undo, Redo, Download, Share, Plus, X, Mic, MicOff, Send,
   Wand2, Eye, Brain, Lightbulb
@@ -440,67 +440,58 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   };
 
-  // Handle AI mic button mouse down (start hold-to-speak)
-  const handleMicMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (e.button !== 0) return; // Only left mouse button
-    
-    console.log('AI mic button pressed down');
-    setIsHoldingMic(true);
-    
-    // Start recording immediately for click and hold
-    if (aiRecognition && !isAiListening) {
-      setAiInput('');
-      setLastFinalTranscript('');
-      try {
-        console.log('Starting AI speech recognition for click-and-hold...');
-        aiRecognition.start();
-        setIsAiListening(true);
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '🎤 Speaking... Release to send!'
-        }]);
-      } catch (error) {
-        console.error('Error starting AI speech recognition:', error);
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '❌ Speech recognition error. Please try typing your message instead.'
-        }]);
+  // Simple voice message recording
+  const handleVoiceRecord = () => {
+    if (isAiListening) {
+      // Stop recording
+      console.log('Stopping voice recording...');
+      if (aiRecognition) {
+        aiRecognition.stop();
       }
-    }
-    
-    // No timeout needed - just regular click and hold to record
-  };
-
-  // Handle AI mic button mouse up (end hold-to-speak)
-  const handleMicMouseUp = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (e.button !== 0) return; // Only left mouse button
-    
-    console.log('AI mic button released');
-    
-    // Stop recording and process the speech
-    if (isAiListening && aiRecognition) {
-      console.log('Stopping AI speech recognition...');
-      aiRecognition.stop();
       setIsAiListening(false);
       
       // Send the captured speech to AI if we have content
       const finalInput = lastFinalTranscript || aiInput;
       if (finalInput.trim()) {
-        console.log('Sending captured speech to AI:', finalInput);
+        console.log('Sending voice message to AI:', finalInput);
         sendToAi(finalInput.trim());
         setAiInput('');
         setLastFinalTranscript('');
       } else {
         setAiMessages(prev => [...prev, {
           type: 'ai',
-          message: '🤔 I didn\'t catch that. Please try speaking again or type your message.'
+          message: '🤔 I didn\'t catch that. Please try again or type your message.'
         }]);
       }
+    } else {
+      // Start recording
+      console.log('Starting voice recording...');
+      if (aiRecognition) {
+        setAiInput('');
+        setLastFinalTranscript('');
+        try {
+          aiRecognition.start();
+          setIsAiListening(true);
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '🎤 Recording... Click the mic again when finished!'
+          }]);
+        } catch (error) {
+          console.error('Error starting voice recording:', error);
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '❌ Speech recognition error. Please try typing your message instead.'
+          }]);
+        }
+      }
     }
-    
-    setIsHoldingMic(false);
+  };
+
+  // Enable full conversation mode
+  const handleEnableConversation = async () => {
+    console.log('Enabling full conversation mode...');
+    await fetchPromptUsage();
+    setShowUsageWarning(true);
   };
 
   // Start full conversation mode after warning confirmation
@@ -1578,27 +1569,20 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   disabled={isAiListening}
                 />
                 <Button 
-                  onMouseDown={handleMicMouseDown}
-                  onMouseUp={handleMicMouseUp}
-                  onMouseLeave={handleMicMouseUp}
-                  onContextMenu={(e) => e.preventDefault()}
-                  onClick={isAiListening ? stopVoiceInput : undefined}
+                  onClick={handleVoiceRecord}
                   size="sm"
                   variant={isAiListening ? "default" : "outline"}
-                  className={`${isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : "bg-gray-800 hover:bg-gray-900 text-white"} ${isHoldingMic ? "bg-blue-500 text-white" : ""}`}
-                  title={isAiListening ? "Recording... Release to send" : "Hold to record voice message"}
+                  className={`${isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : "bg-gray-800 hover:bg-gray-900 text-white"}`}
+                  title={isAiListening ? "Recording... Click to stop and send" : "Record voice message"}
                 >
                   {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </Button>
                 <Button 
-                  onClick={async () => {
-                    await fetchPromptUsage();
-                    setShowUsageWarning(true);
-                  }}
+                  onClick={handleEnableConversation}
                   size="sm"
                   variant="outline"
                   className="bg-purple-600 hover:bg-purple-700 text-white border-purple-600"
-                  title="Enable full conversation mode"
+                  title="Enable conversation mode"
                 >
                   <MessageSquare className="w-4 h-4" />
                 </Button>
