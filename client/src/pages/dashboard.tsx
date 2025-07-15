@@ -1,18 +1,20 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Plus, Edit, Sparkles } from "lucide-react";
+import { Plus, Edit, Sparkles, Calendar } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
-import JournalEntryModal from "@/components/journal-entry-modal";
+import UnifiedJournal from "@/components/unified-journal";
 import RecentEntries from "@/components/recent-entries";
 import MoodTracker from "@/components/mood-tracker";
 import ProgressCard from "@/components/progress-card";
+import InteractiveCalendar from "@/components/interactive-calendar";
 import { type JournalEntry, type UserStats, type Achievement } from "@/lib/types";
 
 export default function Dashboard() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingEntry, setEditingEntry] = useState<JournalEntry | undefined>();
+  const [isJournalOpen, setIsJournalOpen] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<any>();
+  const [activeTab, setActiveTab] = useState<"dashboard" | "calendar">("dashboard");
 
   const { data: userResponse } = useQuery({
     queryKey: ["/api/auth/me"],
@@ -27,23 +29,43 @@ export default function Dashboard() {
     queryKey: ["/api/ai/insight"],
   });
 
+  const { data: entriesResponse } = useQuery<JournalEntry[]>({
+    queryKey: ["/api/journal/entries"],
+  });
+
   const user = userResponse?.user;
   const stats = statsResponse?.stats;
   const achievements = statsResponse?.achievements || [];
+  const entries = entriesResponse || [];
 
   const openNewEntry = () => {
     setEditingEntry(undefined);
-    setIsModalOpen(true);
+    setIsJournalOpen(true);
   };
 
   const openEditEntry = (entry: JournalEntry) => {
     setEditingEntry(entry);
-    setIsModalOpen(true);
+    setIsJournalOpen(true);
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closeJournal = () => {
+    setIsJournalOpen(false);
     setEditingEntry(undefined);
+  };
+
+  const handleJournalSave = (entryData: any) => {
+    // Handle save logic here
+    console.log('Saving entry:', entryData);
+    closeJournal();
+  };
+
+  const handleDateSelect = (date: Date) => {
+    // Open journal for selected date
+    openNewEntry();
+  };
+
+  const handleEntryEdit = (entry: JournalEntry) => {
+    openEditEntry(entry);
   };
 
   return (
@@ -70,32 +92,56 @@ export default function Dashboard() {
         </Card>
       </div>
 
-      {/* Quick Actions */}
+      {/* Tab Navigation */}
       <div className="mb-8">
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex bg-white rounded-lg p-1 shadow-sm border">
           <Button
-            onClick={openNewEntry}
-            className="flex-1 bg-primary hover:bg-primary/90 text-white px-6 py-4 h-auto font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            onClick={() => setActiveTab("dashboard")}
+            variant={activeTab === "dashboard" ? "default" : "ghost"}
+            className={`flex-1 ${activeTab === "dashboard" ? "gradient-bg text-white" : ""}`}
           >
-            <Edit className="w-5 h-5 mr-2" />
-            New Journal Entry
+            <Sparkles className="mr-2 h-4 w-4" />
+            Dashboard
           </Button>
           <Button
-            onClick={openNewEntry}
-            className="flex-1 bg-secondary hover:bg-secondary/90 text-white px-6 py-4 h-auto font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            onClick={() => setActiveTab("calendar")}
+            variant={activeTab === "calendar" ? "default" : "ghost"}
+            className={`flex-1 ${activeTab === "calendar" ? "gradient-bg text-white" : ""}`}
           >
-            <span className="text-xl mr-2">😊</span>
-            Track Mood
-          </Button>
-          <Button
-            onClick={openNewEntry}
-            className="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-4 h-auto font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-          >
-            <Sparkles className="w-5 h-5 mr-2" />
-            AI Prompt
+            <Calendar className="mr-2 h-4 w-4" />
+            Memory Calendar
           </Button>
         </div>
       </div>
+
+      {activeTab === "dashboard" && (
+        <>
+          {/* Quick Actions */}
+          <div className="mb-8">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button
+                onClick={openNewEntry}
+                className="flex-1 bg-primary hover:bg-primary/90 text-white px-6 py-4 h-auto font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <Edit className="w-5 h-5 mr-2" />
+                New Journal Entry
+              </Button>
+              <Button
+                onClick={openNewEntry}
+                className="flex-1 bg-secondary hover:bg-secondary/90 text-white px-6 py-4 h-auto font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <span className="text-xl mr-2">😊</span>
+                Track Mood
+              </Button>
+              <Button
+                onClick={openNewEntry}
+                className="flex-1 bg-accent hover:bg-accent/90 text-white px-6 py-4 h-auto font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                AI Prompt
+              </Button>
+            </div>
+          </div>
 
       {/* Dashboard Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -135,11 +181,11 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* AI Insights */}
-      {insightResponse?.insight && (
-        <div className="mt-8">
-          <Card className="gradient-bg from-purple-500 to-pink-500 text-white">
-            <CardContent className="p-6">
+          {/* AI Insights */}
+          {insightResponse?.insight && (
+            <div className="mt-8">
+              <Card className="gradient-bg from-purple-500 to-pink-500 text-white">
+                <CardContent className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-xl font-semibold">AI Insights</h3>
                 <Sparkles className="w-6 h-6" />
@@ -155,6 +201,21 @@ export default function Dashboard() {
           </Card>
         </div>
       )}
+        </>
+      )}
+
+      {activeTab === "calendar" && (
+        <div className="h-[80vh]">
+          <InteractiveCalendar 
+            entries={entries.map(entry => ({
+              ...entry,
+              date: new Date(entry.createdAt)
+            }))}
+            onDateSelect={handleDateSelect}
+            onEntryEdit={handleEntryEdit}
+          />
+        </div>
+      )}
 
       {/* Floating Action Button */}
       <Button
@@ -165,12 +226,18 @@ export default function Dashboard() {
         <Plus className="w-6 h-6" />
       </Button>
 
-      {/* Journal Entry Modal */}
-      <JournalEntryModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        entry={editingEntry}
-      />
+      {/* Unified Journal */}
+      {isJournalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
+          <div className="absolute inset-0 overflow-auto">
+            <UnifiedJournal
+              entry={editingEntry}
+              onSave={handleJournalSave}
+              onClose={closeJournal}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

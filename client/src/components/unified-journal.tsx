@@ -283,12 +283,22 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
     onSave(entryData);
   };
 
+  const getCanvasCoordinates = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!canvasRef.current) return { x: 0, y: 0 };
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
+  };
+
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return;
     setIsDrawing(true);
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getCanvasCoordinates(e);
     
     const ctx = canvasRef.current.getContext('2d');
     if (ctx) {
@@ -300,9 +310,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !canvasRef.current) return;
     
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    const { x, y } = getCanvasCoordinates(e);
     
     const ctx = canvasRef.current.getContext('2d');
     if (ctx) {
@@ -581,11 +589,12 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     ref={canvasRef}
                     width={400}
                     height={150}
-                    className="border-2 border-dashed border-gray-300 rounded-lg w-full flex-1"
+                    className="border-2 border-dashed border-gray-300 rounded-lg w-full flex-1 cursor-crosshair bg-white"
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
+                    style={{ touchAction: 'none' }}
                   />
                 </CardContent>
               </Card>
