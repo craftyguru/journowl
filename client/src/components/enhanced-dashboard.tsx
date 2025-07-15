@@ -70,18 +70,30 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
     { id: 2, title: "Daily Writer", description: "Write for 3 consecutive days", icon: "📅", rarity: "common", unlockedAt: null, type: "streak" },
     { id: 3, title: "Word Explorer", description: "Write 100 words in a single entry", icon: "📚", rarity: "common", unlockedAt: null, type: "writing" },
     { id: 4, title: "Mood Tracker", description: "Track your mood for 5 days", icon: "😊", rarity: "common", unlockedAt: null, type: "mood" },
+    { id: 5, title: "Early Bird", description: "Write an entry before 9 AM", icon: "🌅", rarity: "common", unlockedAt: null, type: "time" },
+    { id: 6, title: "Night Owl", description: "Write an entry after 10 PM", icon: "🌙", rarity: "common", unlockedAt: null, type: "time" },
+    { id: 7, title: "Grateful Heart", description: "Write about gratitude 3 times", icon: "🙏", rarity: "common", unlockedAt: null, type: "reflection" },
+    { id: 8, title: "Weather Reporter", description: "Mention weather in 5 entries", icon: "🌤️", rarity: "common", unlockedAt: null, type: "observation" },
     
     // Rare achievements (moderate difficulty)
-    { id: 5, title: "Weekly Warrior", description: "Write every day for a week", icon: "⚔️", rarity: "rare", unlockedAt: null, type: "streak" },
-    { id: 6, title: "Storyteller", description: "Write 500 words in one entry", icon: "📖", rarity: "rare", unlockedAt: null, type: "writing" },
-    { id: 7, title: "Photo Memory", description: "Add 10 photos to your entries", icon: "📸", rarity: "rare", unlockedAt: null, type: "media" },
-    { id: 8, title: "Emoji Master", description: "Use 50 different emojis", icon: "🎭", rarity: "rare", unlockedAt: null, type: "creative" },
+    { id: 9, title: "Weekly Warrior", description: "Write every day for a week", icon: "⚔️", rarity: "rare", unlockedAt: null, type: "streak" },
+    { id: 10, title: "Storyteller", description: "Write 500 words in one entry", icon: "📖", rarity: "rare", unlockedAt: null, type: "writing" },
+    { id: 11, title: "Photo Memory", description: "Add 10 photos to your entries", icon: "📸", rarity: "rare", unlockedAt: null, type: "media" },
+    { id: 12, title: "Emoji Master", description: "Use 50 different emojis", icon: "🎭", rarity: "rare", unlockedAt: null, type: "creative" },
+    { id: 13, title: "Deep Thinker", description: "Write reflective entries for 10 days", icon: "🤔", rarity: "rare", unlockedAt: null, type: "reflection" },
+    { id: 14, title: "Adventure Logger", description: "Document 15 different activities", icon: "🗺️", rarity: "rare", unlockedAt: null, type: "adventure" },
+    { id: 15, title: "Mood Rainbow", description: "Experience all 7 mood types", icon: "🌈", rarity: "rare", unlockedAt: null, type: "mood" },
+    { id: 16, title: "Time Traveler", description: "Write about past memories 20 times", icon: "⏰", rarity: "rare", unlockedAt: null, type: "memory" },
     
     // Epic achievements (challenging)
-    { id: 9, title: "Monthly Champion", description: "Write every day for 30 days", icon: "🏆", rarity: "epic", unlockedAt: null, type: "streak" },
-    { id: 10, title: "Novel Writer", description: "Write 10,000 words total", icon: "📜", rarity: "epic", unlockedAt: null, type: "writing" },
-    { id: 11, title: "Memory Keeper", description: "Create 100 journal entries", icon: "🗂️", rarity: "epic", unlockedAt: null, type: "milestone" },
-    { id: 12, title: "Artist", description: "Add drawings to 20 entries", icon: "🎨", rarity: "epic", unlockedAt: null, type: "creative" }
+    { id: 17, title: "Monthly Champion", description: "Write every day for 30 days", icon: "🏆", rarity: "epic", unlockedAt: null, type: "streak" },
+    { id: 18, title: "Novel Writer", description: "Write 10,000 words total", icon: "📜", rarity: "epic", unlockedAt: null, type: "writing" },
+    { id: 19, title: "Memory Keeper", description: "Create 100 journal entries", icon: "🗂️", rarity: "epic", unlockedAt: null, type: "milestone" },
+    { id: 20, title: "Artist", description: "Add drawings to 20 entries", icon: "🎨", rarity: "epic", unlockedAt: null, type: "creative" },
+    { id: 21, title: "Wisdom Seeker", description: "Write philosophical thoughts 25 times", icon: "🧠", rarity: "epic", unlockedAt: null, type: "wisdom" },
+    { id: 22, title: "Social Butterfly", description: "Write about relationships 30 times", icon: "🦋", rarity: "epic", unlockedAt: null, type: "social" },
+    { id: 23, title: "Goal Crusher", description: "Complete 50 personal goals", icon: "💪", rarity: "epic", unlockedAt: null, type: "achievement" },
+    { id: 24, title: "Master Chronicler", description: "Write 50,000 words lifetime", icon: "👑", rarity: "legendary", unlockedAt: null, type: "legendary" }
   ];
 
   const achievements = achievementsResponse?.achievements || defaultAchievements;
@@ -92,18 +104,30 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
     { id: 2, title: "Word Count Goal", description: "Write at least 100 words per entry", type: "writing", targetValue: 100, currentValue: 50, difficulty: "beginner", isCompleted: false },
     { id: 3, title: "Mood Tracking", description: "Track your mood for 5 consecutive days", type: "mood", targetValue: 5, currentValue: 2, difficulty: "beginner", isCompleted: false },
     { id: 4, title: "Photo Memories", description: "Add photos to 3 journal entries", type: "media", targetValue: 3, currentValue: 0, difficulty: "beginner", isCompleted: false },
+    { id: 5, title: "Morning Pages", description: "Write 3 morning entries this week", type: "routine", targetValue: 3, currentValue: 0, difficulty: "beginner", isCompleted: false },
+    { id: 6, title: "Gratitude Practice", description: "List 3 things you're grateful for daily", type: "gratitude", targetValue: 3, currentValue: 1, difficulty: "beginner", isCompleted: false },
+    { id: 7, title: "Emotion Explorer", description: "Use 10 different emotion words", type: "vocabulary", targetValue: 10, currentValue: 3, difficulty: "beginner", isCompleted: false },
+    { id: 8, title: "Weekend Warrior", description: "Write on both weekend days", type: "consistency", targetValue: 2, currentValue: 0, difficulty: "beginner", isCompleted: false },
     
     // Intermediate goals (weekly habits)
-    { id: 5, title: "Weekly Consistency", description: "Maintain a 7-day writing streak", type: "streak", targetValue: 7, currentValue: 1, difficulty: "intermediate", isCompleted: false },
-    { id: 6, title: "Detailed Entries", description: "Write entries with at least 300 words", type: "writing", targetValue: 300, currentValue: 50, difficulty: "intermediate", isCompleted: false },
-    { id: 7, title: "Creative Expression", description: "Use drawings in 5 journal entries", type: "creative", targetValue: 5, currentValue: 0, difficulty: "intermediate", isCompleted: false },
-    { id: 8, title: "Reflection Master", description: "Write about gratitude for 7 days", type: "reflection", targetValue: 7, currentValue: 0, difficulty: "intermediate", isCompleted: false },
+    { id: 9, title: "Weekly Consistency", description: "Maintain a 7-day writing streak", type: "streak", targetValue: 7, currentValue: 1, difficulty: "intermediate", isCompleted: false },
+    { id: 10, title: "Detailed Entries", description: "Write entries with at least 300 words", type: "writing", targetValue: 300, currentValue: 50, difficulty: "intermediate", isCompleted: false },
+    { id: 11, title: "Creative Expression", description: "Use drawings in 5 journal entries", type: "creative", targetValue: 5, currentValue: 0, difficulty: "intermediate", isCompleted: false },
+    { id: 12, title: "Reflection Master", description: "Write about gratitude for 7 days", type: "reflection", targetValue: 7, currentValue: 0, difficulty: "intermediate", isCompleted: false },
+    { id: 13, title: "Memory Lane", description: "Write about 10 childhood memories", type: "memory", targetValue: 10, currentValue: 2, difficulty: "intermediate", isCompleted: false },
+    { id: 14, title: "Dream Journal", description: "Record 15 dreams or aspirations", type: "dreams", targetValue: 15, currentValue: 0, difficulty: "intermediate", isCompleted: false },
+    { id: 15, title: "Adventure Seeker", description: "Document 12 new experiences", type: "adventure", targetValue: 12, currentValue: 1, difficulty: "intermediate", isCompleted: false },
+    { id: 16, title: "Social Stories", description: "Write about relationships 20 times", type: "social", targetValue: 20, currentValue: 3, difficulty: "intermediate", isCompleted: false },
     
     // Advanced goals (long-term achievements)
-    { id: 9, title: "Monthly Champion", description: "Write every day for 30 days", type: "streak", targetValue: 30, currentValue: 1, difficulty: "advanced", isCompleted: false },
-    { id: 10, title: "Novel Writer", description: "Write a total of 10,000 words", type: "writing", targetValue: 10000, currentValue: 50, difficulty: "advanced", isCompleted: false },
-    { id: 11, title: "Memory Keeper", description: "Create 50 journal entries", type: "milestone", targetValue: 50, currentValue: 0, difficulty: "advanced", isCompleted: false },
-    { id: 12, title: "Mindfulness Journey", description: "Practice mindful writing for 21 days", type: "mindfulness", targetValue: 21, currentValue: 0, difficulty: "advanced", isCompleted: false }
+    { id: 17, title: "Monthly Champion", description: "Write every day for 30 days", type: "streak", targetValue: 30, currentValue: 1, difficulty: "advanced", isCompleted: false },
+    { id: 18, title: "Novel Writer", description: "Write a total of 10,000 words", type: "writing", targetValue: 10000, currentValue: 50, difficulty: "advanced", isCompleted: false },
+    { id: 19, title: "Memory Keeper", description: "Create 50 journal entries", type: "milestone", targetValue: 50, currentValue: 0, difficulty: "advanced", isCompleted: false },
+    { id: 20, title: "Mindfulness Journey", description: "Practice mindful writing for 21 days", type: "mindfulness", targetValue: 21, currentValue: 0, difficulty: "advanced", isCompleted: false },
+    { id: 21, title: "Wisdom Collector", description: "Write 100 life lessons learned", type: "wisdom", targetValue: 100, currentValue: 5, difficulty: "advanced", isCompleted: false },
+    { id: 22, title: "Year of Growth", description: "Maintain 365-day writing streak", type: "epic", targetValue: 365, currentValue: 1, difficulty: "advanced", isCompleted: false },
+    { id: 23, title: "Master Storyteller", description: "Write 25,000 words total", type: "mastery", targetValue: 25000, currentValue: 50, difficulty: "advanced", isCompleted: false },
+    { id: 24, title: "Life Chronicler", description: "Document 200 significant moments", type: "chronicle", targetValue: 200, currentValue: 1, difficulty: "advanced", isCompleted: false }
   ];
 
   const goals = goalsResponse?.goals || defaultGoals;
@@ -1175,7 +1199,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
             {/* Achievement Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {achievements.slice(0, 12).map((achievement, index) => (
+              {achievements.slice(0, 24).map((achievement, index) => (
                 <motion.div
                   key={achievement.id}
                   initial={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -1405,24 +1429,44 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
             {/* Active Goals */}
             <div className="space-y-6">
-              {goals.slice(0, 6).map((goal, index) => (
+              {goals.slice(0, 24).map((goal, index) => (
                 <motion.div
                   key={goal.id}
                   initial={{ opacity: 0, x: -30 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
                   whileHover={{ scale: 1.02, y: -2 }}
-                  className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 hover:shadow-2xl transition-all"
+                  className={`rounded-2xl p-6 shadow-xl border hover:shadow-2xl transition-all ${
+                    goal.difficulty === 'beginner' 
+                      ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200'
+                      : goal.difficulty === 'intermediate'
+                      ? 'bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200'
+                      : 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200'
+                  }`}
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${
                           goal.type === 'streak' ? 'bg-orange-100' :
-                          goal.type === 'words' ? 'bg-blue-100' :
-                          'bg-purple-100'
+                          goal.type === 'writing' ? 'bg-blue-100' :
+                          goal.type === 'mood' ? 'bg-pink-100' :
+                          goal.type === 'creative' ? 'bg-purple-100' :
+                          goal.type === 'reflection' ? 'bg-yellow-100' :
+                          goal.type === 'mindfulness' ? 'bg-indigo-100' :
+                          'bg-gray-100'
                         }`}>
-                          {goal.type === 'streak' ? '🔥' : goal.type === 'words' ? '📝' : '🎯'}
+                          {goal.type === 'streak' ? '🔥' : 
+                           goal.type === 'writing' ? '📝' : 
+                           goal.type === 'mood' ? '😊' :
+                           goal.type === 'creative' ? '🎨' :
+                           goal.type === 'reflection' ? '🧘' :
+                           goal.type === 'mindfulness' ? '🌸' :
+                           goal.type === 'adventure' ? '🗺️' :
+                           goal.type === 'social' ? '👥' :
+                           goal.type === 'memory' ? '📸' :
+                           goal.type === 'dreams' ? '💭' :
+                           '🎯'}
                         </div>
                         <div>
                           <h3 className="text-xl font-bold text-gray-800">{goal.title}</h3>
@@ -1431,11 +1475,20 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       </div>
                     </div>
                     
-                    <div className="text-right">
+                    <div className="text-right flex flex-col gap-2">
+                      <Badge 
+                        className={`px-3 py-1 text-xs font-bold ${
+                          goal.difficulty === 'beginner' ? 'bg-green-500 text-white' :
+                          goal.difficulty === 'intermediate' ? 'bg-blue-500 text-white' :
+                          'bg-purple-500 text-white'
+                        }`}
+                      >
+                        {goal.difficulty.toUpperCase()}
+                      </Badge>
                       <Badge 
                         className={`px-3 py-1 text-sm font-bold ${
-                          goal.progress >= 90 ? 'bg-green-500 text-white' :
-                          goal.progress >= 70 ? 'bg-amber-500 text-white' :
+                          (goal.currentValue / goal.targetValue * 100) >= 90 ? 'bg-green-500 text-white' :
+                          (goal.currentValue / goal.targetValue * 100) >= 70 ? 'bg-amber-500 text-white' :
                           'bg-gray-500 text-white'
                         }`}
                       >
@@ -1449,11 +1502,11 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-500">Progress</span>
                       <span className={`text-lg font-bold ${
-                        goal.progress >= 90 ? 'text-green-600' :
-                        goal.progress >= 70 ? 'text-amber-600' :
+                        (goal.currentValue / goal.targetValue * 100) >= 90 ? 'text-green-600' :
+                        (goal.currentValue / goal.targetValue * 100) >= 70 ? 'text-amber-600' :
                         'text-gray-600'
                       }`}>
-                        {goal.progress}%
+                        {Math.round(goal.currentValue / goal.targetValue * 100)}%
                       </span>
                     </div>
                     
@@ -1462,7 +1515,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
-                          animate={{ width: `${goal.progress}%` }}
+                          animate={{ width: `${Math.round(goal.currentValue / goal.targetValue * 100)}%` }}
                           transition={{ duration: 1.5, delay: index * 0.2, ease: "easeOut" }}
                           className={`h-full rounded-full ${
                             goal.progress >= 90 ? 'bg-gradient-to-r from-green-400 to-emerald-500' :
