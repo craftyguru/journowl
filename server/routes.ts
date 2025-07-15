@@ -1083,6 +1083,30 @@ Current journal context:
     }
   });
 
+  // Reset current user's prompts to 100 (for testing purposes)
+  app.post("/api/reset-my-prompts", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      
+      // Reset prompts to 100 and usage to 0
+      await db.update(users).set({ 
+        promptsRemaining: 100,
+        promptsUsedThisMonth: 0,
+        lastUsageReset: new Date()
+      }).where(eq(users.id, userId));
+      
+      res.json({ 
+        success: true, 
+        message: "Your prompts have been reset to 100",
+        promptsRemaining: 100,
+        promptsUsedThisMonth: 0
+      });
+    } catch (error: any) {
+      console.error("Error resetting user prompts:", error);
+      res.status(500).json({ message: "Failed to reset prompts" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

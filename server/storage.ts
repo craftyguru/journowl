@@ -596,6 +596,20 @@ export class DatabaseStorage implements IStorage {
       throw new Error('User not found');
     }
     
+    // For users that were created before prompt tracking was implemented, reset them to 100
+    if (user.promptsRemaining === null || user.promptsRemaining === undefined) {
+      await db.update(users).set({ 
+        promptsRemaining: 100,
+        promptsUsedThisMonth: 0 
+      }).where(eq(users.id, userId));
+      
+      return {
+        promptsRemaining: 100,
+        promptsUsedThisMonth: 0,
+        currentPlan: user.currentPlan || 'free'
+      };
+    }
+    
     return {
       promptsRemaining: user.promptsRemaining || 0,
       promptsUsedThisMonth: user.promptsUsedThisMonth || 0,
