@@ -118,6 +118,9 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
 • Analyze photos to extract emotions, memories, and story ideas  
 • Suggest creative writing topics based on your mood
 • Turn your daily moments into meaningful stories
+• Answer questions about your journaling patterns and insights
+
+💫 IMPORTANT: Each AI interaction uses 1 prompt from your monthly limit. Check your remaining prompts in the dashboard above!
 
 Ready to capture today's adventure? Let's start journaling! ✨`;
 
