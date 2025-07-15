@@ -1781,7 +1781,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {prompts.map((prompt, index) => (
+                      {[].map((prompt, index) => (
                         <motion.div
                           key={index}
                           initial={{ opacity: 0, y: 10 }}
