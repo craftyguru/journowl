@@ -259,7 +259,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
               description: p.analysis?.description,
               tags: p.analysis?.tags
             })).filter(p => p.description),
-            previousMessages: aiMessages.slice(-5) // Last 5 messages for context
+            conversationHistory: aiMessages.map(msg => `${msg.type}: ${msg.message}`).join('\n') // Full conversation context
           }
         })
       });
@@ -282,6 +282,19 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
     } finally {
       setAiAnalyzing(false);
     }
+  };
+
+  // Add AI response to journal content
+  const addToJournal = (aiResponse: string) => {
+    // Extract prompt from AI response if it contains prompt-like text
+    const promptMatch = aiResponse.match(/(?:prompt|write about|consider|reflect on)[\s\S]*?(?:[.!?]|$)/gi);
+    const promptText = promptMatch ? promptMatch.join(' ') : aiResponse;
+    
+    setContent(prev => prev + '\n\n' + promptText);
+    setAiMessages(prev => [...prev, {
+      type: 'ai',
+      message: '✅ Added to your journal! You can now edit and expand on this content.'
+    }]);
   };
 
   const handlePhotoUpload = useCallback(async (files: FileList) => {
@@ -1095,6 +1108,17 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                         : 'bg-blue-500 text-white'
                     }`}>
                       <div className="whitespace-pre-wrap">{msg.message}</div>
+                      {msg.type === 'ai' && msg.message.length > 50 && !msg.message.includes('✅') && !msg.message.includes('🎤') && (
+                        <Button 
+                          onClick={() => addToJournal(msg.message)}
+                          variant="ghost" 
+                          size="sm"
+                          className="mt-1 text-xs h-6 px-2 hover:bg-purple-200"
+                        >
+                          <Plus className="w-3 h-3 mr-1" />
+                          Add to Journal
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1145,13 +1169,13 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
               {/* Quick AI Actions */}
               <div className="flex gap-1 mt-2 flex-wrap">
                 <Button 
-                  onClick={() => sendToAi("Suggest writing prompts based on my content")}
+                  onClick={() => sendToAi("Create a journal writing prompt based on everything we've discussed in this conversation")}
                   variant="outline" 
                   size="sm"
                   className="text-xs"
                 >
                   <Wand2 className="w-3 h-3 mr-1" />
-                  Ideas
+                  Journal Prompt
                 </Button>
                 <Button 
                   onClick={() => sendToAi("Help me improve this entry")}
