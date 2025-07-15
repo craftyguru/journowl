@@ -419,79 +419,79 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
         <TabsContent value="journal">
           <div className="space-y-6">
-            {/* Smart Journal Header */}
+            {/* Mobile-Optimized Smart Journal Header */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-500/20"
+              className="bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 shadow-2xl border border-purple-500/20"
             >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-2xl font-bold text-white mb-2">Smart Journal</h2>
-                  <p className="text-gray-300">Your AI-powered writing companion with photo analysis and intelligent prompts</p>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                <div className="flex-1">
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-1 sm:mb-2">Smart Journal</h2>
+                  <p className="text-gray-300 text-sm sm:text-base leading-tight">Your AI-powered writing companion with photo analysis and intelligent prompts</p>
                 </div>
                 <Button 
                   onClick={() => openUnifiedJournal()}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 text-lg"
+                  className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 text-sm sm:text-base lg:text-lg"
                 >
-                  <BookOpen className="w-5 h-5 mr-2" />
+                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Open Journal Book
                 </Button>
               </div>
             </motion.div>
 
-            {/* Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Mobile-Optimized Features Grid */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 backdrop-blur-lg rounded-xl p-4 border border-purple-500/20"
+                className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 backdrop-blur-lg rounded-lg p-3 border border-purple-500/20 h-fit"
               >
-                <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-3">
-                  <Sparkles className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-lg flex items-center justify-center mb-2">
+                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <h3 className="text-white font-semibold mb-2">AI Photo Analysis</h3>
-                <p className="text-gray-300 text-sm">Upload photos and AI extracts emotions, activities, and insights</p>
+                <h3 className="text-white font-semibold text-sm sm:text-base mb-1">AI Photo Analysis</h3>
+                <p className="text-gray-300 text-xs sm:text-sm leading-tight">Upload photos and AI extracts emotions, activities, and insights</p>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="bg-gradient-to-br from-pink-600/20 to-pink-800/20 backdrop-blur-lg rounded-xl p-4 border border-pink-500/20"
+                className="bg-gradient-to-br from-pink-600/20 to-pink-800/20 backdrop-blur-lg rounded-lg p-3 border border-pink-500/20 h-fit"
               >
-                <div className="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center mb-3">
-                  <BookOpen className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-500 rounded-lg flex items-center justify-center mb-2">
+                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <h3 className="text-white font-semibold mb-2">Rich Text Editor</h3>
-                <p className="text-gray-300 text-sm">10+ fonts, custom colors, markdown support with live preview</p>
+                <h3 className="text-white font-semibold text-sm sm:text-base mb-1">Rich Text Editor</h3>
+                <p className="text-gray-300 text-xs sm:text-sm leading-tight">10+ fonts, custom colors, markdown support with live preview</p>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 backdrop-blur-lg rounded-xl p-4 border border-blue-500/20"
+                className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 backdrop-blur-lg rounded-lg p-3 border border-blue-500/20 h-fit"
               >
-                <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-3">
-                  <Brain className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-lg flex items-center justify-center mb-2">
+                  <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <h3 className="text-white font-semibold mb-2">Smart Prompts</h3>
-                <p className="text-gray-300 text-sm">AI generates personalized writing prompts based on your mood</p>
+                <h3 className="text-white font-semibold text-sm sm:text-base mb-1">Smart Prompts</h3>
+                <p className="text-gray-300 text-xs sm:text-sm leading-tight">AI generates personalized writing prompts based on your mood</p>
               </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
-                className="bg-gradient-to-br from-green-600/20 to-green-800/20 backdrop-blur-lg rounded-xl p-4 border border-green-500/20"
+                className="bg-gradient-to-br from-green-600/20 to-green-800/20 backdrop-blur-lg rounded-lg p-3 border border-green-500/20 h-fit"
               >
-                <div className="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-3">
-                  <Brush className="w-6 h-6 text-white" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500 rounded-lg flex items-center justify-center mb-2">
+                  <Brush className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                 </div>
-                <h3 className="text-white font-semibold mb-2">Drawing Tools</h3>
-                <p className="text-gray-300 text-sm">Built-in canvas for sketches and creative expression</p>
+                <h3 className="text-white font-semibold text-sm sm:text-base mb-1">Drawing Tools</h3>
+                <p className="text-gray-300 text-xs sm:text-sm leading-tight">Built-in canvas for sketches and creative expression</p>
               </motion.div>
             </div>
 
