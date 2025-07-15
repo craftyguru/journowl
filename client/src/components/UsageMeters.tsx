@@ -155,7 +155,46 @@ export default function UsageMeters() {
           </CardContent>
         </Card>
 
-
+        {/* Storage Usage Meter */}
+        <Card className="border-2 border-blue-500/30 bg-gradient-to-br from-slate-800/90 to-blue-900/90 backdrop-blur-lg">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Cloud className="w-5 h-5 text-blue-400" />
+              Storage
+              <Badge variant="outline" className="ml-auto border-blue-400 text-blue-300">
+                {usage?.storageLimit || 100} MB
+              </Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col items-center space-y-4">
+            <CircularGauge
+              value={(usage?.storageLimit || 100) - (usage?.storageUsed || 0)}
+              max={usage?.storageLimit || 100}
+              label="Available"
+              unit="MB"
+              size={140}
+              strokeWidth={14}
+              colors={{ 
+                low: "#ef4444",    // Red when storage full
+                medium: "#f59e0b", // Yellow when getting full
+                high: "#06b6d4"    // Cyan when plenty
+              }}
+            />
+            
+            <div className="text-center space-y-2">
+              <div className="text-sm text-gray-300">
+                Photos & files • {usage?.storageUsed || 0}/{usage?.storageLimit || 100} MB used
+              </div>
+              <Button 
+                onClick={() => setShowSubscriptionModal(true)}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+              >
+                <Crown className="w-4 h-4 mr-2" />
+                Upgrade Subscription
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Subscription Management Modal */}

@@ -807,31 +807,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   </div>
                 </motion.div>
 
-                {/* AI Prompts Usage Card */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden cursor-pointer"
-                  onClick={() => setShowPromptPurchase(true)}
-                >
-                  <motion.div
-                    animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
-                    transition={{ duration: 4, repeat: Infinity }}
-                    className="absolute top-2 right-2 text-2xl"
-                  >
-                    🤖
-                  </motion.div>
-                  <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">{promptUsage?.promptsRemaining || 0}</div>
-                    <div className="text-white/90 text-sm font-medium mb-1">AI Prompts</div>
-                    <div className="flex items-center gap-1 text-xs text-purple-300">
-                      <Sparkles className="w-3 h-3" />
-                      <span>{(promptUsage?.promptsRemaining || 0) <= 10 ? "Top off soon!" : "Ready to inspire!"}</span>
-                    </div>
-                  </div>
-                </motion.div>
+
               </div>
 
               {/* Quick Insights Banner */}
