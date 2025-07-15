@@ -1354,9 +1354,8 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           </PanelGroup>
         </div>
 
-        {/* Floating Action Buttons - Evenly Spaced Across Screen */}
-        <div className="fixed bottom-4 left-0 right-0 flex justify-center items-center z-40">
-          <div className="flex items-center justify-between w-full max-w-md px-4">
+        {/* Floating Action Buttons - Evenly Spaced */}
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-40">
             
             {/* Voice-to-Text Button */}
             <motion.div
@@ -1459,7 +1458,6 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               </div>
             </motion.div>
 
-          </div>
         </div>
 
         {/* AI Sidekick - Centered */}
@@ -1594,10 +1592,10 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           )}
         </AnimatePresence>
 
-        {/* AI Sidekick Toggle - Center Bottom */}
+        {/* AI Sidekick Toggle - Right Side, Above Support Chat */}
         <Button
           onClick={() => setShowAiChat(!showAiChat)}
-          className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl z-40 ${
+          className={`fixed bottom-20 right-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl z-40 ${
             showAiChat ? 'scale-90' : 'animate-bounce'
           }`}
         >
