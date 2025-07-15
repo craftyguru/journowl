@@ -34,6 +34,9 @@ export default function InsightsPage() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showDateSelector, setShowDateSelector] = useState(false);
+  const [selectedExportDates, setSelectedExportDates] = useState<Date[]>([]);
+  const [selectedExportFormat, setSelectedExportFormat] = useState<string>('');
 
   // Fetch real user data
   const { data: entriesData = [], isLoading: entriesLoading } = useQuery({
@@ -140,25 +143,49 @@ export default function InsightsPage() {
   };
 
   const handleExportChoice = (format: string) => {
+    setSelectedExportFormat(format);
     setShowExportModal(false);
+    setShowDateSelector(true);
+  };
+
+  const handleDateToggle = (date: Date) => {
+    const dateStr = date.toDateString();
+    const isSelected = selectedExportDates.some(d => d.toDateString() === dateStr);
     
-    if (format === "json") {
-      exportAsJSON();
-    } else if (format === "html") {
-      exportAsHTML();
-    } else if (format === "text") {
-      exportAsText();
+    if (isSelected) {
+      setSelectedExportDates(selectedExportDates.filter(d => d.toDateString() !== dateStr));
+    } else {
+      setSelectedExportDates([...selectedExportDates, date]);
     }
   };
 
-  const exportAsJSON = () => {
+  const handleExportWithDates = () => {
+    const selectedEntries = entries.filter(entry => 
+      selectedExportDates.some(date => 
+        new Date(entry.createdAt).toDateString() === date.toDateString()
+      )
+    );
+
+    setShowDateSelector(false);
+    setSelectedExportDates([]);
+    
+    if (selectedExportFormat === "json") {
+      exportAsJSON(selectedEntries);
+    } else if (selectedExportFormat === "html") {
+      exportAsHTML(selectedEntries);
+    } else if (selectedExportFormat === "text") {
+      exportAsText(selectedEntries);
+    }
+  };
+
+  const exportAsJSON = (selectedEntries = entries) => {
     const exportData = {
       stats: stats,
-      entries: entries,
+      entries: selectedEntries,
       insights: insightsData,
       exportDate: new Date().toISOString(),
-      totalEntries: stats.totalEntries,
-      totalWords: stats.totalWords,
+      totalEntries: selectedEntries.length,
+      totalWords: selectedEntries.reduce((sum, entry) => sum + entry.wordCount, 0),
       currentStreak: stats.currentStreak
     };
     
@@ -178,8 +205,8 @@ export default function InsightsPage() {
     });
   };
 
-  const exportAsHTML = () => {
-    const sortedEntries = [...entries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const exportAsHTML = (selectedEntries = entries) => {
+    const sortedEntries = [...selectedEntries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     
     const htmlContent = `
 <!DOCTYPE html>
@@ -293,11 +320,11 @@ export default function InsightsPage() {
 
     <div class="stats">
         <div class="stat-item">
-            <div class="stat-value">${stats.totalEntries}</div>
-            <div>Total Entries</div>
+            <div class="stat-value">${sortedEntries.length}</div>
+            <div>Selected Entries</div>
         </div>
         <div class="stat-item">
-            <div class="stat-value">${stats.totalWords}</div>
+            <div class="stat-value">${sortedEntries.reduce((sum, entry) => sum + entry.wordCount, 0)}</div>
             <div>Words Written</div>
         </div>
         <div class="stat-item">
@@ -327,6 +354,25 @@ export default function InsightsPage() {
             <div class="entry-content">
                 ${entry.content.replace(/\n/g, '<br>')}
             </div>
+            
+            ${entry.photos && entry.photos.length > 0 ? `
+            <div class="entry-photos" style="margin-top: 15px;">
+                <strong>Photos:</strong><br>
+                ${entry.photos.map(photo => `
+                    <img src="${photo.url || photo.data}" alt="Journal photo" style="max-width: 300px; max-height: 200px; margin: 5px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                `).join('')}
+            </div>
+            ` : ''}
+            
+            ${entry.drawings && entry.drawings.length > 0 ? `
+            <div class="entry-drawings" style="margin-top: 15px;">
+                <strong>Drawings:</strong><br>
+                ${entry.drawings.map(drawing => `
+                    <img src="${drawing.dataUrl || drawing.data}" alt="Journal drawing" style="max-width: 300px; max-height: 200px; margin: 5px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                `).join('')}
+            </div>
+            ` : ''}
+            
             <div class="entry-meta">
                 <strong>Word Count:</strong> ${entry.wordCount} words
                 ${entry.tags && entry.tags.length > 0 ? `<br><strong>Tags:</strong> ${entry.tags.join(', ')}` : ''}
@@ -355,8 +401,8 @@ export default function InsightsPage() {
     });
   };
 
-  const exportAsText = () => {
-    const sortedEntries = [...entries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  const exportAsText = (selectedEntries = entries) => {
+    const sortedEntries = [...selectedEntries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     
     const textContent = `
 ═══════════════════════════════════════════════════════════════════════════════
@@ -373,8 +419,8 @@ export default function InsightsPage() {
 
 📊 JOURNAL STATISTICS
 ──────────────────────────────────────────────────────────────────────────────
-Total Entries: ${stats.totalEntries}
-Words Written: ${stats.totalWords}
+Selected Entries: ${sortedEntries.length}
+Words Written: ${sortedEntries.reduce((sum, entry) => sum + entry.wordCount, 0)}
 Current Streak: ${stats.currentStreak} days
 Longest Streak: ${stats.longestStreak} days
 
@@ -393,6 +439,14 @@ ${sortedEntries.map(entry => `
 
 ${entry.content}
 
+${entry.photos && entry.photos.length > 0 ? `
+📸 PHOTOS: ${entry.photos.length} attached
+${entry.photos.map((photo, i) => `   Photo ${i + 1}: ${photo.url || 'Embedded image'}`).join('\n')}
+` : ''}
+${entry.drawings && entry.drawings.length > 0 ? `
+🎨 DRAWINGS: ${entry.drawings.length} attached
+${entry.drawings.map((drawing, i) => `   Drawing ${i + 1}: ${drawing.dataUrl ? 'Embedded drawing' : 'Drawing data'}`).join('\n')}
+` : ''}
 ────────────────────────────────────────────────────────────────────────────── 
 Word Count: ${entry.wordCount} words
 ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
@@ -1181,6 +1235,173 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                   </div>
                   <p className="text-sm text-amber-700 dark:text-amber-300">
                     Choose HTML for a beautiful digital journal or Print-Ready for creating a physical book. JSON is perfect for backing up your data.
+                  </p>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Date Selector Modal */}
+        <AnimatePresence>
+          {showDateSelector && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+              onClick={() => setShowDateSelector(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full p-6 max-h-[80vh] overflow-y-auto"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    📅 Select Dates to Export
+                  </h3>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setShowDateSelector(false)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Choose which days you want to include in your {selectedExportFormat} export:
+                </p>
+
+                {/* Quick Selection Buttons */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedExportDates(entries.map(e => new Date(e.createdAt)))}
+                  >
+                    Select All
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedExportDates([])}
+                  >
+                    Clear All
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const lastWeek = new Date();
+                      lastWeek.setDate(lastWeek.getDate() - 7);
+                      setSelectedExportDates(entries.filter(e => new Date(e.createdAt) >= lastWeek).map(e => new Date(e.createdAt)));
+                    }}
+                  >
+                    Last Week
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const lastMonth = new Date();
+                      lastMonth.setMonth(lastMonth.getMonth() - 1);
+                      setSelectedExportDates(entries.filter(e => new Date(e.createdAt) >= lastMonth).map(e => new Date(e.createdAt)));
+                    }}
+                  >
+                    Last Month
+                  </Button>
+                </div>
+
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-1 mb-6">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                    <div key={day} className="text-center text-sm font-medium text-gray-500 dark:text-gray-400 p-2">
+                      {day}
+                    </div>
+                  ))}
+                  
+                  {calendarData.map((day, index) => {
+                    const hasEntries = day.entries.length > 0;
+                    const isSelected = selectedExportDates.some(date => 
+                      date.toDateString() === day.date.toDateString()
+                    );
+                    
+                    return (
+                      <motion.div
+                        key={index}
+                        whileHover={{ scale: hasEntries ? 1.1 : 1 }}
+                        whileTap={{ scale: hasEntries ? 0.95 : 1 }}
+                        className={`
+                          aspect-square p-2 rounded-lg cursor-pointer text-center text-sm font-medium transition-all
+                          ${hasEntries ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}
+                          ${!day.isCurrentMonth ? 'text-gray-300 dark:text-gray-600' : ''}
+                          ${day.isToday ? 'ring-2 ring-purple-500' : ''}
+                          ${hasEntries && isSelected ? 'bg-purple-500 text-white' : ''}
+                          ${hasEntries && !isSelected ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 hover:bg-purple-200 dark:hover:bg-purple-900/50' : ''}
+                          ${!hasEntries ? 'bg-gray-100 dark:bg-gray-800 text-gray-400' : ''}
+                        `}
+                        onClick={() => hasEntries && handleDateToggle(day.date)}
+                      >
+                        <div className="text-xs mb-1">{day.date.getDate()}</div>
+                        {hasEntries && (
+                          <div className="flex justify-center items-center gap-0.5">
+                            {day.entries.slice(0, 3).map((entry, i) => (
+                              <span key={i} className="text-xs">{entry.mood}</span>
+                            ))}
+                            {day.entries.length > 3 && (
+                              <span className="text-xs">+{day.entries.length - 3}</span>
+                            )}
+                          </div>
+                        )}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                {/* Selected Count */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {selectedExportDates.length} dates selected
+                  </div>
+                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                    {entries.filter(entry => 
+                      selectedExportDates.some(date => 
+                        new Date(entry.createdAt).toDateString() === date.toDateString()
+                      )
+                    ).length} entries will be exported
+                  </div>
+                </div>
+
+                {/* Export Button */}
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => setShowDateSelector(false)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleExportWithDates}
+                    disabled={selectedExportDates.length === 0}
+                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                  >
+                    Export {selectedExportDates.length} Days
+                  </Button>
+                </div>
+
+                <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Calendar className="w-4 h-4 text-blue-600" />
+                    <span className="text-sm font-medium text-blue-800 dark:text-blue-200">Note</span>
+                  </div>
+                  <p className="text-sm text-blue-700 dark:text-blue-300">
+                    Only days with journal entries can be selected. Photos and drawings will be included in your export.
                   </p>
                 </div>
               </motion.div>
