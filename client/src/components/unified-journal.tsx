@@ -29,6 +29,7 @@ import {
   AlertDialogCancel, 
   AlertDialogAction 
 } from "@/components/ui/alert-dialog";
+import PromptPurchase from "@/components/PromptPurchase";
 
 const moodEmojis = ["😊", "😐", "😔", "🤔", "😄", "🎉", "😠", "😴", "💪", "🥰"];
 const fontFamilies = [
@@ -98,6 +99,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [isVideoMode, setIsVideoMode] = useState(false);
   const [videoRecordings, setVideoRecordings] = useState<{url: string, duration: number, timestamp: Date, type: 'photo' | 'video'}[]>([]);
+  const [showPromptPurchase, setShowPromptPurchase] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -1631,13 +1633,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 {/* AI Prompt Counter - Clickable to buy more */}
                 {promptUsageData && (
                   <Button
-                    onClick={() => {
-                      // Close current journal and navigate to dashboard where PromptPurchase component is available
-                      onClose();
-                      setTimeout(() => {
-                        window.location.href = '/?section=subscription';
-                      }, 100);
-                    }}
+                    onClick={() => setShowPromptPurchase(true)}
                     variant="outline"
                     size="sm"
                     className="ml-auto bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 border-purple-200 hover:border-purple-300 transition-all duration-200"
@@ -1782,6 +1778,29 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             <AlertDialogFooter>
               <AlertDialogCancel onClick={() => setShowCameraModal(false)}>
                 Cancel
+              </AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Prompt Purchase Modal */}
+        <AlertDialog open={showPromptPurchase} onOpenChange={setShowPromptPurchase}>
+          <AlertDialogContent className="max-w-2xl">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-500" />
+                Purchase AI Prompts
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                Get more AI-powered features for your journaling experience
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="py-4">
+              <PromptPurchase />
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setShowPromptPurchase(false)}>
+                Close
               </AlertDialogCancel>
             </AlertDialogFooter>
           </AlertDialogContent>
