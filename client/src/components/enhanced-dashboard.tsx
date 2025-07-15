@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import InteractiveJournal from "./interactive-journal";
 import SmartJournalEditor from "./smart-journal-editor";
+import UnifiedJournal from "./unified-journal";
 
 const moodData = [
   { day: 'Mon', mood: 4, entries: 1 },
@@ -68,18 +69,25 @@ const prompts = [
 
 export default function EnhancedDashboard() {
   const [showSmartEditor, setShowSmartEditor] = useState(false);
+  const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
 
   const handleSaveEntry = (entryData: any) => {
     console.log('Saving entry:', entryData);
     // Here you would typically save to backend
     setShowSmartEditor(false);
+    setShowUnifiedJournal(false);
     setSelectedEntry(null);
   };
 
   const openSmartEditor = (entry?: any) => {
     setSelectedEntry(entry);
     setShowSmartEditor(true);
+  };
+
+  const openUnifiedJournal = (entry?: any) => {
+    setSelectedEntry(entry);
+    setShowUnifiedJournal(true);
   };
 
   return (
@@ -244,11 +252,11 @@ export default function EnhancedDashboard() {
                   <p className="text-gray-300">Your AI-powered writing companion with photo analysis and intelligent prompts</p>
                 </div>
                 <Button 
-                  onClick={() => openSmartEditor()}
+                  onClick={() => openUnifiedJournal()}
                   className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-3 text-lg"
                 >
                   <BookOpen className="w-5 h-5 mr-2" />
-                  Create Smart Entry
+                  Open Journal Book
                 </Button>
               </div>
             </motion.div>
@@ -324,7 +332,7 @@ export default function EnhancedDashboard() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}
-                      onClick={() => openSmartEditor(entry)}
+                      onClick={() => openUnifiedJournal(entry)}
                       className="p-4 rounded-lg border border-purple-200/20 bg-slate-800/50 hover:bg-slate-700/50 hover:shadow-lg transition-all cursor-pointer backdrop-blur-sm group"
                     >
                       <div className="flex items-center justify-between">
@@ -355,12 +363,12 @@ export default function EnhancedDashboard() {
                 
                 <div className="mt-6 text-center">
                   <Button 
-                    onClick={() => openSmartEditor()}
+                    onClick={() => openUnifiedJournal()}
                     variant="outline" 
                     className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
                   >
                     <Plus className="w-4 h-4 mr-2" />
-                    Create Your First Smart Entry
+                    Open Your Journal Book
                   </Button>
                 </div>
               </CardContent>
@@ -379,11 +387,11 @@ export default function EnhancedDashboard() {
             </CardHeader>
             <CardContent className="space-y-3">
               <Button 
-                onClick={() => openSmartEditor()}
+                onClick={() => openUnifiedJournal()}
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
               >
                 <BookOpen className="w-4 h-4 mr-2" />
-                Write New Entry
+                Open Journal Book
               </Button>
               <Button variant="outline" className="w-full border-purple-300 text-purple-600">
                 <Brain className="w-4 h-4 mr-2" />
@@ -412,7 +420,7 @@ export default function EnhancedDashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    onClick={() => openSmartEditor(entry)}
+                    onClick={() => openUnifiedJournal(entry)}
                     className="p-4 rounded-lg border border-purple-200/20 bg-slate-800/50 hover:bg-slate-700/50 hover:shadow-lg transition-all cursor-pointer backdrop-blur-sm"
                   >
                     <div className="flex items-center justify-between">
@@ -658,6 +666,20 @@ export default function EnhancedDashboard() {
             onSave={handleSaveEntry}
             onClose={() => {
               setShowSmartEditor(false);
+              setSelectedEntry(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Unified Journal Book Experience */}
+      <AnimatePresence>
+        {showUnifiedJournal && (
+          <UnifiedJournal
+            entry={selectedEntry}
+            onSave={handleSaveEntry}
+            onClose={() => {
+              setShowUnifiedJournal(false);
               setSelectedEntry(null);
             }}
           />
