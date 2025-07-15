@@ -134,6 +134,28 @@ export default function InsightsPage() {
   };
 
   const handleExport = () => {
+    // Show export options
+    const exportOptions = [
+      { label: "Data Export (JSON)", value: "json" },
+      { label: "Readable Journal (HTML)", value: "html" },
+      { label: "Print-Ready Format (PDF)", value: "pdf" }
+    ];
+    
+    // For now, let's create a simple dialog to choose export format
+    const format = prompt("Choose export format:\n1. Data Export (JSON)\n2. Readable Journal (HTML)\n3. Print-Ready Text\n\nEnter 1, 2, or 3:");
+    
+    if (format === "1" || format === "json") {
+      exportAsJSON();
+    } else if (format === "2" || format === "html") {
+      exportAsHTML();
+    } else if (format === "3" || format === "pdf") {
+      exportAsText();
+    } else {
+      exportAsJSON(); // Default to JSON
+    }
+  };
+
+  const exportAsJSON = () => {
     const exportData = {
       stats: stats,
       entries: entries,
@@ -155,8 +177,249 @@ export default function InsightsPage() {
     linkElement.click();
     
     toast({
-      title: "Export Complete",
-      description: "Your journal insights have been exported successfully",
+      title: "Data Export Complete",
+      description: "Your journal data has been exported as JSON",
+    });
+  };
+
+  const exportAsHTML = () => {
+    const sortedEntries = [...entries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My JournOwl Journal</title>
+    <style>
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #8B5CF6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #8B5CF6;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #8B5CF6;
+        }
+        .entry {
+            background: white;
+            margin-bottom: 30px;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #8B5CF6;
+        }
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .entry-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+        .entry-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+        .entry-mood {
+            font-size: 1.5em;
+            margin-left: 10px;
+        }
+        .entry-content {
+            color: #444;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+        .entry-meta {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            font-size: 0.9em;
+            color: #666;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #8B5CF6;
+            color: #666;
+        }
+        @media print {
+            body { background: white; }
+            .entry { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🦉 My JournOwl Journal</h1>
+        <p>A collection of my thoughts and reflections</p>
+        <p><em>Exported on ${new Date().toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        })}</em></p>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-value">${stats.totalEntries}</div>
+            <div>Total Entries</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">${stats.totalWords}</div>
+            <div>Words Written</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">${stats.currentStreak}</div>
+            <div>Current Streak</div>
+        </div>
+    </div>
+
+    ${sortedEntries.map(entry => `
+        <div class="entry">
+            <div class="entry-header">
+                <div>
+                    <div class="entry-title">${entry.title}</div>
+                    <div class="entry-date">
+                        ${new Date(entry.createdAt).toLocaleDateString('en-US', { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                        <span class="entry-mood">${entry.mood}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="entry-content">
+                ${entry.content.replace(/\n/g, '<br>')}
+            </div>
+            <div class="entry-meta">
+                <strong>Word Count:</strong> ${entry.wordCount} words
+                ${entry.tags && entry.tags.length > 0 ? `<br><strong>Tags:</strong> ${entry.tags.join(', ')}` : ''}
+            </div>
+        </div>
+    `).join('')}
+
+    <div class="footer">
+        <p><em>Created with JournOwl - Your AI-powered journaling companion</em></p>
+        <p>Keep writing, keep growing! 🌱</p>
+    </div>
+</body>
+</html>`;
+
+    const dataUri = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
+    const exportFileDefaultName = `journal-${new Date().toISOString().split('T')[0]}.html`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast({
+      title: "Journal Export Complete",
+      description: "Your journal has been exported as a readable HTML file",
+    });
+  };
+
+  const exportAsText = () => {
+    const sortedEntries = [...entries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    
+    const textContent = `
+═══════════════════════════════════════════════════════════════════════════════
+                            🦉 MY JOURNOWL JOURNAL
+                        A Collection of My Thoughts & Reflections
+                        
+                        Exported on ${new Date().toLocaleDateString('en-US', { 
+                          weekday: 'long', 
+                          year: 'numeric', 
+                          month: 'long', 
+                          day: 'numeric' 
+                        })}
+═══════════════════════════════════════════════════════════════════════════════
+
+📊 JOURNAL STATISTICS
+──────────────────────────────────────────────────────────────────────────────
+Total Entries: ${stats.totalEntries}
+Words Written: ${stats.totalWords}
+Current Streak: ${stats.currentStreak} days
+Longest Streak: ${stats.longestStreak} days
+
+${sortedEntries.map(entry => `
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  ${entry.title.toUpperCase()}                                                
+║  ${new Date(entry.createdAt).toLocaleDateString('en-US', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })} ${entry.mood}
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+${entry.content}
+
+────────────────────────────────────────────────────────────────────────────── 
+Word Count: ${entry.wordCount} words
+${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
+──────────────────────────────────────────────────────────────────────────────
+`).join('')}
+
+═══════════════════════════════════════════════════════════════════════════════
+                    Created with JournOwl - Your AI-powered journaling companion
+                              Keep writing, keep growing! 🌱
+═══════════════════════════════════════════════════════════════════════════════
+`;
+
+    const dataUri = 'data:text/plain;charset=utf-8,' + encodeURIComponent(textContent);
+    const exportFileDefaultName = `journal-${new Date().toISOString().split('T')[0]}.txt`;
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    toast({
+      title: "Print-Ready Export Complete",
+      description: "Your journal has been exported as a formatted text file",
     });
   };
 
