@@ -50,6 +50,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [photoSize, setPhotoSize] = useState({ width: 300, height: 200 });
   const [titleFont, setTitleFont] = useState(entry?.titleFont || "Inter");
   const [titleColor, setTitleColor] = useState(entry?.titleColor || "#1f2937");
+  const [editingTarget, setEditingTarget] = useState<'title' | 'content'>('title');
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [showAiChat, setShowAiChat] = useState(true);
   const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string}>>([
@@ -409,49 +410,113 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     </div>
                   </div>
               
-              {/* Title Controls */}
-              <div className="flex items-center gap-2 p-2 bg-white/50 rounded-lg backdrop-blur-sm">
-                <span className="text-xs font-medium text-gray-600">Title:</span>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Type className="w-3 h-3 mr-1" />
-                      Font
+              {/* Unified Font & Color Controls */}
+              <div className="space-y-2">
+                {/* Target Selector */}
+                <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => setEditingTarget('title')}
+                      variant={editingTarget === 'title' ? 'default' : 'outline'}
+                      size="sm"
+                      className={`h-8 px-3 text-xs ${
+                        editingTarget === 'title' 
+                          ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                          : 'border-purple-300 text-purple-800 hover:bg-purple-50'
+                      }`}
+                    >
+                      Title
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-48">
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium">Font Family</label>
-                      <Select value={titleFont} onValueChange={setTitleFont}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select font" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {fontFamilies.map(font => (
-                            <SelectItem key={font} value={font} style={{ fontFamily: font }}>
-                              {font}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Palette className="w-3 h-3 mr-1" />
-                      Color
+                    <Button
+                      onClick={() => setEditingTarget('content')}
+                      variant={editingTarget === 'content' ? 'default' : 'outline'}
+                      size="sm"
+                      className={`h-8 px-3 text-xs ${
+                        editingTarget === 'content' 
+                          ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                          : 'border-purple-300 text-purple-800 hover:bg-purple-50'
+                      }`}
+                    >
+                      Content
                     </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-48">
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium">Title Color</label>
-                      <HexColorPicker color={titleColor} onChange={setTitleColor} />
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                  </div>
+                  
+                  <div className="flex items-center gap-2 ml-auto">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button className="bg-emerald-500 hover:bg-emerald-600 text-white h-10 px-4 rounded-lg font-medium">
+                          <Type className="w-4 h-4 mr-2" />
+                          Font
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-4">
+                        <div className="space-y-3">
+                          <label className="text-sm font-semibold text-gray-700">
+                            {editingTarget === 'title' ? 'Title' : 'Content'} Font
+                          </label>
+                          <Select 
+                            value={editingTarget === 'title' ? titleFont : selectedFont} 
+                            onValueChange={editingTarget === 'title' ? setTitleFont : setSelectedFont}
+                          >
+                            <SelectTrigger className="h-10">
+                              <SelectValue placeholder="Select font" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {fontFamilies.map(font => (
+                                <SelectItem key={font} value={font} style={{ fontFamily: font }}>
+                                  {font}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          
+                          {editingTarget === 'content' && (
+                            <div>
+                              <label className="text-sm font-semibold text-gray-700">Size: {fontSize}px</label>
+                              <Slider
+                                value={[fontSize]}
+                                onValueChange={(value) => setFontSize(value[0])}
+                                min={12}
+                                max={24}
+                                step={1}
+                                className="mt-2"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button className="bg-gray-800 hover:bg-gray-900 text-white h-10 px-4 rounded-lg font-medium">
+                          <Palette className="w-4 h-4 mr-2" />
+                          Color
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64 p-4">
+                        <div className="space-y-3">
+                          <label className="text-sm font-semibold text-gray-700">
+                            {editingTarget === 'title' ? 'Title' : 'Content'} Color
+                          </label>
+                          <HexColorPicker 
+                            color={editingTarget === 'title' ? titleColor : textColor} 
+                            onChange={editingTarget === 'title' ? setTitleColor : setTextColor} 
+                          />
+                          <div className="flex items-center gap-2 mt-2">
+                            <div 
+                              className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm" 
+                              style={{ backgroundColor: editingTarget === 'title' ? titleColor : textColor }}
+                            />
+                            <span className="text-xs text-gray-600 font-mono">
+                              {editingTarget === 'title' ? titleColor : textColor}
+                            </span>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
               </div>
 
               {/* Mood & Controls */}
@@ -475,7 +540,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                 </div>
 
                 {/* Voice & AI Controls */}
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 ml-auto">
                   <Button 
                     onClick={toggleVoiceRecording}
                     variant={isListening ? "default" : "outline"}
@@ -493,61 +558,8 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   >
                     <Lightbulb className="w-3 h-3" />
                   </Button>
-                </div>
 
-                {/* Font & Color Controls */}
-                <div className="flex items-center gap-1 ml-auto">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Type className="w-4 h-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64">
-                      <div className="space-y-3">
-                        <Select value={selectedFont} onValueChange={setSelectedFont}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select font" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {fontFamilies.map(font => (
-                              <SelectItem key={font} value={font} style={{ fontFamily: font }}>
-                                {font}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        
-                        <div>
-                          <label className="text-xs font-medium">Size: {fontSize}px</label>
-                          <Slider
-                            value={[fontSize]}
-                            onValueChange={(value) => setFontSize(value[0])}
-                            min={12}
-                            max={20}
-                            step={1}
-                            className="mt-1"
-                          />
-                        </div>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm">
-                        <Palette className="w-4 h-4" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-48">
-                      <div className="space-y-2">
-                        <label className="text-xs font-medium">Text Color</label>
-                        <HexColorPicker color={textColor} onChange={setTextColor} />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-1 ml-2">
                     <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
                     <span className="text-xs">Private</span>
                   </div>
