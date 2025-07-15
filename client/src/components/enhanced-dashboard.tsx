@@ -1013,15 +1013,15 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     <div className="bg-white rounded-xl p-4 border border-indigo-200">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-indigo-600">18</div>
+                          <div className="text-2xl font-bold text-indigo-600">{stats?.totalEntries || 0}</div>
                           <div className="text-sm text-gray-600">Active Days</div>
                         </div>
                         <div className="text-center">
                           <div className="text-2xl font-bold text-green-600">😊</div>
-                          <div className="text-sm text-gray-600">Happiest: Fridays</div>
+                          <div className="text-sm text-gray-600">{stats?.totalEntries > 0 ? 'Most Common Mood' : 'Start writing!'}</div>
                         </div>
                         <div className="text-center">
-                          <div className="text-2xl font-bold text-purple-600">7</div>
+                          <div className="text-2xl font-bold text-purple-600">{stats?.longestStreak || 0}</div>
                           <div className="text-sm text-gray-600">Longest Streak</div>
                         </div>
                       </div>
@@ -1109,7 +1109,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   <p className="text-amber-100 text-lg">Celebrate your journaling milestones</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold">3/6</div>
+                  <div className="text-3xl font-bold">{(achievementsResponse?.achievements || []).length}/10</div>
                   <div className="text-amber-100 text-sm">Unlocked</div>
                 </div>
               </div>
@@ -1118,12 +1118,12 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               <div className="bg-white/20 rounded-full h-3 mb-4">
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: "50%" }}
+                  animate={{ width: `${((achievementsResponse?.achievements || []).length / 10) * 100}%` }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                   className="bg-gradient-to-r from-yellow-300 to-amber-300 h-full rounded-full"
                 />
               </div>
-              <div className="text-amber-100 text-sm">50% complete - 3 more to unlock!</div>
+              <div className="text-amber-100 text-sm">{((achievementsResponse?.achievements || []).length / 10) * 100}% complete - {10 - (achievementsResponse?.achievements || []).length} more to unlock!</div>
             </div>
 
             {/* Achievement Grid */}
@@ -1558,19 +1558,19 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               {/* AI Status Indicators */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">247</div>
-                  <div className="text-indigo-100 text-sm">AI Insights Generated</div>
-                  <div className="text-xs text-green-300">+12 this week</div>
+                  <div className="text-2xl font-bold">{stats?.totalEntries || 0}</div>
+                  <div className="text-indigo-100 text-sm">Total Entries</div>
+                  <div className="text-xs text-green-300">Start writing to see progress</div>
                 </div>
                 <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">94%</div>
-                  <div className="text-indigo-100 text-sm">Accuracy Rating</div>
-                  <div className="text-xs text-green-300">Highly precise</div>
+                  <div className="text-2xl font-bold">{stats?.currentStreak || 0}</div>
+                  <div className="text-indigo-100 text-sm">Day Streak</div>
+                  <div className="text-xs text-green-300">Keep going!</div>
                 </div>
                 <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">31</div>
-                  <div className="text-indigo-100 text-sm">Prompts Used</div>
-                  <div className="text-xs text-green-300">Creative boost!</div>
+                  <div className="text-2xl font-bold">{stats?.totalWords || 0}</div>
+                  <div className="text-indigo-100 text-sm">Words Written</div>
+                  <div className="text-xs text-green-300">Express yourself!</div>
                 </div>
               </div>
             </div>
