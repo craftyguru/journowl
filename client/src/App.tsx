@@ -13,7 +13,7 @@ import AccountSelector from "@/components/account-selector";
 import AdminDashboard from "@/components/admin-dashboard";
 import EnhancedDashboard from "@/components/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
-import LandingHero from "@/components/landing-hero";
+import LandingHero from "@/components/ui/LandingHero";
 
 function App() {
   const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "demo" | "landing" | "auth">("landing");

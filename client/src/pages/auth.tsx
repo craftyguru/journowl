@@ -9,7 +9,7 @@ import { login, register } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 import { motion } from "framer-motion";
 import AnimatedBackground from "@/components/animated-background";
-import LandingHero from "@/components/landing-hero";
+import LandingHero from "@/components/ui/LandingHero";
 import { Sparkles, Heart, Brain, Zap } from "lucide-react";
 
 interface AuthPageProps {
