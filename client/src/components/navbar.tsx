@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { useTheme } from "./theme-provider";
-import { Sun, Moon } from "lucide-react";
+import { Sun, Moon, Menu, X } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
+import { useState } from "react";
 
 interface NavbarProps {
   currentView: string;
@@ -12,6 +13,7 @@ interface NavbarProps {
 
 export default function Navbar({ currentView, onNavigate }: NavbarProps) {
   const { theme, toggleTheme } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { data: userResponse } = useQuery({
     queryKey: ["/api/auth/me"],
@@ -49,6 +51,16 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
           </div>
 
           <div className="flex items-center space-x-4">
+            {/* Mobile menu button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden rounded-lg"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+            
             <Button
               variant="ghost"
               size="icon"
@@ -67,7 +79,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
                     fetch('/api/auth/logout', { method: 'POST' })
                       .then(() => window.location.href = '/');
                   }}
-                  className="text-sm"
+                  className="hidden sm:inline-flex text-sm"
                 >
                   Logout
                 </Button>
@@ -81,6 +93,46 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
           </div>
         </div>
       </div>
+      
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white dark:bg-card border-t border-border">
+          <div className="px-4 py-2 space-y-2">
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "dashboard" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("dashboard");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📊 Dashboard
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("insights");
+                setMobileMenuOpen(false);
+              }}
+            >
+              🤖 AI Insights
+            </Button>
+            {user && (
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-muted-foreground hover:text-primary sm:hidden"
+                onClick={() => {
+                  fetch('/api/auth/logout', { method: 'POST' })
+                    .then(() => window.location.href = '/');
+                }}
+              >
+                🚪 Logout
+              </Button>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
