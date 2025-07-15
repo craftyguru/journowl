@@ -1622,7 +1622,13 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 {/* AI Prompt Counter - Clickable to buy more */}
                 {promptUsageData && (
                   <Button
-                    onClick={() => window.open('https://buy.stripe.com/test_28og0M1gg9Xh9eU7ss', '_blank')}
+                    onClick={() => {
+                      // Close current journal and navigate to dashboard where PromptPurchase component is available
+                      onClose();
+                      setTimeout(() => {
+                        window.location.href = '/?section=subscription';
+                      }, 100);
+                    }}
                     variant="outline"
                     size="sm"
                     className="ml-auto bg-gradient-to-r from-purple-100 to-pink-100 hover:from-purple-200 hover:to-pink-200 border-purple-200 hover:border-purple-300 transition-all duration-200"
