@@ -130,6 +130,14 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 
 ## Recent Changes
 
+### July 15, 2025 - CRITICAL FIX: AI Question Tracking & Prompt Limits Implemented
+- ✅ **AI Question Tracking Added**: All "Ask AI Anything" questions now properly tracked and count against user prompt limits
+- ✅ **Prompt Usage Integration**: AI questions use the same trackableOpenAICall system as other AI features
+- ✅ **Cost Protection**: Prevents unlimited AI questions that would cost money without tracking
+- ✅ **Error Handling**: Proper 429 status codes and user feedback when prompt limits are reached
+- ✅ **Monetization Security**: AI questions now consume user prompts (estimated 300 tokens per question)
+- ✅ **Usage Consistency**: AI questions follow same billing model as journal prompts, photo analysis, etc.
+
 ### July 15, 2025 - CRITICAL BUG FIX: Journal Entry Saving Issue Resolved
 - ✅ **Fixed Journal Entry Save Bug**: Resolved critical issue where journal entries were being logged but not saved to database
 - ✅ **Database Integer Overflow Fixed**: Resolved PostgreSQL integer overflow error in achievement tracking system

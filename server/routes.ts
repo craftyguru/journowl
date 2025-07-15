@@ -635,11 +635,15 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
       }
 
       const { askQuestionAboutJournal } = await import("./services/journal-ai");
-      const response = await askQuestionAboutJournal(question, entries, stats);
+      const response = await askQuestionAboutJournal(question, entries, stats, req.session.userId);
       
       res.json({ response });
     } catch (error: any) {
       console.error("Error asking AI question:", error);
+      // Check if it's a prompt limit error
+      if (error.message.includes('prompt limit')) {
+        return res.status(429).json({ error: "You've reached your AI prompt limit. Upgrade to continue asking questions." });
+      }
       res.status(500).json({ error: "Failed to process AI question" });
     }
   });

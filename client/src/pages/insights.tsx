@@ -528,6 +528,16 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
       });
 
       if (!response.ok) {
+        if (response.status === 429) {
+          const errorData = await response.json();
+          setAiResponse(errorData.error || 'You\'ve reached your AI prompt limit. Upgrade to continue asking questions or wait for your monthly reset.');
+          toast({
+            title: "Prompt Limit Reached",
+            description: "Upgrade to get more AI prompts",
+            variant: "destructive"
+          });
+          return;
+        }
         throw new Error('Failed to get AI response');
       }
 
