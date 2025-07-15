@@ -190,14 +190,8 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           
           console.log('AI Recognition received:', newContent);
           
-          // Stop recognition and send message immediately for quick prompts
-          aiRecognitionInstance.stop();
-          setIsAiListening(false);
-          
-          // Send the complete message to AI
-          sendToAi(newContent.trim());
-          setAiInput(''); // Clear input after sending
-          setLastFinalTranscript(''); // Reset for next interaction
+          // For click-and-hold mode, wait for user to release button
+          // The message will be sent when mouse is released
         }
       };
 
@@ -446,62 +440,77 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   };
 
-  // Handle mic button mouse down (start hold-to-speak)
+  // Handle AI mic button mouse down (start hold-to-speak)
   const handleMicMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent context menu
-    if (e.button !== 0) return; // Only handle left mouse button
+    e.preventDefault();
+    if (e.button !== 0) return; // Only left mouse button
     
+    console.log('AI mic button pressed down');
     setIsHoldingMic(true);
+    
+    // Start recording immediately for click and hold
+    if (aiRecognition && !isAiListening) {
+      setAiInput('');
+      setLastFinalTranscript('');
+      try {
+        console.log('Starting AI speech recognition for click-and-hold...');
+        aiRecognition.start();
+        setIsAiListening(true);
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '🎤 Speaking... Release to send!'
+        }]);
+      } catch (error) {
+        console.error('Error starting AI speech recognition:', error);
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '❌ Speech recognition error. Please try typing your message instead.'
+        }]);
+      }
+    }
+    
+    // Set timeout for full conversation mode (after holding for 2 seconds)
     const timeout = setTimeout(async () => {
-      // After 800ms of holding, fetch usage data and show warning for full conversation
-      console.log('Hold detected - showing usage warning for full conversation mode');
+      console.log('Long hold detected - enabling full conversation mode');
       await fetchPromptUsage();
       setShowUsageWarning(true);
-    }, 800);
+    }, 2000);
     setHoldTimeout(timeout);
   };
 
-  // Handle mic button mouse up (end hold-to-speak)
+  // Handle AI mic button mouse up (end hold-to-speak)
   const handleMicMouseUp = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent context menu
-    if (e.button !== 0) return; // Only handle left mouse button
+    e.preventDefault();
+    if (e.button !== 0) return; // Only left mouse button
     
-    const holdDuration = holdTimeout ? Date.now() - (Date.now() - 800) : 0;
+    console.log('AI mic button released');
     
     if (holdTimeout) {
       clearTimeout(holdTimeout);
       setHoldTimeout(null);
     }
     
-    if (isHoldingMic && !showUsageWarning) {
-      // Quick press/release (less than 800ms) - single prompt mode
-      console.log('Quick press detected - starting single prompt mode');
-      if (aiRecognition && !isAiListening) {
+    // Stop recording and process the speech
+    if (isAiListening && aiRecognition) {
+      console.log('Stopping AI speech recognition...');
+      aiRecognition.stop();
+      setIsAiListening(false);
+      
+      // Send the captured speech to AI if we have content
+      const finalInput = lastFinalTranscript || aiInput;
+      if (finalInput.trim()) {
+        console.log('Sending captured speech to AI:', finalInput);
+        sendToAi(finalInput.trim());
         setAiInput('');
         setLastFinalTranscript('');
-        try {
-          console.log('Starting AI speech recognition for quick prompt...');
-          aiRecognition.start();
-          setIsAiListening(true);
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '🎤 Say your prompt now... I\'ll respond once you finish!'
-          }]);
-        } catch (error) {
-          console.error('Error starting AI speech recognition:', error);
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '❌ Speech recognition error. Please try typing your message instead.'
-          }]);
-        }
-      } else if (!aiRecognition) {
-        console.error('AI recognition not initialized');
+      } else {
         setAiMessages(prev => [...prev, {
           type: 'ai',
-          message: '❌ Speech recognition not available. Please try typing your message instead.'
+          message: '🤔 I didn\'t catch that. Please try speaking again or type your message.'
         }]);
       }
     }
+    
     setIsHoldingMic(false);
   };
 
@@ -1587,8 +1596,8 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   onClick={isAiListening ? stopVoiceInput : undefined}
                   size="sm"
                   variant={isAiListening ? "default" : "outline"}
-                  className={`${isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : ""} ${isHoldingMic ? "bg-blue-500 text-white" : ""}`}
-                  title={isAiListening ? "Click to stop" : "Quick press: Single prompt | Hold 1s: Full conversation"}
+                  className={`${isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : "bg-gray-800 hover:bg-gray-900 text-white"} ${isHoldingMic ? "bg-blue-500 text-white" : ""}`}
+                  title={isAiListening ? "Recording... Release to send" : "Hold to record voice message"}
                 >
                   {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </Button>
