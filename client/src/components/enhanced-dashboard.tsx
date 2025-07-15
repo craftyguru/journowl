@@ -10,6 +10,7 @@ import { useState } from "react";
 import InteractiveJournal from "./interactive-journal";
 import SmartJournalEditor from "./smart-journal-editor";
 import UnifiedJournal from "./unified-journal";
+import InteractiveCalendar from "./interactive-calendar";
 
 const moodData = [
   { day: 'Mon', mood: 4, entries: 1 },
@@ -89,6 +90,22 @@ export default function EnhancedDashboard() {
     setSelectedEntry(entry);
     setShowUnifiedJournal(true);
   };
+
+  const handleDateSelect = (date: Date) => {
+    // Open journal for selected date
+    openUnifiedJournal();
+  };
+
+  const handleEntryEdit = (entry: any) => {
+    openUnifiedJournal(entry);
+  };
+
+  // Convert recentEntries to calendar format
+  const calendarEntries = recentEntries.map(entry => ({
+    ...entry,
+    date: new Date(), // Convert date string to Date object
+    createdAt: new Date().toISOString()
+  }));
 
   return (
     <div className="relative p-6 space-y-6 bg-gradient-to-br from-slate-900 via-purple-900/20 to-pink-900/20 min-h-screen overflow-hidden">
@@ -220,7 +237,7 @@ export default function EnhancedDashboard() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="journal" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 bg-slate-800/90 backdrop-blur-lg border border-purple-500/20 shadow-2xl">
+        <TabsList className="grid w-full grid-cols-6 bg-slate-800/90 backdrop-blur-lg border border-purple-500/20 shadow-2xl">
           <TabsTrigger value="journal" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
             📖 Journal
           </TabsTrigger>
@@ -235,6 +252,9 @@ export default function EnhancedDashboard() {
           </TabsTrigger>
           <TabsTrigger value="insights" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
             🤖 AI Insights
+          </TabsTrigger>
+          <TabsTrigger value="calendar" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
+            📅 Memory Calendar
           </TabsTrigger>
         </TabsList>
 
@@ -654,6 +674,16 @@ export default function EnhancedDashboard() {
                 </Button>
               </CardContent>
             </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="calendar">
+          <div className="h-[80vh]">
+            <InteractiveCalendar 
+              entries={calendarEntries}
+              onDateSelect={handleDateSelect}
+              onEntryEdit={handleEntryEdit}
+            />
           </div>
         </TabsContent>
       </Tabs>
