@@ -54,7 +54,7 @@ export default function InsightsPage() {
   }
 
   const entries = entriesData || [];
-  const stats = statsData || { totalEntries: 0, totalWords: 0, currentStreak: 0, longestStreak: 0 };
+  const stats = statsData?.stats || { totalEntries: 0, totalWords: 0, currentStreak: 0, longestStreak: 0 };
 
   // Process mood data for charts
   const moodData = entries.reduce((acc, entry) => {
