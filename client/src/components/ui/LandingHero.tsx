@@ -51,30 +51,42 @@ const mainFeatures = [
 
 const capabilities = [
   {
-    category: "Smart Writing",
+    category: "🎨 Smart Writing",
+    emoji: "✍️",
+    color: "from-purple-400 to-pink-500",
     items: [
-      { icon: PenTool, text: "Rich markdown editor", highlight: true },
-      { icon: Palette, text: "Custom fonts & colors" },
-      { icon: Brain, text: "AI writing suggestions" },
-      { icon: Lightbulb, text: "Context-aware prompts" }
+      { icon: PenTool, text: "📝 Rich markdown editor with live preview", highlight: true, emoji: "✨" },
+      { icon: Palette, text: "🎨 Custom fonts, colors & themes", emoji: "🌈" },
+      { icon: Brain, text: "🤖 AI writing suggestions & insights", emoji: "💡" },
+      { icon: Lightbulb, text: "🎯 Context-aware smart prompts", emoji: "🔮" },
+      { icon: Zap, text: "⚡ Real-time grammar & style help", emoji: "✅" },
+      { icon: BookOpen, text: "📚 Personal writing library & templates", emoji: "📖" }
     ]
   },
   {
-    category: "Multimedia",
+    category: "📱 Multimedia & Social",
+    emoji: "📸", 
+    color: "from-emerald-400 to-teal-500",
     items: [
-      { icon: Camera, text: "Photo upload & analysis", highlight: true },
-      { icon: Smile, text: "Mood tracking with emojis" },
-      { icon: Lock, text: "Private & secure entries" },
-      { icon: Star, text: "Tag and organize content" }
+      { icon: Camera, text: "📷 Photo upload with AI analysis", highlight: true, emoji: "🔍" },
+      { icon: Smile, text: "😊 Advanced mood tracking system", emoji: "💚" },
+      { icon: Lock, text: "🔒 Private & encrypted entries", emoji: "🛡️" },
+      { icon: Star, text: "🏷️ Smart tagging & organization", emoji: "📋" },
+      { icon: Users, text: "👥 Share insights with friends", emoji: "🤝" },
+      { icon: Heart, text: "❤️ Gratitude & wellness tracking", emoji: "🌟" }
     ]
   },
   {
-    category: "Analytics",
+    category: "📊 Analytics & Growth",
+    emoji: "📈",
+    color: "from-amber-400 to-orange-500", 
     items: [
-      { icon: BarChart3, text: "Detailed progress charts", highlight: true },
-      { icon: Calendar, text: "Interactive calendar view" },
-      { icon: Target, text: "Goal setting & tracking" },
-      { icon: Award, text: "Achievement system" }
+      { icon: BarChart3, text: "📊 Beautiful progress dashboards", highlight: true, emoji: "🎯" },
+      { icon: Calendar, text: "🗓️ Interactive mood calendar", emoji: "📅" },
+      { icon: Target, text: "🎯 Goal setting & achievement", emoji: "🏆" },
+      { icon: Award, text: "🏅 Gamified badge system", emoji: "🎮" },
+      { icon: TrendingUp, text: "📈 Writing streak & habits", emoji: "🔥" },
+      { icon: Sparkles, text: "⭐ Personal growth insights", emoji: "🌱" }
     ]
   }
 ];
@@ -426,27 +438,69 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 className="bg-gradient-to-br from-gray-900/90 to-black/80 backdrop-blur-lg rounded-xl p-6 border-2 border-purple-500/40 hover:border-cyan-400/60 shadow-2xl hover:shadow-purple-500/20 transition-all duration-500"
               >
                 <motion.h4 
-                  className="text-2xl font-bold mb-6 bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent font-inter"
+                  className={`text-2xl font-bold mb-6 bg-gradient-to-r ${category.color} bg-clip-text text-transparent font-inter flex items-center gap-3`}
                   whileHover={{ scale: 1.05 }}
+                  animate={{ 
+                    textShadow: ["0 0 0px rgba(255,255,255,0)", "0 0 20px rgba(255,255,255,0.3)", "0 0 0px rgba(255,255,255,0)"] 
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
                 >
-                  🌟 {category.category}
+                  <motion.span 
+                    className="text-3xl"
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    {category.emoji}
+                  </motion.span>
+                  {category.category}
                 </motion.h4>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {category.items.map((item, itemIndex) => (
                     <motion.div
                       key={itemIndex}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.4, delay: 1.6 + categoryIndex * 0.2 + itemIndex * 0.1 }}
-                      className="flex items-center gap-3"
+                      whileHover={{ 
+                        scale: 1.02, 
+                        x: 5,
+                        transition: { duration: 0.2 }
+                      }}
+                      className={`flex items-center gap-3 p-4 rounded-lg transition-all duration-300 cursor-pointer ${
+                        item.highlight 
+                          ? 'bg-gradient-to-r from-white/15 to-white/10 border border-white/30 shadow-lg hover:from-white/20 hover:to-white/15 hover:border-white/40' 
+                          : 'hover:bg-white/8 border border-transparent hover:border-white/20'
+                      }`}
                     >
-                      <div className={`p-2 rounded-lg ${item.highlight ? 'bg-purple-500/30' : 'bg-white/15'}`}>
-                        <item.icon className={`w-4 h-4 ${item.highlight ? 'text-purple-300' : 'text-gray-200'}`} />
-                      </div>
-                      <span className={`${item.highlight ? 'text-white font-semibold' : 'text-gray-100 font-medium'}`}>
-                        {item.text}
-                      </span>
-                      {item.highlight && <CheckCircle className="w-4 h-4 text-emerald-400 ml-auto" />}
+                      <motion.div 
+                        className="flex items-center gap-2"
+                        whileHover={{ scale: 1.1 }}
+                      >
+                        <div className={`p-2 rounded-lg ${item.highlight ? 'bg-purple-500/30' : 'bg-white/15'}`}>
+                          <item.icon className={`w-4 h-4 ${item.highlight ? 'text-purple-300' : 'text-gray-200'}`} />
+                        </div>
+                        <motion.span 
+                          className="text-lg"
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 2, repeat: Infinity, delay: itemIndex * 0.3 }}
+                        >
+                          {item.emoji}
+                        </motion.span>
+                      </motion.div>
+                      <span className="text-white/95 font-medium flex-1">{item.text}</span>
+                      {item.highlight && (
+                        <motion.div
+                          whileHover={{ scale: 1.05 }}
+                          animate={{ 
+                            boxShadow: ["0 0 0px rgba(147,51,234,0)", "0 0 15px rgba(147,51,234,0.4)", "0 0 0px rgba(147,51,234,0)"]
+                          }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        >
+                          <Badge variant="secondary" className="bg-purple-500/30 text-purple-200 border border-purple-400/30 text-xs font-semibold">
+                            ⭐ Popular
+                          </Badge>
+                        </motion.div>
+                      )}
                     </motion.div>
                   ))}
                 </div>
