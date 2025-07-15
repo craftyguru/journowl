@@ -195,50 +195,81 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
+          {/* JournOwl Brand Title - Most Prominent */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1, delay: 0.1 }}
+            className="mb-8"
+          >
+            <h1 className="text-7xl md:text-9xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-4" 
+                style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)' }}>
+              🦉 JournOwl
+            </h1>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="text-2xl md:text-3xl font-bold"
+              style={{ fontFamily: '"Rock Salt", cursive' }}
+            >
+              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg">
+                Your Wise Writing Companion
+              </span>
+            </motion.div>
+          </motion.div>
+
           {/* Badge */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
             className="inline-flex items-center gap-2 px-6 py-3 mb-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm"
           >
             <span className="text-2xl animate-bounce">🦉</span>
-            <span className="text-purple-200 font-medium">Meet JournOwl - Your Wise Writing Companion</span>
+            <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-semibold" 
+                  style={{ fontFamily: '"Rock Salt", cursive' }}>
+              AI-Powered Smart Journaling
+            </span>
             <Badge variant="secondary" className="bg-purple-500/20 text-purple-200 border-0">
-              AI-Powered
+              ✨ Magical
             </Badge>
           </motion.div>
 
-          {/* Main Headline */}
-          <motion.h1 
+          {/* Action Words */}
+          <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-6xl md:text-8xl font-bold mb-8 leading-tight"
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="text-5xl md:text-7xl font-bold mb-8 leading-tight"
+            style={{ fontFamily: '"Rock Salt", cursive' }}
           >
-            <span className="bg-gradient-to-r from-purple-400 via-pink-300 to-amber-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-purple-400 via-pink-300 to-amber-300 bg-clip-text text-transparent drop-shadow-lg">
               Write. Reflect.
             </span>
             <br />
             <motion.span 
-              className="bg-gradient-to-r from-emerald-400 to-cyan-300 bg-clip-text text-transparent"
+              className="bg-gradient-to-r from-emerald-400 to-cyan-300 bg-clip-text text-transparent drop-shadow-lg"
               animate={{ opacity: [0.7, 1, 0.7] }}
               transition={{ duration: 2, repeat: Infinity }}
             >
               Transform.
             </motion.span>
-          </motion.h1>
+          </motion.h2>
 
           {/* Subtitle */}
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto mb-8 leading-relaxed"
+            transition={{ duration: 0.8, delay: 1.0 }}
+            className="text-xl md:text-2xl max-w-4xl mx-auto mb-8 leading-relaxed font-semibold"
+            style={{ fontFamily: '"Rock Salt", cursive' }}
           >
-            🦉 <strong>JournOwl</strong> combines the wisdom of an owl with the power of AI. 
-            Experience smart journaling with photo analysis, mood tracking, and personalized insights 
-            that help you grow wiser every day.
+            <span className="bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-md">
+              🦉 Combines the wisdom of an owl with the power of AI. 
+              Experience smart journaling with photo analysis, mood tracking, and personalized insights 
+              that help you grow wiser every day.
+            </span>
           </motion.p>
 
           {/* Social Proof */}
@@ -264,8 +295,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             <div className="text-gray-300">
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                <span className="text-lg font-semibold text-purple-300">4.9/5</span>
-                <span className="text-sm opacity-75">from 2,847+ happy writers</span>
+                <span className="text-lg font-semibold bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent" 
+                      style={{ fontFamily: '"Rock Salt", cursive' }}>4.9/5</span>
+                <span className="text-sm bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-medium" 
+                      style={{ fontFamily: '"Rock Salt", cursive' }}>from 2,847+ happy writers</span>
               </div>
             </div>
           </motion.div>
@@ -285,9 +318,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 onClick={onGetStarted}
                 size="lg"
                 className="px-8 py-4 text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
+                style={{ fontFamily: '"Rock Salt", cursive' }}
               >
                 <BookOpen className="w-5 h-5 mr-2" />
-                Start Your Journey
+                🦉 Start Your Wise Journey
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </motion.div>
@@ -301,9 +335,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 size="lg"
                 onClick={handleDemo}
                 className="px-8 py-4 text-lg font-semibold border-2 border-purple-400/50 text-purple-200 hover:bg-purple-500/10 rounded-xl backdrop-blur-sm transition-all duration-300"
+                style={{ fontFamily: '"Rock Salt", cursive' }}
               >
                 <Play className="w-5 h-5 mr-2" />
-                View Live Demo
+                🦉 View Live Demo
               </Button>
             </motion.div>
           </motion.div>
@@ -317,16 +352,17 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           className="mb-20"
         >
           <motion.h2 
-            className="text-5xl font-bold text-center mb-6 font-poppins"
+            className="text-5xl font-bold text-center mb-6"
+            style={{ fontFamily: '"Rock Salt", cursive' }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
           >
-            <span className="bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent drop-shadow-lg">
               🚀 Everything You Need to 
             </span>
             <br />
-            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-lg">
               Level Up Your Writing ✨
             </span>
           </motion.h2>
