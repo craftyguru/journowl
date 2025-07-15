@@ -16,7 +16,11 @@ import KidDashboard from "@/components/kid-dashboard";
 import LandingHero from "@/components/ui/LandingHero";
 
 function App() {
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "demo" | "landing" | "auth">("landing");
+  // Check if demo mode is requested from URL params
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "demo" | "landing" | "auth">(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('demo') === 'true' ? 'demo' : 'landing';
+  });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   
   const handleNavigate = (view: string) => {
