@@ -380,32 +380,34 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
 
         {/* Main Journal Layout - Full Width */}
         <div className="flex flex-1 min-h-0">
-          {/* Left Page - Writing Area (Expanded) */}
-          <div className="flex-[2] p-4 border-r-4 border-amber-200 relative flex flex-col overflow-hidden">
-            {/* Page shadow effect */}
-            <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
-            
-            {/* Entry Header */}
-            <div className="space-y-3 mb-4 flex-shrink-0">
-              <div className="flex items-center gap-3">
-                <Input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Entry title..."
-                  className="text-lg font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
-                  style={{ 
-                    fontFamily: titleFont,
-                    color: titleColor
-                  }}
-                />
-                <div className="text-lg font-bold whitespace-nowrap" style={{
-                  color: '#ff0040',
-                  textShadow: '0 0 5px #ff0040, 0 0 10px #ff0040, 0 0 15px #ff0040',
-                  fontFamily: 'Arial, sans-serif'
-                }}>
-                  {new Date().toLocaleDateString()}
-                </div>
-              </div>
+          <PanelGroup direction="horizontal" className="w-full">
+            {/* Left Page - Writing Area (Expanded) */}
+            <Panel defaultSize={65} minSize={40}>
+              <div className="p-4 relative flex flex-col overflow-hidden h-full">
+                {/* Page shadow effect */}
+                <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
+                
+                {/* Entry Header */}
+                <div className="space-y-3 mb-4 flex-shrink-0">
+                  <div className="flex items-center gap-3">
+                    <Input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Entry title..."
+                      className="text-lg font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
+                      style={{ 
+                        fontFamily: titleFont,
+                        color: titleColor
+                      }}
+                    />
+                    <div className="text-lg font-bold whitespace-nowrap" style={{
+                      color: '#ff0040',
+                      textShadow: '0 0 5px #ff0040, 0 0 10px #ff0040, 0 0 15px #ff0040',
+                      fontFamily: 'Arial, sans-serif'
+                    }}>
+                      {new Date().toLocaleDateString()}
+                    </div>
+                  </div>
               
               {/* Title Controls */}
               <div className="flex items-center gap-2 p-2 bg-white/50 rounded-lg backdrop-blur-sm">
@@ -574,33 +576,40 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
               )}
             </div>
 
-            {/* Rich Text Editor */}
-            <div className="flex-1 min-h-0">
-              <MDEditor
-                value={content}
-                onChange={(val) => setContent(val || "")}
-                preview="live"
-                hideToolbar={false}
-                data-color-mode="light"
-                height="100%"
-                style={{
-                  fontFamily: selectedFont,
-                  fontSize: `${fontSize}px`,
-                  color: textColor,
-                  height: '100%'
-                }}
-              />
-            </div>
+                {/* Rich Text Editor */}
+                <div className="flex-1 min-h-0">
+                  <MDEditor
+                    value={content}
+                    onChange={(val) => setContent(val || "")}
+                    preview="live"
+                    hideToolbar={false}
+                    data-color-mode="light"
+                    height="100%"
+                    style={{
+                      fontFamily: selectedFont,
+                      fontSize: `${fontSize}px`,
+                      color: textColor,
+                      height: '100%'
+                    }}
+                  />
+                </div>
 
-            {/* Word Count */}
-            <div className="mt-2 text-xs text-gray-500 flex-shrink-0">
-              {content.split(' ').filter(word => word.length > 0).length} words
-            </div>
-          </div>
+                {/* Word Count */}
+                <div className="mt-2 text-xs text-gray-500 flex-shrink-0">
+                  {content.split(' ').filter(word => word.length > 0).length} words
+                </div>
+              </div>
+            </Panel>
 
-          {/* Right Page - Creative Area with Resizable Panels */}
-          <div className="flex-1 p-4 relative overflow-hidden">
-            <PanelGroup direction="vertical" className="h-full">
+            {/* Resize Handle */}
+            <PanelResizeHandle className="w-2 bg-amber-300 hover:bg-amber-400 transition-colors cursor-col-resize flex items-center justify-center">
+              <div className="h-8 w-1 bg-amber-600 rounded-full"></div>
+            </PanelResizeHandle>
+
+            {/* Right Page - Creative Area with Resizable Panels */}
+            <Panel defaultSize={35} minSize={25}>
+              <div className="p-4 relative overflow-hidden h-full">
+                <PanelGroup direction="vertical" className="h-full">
               {/* Drawing Canvas Panel */}
               <Panel defaultSize={60} minSize={30}>
                 <Card className="h-full bg-white/80 backdrop-blur-sm">
@@ -840,8 +849,10 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                 </CardContent>
                 </Card>
               </Panel>
-            </PanelGroup>
-          </div>
+                </PanelGroup>
+              </div>
+            </Panel>
+          </PanelGroup>
         </div>
 
         {/* AI Sidekick - Centered */}
@@ -952,10 +963,10 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
           )}
         </AnimatePresence>
 
-        {/* AI Sidekick Toggle - Center Bottom */}
+        {/* AI Sidekick Toggle */}
         <Button
           onClick={() => setShowAiChat(!showAiChat)}
-          className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl z-40 ${
+          className={`absolute bottom-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl ${
             showAiChat ? 'scale-90' : 'animate-bounce'
           }`}
         >
