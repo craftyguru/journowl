@@ -216,7 +216,15 @@ export default function AdminDashboard() {
           </div>
           <Button 
             variant="outline" 
-            onClick={() => window.location.href = '/api/auth/logout'}
+            onClick={async () => {
+              try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+                window.location.href = '/';
+              } catch (e) {
+                console.error('Logout failed:', e);
+                window.location.href = '/';
+              }
+            }}
             className="border-red-300 text-red-600 hover:bg-red-50"
           >
             Logout
