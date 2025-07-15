@@ -47,6 +47,8 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [isDrawingOnPhoto, setIsDrawingOnPhoto] = useState(false);
   const [photoDrawingMode, setPhotoDrawingMode] = useState(false);
   const [photoSize, setPhotoSize] = useState({ width: 300, height: 200 });
+  const [titleFont, setTitleFont] = useState(entry?.titleFont || "Inter");
+  const [titleColor, setTitleColor] = useState(entry?.titleColor || "#1f2937");
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [showAiChat, setShowAiChat] = useState(true);
   const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string}>>([
@@ -390,11 +392,63 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Entry title..."
                   className="text-lg font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
-                  style={{ fontFamily: selectedFont }}
+                  style={{ 
+                    fontFamily: titleFont,
+                    color: titleColor
+                  }}
                 />
-                <div className="text-xs text-gray-500 whitespace-nowrap">
+                <div className="text-lg font-bold whitespace-nowrap" style={{
+                  color: '#ff0040',
+                  textShadow: '0 0 5px #ff0040, 0 0 10px #ff0040, 0 0 15px #ff0040',
+                  fontFamily: 'Arial, sans-serif'
+                }}>
                   {new Date().toLocaleDateString()}
                 </div>
+              </div>
+              
+              {/* Title Controls */}
+              <div className="flex items-center gap-2 p-2 bg-white/50 rounded-lg backdrop-blur-sm">
+                <span className="text-xs font-medium text-gray-600">Title:</span>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Type className="w-3 h-3 mr-1" />
+                      Font
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium">Font Family</label>
+                      <Select value={titleFont} onValueChange={setTitleFont}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select font" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {fontFamilies.map(font => (
+                            <SelectItem key={font} value={font} style={{ fontFamily: font }}>
+                              {font}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Palette className="w-3 h-3 mr-1" />
+                      Color
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium">Title Color</label>
+                      <HexColorPicker color={titleColor} onChange={setTitleColor} />
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
 
               {/* Mood & Controls */}
@@ -680,25 +734,36 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                           </div>
                           
                           {/* Photo Size Controls */}
-                          <div className="space-y-1">
-                            <label className="text-xs">Size: {photoSize.width}x{photoSize.height}</label>
-                            <div className="flex gap-2">
-                              <Slider
-                                value={[photoSize.width]}
-                                onValueChange={(value) => setPhotoSize(prev => ({ ...prev, width: value[0] }))}
-                                min={100}
-                                max={400}
-                                step={10}
-                                className="flex-1"
-                              />
-                              <Slider
-                                value={[photoSize.height]}
-                                onValueChange={(value) => setPhotoSize(prev => ({ ...prev, height: value[0] }))}
-                                min={100}
-                                max={300}
-                                step={10}
-                                className="flex-1"
-                              />
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <label className="text-xs font-medium">Photo Size</label>
+                              <span className="text-xs text-gray-600">{photoSize.width}x{photoSize.height}px</span>
+                            </div>
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs w-12">Width:</span>
+                                <Slider
+                                  value={[photoSize.width]}
+                                  onValueChange={(value) => setPhotoSize(prev => ({ ...prev, width: value[0] }))}
+                                  min={100}
+                                  max={400}
+                                  step={10}
+                                  className="flex-1"
+                                />
+                                <span className="text-xs w-8">{photoSize.width}</span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs w-12">Height:</span>
+                                <Slider
+                                  value={[photoSize.height]}
+                                  onValueChange={(value) => setPhotoSize(prev => ({ ...prev, height: value[0] }))}
+                                  min={100}
+                                  max={300}
+                                  step={10}
+                                  className="flex-1"
+                                />
+                                <span className="text-xs w-8">{photoSize.height}</span>
+                              </div>
                             </div>
                           </div>
 

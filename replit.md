@@ -130,6 +130,18 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 
 ## Recent Changes
 
+### July 15, 2025 - Smart Journal Full-Width Layout & Photo Editing Complete
+- ✅ **Full-Width Smart Journal**: Expanded journal interface to use 95% of screen width for better usability
+- ✅ **Enhanced Writing Area**: Writing area now uses 2/3 of available space with flex-[2] layout for more room
+- ✅ **Calendar Widget Removed**: Removed bottom calendar widget as requested for cleaner interface
+- ✅ **Photo Resizing Controls**: Added interactive width/height sliders (100-400px width, 100-300px height)
+- ✅ **Photo Selection System**: Click any uploaded photo to select and edit it with visual selection indicators
+- ✅ **Drawing on Photos**: Toggle drawing mode to annotate photos with canvas overlay functionality
+- ✅ **Title Customization**: Added font family and color controls for journal entry titles
+- ✅ **Prominent Date Display**: Date now shows in bright red neon with text shadow effects for high visibility
+- ✅ **Enhanced Photo Editor**: Comprehensive photo editing interface with size controls and drawing tools
+- ✅ **Real-Time Photo Resizing**: Photos dynamically resize as users adjust sliders with live preview
+
 ### July 15, 2025 - Achievement Progress Tracking Complete
 - ✅ **Real Achievement Progress Display**: Each achievement now shows specific progress requirements (e.g., "0/100 words", "0/7 days", "0/10 photos")
 - ✅ **Dynamic Progress Bars**: Progress bars now reflect actual user stats instead of hardcoded values
