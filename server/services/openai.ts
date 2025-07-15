@@ -1,32 +1,46 @@
 import OpenAI from "openai";
+import { trackableOpenAICall } from "../middleware/promptTracker";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
 const openai = new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY_ENV_VAR || "default_key"
 });
 
-export async function generateJournalPrompt(): Promise<string> {
-  try {
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are a thoughtful journaling assistant. Generate a single, engaging journal prompt that encourages self-reflection and personal growth. The prompt should be open-ended and thought-provoking."
-        },
-        {
-          role: "user",
-          content: "Generate a journal prompt for today."
-        }
-      ],
-      max_tokens: 100,
-      temperature: 0.8,
-    });
+export async function generateJournalPrompt(userId?: number): Promise<string> {
+  const fallback = "What moment today made you feel most grateful?";
+  
+  if (!userId) {
+    return fallback;
+  }
 
-    return response.choices[0].message.content || "What moment today made you feel most grateful?";
+  try {
+    return await trackableOpenAICall(
+      userId,
+      "journal_prompt_generation",
+      async () => {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a thoughtful journaling assistant. Generate a single, engaging journal prompt that encourages self-reflection and personal growth. The prompt should be open-ended and thought-provoking."
+            },
+            {
+              role: "user",
+              content: "Generate a journal prompt for today."
+            }
+          ],
+          max_tokens: 100,
+          temperature: 0.8,
+        });
+
+        return response.choices[0].message.content || fallback;
+      },
+      100 // Estimated tokens
+    );
   } catch (error) {
     console.error("Failed to generate journal prompt:", error);
-    return "What moment today made you feel most grateful?";
+    return fallback;
   }
 }
 
@@ -70,7 +84,13 @@ export async function generatePersonalizedPrompt(recentEntries: string[], userId
   }
 }
 
-export async function generateInsight(entries: { content: string; mood: string; createdAt: Date }[]): Promise<string> {
+export async function generateInsight(entries: { content: string; mood: string; createdAt: Date }[], userId?: number): Promise<string> {
+  const fallback = "Keep reflecting on your journey - every entry is a step toward greater self-awareness.";
+  
+  if (!userId) {
+    return fallback;
+  }
+
   try {
     const entriesData = entries.map(entry => ({
       content: entry.content.substring(0, 200),
@@ -78,27 +98,34 @@ export async function generateInsight(entries: { content: string; mood: string; 
       date: entry.createdAt.toISOString().split('T')[0]
     }));
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are a compassionate AI coach analyzing journal entries. Provide a supportive, insightful observation about patterns in the user's thoughts, moods, or growth. Keep it encouraging and actionable. Respond in JSON format with 'insight' field."
-        },
-        {
-          role: "user",
-          content: `Analyze these journal entries and provide an insight: ${JSON.stringify(entriesData)}`
-        }
-      ],
-      response_format: { type: "json_object" },
-      max_tokens: 200,
-      temperature: 0.6,
-    });
+    return await trackableOpenAICall(
+      userId,
+      "insight_generation",
+      async () => {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a compassionate AI coach analyzing journal entries. Provide a supportive, insightful observation about patterns in the user's thoughts, moods, or growth. Keep it encouraging and actionable. Respond in JSON format with 'insight' field."
+            },
+            {
+              role: "user",
+              content: `Analyze these journal entries and provide an insight: ${JSON.stringify(entriesData)}`
+            }
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 200,
+          temperature: 0.6,
+        });
 
-    const result = JSON.parse(response.choices[0].message.content || '{"insight": "Keep reflecting on your journey - every entry is a step toward greater self-awareness."}');
-    return result.insight;
+        const result = JSON.parse(response.choices[0].message.content || `{"insight": "${fallback}"}`);
+        return result.insight;
+      },
+      200 // Estimated tokens
+    );
   } catch (error) {
     console.error("Failed to generate insight:", error);
-    return "Keep reflecting on your journey - every entry is a step toward greater self-awareness.";
+    return fallback;
   }
 }

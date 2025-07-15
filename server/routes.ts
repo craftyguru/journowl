@@ -501,6 +501,9 @@ Current journal context:
         });
       }
 
+      // Track AI prompt usage before making OpenAI call
+      await storage.incrementPromptUsage(req.session.userId);
+      
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -760,6 +763,9 @@ Current journal context:
     try {
       const { content, mood, hasPhotos, photoCount } = req.body;
       
+      // Track AI prompt usage before making OpenAI call
+      await storage.incrementPromptUsage(req.session.userId);
+      
       // Kid-friendly AI prompt generation
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -909,11 +915,13 @@ Current journal context:
     try {
       const userId = req.session.userId;
       const user = await storage.getUser(userId);
-      const promptUsage = await storage.getUserPromptUsage(userId);
       
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
+
+      // Get prompt usage data
+      const promptUsage = await storage.getUserPromptUsage(userId);
       
       res.json({
         tier: user.subscription_tier || 'free',
@@ -925,7 +933,7 @@ Current journal context:
       });
     } catch (error: any) {
       console.error("Error fetching subscription:", error);
-      res.status(500).json({ message: "Failed to get subscription data" });
+      res.status(500).json({ message: "Failed to get subscription data", error: error.message });
     }
   });
 

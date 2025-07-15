@@ -155,7 +155,19 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 - ✅ **Frontend Data Consistency**: All defaultAchievements and defaultGoals now start completely fresh (locked/0% progress)
 - ✅ **API Integration**: Enhanced tracking system automatically updates user XP, achievements, and goals based on journaling behavior
 
-### July 15, 2025 - Latest Updates
+### July 15, 2025 - AI Prompt Tracking & Subscription Management Complete
+- ✅ **Comprehensive AI Prompt Tracking**: Implemented trackable OpenAI calls across all 7 AI services (journal prompts, insights, photo analysis, chat responses, kids prompts, entry analysis)
+- ✅ **Usage Meters Dashboard Component**: Created real-time usage meters showing AI prompts remaining (85/100) and storage usage with animated progress bars
+- ✅ **Subscription API Integration**: Connected /api/subscription endpoint with proper authentication and real user data
+- ✅ **AI Prompt Monetization**: Complete $2.99 for 100 additional prompts system with Stripe payment integration
+- ✅ **Storage Tracking System**: Implemented photo/attachment storage monitoring with MB usage calculation
+- ✅ **Usage Meters Always Visible**: Placed subscription management interface prominently at top of dashboard for maximum visibility
+- ✅ **Prompt Usage Middleware**: Created trackableOpenAICall wrapper function to monitor and limit AI API consumption
+- ✅ **Real-Time Subscription Data**: Usage meters display live data from database including tier, prompts remaining, storage used
+- ✅ **Multi-Service AI Tracking**: All OpenAI calls now properly tracked: generateJournalPrompt, generatePersonalizedPrompt, generateInsight, photo analysis, chat responses, kids prompts
+- ✅ **Enhanced Error Handling**: Improved subscription API error handling and authentication validation
+
+### July 15, 2025 - Previous Core Features
 - ✅ **Comprehensive Achievement System**: Expanded from 12 to 24 achievements with varied rarity levels (common, rare, epic, legendary)
 - ✅ **Advanced Goals Tracking**: Expanded from 12 to 24 goals across multiple categories and difficulty levels (beginner, intermediate, advanced)
 - ✅ **Enhanced Visual Design**: Goals now feature color-coded difficulty backgrounds and appropriate icons for each category

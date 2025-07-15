@@ -359,6 +359,11 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
         </motion.div>
       </motion.div>
 
+      {/* Usage Meters - Always Visible */}
+      <div className="mb-6">
+        <UsageMeters />
+      </div>
+
       {/* Main Content Tabs */}
       <Tabs defaultValue="journal" className="space-y-6">
         <TabsList className="grid w-full grid-cols-6 bg-slate-800/90 backdrop-blur-lg border border-purple-500/20 shadow-2xl">
