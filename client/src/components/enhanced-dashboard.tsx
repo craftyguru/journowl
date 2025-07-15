@@ -1346,12 +1346,12 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       <div className="mt-4 pt-4 border-t border-gray-300">
                         <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                           <span>Progress</span>
-                          <span>2/5 complete</span>
+                          <span>0/1 complete</span>
                         </div>
                         <div className="bg-gray-200 rounded-full h-2">
                           <motion.div
                             initial={{ width: 0 }}
-                            animate={{ width: "40%" }}
+                            animate={{ width: "0%" }}
                             transition={{ duration: 1, delay: index * 0.1 }}
                             className="bg-gradient-to-r from-gray-400 to-gray-500 h-full rounded-full"
                           />
@@ -1372,20 +1372,20 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             >
               <h3 className="text-lg font-bold text-indigo-800 mb-3 flex items-center gap-2">
                 <Star className="w-5 h-5" />
-                Almost There!
+                Start Your Journey!
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                  <div className="text-2xl mb-2">🌈</div>
-                  <h4 className="font-semibold text-indigo-700">Mood Master</h4>
-                  <p className="text-sm text-indigo-600 mb-2">Use all mood types</p>
-                  <div className="text-xs text-indigo-500">6/8 moods used - Almost there!</div>
+                  <div className="text-2xl mb-2">📝</div>
+                  <h4 className="font-semibold text-indigo-700">First Steps</h4>
+                  <p className="text-sm text-indigo-600 mb-2">Write your first journal entry</p>
+                  <div className="text-xs text-indigo-500">Ready to unlock - Write your first entry!</div>
                 </div>
                 <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                  <div className="text-2xl mb-2">🧘</div>
-                  <h4 className="font-semibold text-indigo-700">Reflection Guru</h4>
-                  <p className="text-sm text-indigo-600 mb-2">30-day writing streak</p>
-                  <div className="text-xs text-indigo-500">28/30 days - 2 more to go!</div>
+                  <div className="text-2xl mb-2">😊</div>
+                  <h4 className="font-semibold text-indigo-700">Mood Tracker</h4>
+                  <p className="text-sm text-indigo-600 mb-2">Track your mood for 5 days</p>
+                  <div className="text-xs text-indigo-500">Ready to unlock - Start tracking your mood!</div>
                 </div>
               </div>
             </motion.div>
