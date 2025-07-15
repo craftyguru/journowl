@@ -53,6 +53,8 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [editingTarget, setEditingTarget] = useState<'title' | 'content'>('title');
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [showAiChat, setShowAiChat] = useState(true);
+  const [isAiListening, setIsAiListening] = useState(false);
+  const [aiRecognition, setAiRecognition] = useState<any>(null);
   const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string}>>([
     { type: 'ai', message: 'Hey! Ready to capture today\'s adventure? I can help you write, analyze photos, and suggest ideas!' }
   ]);
@@ -103,6 +105,30 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
       };
 
       setRecognition(recognitionInstance);
+
+      // Initialize separate speech recognition for AI chat
+      const aiRecognitionInstance = new SpeechRecognition();
+      aiRecognitionInstance.continuous = false;
+      aiRecognitionInstance.interimResults = false;
+      aiRecognitionInstance.lang = 'en-US';
+
+      aiRecognitionInstance.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setAiInput(transcript);
+        // Automatically send the transcribed message to AI
+        setTimeout(() => sendToAi(transcript), 100);
+      };
+
+      aiRecognitionInstance.onerror = (event) => {
+        console.error('AI speech recognition error:', event.error);
+        setIsAiListening(false);
+      };
+
+      aiRecognitionInstance.onend = () => {
+        setIsAiListening(false);
+      };
+
+      setAiRecognition(aiRecognitionInstance);
     }
   }, []);
 
@@ -140,7 +166,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
     }
   }, [content, mood, photos]);
 
-  // Start/stop voice recording
+  // Start/stop voice recording for journal
   const toggleVoiceRecording = () => {
     if (recognition) {
       if (isListening) {
@@ -158,6 +184,28 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
       setAiMessages(prev => [...prev, {
         type: 'ai',
         message: 'Sorry, voice recognition is not supported in your browser. Try using Chrome or Edge!'
+      }]);
+    }
+  };
+
+  // Start/stop voice recording for AI chat
+  const toggleAiVoiceInput = () => {
+    if (aiRecognition) {
+      if (isAiListening) {
+        aiRecognition.stop();
+        setIsAiListening(false);
+      } else {
+        aiRecognition.start();
+        setIsAiListening(true);
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '🎤 I\'m listening... Speak your question or request!'
+        }]);
+      }
+    } else {
+      setAiMessages(prev => [...prev, {
+        type: 'ai',
+        message: 'Voice input is not supported in your browser. Please try Chrome or Edge!'
       }]);
     }
   };
@@ -1040,18 +1088,28 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                 <Input
                   value={aiInput}
                   onChange={(e) => setAiInput(e.target.value)}
-                  placeholder="Ask me anything or request help..."
+                  placeholder={isAiListening ? "Listening..." : "Ask me anything or request help..."}
                   className="flex-1 text-sm"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       sendToAi(aiInput);
                     }
                   }}
+                  disabled={isAiListening}
                 />
+                <Button 
+                  onClick={toggleAiVoiceInput}
+                  size="sm"
+                  variant={isAiListening ? "default" : "outline"}
+                  className={isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : ""}
+                  title={isAiListening ? "Stop voice input" : "Voice input"}
+                >
+                  {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </Button>
                 <Button 
                   onClick={() => sendToAi(aiInput)}
                   size="sm"
-                  disabled={!aiInput.trim() || aiAnalyzing}
+                  disabled={!aiInput.trim() || aiAnalyzing || isAiListening}
                 >
                   <Send className="w-4 h-4" />
                 </Button>
