@@ -83,14 +83,13 @@ export function HelpBubble() {
   const currentTourStep = tourSteps[currentStep];
 
   return (
-    <div className="fixed left-2 sm:left-4 bottom-4 z-50">
+    <div className="fixed left-2 sm:left-4 bottom-4 z-50 group">
       <motion.button
         whileHover={{ scale: 1.1, rotate: -10 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-gradient-to-tr from-pink-400 to-purple-600 text-white w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-xl flex items-center justify-center text-2xl sm:text-3xl border-4 border-white relative overflow-hidden group"
+        className="bg-gradient-to-tr from-pink-400 to-purple-600 text-white w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-xl flex items-center justify-center text-2xl sm:text-3xl border-4 border-white relative overflow-hidden"
         onClick={() => setOpen(!open)}
         aria-label="Help and Guided Tour"
-        title="🎈 Help & Guided Tour - Take an interactive walkthrough of JournOwl's features! Learn how to use the Smart Journal, AI Insights, Memory Calendar, and more."
       >
         <motion.div
           animate={{ 
@@ -113,6 +112,14 @@ export function HelpBubble() {
           className="absolute inset-0 rounded-full bg-pink-400 opacity-20"
         />
       </motion.button>
+      
+      {/* Custom Tooltip */}
+      <div className="absolute bottom-full left-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
+          🎈 Help Tour
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+        </div>
+      </div>
 
       <AnimatePresence>
         {open && (

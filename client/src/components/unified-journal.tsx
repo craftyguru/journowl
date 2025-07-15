@@ -1593,15 +1593,24 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         </AnimatePresence>
 
         {/* AI Sidekick Toggle - Right Side, Above Support Chat */}
-        <Button
-          onClick={() => setShowAiChat(!showAiChat)}
-          className={`fixed bottom-20 right-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl z-40 group ${
-            showAiChat ? 'scale-90' : 'animate-bounce'
-          }`}
-          title="🧠 AI Writing Assistant - Get personalized journal prompts, photo analysis, writing suggestions, and real-time conversation help. Hold the mic for full conversation mode!"
-        >
-          {showAiChat ? <X className="w-5 h-5" /> : <Brain className="w-5 h-5" />}
-        </Button>
+        <div className="fixed bottom-20 right-4 z-40 group">
+          <Button
+            onClick={() => setShowAiChat(!showAiChat)}
+            className={`bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl ${
+              showAiChat ? 'scale-90' : 'animate-bounce'
+            }`}
+          >
+            {showAiChat ? <X className="w-5 h-5" /> : <Brain className="w-5 h-5" />}
+          </Button>
+          
+          {/* Custom Tooltip */}
+          <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+            <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
+              🧠 AI Assistant
+              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+            </div>
+          </div>
+        </div>
 
         {/* Voice Recording Status */}
         {isListening && (

@@ -87,14 +87,13 @@ export function SupportChatBubble() {
   };
 
   return (
-    <div className="fixed right-2 sm:right-4 bottom-4 z-50">
+    <div className="fixed right-2 sm:right-4 bottom-4 z-50 group">
       <motion.button
         whileHover={{ scale: 1.1, rotate: 10 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-gradient-to-tr from-blue-400 to-green-600 text-white w-16 h-16 rounded-full shadow-xl flex items-center justify-center text-3xl border-4 border-white relative overflow-hidden group"
+        className="bg-gradient-to-tr from-blue-400 to-green-600 text-white w-16 h-16 rounded-full shadow-xl flex items-center justify-center text-3xl border-4 border-white relative overflow-hidden"
         onClick={() => setOpen(!open)}
         aria-label="Support Chat"
-        title="💬 Support Chat - Get help with JournOwl features, troubleshooting, or just say hello! We typically reply within minutes."
       >
         <motion.div
           animate={{ 
@@ -128,6 +127,14 @@ export function SupportChatBubble() {
           className="absolute inset-0 rounded-full bg-blue-400 opacity-20"
         />
       </motion.button>
+      
+      {/* Custom Tooltip */}
+      <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
+          💬 Support Chat
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+        </div>
+      </div>
 
       <AnimatePresence>
         {open && (
