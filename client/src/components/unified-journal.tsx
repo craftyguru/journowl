@@ -623,12 +623,12 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     </div>
                     
                     {/* Mobile-Friendly Controls */}
-                    <div className="flex flex-wrap items-center gap-2">
+                    <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2">
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className="h-8 px-2">
-                            <Palette className="w-3 h-3 mr-1" />
-                            <span className="hidden sm:inline">Color</span>
+                          <Button variant="outline" size="sm" className="h-10 px-3 w-full sm:w-auto">
+                            <Palette className="w-4 h-4 mr-1" />
+                            <span className="text-xs">Color</span>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-48">
@@ -652,7 +652,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                       <Button 
                         variant="outline" 
                         size="sm"
-                        className="h-8 px-2"
+                        className="h-10 px-3 w-full sm:w-auto"
                         onClick={() => {
                           const ctx = canvasRef.current?.getContext('2d');
                           if (ctx && canvasRef.current) {
@@ -660,14 +660,14 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                           }
                         }}
                       >
-                        <Eraser className="w-3 h-3 mr-1" />
-                        <span className="hidden sm:inline">Clear</span>
+                        <Eraser className="w-4 h-4 mr-1" />
+                        <span className="text-xs">Clear</span>
                       </Button>
                       
-                      <div className="flex items-center gap-1 text-xs text-gray-600">
-                        <span>Size: {brushSize}px</span>
+                      <div className="col-span-2 sm:col-span-1 flex items-center justify-center gap-2 p-2 bg-gray-50 rounded-lg">
+                        <span className="text-xs text-gray-600">Size: {brushSize}px</span>
                         <div 
-                          className="w-4 h-4 rounded-full border border-gray-300" 
+                          className="w-5 h-5 rounded-full border-2 border-gray-300 shadow-sm" 
                           style={{ backgroundColor: brushColor }}
                         />
                       </div>
@@ -678,11 +678,14 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     ref={canvasRef}
                     width={400}
                     height={150}
-                    className="border-2 border-dashed border-gray-300 rounded-lg w-full flex-1 cursor-crosshair bg-white"
+                    className="border-2 border-dashed border-gray-300 rounded-lg w-full flex-1 cursor-crosshair bg-white min-h-[100px] max-h-[200px]"
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
+                    onTouchStart={startDrawing}
+                    onTouchMove={draw}
+                    onTouchEnd={stopDrawing}
                     style={{ touchAction: 'none' }}
                   />
                 </CardContent>
