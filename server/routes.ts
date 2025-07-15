@@ -178,6 +178,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Photo AI routes
+  app.post("/api/ai/analyze-photo", requireAuth, async (req: any, res) => {
+    try {
+      const { image } = req.body;
+      if (!image) {
+        return res.status(400).json({ error: "Image data required" });
+      }
+
+      const { analyzePhoto } = await import("./services/photo-ai");
+      const analysis = await analyzePhoto(image);
+      res.json(analysis);
+    } catch (error: any) {
+      console.error("Error analyzing photo:", error);
+      res.status(500).json({ error: "Failed to analyze photo" });
+    }
+  });
+
+  app.post("/api/ai/generate-prompt", requireAuth, async (req: any, res) => {
+    try {
+      const { mood, previousContent, photos, tags } = req.body;
+      
+      const { generateWritingPromptFromContext } = await import("./services/photo-ai");
+      const prompt = await generateWritingPromptFromContext({
+        mood,
+        previousContent,
+        photoAnalysis: photos,
+        tags
+      });
+      
+      res.json({ prompt });
+    } catch (error: any) {
+      console.error("Error generating prompt:", error);
+      res.status(500).json({ error: "Failed to generate prompt" });
+    }
+  });
+
+  app.post("/api/ai/extract-insights", requireAuth, async (req: any, res) => {
+    try {
+      const { content, mood, photos, tags } = req.body;
+      
+      const { extractInsightsFromEntry } = await import("./services/photo-ai");
+      const insights = await extractInsightsFromEntry({
+        content,
+        mood,
+        photos,
+        tags
+      });
+      
+      res.json(insights);
+    } catch (error: any) {
+      console.error("Error extracting insights:", error);
+      res.status(500).json({ error: "Failed to extract insights" });
+    }
+  });
+
   // Stats routes
   app.get("/api/stats", requireAuth, async (req: any, res) => {
     try {

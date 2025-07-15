@@ -14,6 +14,8 @@ export const users = pgTable("users", {
   theme: text("theme").default("purple"),
   bio: text("bio"),
   favoriteQuote: text("favorite_quote"),
+  preferences: json("preferences"), // Journal customization preferences
+  aiPersonality: text("ai_personality").default("friendly"), // AI sidekick personality
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -24,6 +26,17 @@ export const journalEntries = pgTable("journal_entries", {
   content: text("content").notNull(),
   mood: text("mood").notNull(),
   wordCount: integer("word_count").default(0),
+  fontFamily: text("font_family").default("Inter"),
+  fontSize: integer("font_size").default(16),
+  textColor: text("text_color").default("#ffffff"),
+  backgroundColor: text("background_color").default("#1e293b"),
+  drawings: json("drawings"), // JSON array of drawing data
+  photos: json("photos"), // JSON array of photo data with AI analysis
+  tags: json("tags"), // JSON array of extracted tags
+  aiInsights: json("ai_insights"), // JSON object with AI analysis
+  isPrivate: boolean("is_private").default(false),
+  location: text("location"),
+  weather: text("weather"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

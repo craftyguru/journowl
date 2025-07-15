@@ -5,8 +5,10 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 import InteractiveJournal from "./interactive-journal";
+import SmartJournalEditor from "./smart-journal-editor";
 
 const moodData = [
   { day: 'Mon', mood: 4, entries: 1 },
@@ -65,6 +67,21 @@ const prompts = [
 ];
 
 export default function EnhancedDashboard() {
+  const [showSmartEditor, setShowSmartEditor] = useState(false);
+  const [selectedEntry, setSelectedEntry] = useState<any>(null);
+
+  const handleSaveEntry = (entryData: any) => {
+    console.log('Saving entry:', entryData);
+    // Here you would typically save to backend
+    setShowSmartEditor(false);
+    setSelectedEntry(null);
+  };
+
+  const openSmartEditor = (entry?: any) => {
+    setSelectedEntry(entry);
+    setShowSmartEditor(true);
+  };
+
   return (
     <div className="relative p-6 space-y-6 bg-gradient-to-br from-slate-900 via-purple-900/20 to-pink-900/20 min-h-screen overflow-hidden">
       {/* Animated Background Elements */}
@@ -227,7 +244,10 @@ export default function EnhancedDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white">
+              <Button 
+                onClick={() => openSmartEditor()}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+              >
                 <BookOpen className="w-4 h-4 mr-2" />
                 Write New Entry
               </Button>
@@ -258,14 +278,15 @@ export default function EnhancedDashboard() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="p-4 rounded-lg border border-gray-200 hover:shadow-md transition-all cursor-pointer"
+                    onClick={() => openSmartEditor(entry)}
+                    className="p-4 rounded-lg border border-purple-200/20 bg-slate-800/50 hover:bg-slate-700/50 hover:shadow-lg transition-all cursor-pointer backdrop-blur-sm"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className="text-2xl">{entry.mood}</div>
                         <div>
-                          <h4 className="font-semibold text-gray-800">{entry.title}</h4>
-                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                          <h4 className="font-semibold text-white">{entry.title}</h4>
+                          <div className="flex items-center gap-2 text-sm text-gray-300">
                             <span>{entry.date}</span>
                             <span>•</span>
                             <span>{entry.wordCount} words</span>
@@ -274,7 +295,7 @@ export default function EnhancedDashboard() {
                       </div>
                       <div className="flex gap-1">
                         {entry.tags.map((tag, i) => (
-                          <Badge key={i} variant="outline" className="text-xs">
+                          <Badge key={i} variant="outline" className="text-xs border-purple-400/20 text-purple-300 bg-purple-500/10">
                             {tag}
                           </Badge>
                         ))}
@@ -494,6 +515,20 @@ export default function EnhancedDashboard() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Smart Journal Editor Modal */}
+      <AnimatePresence>
+        {showSmartEditor && (
+          <SmartJournalEditor
+            entry={selectedEntry}
+            onSave={handleSaveEntry}
+            onClose={() => {
+              setShowSmartEditor(false);
+              setSelectedEntry(null);
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
