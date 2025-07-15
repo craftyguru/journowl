@@ -579,9 +579,8 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
               <MDEditor
                 value={content}
                 onChange={(val) => setContent(val || "")}
-                preview="edit"
+                preview="live"
                 hideToolbar={false}
-                visibleDragBar={false}
                 data-color-mode="light"
                 height="100%"
                 style={{
@@ -845,15 +844,16 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
           </div>
         </div>
 
-        {/* AI Sidekick - Always Visible */}
+        {/* AI Sidekick - Centered */}
         <AnimatePresence>
           {showAiChat && (
             <motion.div
-              initial={{ x: 400, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 400, opacity: 0 }}
-              className="absolute right-4 top-16 bottom-16 w-80 bg-white rounded-xl shadow-2xl border p-3 flex flex-col"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
             >
+              <div className="w-full max-w-md h-[500px] bg-white rounded-xl shadow-2xl border p-3 flex flex-col">
               <div className="flex items-center justify-between mb-3 flex-shrink-0">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center animate-pulse">
@@ -946,6 +946,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     Photo Help
                   </Button>
                 )}
+              </div>
               </div>
             </motion.div>
           )}
