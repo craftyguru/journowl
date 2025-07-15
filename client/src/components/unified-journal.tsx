@@ -107,12 +107,6 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
       const userName = user.username || user.email?.split('@')[0] || 'there';
       const welcomeMessage = `Hi ${userName}! 🦉 Welcome to your AI-powered journal companion!
 
-🎤 CAPTURE FEATURES:
-• Blue mic: Convert speech to text for your journal
-• Hold 1 second: Enter full conversation mode  
-• Green button: Record & save audio clips (up to 60 seconds)
-• Orange camera: Take photos or record videos (up to 30 seconds)
-
 🧠 I CAN HELP YOU:
 • Write journal entries with personalized prompts
 • Analyze photos to extract emotions, memories, and story ideas  
