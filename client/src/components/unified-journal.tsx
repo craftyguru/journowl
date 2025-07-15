@@ -18,6 +18,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
+import { 
+  AlertDialog, 
+  AlertDialogContent, 
+  AlertDialogHeader, 
+  AlertDialogTitle, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogCancel, 
+  AlertDialogAction 
+} from "@/components/ui/alert-dialog";
 
 const moodEmojis = ["😊", "😐", "😔", "🤔", "😄", "🎉", "😠", "😴", "💪", "🥰"];
 const fontFamilies = [
@@ -63,6 +73,9 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [recognition, setRecognition] = useState<any>(null);
   const [aiAnalyzing, setAiAnalyzing] = useState(false);
   const [lastFinalTranscript, setLastFinalTranscript] = useState('');
+  const [showUsageWarning, setShowUsageWarning] = useState(false);
+  const [isHoldingMic, setIsHoldingMic] = useState(false);
+  const [holdTimeout, setHoldTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -211,29 +224,61 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
     }
   };
 
-  // Start/stop voice recording for AI chat
-  const toggleAiVoiceInput = () => {
-    if (aiRecognition) {
-      if (isAiListening) {
-        aiRecognition.stop();
-        setIsAiListening(false);
-        setAiInput('');
-        setLastFinalTranscript('');
-      } else {
+  // Handle mic button mouse down (start hold-to-speak)
+  const handleMicMouseDown = () => {
+    setIsHoldingMic(true);
+    const timeout = setTimeout(() => {
+      // After 500ms of holding, show usage warning for conversation mode
+      setShowUsageWarning(true);
+    }, 500);
+    setHoldTimeout(timeout);
+  };
+
+  // Handle mic button mouse up (end hold-to-speak)
+  const handleMicMouseUp = () => {
+    if (holdTimeout) {
+      clearTimeout(holdTimeout);
+      setHoldTimeout(null);
+    }
+    
+    if (isHoldingMic && !showUsageWarning) {
+      // Quick press/release - single prompt mode
+      if (aiRecognition) {
         setAiInput('');
         setLastFinalTranscript('');
         aiRecognition.start();
         setIsAiListening(true);
         setAiMessages(prev => [...prev, {
           type: 'ai',
-          message: '🎤 I\'m listening... Start speaking and I\'ll respond to what you say!'
+          message: '🎤 Say your prompt now... I\'ll respond once you finish!'
         }]);
       }
-    } else {
+    }
+    setIsHoldingMic(false);
+  };
+
+  // Start full conversation mode after warning confirmation
+  const startConversationMode = () => {
+    if (aiRecognition) {
+      setAiInput('');
+      setLastFinalTranscript('');
+      aiRecognition.start();
+      setIsAiListening(true);
       setAiMessages(prev => [...prev, {
         type: 'ai',
-        message: 'Voice input is not supported in your browser. Please try Chrome or Edge!'
+        message: '🎤 Conversation mode active! I\'m listening and will respond to everything you say.'
       }]);
+    }
+    setShowUsageWarning(false);
+  };
+
+  // Stop any active voice input
+  const stopVoiceInput = () => {
+    if (aiRecognition && isAiListening) {
+      aiRecognition.stop();
+      setIsAiListening(false);
+      setAiInput('');
+      setLastFinalTranscript('');
     }
   };
 
@@ -1149,11 +1194,14 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   disabled={isAiListening}
                 />
                 <Button 
-                  onClick={toggleAiVoiceInput}
+                  onMouseDown={handleMicMouseDown}
+                  onMouseUp={handleMicMouseUp}
+                  onMouseLeave={handleMicMouseUp}
+                  onClick={isAiListening ? stopVoiceInput : undefined}
                   size="sm"
                   variant={isAiListening ? "default" : "outline"}
-                  className={isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : ""}
-                  title={isAiListening ? "Stop voice input" : "Voice input"}
+                  className={`${isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : ""} ${isHoldingMic ? "bg-blue-500 text-white" : ""}`}
+                  title={isAiListening ? "Click to stop" : "Quick press: Single prompt | Hold: Full conversation"}
                 >
                   {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </Button>
@@ -1223,6 +1271,33 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
           </div>
         )}
 
+        {/* Usage Warning Dialog */}
+        <AlertDialog open={showUsageWarning} onOpenChange={setShowUsageWarning}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>🎤 Full Conversation Mode</AlertDialogTitle>
+              <AlertDialogDescription>
+                You're about to enter full conversation mode where I'll respond to everything you say. 
+                This uses AI prompts continuously and can burn through your credits quickly.
+                <br /><br />
+                <strong>Your current usage:</strong> You have AI prompts remaining.
+                <br /><br />
+                Would you like to continue or purchase more AI prompts?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setShowUsageWarning(false)}>
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={startConversationMode}>
+                Continue Conversation
+              </AlertDialogAction>
+              <AlertDialogAction onClick={() => window.location.href = '/upgrade'}>
+                Buy More Prompts
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
       </motion.div>
     </motion.div>
