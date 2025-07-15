@@ -19,7 +19,7 @@ import SmartJournalEditor from "./smart-journal-editor";
 import UnifiedJournal from "./unified-journal";
 import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
-import SubscriptionManager from "./SubscriptionManager";
+import UsageMeters from "./UsageMeters";
 
 // All data now fetched from API endpoints instead of hardcoded values
 
@@ -535,7 +535,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
         <TabsContent value="overview" className="space-y-6">
           {/* Usage Meters and Subscription Management */}
-          <SubscriptionManager />
+          <UsageMeters />
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Quick Actions */}

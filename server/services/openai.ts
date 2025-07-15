@@ -30,30 +30,43 @@ export async function generateJournalPrompt(): Promise<string> {
   }
 }
 
-export async function generatePersonalizedPrompt(recentEntries: string[]): Promise<string> {
+export async function generatePersonalizedPrompt(recentEntries: string[], userId?: number): Promise<string> {
+  const fallback = "What patterns do you notice in your recent thoughts and feelings?";
+  
+  if (!userId) {
+    return fallback;
+  }
+
   try {
     const entriesText = recentEntries.slice(0, 3).join("\n\n");
     
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: "You are a thoughtful journaling assistant. Based on the user's recent journal entries, generate a personalized prompt that builds on their themes, encourages deeper reflection, or explores related topics. Keep it engaging and supportive."
-        },
-        {
-          role: "user",
-          content: `Based on these recent journal entries, suggest a thoughtful prompt:\n\n${entriesText}`
-        }
-      ],
-      max_tokens: 100,
-      temperature: 0.7,
-    });
+    return await trackableOpenAICall(
+      userId,
+      "personalized_prompt_generation",
+      async () => {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a thoughtful journaling assistant. Based on the user's recent journal entries, generate a personalized prompt that builds on their themes, encourages deeper reflection, or explores related topics. Keep it engaging and supportive."
+            },
+            {
+              role: "user",
+              content: `Based on these recent journal entries, suggest a thoughtful prompt:\n\n${entriesText}`
+            }
+          ],
+          max_tokens: 100,
+          temperature: 0.7,
+        });
 
-    return response.choices[0].message.content || "What patterns do you notice in your recent thoughts and feelings?";
+        return response.choices[0].message.content || fallback;
+      },
+      100 // Estimated tokens
+    );
   } catch (error) {
     console.error("Failed to generate personalized prompt:", error);
-    return "What patterns do you notice in your recent thoughts and feelings?";
+    return fallback;
   }
 }
 

@@ -97,6 +97,7 @@ export interface IStorage {
   
   // Subscription operations
   updateUserSubscription(userId: number, subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }): Promise<void>;
+  updateStorageUsage(userId: number, additionalMB: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
