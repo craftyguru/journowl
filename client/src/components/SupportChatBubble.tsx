@@ -31,7 +31,8 @@ export function SupportChatBubble() {
   const { data: messages = [], isLoading } = useQuery({
     queryKey: ['/api/support/messages'],
     enabled: open,
-    refetchInterval: 2000 // Poll every 2 seconds for real-time updates
+    refetchInterval: 30000, // Poll every 30 seconds to reduce server load
+    retry: false // Don't retry failed requests
   });
 
   // Send message mutation
@@ -86,7 +87,7 @@ export function SupportChatBubble() {
   };
 
   return (
-    <div className="fixed right-4 bottom-4 z-50">
+    <div className="fixed right-2 sm:right-4 bottom-4 z-50">
       <motion.button
         whileHover={{ scale: 1.1, rotate: 10 }}
         whileTap={{ scale: 0.95 }}
@@ -109,7 +110,7 @@ export function SupportChatBubble() {
         <span className="relative z-10">💬</span>
         
         {/* Notification badge for new messages */}
-        {messages.some((msg: SupportMessage) => msg.sender === 'admin' && !msg.adminName) && (
+        {(messages || []).some((msg: SupportMessage) => msg.sender === 'admin' && !msg.adminName) && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -133,7 +134,7 @@ export function SupportChatBubble() {
             initial={{ opacity: 0, y: 40, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.8 }}
-            className="absolute right-20 bottom-0 w-96"
+            className="absolute right-0 sm:right-20 bottom-0 w-[95vw] max-w-sm sm:w-96"
           >
             <Card className="shadow-2xl border-2 border-blue-200 bg-gradient-to-br from-white to-blue-50">
               <CardHeader className="relative overflow-hidden">
@@ -166,12 +167,12 @@ export function SupportChatBubble() {
               
               <CardContent className="p-0">
                 {/* Messages container */}
-                <div className="h-80 overflow-y-auto p-4 space-y-4">
+                <div className="h-60 sm:h-80 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
                   {isLoading ? (
                     <div className="flex items-center justify-center h-full">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                     </div>
-                  ) : messages.length === 0 ? (
+                  ) : messages?.length === 0 ? (
                     <div className="text-center py-8">
                       <div className="text-4xl mb-4">🦉</div>
                       <h3 className="font-semibold text-gray-800 mb-2">Welcome to JournOwl Support!</h3>
@@ -181,7 +182,7 @@ export function SupportChatBubble() {
                       </p>
                     </div>
                   ) : (
-                    messages.map((msg: SupportMessage) => (
+                    (messages || []).map((msg: SupportMessage) => (
                       <div
                         key={msg.id}
                         className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
@@ -246,15 +247,15 @@ export function SupportChatBubble() {
                   <div ref={messagesEndRef} />
                 </div>
                 
-                {/* Message input */}
-                <div className="p-4 border-t border-gray-200 bg-gray-50">
+                {/* Mobile-Optimized Message input */}
+                <div className="p-3 sm:p-4 border-t border-gray-200 bg-gray-50">
                   <div className="flex gap-2">
                     <div className="flex-1 relative">
                       <Input
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         placeholder="Type your message..."
-                        className="pr-10"
+                        className="pr-10 text-sm sm:text-base"
                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
                         disabled={sendMessageMutation.isPending}
                       />
@@ -264,39 +265,42 @@ export function SupportChatBubble() {
                         className="absolute right-1 top-1 h-8 w-8 p-0 text-gray-400 hover:text-gray-600"
                         onClick={() => fileInputRef.current?.click()}
                       >
-                        <Paperclip className="w-4 h-4" />
+                        <Paperclip className="w-3 h-3 sm:w-4 sm:h-4" />
                       </Button>
                     </div>
                     <Button
                       onClick={handleSendMessage}
                       disabled={!message.trim() || sendMessageMutation.isPending}
-                      className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 px-3 sm:px-4"
                     >
-                      <Send className="w-4 h-4" />
+                      <Send className="w-3 h-3 sm:w-4 sm:h-4" />
                     </Button>
                   </div>
                   
-                  <div className="flex items-center gap-2 mt-2">
+                  <div className="flex flex-wrap items-center gap-1 sm:gap-2 mt-2">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => fileInputRef.current?.click()}
-                      className="text-gray-600 hover:text-gray-800"
+                      className="text-gray-600 hover:text-gray-800 text-xs sm:text-sm p-1 sm:p-2"
                     >
-                      <Image className="w-4 h-4 mr-1" />
-                      Photo
+                      <Image className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                      <span className="hidden sm:inline">Photo</span>
+                      <span className="sm:hidden">📷</span>
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => fileInputRef.current?.click()}
-                      className="text-gray-600 hover:text-gray-800"
+                      className="text-gray-600 hover:text-gray-800 text-xs sm:text-sm p-1 sm:p-2"
                     >
-                      <Video className="w-4 h-4 mr-1" />
-                      Video
+                      <Video className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+                      <span className="hidden sm:inline">Video</span>
+                      <span className="sm:hidden">🎥</span>
                     </Button>
                     <div className="text-xs text-gray-500 ml-auto">
-                      We typically reply within minutes!
+                      <span className="hidden sm:inline">We typically reply within minutes!</span>
+                      <span className="sm:hidden">Quick reply!</span>
                     </div>
                   </div>
                 </div>

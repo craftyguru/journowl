@@ -8,39 +8,59 @@ import { X, ArrowRight, ArrowLeft, Sparkles, BookOpen, Target, TrendingUp, Brain
 const tourSteps = [
   {
     title: "Welcome to JournOwl! 🦉",
-    content: "Your AI-powered journaling companion is ready to help you track moods, achieve goals, and discover insights from your writing journey.",
+    content: "Ready to start your wisdom-powered journaling journey? Let's explore each section and learn how to make the most of your experience!",
     icon: "🦉",
-    color: "from-purple-400 to-pink-600"
+    color: "from-purple-400 to-pink-600",
+    actionTip: "Click the tabs above to navigate between Journal, AI Insights, and Memory Calendar sections."
   },
   {
-    title: "Smart Journal Editor 📝",
-    content: "Write with our advanced editor featuring AI prompts, photo uploads, mood tracking, and rich formatting options.",
+    title: "Smart Journal Tab 📝",
+    content: "Click 'Open Journal Book' to start writing! Upload photos by dragging them in, select your mood, and watch AI generate personalized writing prompts based on your feelings.",
     icon: "📝",
-    color: "from-blue-400 to-cyan-600"
+    color: "from-blue-400 to-cyan-600",
+    actionTip: "Try: Write your first entry → Upload a photo → Let AI analyze it for writing inspiration!"
   },
   {
-    title: "Mood Tracking 😊",
-    content: "Select your mood with each entry and watch your emotional patterns emerge in beautiful analytics and calendar views.",
-    icon: "😊",
-    color: "from-green-400 to-emerald-600"
-  },
-  {
-    title: "Goals & Achievements 🎯",
-    content: "Set trackable goals, earn achievements, and level up your journaling with our comprehensive XP system.",
-    icon: "🎯",
-    color: "from-amber-400 to-orange-600"
-  },
-  {
-    title: "AI Insights 🤖",
-    content: "Discover personalized writing prompts, mood analysis, and meaningful patterns in your journaling journey.",
+    title: "AI Insights Magic 🤖",
+    content: "Switch to the AI Insights tab to discover patterns in your writing! AI analyzes your entries to show mood trends, suggest topics, and reveal hidden insights about your journey.",
     icon: "🤖",
-    color: "from-violet-400 to-purple-600"
+    color: "from-violet-400 to-purple-600",
+    actionTip: "Write 3-5 entries first, then check this tab to see your personalized insights appear!"
   },
   {
-    title: "Analytics Dashboard 📊",
-    content: "View your progress with interactive charts, streak tracking, word counts, and comprehensive mood analytics.",
-    icon: "📊",
-    color: "from-teal-400 to-cyan-600"
+    title: "Memory Calendar 📅",
+    content: "Your Memory Calendar shows entries by date with colorful mood dots! Click any day to see your past entries, mood patterns, and photos from that time.",
+    icon: "📅",
+    color: "from-green-400 to-emerald-600",
+    actionTip: "Each colored dot represents your mood that day - create a beautiful emotional rainbow over time!"
+  },
+  {
+    title: "Goals & Achievements 🏆",
+    content: "Scroll down to see your Goals and Achievements progress! Watch them unlock as you write - from 'First Steps' to 'Master Chronicler' level.",
+    icon: "🏆",
+    color: "from-amber-400 to-orange-600",
+    actionTip: "Start writing to unlock your first achievement! Goals track streaks, word counts, and more."
+  },
+  {
+    title: "Usage Meters & Upgrades ⚡",
+    content: "At the top, monitor your AI prompts remaining and storage used. Free users get 100 AI prompts monthly - perfect for getting started!",
+    icon: "⚡",
+    color: "from-emerald-400 to-teal-600",
+    actionTip: "Each AI prompt request (writing suggestions, photo analysis) uses one prompt from your monthly allowance."
+  },
+  {
+    title: "Mobile-First Design 📱",
+    content: "JournOwl works beautifully on mobile! Use the hamburger menu (☰) to access all features. Tap, swipe, and write anywhere you go.",
+    icon: "📱",
+    color: "from-pink-400 to-rose-600",
+    actionTip: "On mobile: Use the menu button to navigate, and enjoy touch-optimized writing experience!"
+  },
+  {
+    title: "Ready to Begin! 🚀",
+    content: "You're all set! Start with your first journal entry - describe your day, upload a photo, or ask AI for writing prompts. Your journaling adventure begins now!",
+    icon: "🚀",
+    color: "from-cyan-400 to-blue-600",
+    actionTip: "Click 'Open Journal Book' and write your first entry to begin your JournOwl journey!"
   }
 ];
 
@@ -63,11 +83,11 @@ export function HelpBubble() {
   const currentTourStep = tourSteps[currentStep];
 
   return (
-    <div className="fixed left-4 bottom-4 z-50">
+    <div className="fixed left-2 sm:left-4 bottom-4 z-50">
       <motion.button
         whileHover={{ scale: 1.1, rotate: -10 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-gradient-to-tr from-pink-400 to-purple-600 text-white w-16 h-16 rounded-full shadow-xl flex items-center justify-center text-3xl border-4 border-white relative overflow-hidden"
+        className="bg-gradient-to-tr from-pink-400 to-purple-600 text-white w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-xl flex items-center justify-center text-2xl sm:text-3xl border-4 border-white relative overflow-hidden"
         onClick={() => setOpen(!open)}
         aria-label="Help and Guided Tour"
       >
@@ -99,21 +119,32 @@ export function HelpBubble() {
             initial={{ opacity: 0, y: 40, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.8 }}
-            className="absolute left-20 bottom-0 w-96"
+            className="absolute left-0 sm:left-20 bottom-0 w-[95vw] max-w-sm sm:w-96"
           >
             <Card className="shadow-2xl border-2 border-purple-200 bg-gradient-to-br from-white to-purple-50">
               <CardHeader className="relative overflow-hidden">
                 <div className={`absolute inset-0 bg-gradient-to-r ${currentTourStep.color} opacity-10`} />
                 <div className="relative z-10 flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`w-12 h-12 bg-gradient-to-r ${currentTourStep.color} rounded-full flex items-center justify-center text-2xl shadow-lg`}>
+                    <motion.div 
+                      className={`w-12 h-12 bg-gradient-to-r ${currentTourStep.color} rounded-full flex items-center justify-center text-2xl shadow-lg`}
+                      animate={{ 
+                        scale: [1, 1.1, 1],
+                        rotate: [0, 5, -5, 0] 
+                      }}
+                      transition={{ 
+                        duration: 3, 
+                        repeat: Infinity,
+                        repeatType: "reverse" 
+                      }}
+                    >
                       {currentTourStep.icon}
-                    </div>
+                    </motion.div>
                     <div>
-                      <CardTitle className="text-lg font-bold text-gray-800">
+                      <CardTitle className="text-base sm:text-lg font-bold text-gray-800">
                         {currentTourStep.title}
                       </CardTitle>
-                      <Badge variant="secondary" className="mt-1">
+                      <Badge variant="secondary" className="mt-1 text-xs">
                         Step {currentStep + 1} of {tourSteps.length}
                       </Badge>
                     </div>
@@ -130,37 +161,52 @@ export function HelpBubble() {
               </CardHeader>
               
               <CardContent className="space-y-4">
-                <p className="text-gray-700 leading-relaxed">
+                <motion.p 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-gray-700 leading-relaxed text-base font-medium"
+                >
                   {currentTourStep.content}
-                </p>
+                </motion.p>
 
-                {/* Quick feature highlights */}
-                <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-blue-200">
-                  <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4" />
-                    Key Features
-                  </h4>
-                  <ul className="space-y-1 text-sm text-blue-700">
-                    <li>• 🦉 <strong>Smart AI Assistant</strong> - Personalized writing prompts</li>
-                    <li>• 📱 <strong>Multi-Device Sync</strong> - Write anywhere, anytime</li>
-                    <li>• 🎯 <strong>Goal Tracking</strong> - 10+ trackable achievement types</li>
-                    <li>• 📊 <strong>Rich Analytics</strong> - Mood patterns and insights</li>
-                    <li>• 🔒 <strong>Privacy First</strong> - Your data stays secure</li>
-                  </ul>
-                </div>
+                {/* Interactive Action Tip */}
+                <motion.div 
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className={`bg-gradient-to-r ${currentTourStep.color.replace('from-', 'from-').replace('to-', 'to-')} bg-opacity-10 rounded-lg p-4 border-2 border-opacity-20 relative overflow-hidden`}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20 animate-pulse" />
+                  <div className="relative z-10">
+                    <h4 className="font-bold text-gray-800 mb-2 flex items-center gap-2">
+                      <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        💡
+                      </motion.div>
+                      How to Get Started
+                    </h4>
+                    <p className="text-sm text-gray-700 font-medium leading-relaxed">
+                      {currentTourStep.actionTip}
+                    </p>
+                  </div>
+                </motion.div>
 
                 {/* Navigation and actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                  <div className="flex gap-2">
+                <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+                  <div className="flex gap-1 sm:gap-2">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={prevStep}
                       disabled={currentStep === 0}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-1 text-xs sm:text-sm px-2 sm:px-4"
                     >
-                      <ArrowLeft className="w-4 h-4" />
-                      Back
+                      <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="hidden sm:inline">Back</span>
+                      <span className="sm:hidden">←</span>
                     </Button>
                     <Button
                       onClick={nextStep}
