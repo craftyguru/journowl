@@ -1,10 +1,11 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Save, Camera, Palette, Type, Smile, Calendar, Sparkles, 
   MessageCircle, Star, Heart, BookOpen, Settings, Upload,
   Bold, Italic, Underline, List, Quote, Brush, Eraser,
-  Undo, Redo, Download, Share, Plus, X
+  Undo, Redo, Download, Share, Plus, X, Mic, MicOff, Send,
+  Wand2, Eye, Brain, Lightbulb
 } from "lucide-react";
 import MDEditor from '@uiw/react-md-editor';
 import { HexColorPicker } from "react-colorful";
@@ -42,16 +43,149 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [photos, setPhotos] = useState<any[]>(entry?.photos || []);
   const [drawings, setDrawings] = useState<any[]>(entry?.drawings || []);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
-  const [showAiChat, setShowAiChat] = useState(false);
+  const [showAiChat, setShowAiChat] = useState(true);
   const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string}>>([
-    { type: 'ai', message: 'Hey! Ready to capture today\'s adventure? ✨' }
+    { type: 'ai', message: 'Hey! Ready to capture today\'s adventure? I can help you write, analyze photos, and suggest ideas!' }
   ]);
+  const [aiInput, setAiInput] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
+  const [aiAnalyzing, setAiAnalyzing] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [brushSize, setBrushSize] = useState(3);
   const [brushColor, setBrushColor] = useState("#000000");
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = true;
+      recognitionInstance.interimResults = true;
+      recognitionInstance.lang = 'en-US';
+
+      recognitionInstance.onresult = (event) => {
+        let finalTranscript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          }
+        }
+        if (finalTranscript) {
+          setContent(prev => prev + ' ' + finalTranscript);
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: `Great! I heard: "${finalTranscript}". Keep talking or let me suggest what to write next!`
+          }]);
+        }
+      };
+
+      recognitionInstance.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      recognitionInstance.onend = () => {
+        setIsListening(false);
+      };
+
+      setRecognition(recognitionInstance);
+    }
+  }, []);
+
+  // Auto-scroll chat to bottom
+  useEffect(() => {
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [aiMessages]);
+
+  // Generate AI suggestions based on content
+  const generateAiSuggestions = useCallback(async () => {
+    if (content.length > 10) {
+      try {
+        const response = await fetch('/api/ai/generate-prompt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            recentEntries: [content],
+            mood,
+            photos: photos.map(p => p.analysis?.description).filter(Boolean)
+          })
+        });
+
+        if (response.ok) {
+          const { prompt } = await response.json();
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: `💡 Writing suggestion: ${prompt}`
+          }]);
+        }
+      } catch (error) {
+        console.error('Failed to generate AI suggestion:', error);
+      }
+    }
+  }, [content, mood, photos]);
+
+  // Start/stop voice recording
+  const toggleVoiceRecording = () => {
+    if (recognition) {
+      if (isListening) {
+        recognition.stop();
+        setIsListening(false);
+      } else {
+        recognition.start();
+        setIsListening(true);
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '🎤 Listening... Start speaking and I\'ll transcribe your thoughts!'
+        }]);
+      }
+    } else {
+      setAiMessages(prev => [...prev, {
+        type: 'ai',
+        message: 'Sorry, voice recognition is not supported in your browser. Try using Chrome or Edge!'
+      }]);
+    }
+  };
+
+  // Send message to AI
+  const sendToAi = async (message: string) => {
+    if (!message.trim()) return;
+
+    setAiMessages(prev => [...prev, { type: 'user', message }]);
+    setAiInput('');
+    setAiAnalyzing(true);
+
+    try {
+      // Simulate AI response - in real app, this would call your AI service
+      setTimeout(() => {
+        const responses = [
+          "That's a fascinating perspective! Want me to help you explore that feeling deeper?",
+          "I love that idea! How about writing about how this connects to your goals?",
+          "That reminds me of your mood today. What triggered that emotion?",
+          "Great insight! Consider adding: What did you learn from this experience?",
+          "Interesting! Would you like me to suggest some writing prompts about this topic?"
+        ];
+        
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: responses[Math.floor(Math.random() * responses.length)]
+        }]);
+        setAiAnalyzing(false);
+      }, 1500);
+    } catch (error) {
+      setAiMessages(prev => [...prev, {
+        type: 'ai',
+        message: 'I had trouble processing that. Can you try again?'
+      }]);
+      setAiAnalyzing(false);
+    }
+  };
 
   const handlePhotoUpload = useCallback(async (files: FileList) => {
     for (let i = 0; i < files.length; i++) {
@@ -70,6 +204,11 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
         setPhotos(prev => [...prev, newPhoto]);
 
         // Trigger AI analysis
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '📸 Analyzing your photo... This will help me suggest better writing prompts!'
+        }]);
+
         try {
           const response = await fetch('/api/ai/analyze-photo', {
             method: 'POST',
@@ -91,14 +230,18 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
               setTags(prev => [...new Set([...prev, ...analysis.tags])]);
             }
 
-            // Add AI message about the photo
+            // Add detailed AI analysis message
             setAiMessages(prev => [...prev, {
               type: 'ai',
-              message: `Amazing photo! I can see ${analysis.description}. ${analysis.journalPrompts?.[0] || 'What story does this moment tell?'}`
+              message: `🔍 I analyzed your photo and found:\n\n📝 ${analysis.description}\n🏷️ Key elements: ${analysis.tags?.slice(0, 3).join(', ')}\n💭 Writing prompt: ${analysis.journalPrompts?.[0] || 'What story does this moment tell?'}\n\nWant me to help you write about this?`
             }]);
           }
         } catch (error) {
           console.error('Photo analysis failed:', error);
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '😅 I had trouble analyzing that photo. But I can still help you write about it! What do you see in the image?'
+          }]);
         }
       };
       reader.readAsDataURL(file);
@@ -167,24 +310,24 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-2"
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="w-full max-w-7xl h-[90vh] bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl shadow-2xl overflow-hidden relative"
+        className="w-full max-w-6xl h-[95vh] bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl shadow-2xl overflow-hidden relative flex flex-col"
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='paper' x='0' y='0' width='100' height='100' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0,0 L100,100 M100,0 L0,100' stroke='%23f59e0b' stroke-width='0.2' opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23paper)'/%3E%3C/svg%3E")`,
         }}
       >
         {/* Journal Header */}
-        <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white p-6 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <BookOpen className="w-8 h-8" />
+        <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white p-4 flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <BookOpen className="w-6 h-6" />
             <div>
-              <h1 className="text-2xl font-bold">Smart Journal</h1>
-              <p className="text-amber-100">Your AI-powered writing companion</p>
+              <h1 className="text-xl font-bold">Smart Journal</h1>
+              <p className="text-amber-100 text-sm">Your AI-powered writing companion</p>
             </div>
           </div>
           
@@ -207,38 +350,38 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
         </div>
 
         {/* Main Journal Layout - Open Book Spread */}
-        <div className="flex h-full">
+        <div className="flex flex-1 min-h-0">
           {/* Left Page - Writing Area */}
-          <div className="flex-1 p-8 border-r-4 border-amber-200 relative">
+          <div className="flex-1 p-4 border-r-4 border-amber-200 relative flex flex-col overflow-hidden">
             {/* Page shadow effect */}
             <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
             
             {/* Entry Header */}
-            <div className="space-y-4 mb-6">
-              <div className="flex items-center gap-4">
+            <div className="space-y-3 mb-4 flex-shrink-0">
+              <div className="flex items-center gap-3">
                 <Input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Entry title..."
-                  className="text-2xl font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
+                  className="text-lg font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
                   style={{ fontFamily: selectedFont }}
                 />
-                <div className="text-sm text-gray-500">
+                <div className="text-xs text-gray-500 whitespace-nowrap">
                   {new Date().toLocaleDateString()}
                 </div>
               </div>
 
               {/* Mood & Controls */}
-              <div className="flex items-center gap-4 p-3 bg-white/50 rounded-xl backdrop-blur-sm">
-                <div className="flex items-center gap-2">
-                  <Smile className="w-4 h-4 text-amber-600" />
-                  <span className="text-sm font-medium">Mood:</span>
+              <div className="flex items-center gap-3 p-2 bg-white/50 rounded-lg backdrop-blur-sm text-sm">
+                <div className="flex items-center gap-1">
+                  <Smile className="w-3 h-3 text-amber-600" />
+                  <span className="text-xs font-medium">Mood:</span>
                   <div className="flex gap-1">
-                    {moodEmojis.map(emoji => (
+                    {moodEmojis.slice(0, 6).map(emoji => (
                       <button
                         key={emoji}
                         onClick={() => setMood(emoji)}
-                        className={`p-2 rounded-lg transition-all hover:scale-110 ${
+                        className={`p-1 rounded text-sm transition-all hover:scale-110 ${
                           mood === emoji ? 'bg-amber-200 scale-110' : 'hover:bg-white/50'
                         }`}
                       >
@@ -248,16 +391,37 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   </div>
                 </div>
 
+                {/* Voice & AI Controls */}
+                <div className="flex items-center gap-1">
+                  <Button 
+                    onClick={toggleVoiceRecording}
+                    variant={isListening ? "default" : "outline"}
+                    size="sm"
+                    className={isListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : ""}
+                  >
+                    {isListening ? <MicOff className="w-3 h-3" /> : <Mic className="w-3 h-3" />}
+                  </Button>
+                  
+                  <Button 
+                    onClick={generateAiSuggestions}
+                    variant="outline"
+                    size="sm"
+                    disabled={content.length < 10}
+                  >
+                    <Lightbulb className="w-3 h-3" />
+                  </Button>
+                </div>
+
                 {/* Font & Color Controls */}
-                <div className="flex items-center gap-2 ml-auto">
+                <div className="flex items-center gap-1 ml-auto">
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button variant="outline" size="sm">
                         <Type className="w-4 h-4" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-80">
-                      <div className="space-y-4">
+                    <PopoverContent className="w-64">
+                      <div className="space-y-3">
                         <Select value={selectedFont} onValueChange={setSelectedFont}>
                           <SelectTrigger>
                             <SelectValue placeholder="Select font" />
@@ -272,14 +436,14 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                         </Select>
                         
                         <div>
-                          <label className="text-sm font-medium">Font Size: {fontSize}px</label>
+                          <label className="text-xs font-medium">Size: {fontSize}px</label>
                           <Slider
                             value={[fontSize]}
                             onValueChange={(value) => setFontSize(value[0])}
                             min={12}
-                            max={24}
+                            max={20}
                             step={1}
-                            className="mt-2"
+                            className="mt-1"
                           />
                         </div>
                       </div>
@@ -292,19 +456,17 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                         <Palette className="w-4 h-4" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-64">
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium">Text Color</label>
-                          <HexColorPicker color={textColor} onChange={setTextColor} />
-                        </div>
+                    <PopoverContent className="w-48">
+                      <div className="space-y-2">
+                        <label className="text-xs font-medium">Text Color</label>
+                        <HexColorPicker color={textColor} onChange={setTextColor} />
                       </div>
                     </PopoverContent>
                   </Popover>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
                     <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
-                    <span className="text-sm">Private</span>
+                    <span className="text-xs">Private</span>
                   </div>
                 </div>
               </div>
@@ -332,7 +494,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
             </div>
 
             {/* Rich Text Editor */}
-            <div className="h-96">
+            <div className="flex-1 min-h-0">
               <MDEditor
                 value={content}
                 onChange={(val) => setContent(val || "")}
@@ -340,51 +502,52 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                 hideToolbar={false}
                 visibleDragBar={false}
                 data-color-mode="light"
-                height={384}
+                height="100%"
                 style={{
                   fontFamily: selectedFont,
                   fontSize: `${fontSize}px`,
                   color: textColor,
+                  height: '100%'
                 }}
               />
             </div>
 
             {/* Word Count */}
-            <div className="mt-4 text-sm text-gray-500">
+            <div className="mt-2 text-xs text-gray-500 flex-shrink-0">
               {content.split(' ').filter(word => word.length > 0).length} words
             </div>
           </div>
 
           {/* Right Page - Creative Area */}
-          <div className="flex-1 p-8 relative">
-            <div className="h-full flex flex-col space-y-6">
+          <div className="flex-1 p-4 relative overflow-hidden">
+            <div className="h-full flex flex-col space-y-3">
               {/* Drawing Canvas */}
-              <Card className="flex-1 bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-4 h-full">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold flex items-center gap-2">
-                      <Brush className="w-4 h-4" />
+              <Card className="flex-1 bg-white/80 backdrop-blur-sm min-h-0">
+                <CardContent className="p-3 h-full flex flex-col">
+                  <div className="flex items-center justify-between mb-2 flex-shrink-0">
+                    <h3 className="text-sm font-semibold flex items-center gap-1">
+                      <Brush className="w-3 h-3" />
                       Drawing Canvas
                     </h3>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button variant="outline" size="sm">
-                            <Palette className="w-4 h-4" />
+                            <Palette className="w-3 h-3" />
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-64">
-                          <div className="space-y-4">
+                        <PopoverContent className="w-48">
+                          <div className="space-y-2">
                             <HexColorPicker color={brushColor} onChange={setBrushColor} />
                             <div>
-                              <label className="text-sm font-medium">Brush Size: {brushSize}px</label>
+                              <label className="text-xs font-medium">Size: {brushSize}px</label>
                               <Slider
                                 value={[brushSize]}
                                 onValueChange={(value) => setBrushSize(value[0])}
                                 min={1}
-                                max={20}
+                                max={15}
                                 step={1}
-                                className="mt-2"
+                                className="mt-1"
                               />
                             </div>
                           </div>
@@ -396,7 +559,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                           ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
                         }
                       }}>
-                        <Eraser className="w-4 h-4" />
+                        <Eraser className="w-3 h-3" />
                       </Button>
                     </div>
                   </div>
@@ -404,8 +567,8 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   <canvas
                     ref={canvasRef}
                     width={400}
-                    height={200}
-                    className="border-2 border-dashed border-gray-300 rounded-lg w-full"
+                    height={150}
+                    className="border-2 border-dashed border-gray-300 rounded-lg w-full flex-1"
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
@@ -415,11 +578,11 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
               </Card>
 
               {/* Photo Upload Area */}
-              <Card className="bg-white/80 backdrop-blur-sm">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-semibold flex items-center gap-2">
-                      <Camera className="w-4 h-4" />
+              <Card className="bg-white/80 backdrop-blur-sm flex-shrink-0">
+                <CardContent className="p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-semibold flex items-center gap-1">
+                      <Camera className="w-3 h-3" />
                       Photos & Media
                     </h3>
                     <Button
@@ -442,16 +605,16 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                   />
 
                   {photos.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-2">
-                      {photos.map((photo, index) => (
+                    <div className="grid grid-cols-2 gap-1">
+                      {photos.slice(0, 4).map((photo, index) => (
                         <div key={index} className="relative group">
                           <img
                             src={photo.src}
                             alt={`Upload ${index + 1}`}
-                            className="w-full h-24 object-cover rounded-lg"
+                            className="w-full h-16 object-cover rounded"
                           />
                           {photo.analysis && (
-                            <div className="absolute inset-0 bg-black/70 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity p-2">
+                            <div className="absolute inset-0 bg-black/70 rounded opacity-0 group-hover:opacity-100 transition-opacity p-1">
                               <p className="text-white text-xs">{photo.analysis.description}</p>
                             </div>
                           )}
@@ -460,11 +623,11 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     </div>
                   ) : (
                     <div 
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-amber-400 transition-colors"
+                      className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-amber-400 transition-colors"
                       onClick={() => fileInputRef.current?.click()}
                     >
-                      <Camera className="w-8 h-8 mx-auto text-gray-400 mb-2" />
-                      <p className="text-gray-500">Drop photos here or click to upload</p>
+                      <Camera className="w-6 h-6 mx-auto text-gray-400 mb-1" />
+                      <p className="text-gray-500 text-xs">Upload photos</p>
                     </div>
                   )}
                 </CardContent>
@@ -473,55 +636,108 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
           </div>
         </div>
 
-        {/* AI Sidekick */}
+        {/* AI Sidekick - Always Visible */}
         <AnimatePresence>
           {showAiChat && (
             <motion.div
               initial={{ x: 400, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 400, opacity: 0 }}
-              className="absolute right-4 top-20 bottom-20 w-80 bg-white rounded-xl shadow-2xl border p-4 flex flex-col"
+              className="absolute right-4 top-16 bottom-16 w-80 bg-white rounded-xl shadow-2xl border p-3 flex flex-col"
             >
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center justify-between mb-3 flex-shrink-0">
                 <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center animate-pulse">
+                    <Brain className="w-4 h-4 text-white" />
                   </div>
-                  <span className="font-semibold">AI Sidekick</span>
+                  <div>
+                    <span className="font-semibold text-sm">AI Writing Assistant</span>
+                    <p className="text-xs text-gray-500">Photo analyzer • Idea generator</p>
+                  </div>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setShowAiChat(false)}>
                   <X className="w-4 h-4" />
                 </Button>
               </div>
 
-              <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+              <div className="flex-1 overflow-y-auto space-y-2 mb-3 scrollbar-thin scrollbar-thumb-gray-300">
                 {aiMessages.map((msg, index) => (
                   <div key={index} className={`flex ${msg.type === 'ai' ? 'justify-start' : 'justify-end'}`}>
-                    <div className={`max-w-[80%] p-3 rounded-lg ${
+                    <div className={`max-w-[85%] p-2 rounded-lg text-sm ${
                       msg.type === 'ai' 
-                        ? 'bg-gradient-to-r from-purple-100 to-pink-100 text-gray-800' 
+                        ? 'bg-gradient-to-r from-purple-100 to-pink-100 text-gray-800 border border-purple-200' 
                         : 'bg-blue-500 text-white'
                     }`}>
-                      {msg.message}
+                      <div className="whitespace-pre-wrap">{msg.message}</div>
                     </div>
                   </div>
                 ))}
+                {aiAnalyzing && (
+                  <div className="flex justify-start">
+                    <div className="bg-gradient-to-r from-purple-100 to-pink-100 text-gray-800 border border-purple-200 p-2 rounded-lg text-sm">
+                      <div className="flex items-center gap-2">
+                        <div className="animate-spin w-4 h-4 border-2 border-purple-400 border-t-transparent rounded-full"></div>
+                        Thinking...
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
               </div>
 
-              <Input
-                placeholder="Chat with your AI sidekick..."
-                className="w-full"
-                onKeyPress={(e) => {
-                  if (e.key === 'Enter' && e.currentTarget.value.trim()) {
-                    const userMessage = e.currentTarget.value.trim();
-                    setAiMessages(prev => [...prev, 
-                      { type: 'user', message: userMessage },
-                      { type: 'ai', message: "That's interesting! Tell me more about how that made you feel." }
-                    ]);
-                    e.currentTarget.value = '';
-                  }
-                }}
-              />
+              <div className="flex gap-2 flex-shrink-0">
+                <Input
+                  value={aiInput}
+                  onChange={(e) => setAiInput(e.target.value)}
+                  placeholder="Ask me anything or request help..."
+                  className="flex-1 text-sm"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      sendToAi(aiInput);
+                    }
+                  }}
+                />
+                <Button 
+                  onClick={() => sendToAi(aiInput)}
+                  size="sm"
+                  disabled={!aiInput.trim() || aiAnalyzing}
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+
+              {/* Quick AI Actions */}
+              <div className="flex gap-1 mt-2 flex-wrap">
+                <Button 
+                  onClick={() => sendToAi("Suggest writing prompts based on my content")}
+                  variant="outline" 
+                  size="sm"
+                  className="text-xs"
+                >
+                  <Wand2 className="w-3 h-3 mr-1" />
+                  Ideas
+                </Button>
+                <Button 
+                  onClick={() => sendToAi("Help me improve this entry")}
+                  variant="outline" 
+                  size="sm"
+                  className="text-xs"
+                >
+                  <Eye className="w-3 h-3 mr-1" />
+                  Review
+                </Button>
+                {photos.length > 0 && (
+                  <Button 
+                    onClick={() => sendToAi("Tell me more about my photos and suggest related writing topics")}
+                    variant="outline" 
+                    size="sm"
+                    className="text-xs"
+                  >
+                    <Camera className="w-3 h-3 mr-1" />
+                    Photo Help
+                  </Button>
+                )}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -529,28 +745,40 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
         {/* AI Sidekick Toggle */}
         <Button
           onClick={() => setShowAiChat(!showAiChat)}
-          className="absolute bottom-6 right-6 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-14 h-14 shadow-2xl"
+          className={`absolute bottom-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl ${
+            showAiChat ? 'scale-90' : 'animate-bounce'
+          }`}
         >
-          <MessageCircle className="w-6 h-6" />
+          {showAiChat ? <X className="w-5 h-5" /> : <Brain className="w-5 h-5" />}
         </Button>
 
-        {/* Mini Calendar Widget */}
-        <Card className="absolute bottom-6 left-6 bg-white/90 backdrop-blur-sm">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Calendar className="w-4 h-4 text-amber-600" />
-              <span className="text-sm font-medium">Quick Calendar</span>
+        {/* Voice Recording Status */}
+        {isListening && (
+          <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-full shadow-lg animate-pulse">
+            <div className="flex items-center gap-2">
+              <Mic className="w-4 h-4" />
+              <span className="text-sm font-medium">Recording... Speak now!</span>
             </div>
-            <div className="grid grid-cols-7 gap-1 text-xs">
+          </div>
+        )}
+
+        {/* Mini Calendar Widget */}
+        <Card className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm">
+          <CardContent className="p-2">
+            <div className="flex items-center gap-1 mb-1">
+              <Calendar className="w-3 h-3 text-amber-600" />
+              <span className="text-xs font-medium">Calendar</span>
+            </div>
+            <div className="grid grid-cols-7 gap-0.5 text-xs">
               {Array.from({ length: 7 }, (_, i) => (
-                <div key={i} className="w-6 h-6 flex items-center justify-center">
+                <div key={i} className="w-4 h-4 flex items-center justify-center">
                   {['S', 'M', 'T', 'W', 'T', 'F', 'S'][i]}
                 </div>
               ))}
               {Array.from({ length: 14 }, (_, i) => (
                 <button
                   key={i}
-                  className={`w-6 h-6 flex items-center justify-center rounded text-xs hover:bg-amber-100 ${
+                  className={`w-4 h-4 flex items-center justify-center rounded text-xs hover:bg-amber-100 ${
                     i === 13 ? 'bg-amber-200 font-bold' : ''
                   }`}
                 >
