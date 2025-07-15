@@ -7,6 +7,7 @@ import {
   Undo, Redo, Download, Share, Plus, X, Mic, MicOff, Send,
   Wand2, Eye, Brain, Lightbulb
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import MDEditor from '@uiw/react-md-editor';
 import { HexColorPicker } from "react-colorful";
 import { Button } from "@/components/ui/button";
@@ -42,6 +43,12 @@ interface UnifiedJournalProps {
 }
 
 export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJournalProps) {
+  // Fetch user data for personalization
+  const { data: user } = useQuery({
+    queryKey: ["/api/auth/me"],
+    retry: false,
+  });
+
   const [title, setTitle] = useState(entry?.title || "");
   const [content, setContent] = useState(entry?.content || "");
   const [mood, setMood] = useState(entry?.mood || "😊");
@@ -65,9 +72,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [showAiChat, setShowAiChat] = useState(true);
   const [isAiListening, setIsAiListening] = useState(false);
   const [aiRecognition, setAiRecognition] = useState<any>(null);
-  const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string}>>([
-    { type: 'ai', message: 'Hey! Ready to capture today\'s adventure? I can help you write, analyze photos, and suggest ideas!' }
-  ]);
+  const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string}>>([]);
   const [aiInput, setAiInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
@@ -84,6 +89,30 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [brushSize, setBrushSize] = useState(3);
   const [brushColor, setBrushColor] = useState("#000000");
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const [initialMessageSet, setInitialMessageSet] = useState(false);
+
+  // Set personalized welcome message when user data loads
+  useEffect(() => {
+    if (user && !initialMessageSet) {
+      const userName = user.username || user.email?.split('@')[0] || 'there';
+      const welcomeMessage = `Hi ${userName}! 🦉 Welcome to your AI-powered journal companion!
+
+🎤 MICROPHONE FEATURES:
+• Quick tap: Add voice notes to your journal entry
+• Hold for 1 second: Enter full conversation mode for back-and-forth chat
+
+🧠 I CAN HELP YOU:
+• Write journal entries with personalized prompts
+• Analyze photos to extract emotions, memories, and story ideas  
+• Suggest creative writing topics based on your mood
+• Turn your daily moments into meaningful stories
+
+Ready to capture today's adventure? Let's start journaling! ✨`;
+
+      setAiMessages([{ type: 'ai', message: welcomeMessage }]);
+      setInitialMessageSet(true);
+    }
+  }, [user, initialMessageSet]);
 
   // Initialize speech recognition
   useEffect(() => {
