@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
+import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 
 const moodEmojis = ["😊", "😐", "😔", "🤔", "😄", "🎉", "😠", "😴", "💪", "🥰"];
 const fontFamilies = [
@@ -598,11 +599,12 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
             </div>
           </div>
 
-          {/* Right Page - Creative Area */}
+          {/* Right Page - Creative Area with Resizable Panels */}
           <div className="flex-1 p-4 relative overflow-hidden">
-            <div className="h-full flex flex-col space-y-3">
-              {/* Drawing Canvas */}
-              <Card className="flex-1 bg-white/80 backdrop-blur-sm min-h-0">
+            <PanelGroup direction="vertical" className="h-full">
+              {/* Drawing Canvas Panel */}
+              <Panel defaultSize={60} minSize={30}>
+                <Card className="h-full bg-white/80 backdrop-blur-sm">
                 <CardContent className="p-3 h-full flex flex-col">
                   <div className="flex items-center justify-between mb-2 flex-shrink-0">
                     <h3 className="text-sm font-semibold flex items-center gap-1">
@@ -656,10 +658,17 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     style={{ touchAction: 'none' }}
                   />
                 </CardContent>
-              </Card>
+                </Card>
+              </Panel>
 
-              {/* Photo Upload & Edit Area */}
-              <Card className="bg-white/80 backdrop-blur-sm flex-shrink-0">
+              {/* Resize Handle */}
+              <PanelResizeHandle className="h-2 bg-amber-300 hover:bg-amber-400 transition-colors cursor-row-resize flex items-center justify-center">
+                <div className="w-8 h-1 bg-amber-600 rounded-full"></div>
+              </PanelResizeHandle>
+
+              {/* Photo Upload & Edit Panel */}
+              <Panel defaultSize={40} minSize={20}>
+                <Card className="h-full bg-white/80 backdrop-blur-sm">
                 <CardContent className="p-3">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-sm font-semibold flex items-center gap-1">
@@ -830,8 +839,9 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                     </div>
                   )}
                 </CardContent>
-              </Card>
-            </div>
+                </Card>
+              </Panel>
+            </PanelGroup>
           </div>
         </div>
 
