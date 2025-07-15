@@ -447,26 +447,35 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
   };
 
   // Handle mic button mouse down (start hold-to-speak)
-  const handleMicMouseDown = () => {
+  const handleMicMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent context menu
+    if (e.button !== 0) return; // Only handle left mouse button
+    
     setIsHoldingMic(true);
     const timeout = setTimeout(async () => {
-      // After 500ms of holding, fetch usage data and show warning
+      // After 800ms of holding, fetch usage data and show warning for full conversation
+      console.log('Hold detected - showing usage warning for full conversation mode');
       await fetchPromptUsage();
       setShowUsageWarning(true);
-    }, 500);
+    }, 800);
     setHoldTimeout(timeout);
   };
 
   // Handle mic button mouse up (end hold-to-speak)
-  const handleMicMouseUp = () => {
+  const handleMicMouseUp = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent context menu
+    if (e.button !== 0) return; // Only handle left mouse button
+    
+    const holdDuration = holdTimeout ? Date.now() - (Date.now() - 800) : 0;
+    
     if (holdTimeout) {
       clearTimeout(holdTimeout);
       setHoldTimeout(null);
     }
     
     if (isHoldingMic && !showUsageWarning) {
-      // Quick press/release - single prompt mode
-      console.log('Quick press detected:', { aiRecognition, isAiListening });
+      // Quick press/release (less than 800ms) - single prompt mode
+      console.log('Quick press detected - starting single prompt mode');
       if (aiRecognition && !isAiListening) {
         setAiInput('');
         setLastFinalTranscript('');
@@ -1574,11 +1583,12 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   onMouseDown={handleMicMouseDown}
                   onMouseUp={handleMicMouseUp}
                   onMouseLeave={handleMicMouseUp}
+                  onContextMenu={(e) => e.preventDefault()}
                   onClick={isAiListening ? stopVoiceInput : undefined}
                   size="sm"
                   variant={isAiListening ? "default" : "outline"}
                   className={`${isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : ""} ${isHoldingMic ? "bg-blue-500 text-white" : ""}`}
-                  title={isAiListening ? "Click to stop" : "Quick press: Single prompt | Hold: Full conversation"}
+                  title={isAiListening ? "Click to stop" : "Quick press: Single prompt | Hold 1s: Full conversation"}
                 >
                   {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
                 </Button>
