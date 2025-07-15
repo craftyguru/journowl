@@ -150,12 +150,13 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
   // Quick add functions
   const handleQuickAdd = (date: Date, type: "entry" | "photo" | "voice") => {
     setShowQuickAdd(null);
-    onDateSelect(date);
+    setSelectedDate(date);
+    onDateSelect(date); // This will open the journal for new entry
   };
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
-    onDateSelect(date);
+    // Only show the sidebar, don't automatically open journal
   };
 
   const navigateMonth = (direction: 'prev' | 'next') => {
@@ -344,12 +345,12 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                                     e.stopPropagation();
                                     handleQuickAdd(date, "entry");
                                   }}
-                                  className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center text-white hover:bg-purple-600 transition-colors"
+                                  className="w-6 h-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white hover:from-purple-600 hover:to-pink-600 transition-all shadow-lg"
                                 >
                                   <Plus className="w-3 h-3" />
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent>Quick Add Entry</TooltipContent>
+                              <TooltipContent>Add New Entry</TooltipContent>
                             </Tooltip>
                           </motion.div>
                         )}
@@ -412,9 +413,20 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                         exit={{ opacity: 0, y: 10 }}
                         className="flex-1 flex flex-col items-center justify-center text-center"
                       >
-                        <Plus className="w-4 h-4 text-gray-400 mb-1" />
-                        <span className="text-xs text-gray-500">Add memory</span>
+                        <div className="w-8 h-8 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full flex items-center justify-center mb-1">
+                          <Plus className="w-4 h-4 text-purple-500" />
+                        </div>
+                        <span className="text-xs text-purple-600 font-medium">Click + to add</span>
                       </motion.div>
+                    )}
+
+                    {/* Selected indicator */}
+                    {isSelected && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="absolute top-1 left-1 w-3 h-3 bg-purple-500 rounded-full shadow-lg"
+                      />
                     )}
                   </div>
                 </motion.div>
@@ -501,11 +513,21 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                             <Button
                               variant="outline"
                               size="sm"
-                              onClick={() => onEntryEdit(entry)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onEntryEdit(entry);
+                              }}
                             >
                               <Edit className="w-3 h-3" />
                             </Button>
-                            <Button variant="outline" size="sm">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                onEntryEdit(entry);
+                              }}
+                            >
                               <Eye className="w-3 h-3" />
                             </Button>
                           </div>
