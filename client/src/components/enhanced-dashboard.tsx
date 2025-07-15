@@ -7,6 +7,7 @@ import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Cartesia
 import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import InteractiveJournal from "./interactive-journal";
 import SmartJournalEditor from "./smart-journal-editor";
 import UnifiedJournal from "./unified-journal";
@@ -72,6 +73,28 @@ export default function EnhancedDashboard() {
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
+  
+  // Fetch real user data instead of hardcoded demo data
+  const { data: userResponse } = useQuery({
+    queryKey: ["/api/auth/me"],
+  });
+  
+  const { data: statsResponse } = useQuery({
+    queryKey: ["/api/stats"],
+  });
+  
+  const { data: entriesResponse } = useQuery({
+    queryKey: ["/api/journal/entries"],
+  });
+  
+  const { data: achievementsResponse } = useQuery({
+    queryKey: ["/api/achievements"],
+  });
+  
+  const user = userResponse?.user;
+  const stats = statsResponse?.stats;
+  const entries = entriesResponse || [];
+  const userAchievements = achievementsResponse?.achievements || [];
 
   const handleSaveEntry = (entryData: any) => {
     console.log('Saving entry:', entryData);
@@ -100,8 +123,8 @@ export default function EnhancedDashboard() {
     openUnifiedJournal(entry);
   };
 
-  // Convert recentEntries to calendar format with varied dates
-  const calendarEntries = recentEntries.map((entry, index) => {
+  // Convert actual user entries to calendar format with varied dates
+  const calendarEntries = entries.map((entry, index) => {
     const date = new Date();
     date.setDate(date.getDate() - index); // Spread entries across recent days
     return {
@@ -140,7 +163,7 @@ export default function EnhancedDashboard() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-3"
           >
-            Welcome back, Emma! ✨
+            Welcome back, {user?.username || 'User'}! ✨
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -158,10 +181,10 @@ export default function EnhancedDashboard() {
             className="flex items-center justify-center gap-3 mt-6"
           >
             <div className="px-6 py-3 bg-gradient-to-r from-purple-500/80 to-pink-500/80 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-purple-300/30 hover:scale-105 transition-transform">
-              Level 12 - Beautiful Writer ✨
+              Level {user?.level || 1} - {user?.level >= 10 ? 'Expert Writer' : 'Budding Writer'} ✨
             </div>
             <div className="px-6 py-3 bg-gradient-to-r from-emerald-500/80 to-teal-500/80 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-emerald-300/30 hover:scale-105 transition-transform">
-              🔥 28-day streak 🔥
+              🔥 {stats?.currentStreak || 0}-day streak 🔥
             </div>
           </motion.div>
         </div>
@@ -186,8 +209,8 @@ export default function EnhancedDashboard() {
               </div>
               <div className="text-purple-200 text-xs uppercase tracking-wider">Entries</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">142</div>
-            <div className="text-purple-300 text-sm">+3 this week</div>
+            <div className="text-3xl font-bold text-white mb-1">{stats?.totalEntries || 0}</div>
+            <div className="text-purple-300 text-sm">Total entries</div>
           </div>
         </motion.div>
 
@@ -203,8 +226,8 @@ export default function EnhancedDashboard() {
               </div>
               <div className="text-pink-200 text-xs uppercase tracking-wider">Words</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">28,750</div>
-            <div className="text-pink-300 text-sm">+1,240 this week</div>
+            <div className="text-3xl font-bold text-white mb-1">{stats?.totalWords || 0}</div>
+            <div className="text-pink-300 text-sm">Total words</div>
           </div>
         </motion.div>
 
@@ -220,7 +243,7 @@ export default function EnhancedDashboard() {
               </div>
               <div className="text-emerald-200 text-xs uppercase tracking-wider">Streak</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">28</div>
+            <div className="text-3xl font-bold text-white mb-1">{stats?.currentStreak || 0}</div>
             <div className="text-emerald-300 text-sm">days strong 🔥</div>
           </div>
         </motion.div>
@@ -237,8 +260,8 @@ export default function EnhancedDashboard() {
               </div>
               <div className="text-amber-200 text-xs uppercase tracking-wider">XP</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">11,450</div>
-            <div className="text-amber-300 text-sm">Level 12 ✨</div>
+            <div className="text-3xl font-bold text-white mb-1">{user?.xp || 0}</div>
+            <div className="text-amber-300 text-sm">Level {user?.level || 1} ✨</div>
           </div>
         </motion.div>
       </motion.div>
@@ -442,7 +465,7 @@ export default function EnhancedDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {recentEntries.map((entry, index) => (
+                {entries.length > 0 ? entries.slice(0, 5).map((entry, index) => (
                   <motion.div
                     key={entry.id}
                     initial={{ opacity: 0, y: 10 }}
@@ -453,18 +476,18 @@ export default function EnhancedDashboard() {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="text-2xl">{entry.mood}</div>
+                        <div className="text-2xl">{entry.mood || "😊"}</div>
                         <div>
                           <h4 className="font-semibold text-white">{entry.title}</h4>
                           <div className="flex items-center gap-2 text-sm text-gray-300">
-                            <span>{entry.date}</span>
+                            <span>{new Date(entry.createdAt).toLocaleDateString()}</span>
                             <span>•</span>
-                            <span>{entry.wordCount} words</span>
+                            <span>{entry.wordCount || 0} words</span>
                           </div>
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        {entry.tags.map((tag, i) => (
+                        {(entry.tags || []).map((tag, i) => (
                           <Badge key={i} variant="outline" className="text-xs border-purple-400/20 text-purple-300 bg-purple-500/10">
                             {tag}
                           </Badge>
@@ -472,7 +495,12 @@ export default function EnhancedDashboard() {
                       </div>
                     </div>
                   </motion.div>
-                ))}
+                )) : (
+                  <div className="text-center text-gray-400 py-8">
+                    <BookOpen className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p>No entries yet. Start your journaling journey!</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

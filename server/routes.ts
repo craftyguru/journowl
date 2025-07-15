@@ -367,9 +367,24 @@ Current journal context:
   // Stats routes
   app.get("/api/stats", requireAuth, async (req: any, res) => {
     try {
-      const stats = await storage.getUserStats(req.session.userId);
+      let stats = await storage.getUserStats(req.session.userId);
+      
+      // Create initial stats if they don't exist
+      if (!stats) {
+        stats = await storage.createUserStats(req.session.userId);
+      }
+      
+      res.json({ stats });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Achievement routes
+  app.get("/api/achievements", requireAuth, async (req: any, res) => {
+    try {
       const achievements = await storage.getUserAchievements(req.session.userId);
-      res.json({ stats, achievements });
+      res.json({ achievements });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
