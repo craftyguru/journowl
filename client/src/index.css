@@ -119,6 +119,29 @@
   .animate-pulse-slow {
     animation: pulse 3s infinite;
   }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-gradient {
+    background-size: 400% 400%;
+    animation: gradient 4s ease infinite;
+  }
+
+  .animate-sparkle {
+    animation: sparkle 1.5s ease-in-out infinite;
+  }
+
+  .backdrop-blur-glass {
+    backdrop-filter: blur(20px) saturate(180%);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
   
   @keyframes fadeIn {
     0% { opacity: 0; transform: translateY(10px); }
@@ -128,5 +151,26 @@
   @keyframes slideUp {
     0% { transform: translateY(100%); }
     100% { transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+
+  @keyframes glow {
+    from { box-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+    to { box-shadow: 0 0 30px rgba(236, 72, 153, 0.8), 0 0 40px rgba(139, 92, 246, 0.5); }
+  }
+
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  @keyframes sparkle {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(180deg); }
   }
 }

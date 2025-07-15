@@ -7,6 +7,7 @@ This is a full-stack journaling application built with React and Express that al
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
+UI/UX preferences: Animated, colorful, inviting design that gets users excited to test and use the app regularly.
 
 ## System Architecture
 
@@ -14,9 +15,11 @@ Preferred communication style: Simple, everyday language.
 - **Framework**: React with TypeScript
 - **Build Tool**: Vite for development and production builds
 - **Styling**: Tailwind CSS with shadcn/ui components
+- **Animations**: Framer Motion for smooth animations and transitions
 - **State Management**: React Query (@tanstack/react-query) for server state
 - **UI Components**: Radix UI primitives with custom styling via shadcn/ui
 - **Charts**: Recharts for data visualization
+- **Visual Effects**: Custom animated background with interactive smoke particles
 
 ### Backend Architecture
 - **Framework**: Express.js with TypeScript
