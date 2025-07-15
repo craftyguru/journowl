@@ -89,6 +89,9 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [recordingDuration, setRecordingDuration] = useState<number>(0);
   const [audioRecordings, setAudioRecordings] = useState<{url: string, duration: number, timestamp: Date}[]>([]);
   const [recordingTimer, setRecordingTimer] = useState<number>(0);
+  const [showCameraModal, setShowCameraModal] = useState(false);
+  const [isVideoMode, setIsVideoMode] = useState(false);
+  const [videoRecordings, setVideoRecordings] = useState<{url: string, duration: number, timestamp: Date, type: 'photo' | 'video'}[]>([]);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -104,10 +107,11 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
       const userName = user.username || user.email?.split('@')[0] || 'there';
       const welcomeMessage = `Hi ${userName}! 🦉 Welcome to your AI-powered journal companion!
 
-🎤 VOICE FEATURES:
+🎤 CAPTURE FEATURES:
 • Blue mic: Convert speech to text for your journal
-• Hold 1 second: Enter full conversation mode
+• Hold 1 second: Enter full conversation mode  
 • Green button: Record & save audio clips (up to 60 seconds)
+• Orange camera: Take photos or record videos (up to 30 seconds)
 
 🧠 I CAN HELP YOU:
 • Write journal entries with personalized prompts
@@ -350,6 +354,86 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       setAudioChunks([]);
     }
   }, [audioChunks, isRecordingAudio, recordingDuration]);
+
+  // Camera capture functions
+  const takeCameraPhoto = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } // Use back camera on mobile
+      });
+      
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      
+      video.onloadedmetadata = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx?.drawImage(video, 0, 0);
+        
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            setPhotos(prev => [...prev, { url, file: blob }]);
+            setVideoRecordings(prev => [...prev, {
+              url,
+              duration: 0,
+              timestamp: new Date(),
+              type: 'photo'
+            }]);
+          }
+        });
+        
+        stream.getTracks().forEach(track => track.stop());
+        setShowCameraModal(false);
+      };
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+    }
+  };
+
+  const startVideoRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' }, 
+        audio: true 
+      });
+      
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) chunks.push(event.data);
+      };
+      
+      mediaRecorder.onstop = () => {
+        const videoBlob = new Blob(chunks, { type: 'video/mp4' });
+        const videoUrl = URL.createObjectURL(videoBlob);
+        setVideoRecordings(prev => [...prev, {
+          url: videoUrl,
+          duration: 30, // Max 30 seconds for videos
+          timestamp: new Date(),
+          type: 'video'
+        }]);
+        stream.getTracks().forEach(track => track.stop());
+        setShowCameraModal(false);
+      };
+      
+      mediaRecorder.start();
+      
+      // Stop after 30 seconds
+      setTimeout(() => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+      }, 30000);
+      
+    } catch (error) {
+      console.error('Error starting video recording:', error);
+    }
+  };
 
   // Handle mic button mouse down (start hold-to-speak)
   const handleMicMouseDown = () => {
@@ -1224,6 +1308,43 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                       </div>
                     </div>
                   )}
+
+                  {/* Video Recordings Section */}
+                  {videoRecordings.length > 0 && (
+                    <div className="mt-4 pt-4 border-t">
+                      <h3 className="text-sm font-semibold mb-2 flex items-center gap-2">
+                        📹 Camera Captures
+                        <Badge variant="secondary">{videoRecordings.length}</Badge>
+                      </h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        {videoRecordings.map((recording, index) => (
+                          <div key={index} className="bg-gray-50 rounded-lg p-2 border">
+                            <div className="text-xs text-gray-500 mb-1">
+                              {recording.type === 'photo' ? '📷' : '🎥'} {recording.type}
+                            </div>
+                            {recording.type === 'photo' ? (
+                              <img 
+                                src={recording.url}
+                                alt={`Camera capture ${index + 1}`}
+                                className="w-full h-20 object-cover rounded"
+                              />
+                            ) : (
+                              <video 
+                                controls 
+                                className="w-full h-20 object-cover rounded"
+                                src={recording.url}
+                              >
+                                Your browser does not support video playback.
+                              </video>
+                            )}
+                            <div className="text-xs text-gray-400 mt-1">
+                              {recording.timestamp.toLocaleTimeString()}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
                 </Card>
               </Panel>
@@ -1233,102 +1354,111 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           </PanelGroup>
         </div>
 
-        {/* Voice Recording Bubble - Left of Support Chat bubble */}
-        <motion.div
-          className="fixed bottom-4 right-20 sm:right-24 z-40 group"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="relative">
-            <Button
-              onClick={toggleVoiceRecording}
-              className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
-                isListening 
-                  ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                  : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
-              } transition-all duration-300 hover:scale-110`}
-            >
-              {isListening ? (
-                <MicOff className="w-6 h-6 text-white" />
-              ) : (
-                <Mic className="w-6 h-6 text-white" />
+        {/* Floating Action Buttons - Evenly Spaced */}
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-4 z-40">
+          
+          {/* Voice-to-Text Button */}
+          <motion.div
+            className="group"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <div className="relative">
+              <Button
+                onClick={toggleVoiceRecording}
+                className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                  isListening 
+                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
+                } transition-all duration-300 hover:scale-110`}
+              >
+                {isListening ? (
+                  <MicOff className="w-6 h-6 text-white" />
+                ) : (
+                  <Mic className="w-6 h-6 text-white" />
+                )}
+              </Button>
+              
+              {isListening && (
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
               )}
-            </Button>
-            
-            {/* Voice recording indicator */}
-            {isListening && (
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-            )}
-            
-            {/* Tooltip */}
-            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-              {isListening ? (
+              
+              <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                 <div className="flex flex-col items-center gap-1">
-                  <span>Recording...</span>
-                  <span className="text-xs opacity-75">Click to stop</span>
+                  <span>🎤 Voice to Text</span>
+                  <span className="text-xs opacity-75">Convert speech</span>
                 </div>
-              ) : (
-                <div className="flex flex-col items-center gap-1">
-                  <span>🎤 Voice Input</span>
-                  <span className="text-xs opacity-75">Record audio for journal</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Audio Recording Bubble - Next to Voice Input */}
-        <motion.div
-          className="fixed bottom-4 right-36 sm:right-40 z-40 group"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-        >
-          <div className="relative">
-            <Button
-              onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
-              className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
-                isRecordingAudio 
-                  ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                  : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
-              } transition-all duration-300 hover:scale-110`}
-            >
-              {isRecordingAudio ? (
-                <div className="w-4 h-4 bg-white rounded-sm" />
-              ) : (
-                <div className="w-4 h-4 bg-white rounded-full" />
-              )}
-            </Button>
-            
-            {/* Audio recording indicator with timer */}
-            {isRecordingAudio && (
-              <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-            )}
-            
-            {/* Recording Timer Display */}
-            {isRecordingAudio && (
-              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-mono">
-                {Math.floor(recordingTimer / 60)}:{(recordingTimer % 60).toString().padStart(2, '0')}
               </div>
-            )}
-            
-            {/* Tooltip */}
-            <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
-              {isRecordingAudio ? (
-                <div className="flex flex-col items-center gap-1">
-                  <span>Recording Audio... {recordingTimer}s</span>
-                  <span className="text-xs opacity-75">Max 60 seconds</span>
-                </div>
-              ) : (
+            </div>
+          </motion.div>
+
+          {/* Audio Recording Button */}
+          <motion.div
+            className="group"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            <div className="relative">
+              <Button
+                onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
+                className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                  isRecordingAudio 
+                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
+                } transition-all duration-300 hover:scale-110`}
+              >
+                {isRecordingAudio ? (
+                  <div className="w-4 h-4 bg-white rounded-sm" />
+                ) : (
+                  <div className="w-4 h-4 bg-white rounded-full" />
+                )}
+              </Button>
+              
+              {isRecordingAudio && (
+                <>
+                  <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+                  <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-mono">
+                    {Math.floor(recordingTimer / 60)}:{(recordingTimer % 60).toString().padStart(2, '0')}
+                  </div>
+                </>
+              )}
+              
+              <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                 <div className="flex flex-col items-center gap-1">
                   <span>🎵 Audio Record</span>
                   <span className="text-xs opacity-75">Save voice notes</span>
                 </div>
-              )}
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
+
+          {/* Camera Button */}
+          <motion.div
+            className="group"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            <div className="relative">
+              <Button
+                onClick={() => setShowCameraModal(true)}
+                className="w-14 h-14 rounded-full shadow-2xl border-4 border-white bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300 hover:scale-110"
+              >
+                <Camera className="w-6 h-6 text-white" />
+              </Button>
+              
+              <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                <div className="flex flex-col items-center gap-1">
+                  <span>📷 Camera</span>
+                  <span className="text-xs opacity-75">Photo & Video</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+        </div>
 
         {/* AI Sidekick - Centered */}
         <AnimatePresence>
@@ -1514,6 +1644,62 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               <AlertDialogAction onClick={() => window.location.href = '/upgrade'}>
                 Buy More Prompts
               </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        {/* Camera Modal */}
+        <AlertDialog open={showCameraModal} onOpenChange={setShowCameraModal}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>📷 Camera Options</AlertDialogTitle>
+              <AlertDialogDescription>
+                Choose how you'd like to capture media for your journal entry.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="flex flex-col gap-3 py-4">
+              <Button 
+                onClick={takeCameraPhoto}
+                className="flex items-center gap-3 h-12 justify-start bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200"
+                variant="outline"
+              >
+                <Camera className="w-5 h-5" />
+                <div className="text-left">
+                  <div className="font-semibold">Take Photo</div>
+                  <div className="text-xs opacity-75">Capture a moment instantly</div>
+                </div>
+              </Button>
+              
+              <Button 
+                onClick={startVideoRecording}
+                className="flex items-center gap-3 h-12 justify-start bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200"
+                variant="outline"
+              >
+                <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold">Record Video</div>
+                  <div className="text-xs opacity-75">Up to 30 seconds</div>
+                </div>
+              </Button>
+              
+              <Button 
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-3 h-12 justify-start bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
+                variant="outline"
+              >
+                <Upload className="w-5 h-5" />
+                <div className="text-left">
+                  <div className="font-semibold">Upload from Gallery</div>
+                  <div className="text-xs opacity-75">Choose existing photos</div>
+                </div>
+              </Button>
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setShowCameraModal(false)}>
+                Cancel
+              </AlertDialogCancel>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
