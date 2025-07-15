@@ -71,13 +71,17 @@ function App() {
 
   // Landing page for new users
   if (!isAuthenticated && currentView === "landing") {
+    console.log('Rendering Landing page, currentView:', currentView);
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <TooltipProvider>
             <Toaster />
             <LandingHero 
-              onGetStarted={() => setCurrentView("auth")} 
+              onGetStarted={() => {
+                console.log('Start Your Journey clicked - switching to auth view');
+                setCurrentView("auth");
+              }} 
             />
           </TooltipProvider>
         </ThemeProvider>
@@ -87,6 +91,7 @@ function App() {
 
   // Authentication page
   if (!isAuthenticated && currentView === "auth") {
+    console.log('Rendering Auth page, currentView:', currentView);
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
