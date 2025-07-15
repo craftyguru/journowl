@@ -59,11 +59,24 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             
             {user && (
-              <Avatar className="w-8 h-8">
-                <AvatarFallback className="gradient-bg text-white font-semibold">
-                  {user.username.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    fetch('/api/auth/logout', { method: 'POST' })
+                      .then(() => window.location.href = '/');
+                  }}
+                  className="text-sm"
+                >
+                  Logout
+                </Button>
+                <Avatar className="w-8 h-8">
+                  <AvatarFallback className="gradient-bg text-white font-semibold">
+                    {user.username.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </>
             )}
           </div>
         </div>
