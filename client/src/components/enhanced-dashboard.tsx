@@ -42,6 +42,10 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
     queryKey: ["/api/achievements"],
   });
 
+  const { data: goalsResponse } = useQuery({
+    queryKey: ["/api/goals"],
+  });
+
   const { data: insightsResponse } = useQuery({
     queryKey: ["/api/insights"],
   });
@@ -59,7 +63,50 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
   };
 
   const entries = entriesResponse || [];
-  const achievements = achievementsResponse || [];
+  // Create comprehensive achievements system with different difficulties and rarities
+  const defaultAchievements = [
+    // Common achievements (easy to get)
+    { id: 1, title: "First Steps", description: "Write your first journal entry", icon: "📝", rarity: "common", unlockedAt: new Date(), type: "milestone" },
+    { id: 2, title: "Daily Writer", description: "Write for 3 consecutive days", icon: "📅", rarity: "common", unlockedAt: null, type: "streak" },
+    { id: 3, title: "Word Explorer", description: "Write 100 words in a single entry", icon: "📚", rarity: "common", unlockedAt: null, type: "writing" },
+    { id: 4, title: "Mood Tracker", description: "Track your mood for 5 days", icon: "😊", rarity: "common", unlockedAt: null, type: "mood" },
+    
+    // Rare achievements (moderate difficulty)
+    { id: 5, title: "Weekly Warrior", description: "Write every day for a week", icon: "⚔️", rarity: "rare", unlockedAt: null, type: "streak" },
+    { id: 6, title: "Storyteller", description: "Write 500 words in one entry", icon: "📖", rarity: "rare", unlockedAt: null, type: "writing" },
+    { id: 7, title: "Photo Memory", description: "Add 10 photos to your entries", icon: "📸", rarity: "rare", unlockedAt: null, type: "media" },
+    { id: 8, title: "Emoji Master", description: "Use 50 different emojis", icon: "🎭", rarity: "rare", unlockedAt: null, type: "creative" },
+    
+    // Epic achievements (challenging)
+    { id: 9, title: "Monthly Champion", description: "Write every day for 30 days", icon: "🏆", rarity: "epic", unlockedAt: null, type: "streak" },
+    { id: 10, title: "Novel Writer", description: "Write 10,000 words total", icon: "📜", rarity: "epic", unlockedAt: null, type: "writing" },
+    { id: 11, title: "Memory Keeper", description: "Create 100 journal entries", icon: "🗂️", rarity: "epic", unlockedAt: null, type: "milestone" },
+    { id: 12, title: "Artist", description: "Add drawings to 20 entries", icon: "🎨", rarity: "epic", unlockedAt: null, type: "creative" }
+  ];
+
+  const achievements = achievementsResponse?.achievements || defaultAchievements;
+  // Create comprehensive goals system with different difficulties and types
+  const defaultGoals = [
+    // Beginner goals (daily habits)
+    { id: 1, title: "Daily Writing", description: "Write at least one journal entry every day", type: "streak", targetValue: 7, currentValue: 1, difficulty: "beginner", isCompleted: false },
+    { id: 2, title: "Word Count Goal", description: "Write at least 100 words per entry", type: "writing", targetValue: 100, currentValue: 50, difficulty: "beginner", isCompleted: false },
+    { id: 3, title: "Mood Tracking", description: "Track your mood for 5 consecutive days", type: "mood", targetValue: 5, currentValue: 2, difficulty: "beginner", isCompleted: false },
+    { id: 4, title: "Photo Memories", description: "Add photos to 3 journal entries", type: "media", targetValue: 3, currentValue: 0, difficulty: "beginner", isCompleted: false },
+    
+    // Intermediate goals (weekly habits)
+    { id: 5, title: "Weekly Consistency", description: "Maintain a 7-day writing streak", type: "streak", targetValue: 7, currentValue: 1, difficulty: "intermediate", isCompleted: false },
+    { id: 6, title: "Detailed Entries", description: "Write entries with at least 300 words", type: "writing", targetValue: 300, currentValue: 50, difficulty: "intermediate", isCompleted: false },
+    { id: 7, title: "Creative Expression", description: "Use drawings in 5 journal entries", type: "creative", targetValue: 5, currentValue: 0, difficulty: "intermediate", isCompleted: false },
+    { id: 8, title: "Reflection Master", description: "Write about gratitude for 7 days", type: "reflection", targetValue: 7, currentValue: 0, difficulty: "intermediate", isCompleted: false },
+    
+    // Advanced goals (long-term achievements)
+    { id: 9, title: "Monthly Champion", description: "Write every day for 30 days", type: "streak", targetValue: 30, currentValue: 1, difficulty: "advanced", isCompleted: false },
+    { id: 10, title: "Novel Writer", description: "Write a total of 10,000 words", type: "writing", targetValue: 10000, currentValue: 50, difficulty: "advanced", isCompleted: false },
+    { id: 11, title: "Memory Keeper", description: "Create 50 journal entries", type: "milestone", targetValue: 50, currentValue: 0, difficulty: "advanced", isCompleted: false },
+    { id: 12, title: "Mindfulness Journey", description: "Practice mindful writing for 21 days", type: "mindfulness", targetValue: 21, currentValue: 0, difficulty: "advanced", isCompleted: false }
+  ];
+
+  const goals = goalsResponse?.goals || defaultGoals;
   const insights = insightsResponse;
   const handleSaveEntry = (entryData: any) => {
     console.log('Saving entry:', entryData);
@@ -1109,7 +1156,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   <p className="text-amber-100 text-lg">Celebrate your journaling milestones</p>
                 </div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold">{(achievementsResponse?.achievements || []).length}/10</div>
+                  <div className="text-3xl font-bold">{achievements.filter(a => a.unlockedAt).length}/{achievements.length}</div>
                   <div className="text-amber-100 text-sm">Unlocked</div>
                 </div>
               </div>
@@ -1118,17 +1165,17 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               <div className="bg-white/20 rounded-full h-3 mb-4">
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: `${((achievementsResponse?.achievements || []).length / 10) * 100}%` }}
+                  animate={{ width: `${achievements.length > 0 ? (achievements.filter(a => a.unlockedAt).length / achievements.length) * 100 : 0}%` }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                   className="bg-gradient-to-r from-yellow-300 to-amber-300 h-full rounded-full"
                 />
               </div>
-              <div className="text-amber-100 text-sm">{((achievementsResponse?.achievements || []).length / 10) * 100}% complete - {10 - (achievementsResponse?.achievements || []).length} more to unlock!</div>
+              <div className="text-amber-100 text-sm">{achievements.length > 0 ? Math.round((achievements.filter(a => a.unlockedAt).length / achievements.length) * 100) : 0}% complete - {achievements.filter(a => !a.unlockedAt).length} more to unlock!</div>
             </div>
 
             {/* Achievement Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(achievementsResponse?.achievements || []).map((achievement, index) => (
+              {achievements.slice(0, 12).map((achievement, index) => (
                 <motion.div
                   key={achievement.id}
                   initial={{ opacity: 0, scale: 0.8, y: 20 }}
@@ -1142,10 +1189,10 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   whileHover={{ 
                     scale: 1.05, 
                     y: -8,
-                    rotateY: achievement.unlocked ? 5 : 0
+                    rotateY: achievement.unlockedAt ? 5 : 0
                   }}
                   className={`relative overflow-hidden rounded-2xl p-6 shadow-xl transition-all cursor-pointer ${
-                    achievement.unlocked
+                    achievement.unlockedAt
                       ? achievement.rarity === 'legendary'
                         ? 'bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 border-2 border-yellow-300 shadow-yellow-400/50'
                         : achievement.rarity === 'epic'
@@ -1157,7 +1204,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   }`}
                 >
                   {/* Animated sparkle effects for unlocked achievements */}
-                  {achievement.unlocked && (
+                  {achievement.unlockedAt && (
                     <>
                       <div className="absolute inset-0 overflow-hidden">
                         <motion.div
@@ -1209,7 +1256,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     <div className="flex items-center justify-between mb-4">
                       <motion.div 
                         className="text-5xl"
-                        animate={achievement.unlocked ? { 
+                        animate={achievement.unlockedAt ? { 
                           rotate: [0, -10, 10, -10, 0],
                           scale: [1, 1.1, 1]
                         } : {}}
@@ -1221,7 +1268,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       >
                         {achievement.icon}
                       </motion.div>
-                      {achievement.unlocked && (
+                      {achievement.unlockedAt && (
                         <motion.div
                           initial={{ scale: 0, rotate: -180 }}
                           animate={{ scale: 1, rotate: 0 }}
@@ -1232,11 +1279,11 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       )}
                     </div>
                     
-                    <h3 className={`text-xl font-bold mb-3 ${achievement.unlocked ? 'text-white drop-shadow-md' : 'text-gray-500'}`}>
+                    <h3 className={`text-xl font-bold mb-3 ${achievement.unlockedAt ? 'text-white drop-shadow-md' : 'text-gray-500'}`}>
                       {achievement.title}
                     </h3>
                     
-                    <p className={`text-sm mb-4 ${achievement.unlocked ? 'text-white/90' : 'text-gray-400'}`}>
+                    <p className={`text-sm mb-4 ${achievement.unlockedAt ? 'text-white/90' : 'text-gray-400'}`}>
                       {achievement.description}
                     </p>
                     
@@ -1244,7 +1291,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                       <Badge 
                         variant="outline" 
                         className={`text-xs font-bold px-3 py-1 ${
-                          achievement.unlocked 
+                          achievement.unlockedAt 
                             ? 'border-white/40 text-white bg-white/20 shadow-sm' 
                             : 'border-gray-400 text-gray-500 bg-gray-50'
                         }`}
@@ -1252,7 +1299,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                         {achievement.rarity.toUpperCase()}
                       </Badge>
                       
-                      {achievement.unlocked ? (
+                      {achievement.unlockedAt ? (
                         <motion.div
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
@@ -1271,7 +1318,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     </div>
 
                     {/* Progress indicator for locked achievements */}
-                    {!achievement.unlocked && (
+                    {!achievement.unlockedAt && (
                       <div className="mt-4 pt-4 border-t border-gray-300">
                         <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
                           <span>Progress</span>
@@ -1339,26 +1386,26 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               {/* Quick Progress Overview */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">3/3</div>
+                  <div className="text-2xl font-bold">{goals.filter(g => !g.isCompleted).length}/{goals.length}</div>
                   <div className="text-emerald-100 text-sm">Active Goals</div>
-                  <div className="text-xs text-green-300">All on track!</div>
+                  <div className="text-xs text-green-300">{goals.length === 0 ? 'Loading goals...' : 'Keep going!'}</div>
                 </div>
                 <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">12</div>
-                  <div className="text-emerald-100 text-sm">Completed This Month</div>
-                  <div className="text-xs text-green-300">Personal best!</div>
+                  <div className="text-2xl font-bold">{goals.filter(g => g.isCompleted).length}</div>
+                  <div className="text-emerald-100 text-sm">Completed Goals</div>
+                  <div className="text-xs text-green-300">{goals.filter(g => g.isCompleted).length > 0 ? 'Great work!' : 'First goal coming up!'}</div>
                 </div>
                 <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">85%</div>
-                  <div className="text-emerald-100 text-sm">Avg Success Rate</div>
-                  <div className="text-xs text-green-300">Excellent!</div>
+                  <div className="text-2xl font-bold">{goals.length > 0 ? Math.round(goals.reduce((sum, g) => sum + g.progress, 0) / goals.length) : 0}%</div>
+                  <div className="text-emerald-100 text-sm">Avg Progress</div>
+                  <div className="text-xs text-green-300">Keep it up!</div>
                 </div>
               </div>
             </div>
 
             {/* Active Goals */}
             <div className="space-y-6">
-              {[].map((goal, index) => (
+              {goals.slice(0, 6).map((goal, index) => (
                 <motion.div
                   key={goal.id}
                   initial={{ opacity: 0, x: -30 }}
@@ -1392,7 +1439,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                           'bg-gray-500 text-white'
                         }`}
                       >
-                        {goal.current}/{goal.target}
+                        {goal.currentValue}/{goal.targetValue}
                       </Badge>
                     </div>
                   </div>

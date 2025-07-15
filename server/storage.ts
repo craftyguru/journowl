@@ -5,6 +5,7 @@ import {
   journalEntries, 
   achievements, 
   userStats,
+  goals,
   emailCampaigns,
   siteSettings,
   userActivityLogs,
@@ -16,6 +17,8 @@ import {
   type Achievement,
   type InsertAchievement,
   type UserStats,
+  type Goal,
+  type InsertGoal,
   type EmailCampaign,
   type SiteSetting,
   type UserActivityLog,
@@ -56,6 +59,11 @@ export interface IStorage {
   getUserStats(userId: number): Promise<UserStats | undefined>;
   updateUserStats(userId: number, stats: Partial<UserStats>): Promise<void>;
   createUserStats(userId: number): Promise<UserStats>;
+
+  // Goal operations
+  getUserGoals(userId: number): Promise<Goal[]>;
+  createGoal(goal: InsertGoal & { userId: number }): Promise<Goal>;
+  updateGoal(id: number, userId: number, updates: Partial<Goal>): Promise<void>;
 
   // Admin operations
   logUserActivity(userId: number, action: string, details?: any, ipAddress?: string, userAgent?: string): Promise<void>;
@@ -191,9 +199,20 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserAchievements(userId: number): Promise<Achievement[]> {
-    return await db.select().from(achievements)
+    const result = await db.select().from(achievements)
       .where(eq(achievements.userId, userId))
       .orderBy(desc(achievements.unlockedAt));
+    
+    // If user has no achievements except welcome, create default achievements  
+    const nonWelcomeAchievements = result.filter(a => a.category !== 'getting_started');
+    if (nonWelcomeAchievements.length === 0) {
+      await this.createDefaultAchievements(userId);
+      return await db.select().from(achievements)
+        .where(eq(achievements.userId, userId))
+        .orderBy(desc(achievements.unlockedAt));
+    }
+    
+    return result;
   }
 
   async getUserStats(userId: number): Promise<UserStats | undefined> {
@@ -319,6 +338,182 @@ export class DatabaseStorage implements IStorage {
         )
       )
       .orderBy(desc(announcements.createdAt));
+  }
+
+  // Goal operations
+  async getUserGoals(userId: number): Promise<Goal[]> {
+    const result = await db.select().from(goals)
+      .where(eq(goals.userId, userId))
+      .orderBy(goals.createdAt);
+    
+    // If user has no goals, create default goals
+    if (result.length === 0) {
+      await this.createDefaultGoals(userId);
+      return await db.select().from(goals)
+        .where(eq(goals.userId, userId))
+        .orderBy(goals.createdAt);
+    }
+    
+    return result;
+  }
+
+  async createGoal(goal: InsertGoal & { userId: number }): Promise<Goal> {
+    const result = await db.insert(goals).values(goal).returning();
+    return result[0];
+  }
+
+  async updateGoal(id: number, userId: number, updates: Partial<Goal>): Promise<void> {
+    await db.update(goals)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(and(eq(goals.id, id), eq(goals.userId, userId)));
+  }
+
+  private async createDefaultGoals(userId: number): Promise<void> {
+    const defaultGoals = [
+      // Beginner Goals (Easy)
+      { title: "First Steps", description: "Write your very first journal entry", type: "entries", targetValue: 1, difficulty: "beginner" },
+      { title: "Early Bird", description: "Complete 3 journal entries", type: "entries", targetValue: 3, difficulty: "beginner" },
+      { title: "Getting Started", description: "Write 100 words total", type: "words", targetValue: 100, difficulty: "beginner" },
+      { title: "Consistency", description: "Write for 2 days in a row", type: "streak", targetValue: 2, difficulty: "beginner" },
+      { title: "Week Warrior", description: "Complete 7 journal entries", type: "entries", targetValue: 7, difficulty: "beginner" },
+      { title: "Word Explorer", description: "Write 500 words total", type: "words", targetValue: 500, difficulty: "beginner" },
+      { title: "Streak Starter", description: "Maintain a 3-day writing streak", type: "streak", targetValue: 3, difficulty: "beginner" },
+      { title: "Dedicated Writer", description: "Write for 7 consecutive days", type: "streak", targetValue: 7, difficulty: "beginner" },
+      { title: "Momentum Builder", description: "Complete 14 journal entries", type: "entries", targetValue: 14, difficulty: "beginner" },
+      { title: "Word Collector", description: "Write 1,000 words total", type: "words", targetValue: 1000, difficulty: "beginner" },
+
+      // Intermediate Goals (Medium)
+      { title: "Monthly Habit", description: "Write for 14 consecutive days", type: "streak", targetValue: 14, difficulty: "intermediate" },
+      { title: "Prolific Writer", description: "Complete 30 journal entries", type: "entries", targetValue: 30, difficulty: "intermediate" },
+      { title: "Word Smith", description: "Write 2,500 words total", type: "words", targetValue: 2500, difficulty: "intermediate" },
+      { title: "Three Week Wonder", description: "Maintain a 21-day writing streak", type: "streak", targetValue: 21, difficulty: "intermediate" },
+      { title: "Story Teller", description: "Write 5,000 words total", type: "words", targetValue: 5000, difficulty: "intermediate" },
+      { title: "Dedicated Journaler", description: "Complete 50 journal entries", type: "entries", targetValue: 50, difficulty: "intermediate" },
+      { title: "Monthly Master", description: "Write for 30 consecutive days", type: "streak", targetValue: 30, difficulty: "intermediate" },
+      { title: "Word Warrior", description: "Write 7,500 words total", type: "words", targetValue: 7500, difficulty: "intermediate" },
+      { title: "Reflection Expert", description: "Complete 75 journal entries", type: "entries", targetValue: 75, difficulty: "intermediate" },
+      { title: "Novelist Dreams", description: "Write 10,000 words total", type: "words", targetValue: 10000, difficulty: "intermediate" },
+
+      // Advanced Goals (Hard)
+      { title: "Quarter Master", description: "Write for 90 consecutive days", type: "streak", targetValue: 90, difficulty: "advanced" },
+      { title: "Century Club", description: "Complete 100 journal entries", type: "entries", targetValue: 100, difficulty: "advanced" },
+      { title: "Epic Novelist", description: "Write 25,000 words total", type: "words", targetValue: 25000, difficulty: "advanced" },
+      { title: "Habit Master", description: "Maintain a 60-day writing streak", type: "streak", targetValue: 60, difficulty: "advanced" },
+      { title: "Journal Veteran", description: "Complete 150 journal entries", type: "entries", targetValue: 150, difficulty: "advanced" },
+      { title: "Word Marathon", description: "Write 50,000 words total", type: "words", targetValue: 50000, difficulty: "advanced" },
+      { title: "Seasonal Dedication", description: "Write for 120 consecutive days", type: "streak", targetValue: 120, difficulty: "advanced" },
+      { title: "Reflection Master", description: "Complete 200 journal entries", type: "entries", targetValue: 200, difficulty: "advanced" },
+      { title: "Bestseller Potential", description: "Write 75,000 words total", type: "words", targetValue: 75000, difficulty: "advanced" },
+      { title: "Annual Commitment", description: "Write for 180 consecutive days", type: "streak", targetValue: 180, difficulty: "advanced" },
+
+      // Expert Goals (Very Hard)
+      { title: "Year-Long Journey", description: "Write for 365 consecutive days", type: "streak", targetValue: 365, difficulty: "expert" },
+      { title: "Publishing Ready", description: "Write 100,000 words total", type: "words", targetValue: 100000, difficulty: "expert" },
+      { title: "Journal Legend", description: "Complete 365 journal entries", type: "entries", targetValue: 365, difficulty: "expert" },
+      { title: "Unwavering Dedication", description: "Maintain a 200-day writing streak", type: "streak", targetValue: 200, difficulty: "expert" },
+      { title: "Literary Giant", description: "Write 150,000 words total", type: "words", targetValue: 150000, difficulty: "expert" },
+      { title: "Master Journaler", description: "Complete 500 journal entries", type: "entries", targetValue: 500, difficulty: "expert" },
+      { title: "Consistency Champion", description: "Write for 300 consecutive days", type: "streak", targetValue: 300, difficulty: "expert" },
+      { title: "Word Virtuoso", description: "Write 200,000 words total", type: "words", targetValue: 200000, difficulty: "expert" },
+      { title: "Reflection Sage", description: "Complete 750 journal entries", type: "entries", targetValue: 750, difficulty: "expert" },
+      { title: "Eternal Writer", description: "Write for 500 consecutive days", type: "streak", targetValue: 500, difficulty: "expert" },
+
+      // Legendary Goals (Extreme)
+      { title: "Millennium Marker", description: "Complete 1,000 journal entries", type: "entries", targetValue: 1000, difficulty: "legendary" },
+      { title: "Novel Collection", description: "Write 250,000 words total", type: "words", targetValue: 250000, difficulty: "legendary" },
+      { title: "Two Year Journey", description: "Write for 730 consecutive days", type: "streak", targetValue: 730, difficulty: "legendary" },
+      { title: "Epic Chronicler", description: "Complete 1,500 journal entries", type: "entries", targetValue: 1500, difficulty: "legendary" },
+      { title: "Master Wordsmith", description: "Write 500,000 words total", type: "words", targetValue: 500000, difficulty: "legendary" },
+      { title: "Three Year Dedication", description: "Write for 1,095 consecutive days", type: "streak", targetValue: 1095, difficulty: "legendary" },
+      { title: "Journal Immortal", description: "Complete 2,000 journal entries", type: "entries", targetValue: 2000, difficulty: "legendary" },
+      { title: "Literary Legend", description: "Write 750,000 words total", type: "words", targetValue: 750000, difficulty: "legendary" },
+      { title: "Lifetime Commitment", description: "Write for 1,500 consecutive days", type: "streak", targetValue: 1500, difficulty: "legendary" },
+      { title: "Word God", description: "Write 1,000,000 words total", type: "words", targetValue: 1000000, difficulty: "legendary" }
+    ];
+
+    const goalsToInsert = defaultGoals.map(goal => ({
+      ...goal,
+      userId,
+      currentValue: 0,
+      isCompleted: false,
+      deadline: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year from now
+    }));
+
+    await db.insert(goals).values(goalsToInsert);
+  }
+
+  private async createDefaultAchievements(userId: number): Promise<void> {
+    const defaultAchievements = [
+      // Beginner Achievements (Common)
+      { title: "First Words", description: "Write your very first journal entry", icon: "✍️", category: "writing", rarity: "common", xpReward: 50, condition: "entries:1" },
+      { title: "Early Bird", description: "Write 3 journal entries", icon: "🐦", category: "writing", rarity: "common", xpReward: 100, condition: "entries:3" },
+      { title: "Word Explorer", description: "Write 100 words total", icon: "🔍", category: "words", rarity: "common", xpReward: 75, condition: "words:100" },
+      { title: "Consistency Starter", description: "Write for 2 days in a row", icon: "🔥", category: "streaks", rarity: "common", xpReward: 100, condition: "streak:2" },
+      { title: "Week Warrior", description: "Write 7 journal entries", icon: "⚔️", category: "writing", rarity: "common", xpReward: 150, condition: "entries:7" },
+      { title: "Mood Tracker", description: "Record your mood in 5 entries", icon: "😊", category: "mood", rarity: "common", xpReward: 75, condition: "mood_entries:5" },
+      { title: "Reflection Rookie", description: "Write for 3 consecutive days", icon: "🤔", category: "streaks", rarity: "common", xpReward: 125, condition: "streak:3" },
+      { title: "Wordsmith Apprentice", description: "Write 500 words total", icon: "📝", category: "words", rarity: "common", xpReward: 100, condition: "words:500" },
+      { title: "Dedication Beginner", description: "Write for a full week", icon: "💪", category: "streaks", rarity: "common", xpReward: 200, condition: "streak:7" },
+      { title: "Story Starter", description: "Complete 10 journal entries", icon: "📖", category: "writing", rarity: "common", xpReward: 175, condition: "entries:10" },
+
+      // Intermediate Achievements (Rare)
+      { title: "Monthly Habit", description: "Write for 14 consecutive days", icon: "📅", category: "streaks", rarity: "rare", xpReward: 300, condition: "streak:14" },
+      { title: "Prolific Writer", description: "Complete 25 journal entries", icon: "✏️", category: "writing", rarity: "rare", xpReward: 250, condition: "entries:25" },
+      { title: "Word Collector", description: "Write 1,000 words total", icon: "💎", category: "words", rarity: "rare", xpReward: 200, condition: "words:1000" },
+      { title: "Mood Master", description: "Track mood in 20 entries", icon: "🎭", category: "mood", rarity: "rare", xpReward: 175, condition: "mood_entries:20" },
+      { title: "Three Week Wonder", description: "Write for 21 consecutive days", icon: "🌟", category: "streaks", rarity: "rare", xpReward: 400, condition: "streak:21" },
+      { title: "Chronicle Keeper", description: "Complete 50 journal entries", icon: "📚", category: "writing", rarity: "rare", xpReward: 350, condition: "entries:50" },
+      { title: "Word Warrior", description: "Write 2,500 words total", icon: "⚡", category: "words", rarity: "rare", xpReward: 300, condition: "words:2500" },
+      { title: "Emotional Intelligence", description: "Track mood in 35 entries", icon: "🧠", category: "mood", rarity: "rare", xpReward: 250, condition: "mood_entries:35" },
+      { title: "Monthly Master", description: "Write for 30 consecutive days", icon: "👑", category: "streaks", rarity: "rare", xpReward: 500, condition: "streak:30" },
+      { title: "Storyteller", description: "Write 5,000 words total", icon: "📜", category: "words", rarity: "rare", xpReward: 400, condition: "words:5000" },
+
+      // Advanced Achievements (Epic)
+      { title: "Dedication Expert", description: "Write for 60 consecutive days", icon: "🏆", category: "streaks", rarity: "epic", xpReward: 750, condition: "streak:60" },
+      { title: "Century Club", description: "Complete 100 journal entries", icon: "💯", category: "writing", rarity: "epic", xpReward: 600, condition: "entries:100" },
+      { title: "Novel Dreamer", description: "Write 10,000 words total", icon: "📕", category: "words", rarity: "epic", xpReward: 500, condition: "words:10000" },
+      { title: "Mood Scientist", description: "Track mood in 75 entries", icon: "🔬", category: "mood", rarity: "epic", xpReward: 400, condition: "mood_entries:75" },
+      { title: "Quarter Master", description: "Write for 90 consecutive days", icon: "🎯", category: "streaks", rarity: "epic", xpReward: 1000, condition: "streak:90" },
+      { title: "Journal Veteran", description: "Complete 150 journal entries", icon: "🎖️", category: "writing", rarity: "epic", xpReward: 750, condition: "entries:150" },
+      { title: "Word Architect", description: "Write 25,000 words total", icon: "🏗️", category: "words", rarity: "epic", xpReward: 750, condition: "words:25000" },
+      { title: "Emotion Explorer", description: "Track mood in 100 entries", icon: "🗺️", category: "mood", rarity: "epic", xpReward: 500, condition: "mood_entries:100" },
+      { title: "Seasonal Dedication", description: "Write for 120 consecutive days", icon: "🌺", category: "streaks", rarity: "epic", xpReward: 1250, condition: "streak:120" },
+      { title: "Epic Chronicler", description: "Complete 200 journal entries", icon: "📔", category: "writing", rarity: "epic", xpReward: 900, condition: "entries:200" },
+
+      // Expert Achievements (Legendary)
+      { title: "Half Year Hero", description: "Write for 180 consecutive days", icon: "🦸", category: "streaks", rarity: "legendary", xpReward: 2000, condition: "streak:180" },
+      { title: "Master Journaler", description: "Complete 365 journal entries", icon: "🎓", category: "writing", rarity: "legendary", xpReward: 1500, condition: "entries:365" },
+      { title: "Novelist", description: "Write 50,000 words total", icon: "📗", category: "words", rarity: "legendary", xpReward: 1200, condition: "words:50000" },
+      { title: "Mood Oracle", description: "Track mood in 200 entries", icon: "🔮", category: "mood", rarity: "legendary", xpReward: 800, condition: "mood_entries:200" },
+      { title: "Annual Commitment", description: "Write for 270 consecutive days", icon: "📆", category: "streaks", rarity: "legendary", xpReward: 2500, condition: "streak:270" },
+      { title: "Reflection Master", description: "Complete 500 journal entries", icon: "🏅", category: "writing", rarity: "legendary", xpReward: 2000, condition: "entries:500" },
+      { title: "Epic Novelist", description: "Write 100,000 words total", icon: "📘", category: "words", rarity: "legendary", xpReward: 2000, condition: "words:100000" },
+      { title: "Emotional Sage", description: "Track mood in 300 entries", icon: "🧙", category: "mood", rarity: "legendary", xpReward: 1200, condition: "mood_entries:300" },
+      { title: "Year-Long Journey", description: "Write for 365 consecutive days", icon: "🌟", category: "streaks", rarity: "legendary", xpReward: 3000, condition: "streak:365" },
+      { title: "Diary Dynasty", description: "Complete 750 journal entries", icon: "👑", category: "writing", rarity: "legendary", xpReward: 2500, condition: "entries:750" },
+
+      // Mythical Achievements (Mythical)
+      { title: "Eternal Writer", description: "Write for 500 consecutive days", icon: "♾️", category: "streaks", rarity: "mythical", xpReward: 5000, condition: "streak:500" },
+      { title: "Millennium Marker", description: "Complete 1,000 journal entries", icon: "🌌", category: "writing", rarity: "mythical", xpReward: 4000, condition: "entries:1000" },
+      { title: "Literary Legend", description: "Write 250,000 words total", icon: "🏛️", category: "words", rarity: "mythical", xpReward: 3500, condition: "words:250000" },
+      { title: "Mood Mystic", description: "Track mood in 500 entries", icon: "🌙", category: "mood", rarity: "mythical", xpReward: 2000, condition: "mood_entries:500" },
+      { title: "Two Year Trek", description: "Write for 730 consecutive days", icon: "🗻", category: "streaks", rarity: "mythical", xpReward: 6000, condition: "streak:730" },
+      { title: "Chronicle Champion", description: "Complete 1,500 journal entries", icon: "🏆", category: "writing", rarity: "mythical", xpReward: 5000, condition: "entries:1500" },
+      { title: "Word Deity", description: "Write 500,000 words total", icon: "⚡", category: "words", rarity: "mythical", xpReward: 5000, condition: "words:500000" },
+      { title: "Emotion Enlightened", description: "Track mood in 750 entries", icon: "✨", category: "mood", rarity: "mythical", xpReward: 3000, condition: "mood_entries:750" },
+      { title: "Three Year Triumph", description: "Write for 1,095 consecutive days", icon: "🌈", category: "streaks", rarity: "mythical", xpReward: 7500, condition: "streak:1095" },
+      { title: "Immortal Chronicler", description: "Complete 2,000 journal entries", icon: "👼", category: "writing", rarity: "mythical", xpReward: 6000, condition: "entries:2000" },
+      { title: "Master Wordsmith", description: "Write 1,000,000 words total", icon: "🔱", category: "words", rarity: "mythical", xpReward: 10000, condition: "words:1000000" },
+      { title: "Mood Transcendent", description: "Track mood in 1,000 entries", icon: "🌟", category: "mood", rarity: "mythical", xpReward: 4000, condition: "mood_entries:1000" }
+    ];
+
+    const achievementsToInsert = defaultAchievements.map(achievement => ({
+      ...achievement,
+      userId,
+      unlockedAt: null // Not unlocked yet
+    }));
+
+    await db.insert(achievements).values(achievementsToInsert);
   }
 }
 

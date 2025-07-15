@@ -360,6 +360,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get goals endpoint
+  app.get('/api/goals', requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const goals = await storage.getUserGoals(userId);
+      const stats = await storage.getUserStats(userId);
+      
+      // Calculate progress for each goal based on current user stats
+      const goalsWithProgress = goals.map(goal => {
+        let currentValue = 0;
+        let progress = 0;
+        
+        switch (goal.type) {
+          case 'streak':
+            currentValue = stats?.currentStreak || 0;
+            break;
+          case 'entries':
+            currentValue = stats?.totalEntries || 0;
+            break;
+          case 'words':
+            currentValue = stats?.totalWords || 0;
+            break;
+          case 'days':
+            currentValue = stats?.totalEntries || 0; // Active days based on entries
+            break;
+          default:
+            currentValue = 0;
+        }
+        
+        progress = Math.min(100, Math.round((currentValue / goal.targetValue) * 100));
+        
+        return {
+          ...goal,
+          currentValue,
+          progress,
+          isCompleted: currentValue >= goal.targetValue
+        };
+      });
+      
+      res.json({ goals: goalsWithProgress });
+    } catch (error: any) {
+      console.error('Error getting goals:', error);
+      res.status(500).json({ message: 'Failed to get goals' });
+    }
+  });
+
   app.get("/api/journal/entries/:id", requireAuth, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
