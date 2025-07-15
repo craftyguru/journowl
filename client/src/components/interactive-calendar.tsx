@@ -3,14 +3,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, 
   Filter, Eye, Edit, Star, Camera, Palette, Heart, 
-  Sparkles, Pin, Share, Download, Lock, Unlock
+  Sparkles, Pin, Share, Download, Lock, Unlock, Plus,
+  Mic, Sticker, Flame, Zap, Award, Image, Smile
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from "date-fns";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths, isToday } from "date-fns";
 
 interface JournalEntry {
   id: number;
@@ -32,14 +34,25 @@ interface InteractiveCalendarProps {
 }
 
 const moodColors = {
-  "😊": "bg-green-200 border-green-400",
-  "😐": "bg-gray-200 border-gray-400", 
-  "😔": "bg-blue-200 border-blue-400",
-  "🤔": "bg-purple-200 border-purple-400",
-  "😄": "bg-yellow-200 border-yellow-400",
-  "🎉": "bg-pink-200 border-pink-400",
-  "😠": "bg-red-200 border-red-400",
-  "😴": "bg-indigo-200 border-indigo-400"
+  "😊": "from-green-400 via-emerald-400 to-teal-400",
+  "😐": "from-gray-400 via-slate-400 to-zinc-400", 
+  "😔": "from-blue-400 via-indigo-400 to-purple-400",
+  "🤔": "from-purple-400 via-violet-400 to-fuchsia-400",
+  "😄": "from-yellow-400 via-amber-400 to-orange-400",
+  "🎉": "from-pink-400 via-rose-400 to-red-400",
+  "😠": "from-red-400 via-orange-400 to-yellow-400",
+  "😴": "from-indigo-400 via-blue-400 to-cyan-400"
+};
+
+const moodBackgrounds = {
+  "😊": "bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-green-300",
+  "😐": "bg-gradient-to-br from-gray-50 via-slate-50 to-zinc-50 border-gray-300", 
+  "😔": "bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border-blue-300",
+  "🤔": "bg-gradient-to-br from-purple-50 via-violet-50 to-fuchsia-50 border-purple-300",
+  "😄": "bg-gradient-to-br from-yellow-50 via-amber-50 to-orange-50 border-yellow-300",
+  "🎉": "bg-gradient-to-br from-pink-50 via-rose-50 to-red-50 border-pink-300",
+  "😠": "bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 border-red-300",
+  "😴": "bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 border-indigo-300"
 };
 
 const moodEmojis = ["😊", "😐", "😔", "🤔", "😄", "🎉", "😠", "😴"];
@@ -50,6 +63,8 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMood, setFilterMood] = useState<string>("");
   const [viewMode, setViewMode] = useState<"month" | "week">("month");
+  const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
+  const [showQuickAdd, setShowQuickAdd] = useState<Date | null>(null);
 
   // Calculate calendar days
   const monthStart = startOfMonth(currentDate);
@@ -114,6 +129,30 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
     return currentStreak;
   };
 
+  // Generate micro-summary for a date
+  const getMicroSummary = (date: Date) => {
+    const dayEntries = getEntriesForDate(date);
+    if (dayEntries.length === 0) return null;
+    
+    const moods = [...new Set(dayEntries.map(e => e.mood))];
+    const photoCount = dayEntries.reduce((sum, e) => sum + (e.photos?.length || 0), 0);
+    const wordCount = dayEntries.reduce((sum, e) => sum + (e.wordCount || 0), 0);
+    
+    const elements = [];
+    if (moods.length > 0) elements.push(moods.slice(0, 3).join(" "));
+    if (photoCount > 0) elements.push(`📸 ${photoCount}`);
+    if (dayEntries.some(e => e.isPinned)) elements.push("⭐");
+    if (wordCount > 500) elements.push("📝");
+    
+    return elements.join(" ");
+  };
+
+  // Quick add functions
+  const handleQuickAdd = (date: Date, type: "entry" | "photo" | "voice") => {
+    setShowQuickAdd(null);
+    onDateSelect(date);
+  };
+
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
     onDateSelect(date);
@@ -126,7 +165,8 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
   const selectedDateEntries = selectedDate ? getEntriesForDate(selectedDate) : [];
 
   return (
-    <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl overflow-hidden">
+    <TooltipProvider>
+      <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl overflow-hidden">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
@@ -139,8 +179,15 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
           </div>
           
           <div className="flex items-center gap-2">
-            <div className="bg-white/20 rounded-lg px-3 py-1 text-sm">
+            <motion.div 
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="bg-gradient-to-r from-orange-500/80 to-red-500/80 rounded-lg px-3 py-1 text-sm font-bold shadow-lg"
+            >
               🔥 {calculateStreak()} day streak
+            </motion.div>
+            <div className="bg-white/20 rounded-lg px-3 py-1 text-sm">
+              📊 {entries.length} memories
             </div>
           </div>
         </div>
@@ -233,55 +280,141 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
               const isCurrentMonth = isSameMonth(date, currentDate);
               const isSelected = selectedDate && isSameDay(date, selectedDate);
               const hasEntries = dayEntries.length > 0;
+              const isHovered = hoveredDate && isSameDay(date, hoveredDate);
+              const isTodayDate = isToday(date);
+              const microSummary = getMicroSummary(date);
 
               return (
                 <motion.div
                   key={index}
-                  whileHover={{ scale: 1.05 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    rotateY: 5,
+                    z: 10
+                  }}
                   whileTap={{ scale: 0.95 }}
+                  onHoverStart={() => setHoveredDate(date)}
+                  onHoverEnd={() => setHoveredDate(null)}
                   className={`
-                    relative h-20 border border-gray-200 rounded-lg cursor-pointer transition-all
-                    ${isCurrentMonth ? 'bg-white' : 'bg-gray-50'}
-                    ${isSelected ? 'ring-2 ring-purple-400 bg-purple-50' : ''}
-                    ${hasEntries ? (primaryMood ? moodColors[primaryMood as keyof typeof moodColors] : 'bg-blue-50') : ''}
-                    hover:shadow-md
+                    relative h-24 border-2 rounded-xl cursor-pointer transition-all duration-300 overflow-hidden group
+                    ${isCurrentMonth ? 'opacity-100' : 'opacity-60'}
+                    ${isSelected ? 'ring-4 ring-purple-400 shadow-2xl transform scale-105' : ''}
+                    ${isTodayDate ? 'ring-2 ring-yellow-400 shadow-lg' : ''}
+                    ${hasEntries && primaryMood ? 
+                      moodBackgrounds[primaryMood as keyof typeof moodBackgrounds] : 
+                      'bg-white border-gray-200'}
+                    ${isHovered ? 'shadow-xl transform translate-y-1' : 'shadow-md'}
+                    hover:shadow-2xl
                   `}
                   onClick={() => handleDateClick(date)}
                 >
-                  <div className="p-1 h-full flex flex-col">
-                    <div className={`text-sm font-medium ${isCurrentMonth ? 'text-gray-900' : 'text-gray-400'}`}>
-                      {format(date, 'd')}
+                  {/* Gradient mood overlay */}
+                  {hasEntries && primaryMood && (
+                    <div className={`absolute inset-0 bg-gradient-to-br ${moodColors[primaryMood as keyof typeof moodColors]} opacity-10 rounded-xl`} />
+                  )}
+                  
+                  {/* Today indicator */}
+                  {isTodayDate && (
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full shadow-lg"
+                    />
+                  )}
+
+                  <div className="p-2 h-full flex flex-col relative z-10">
+                    <div className="flex items-center justify-between mb-1">
+                      <div className={`text-lg font-bold ${isCurrentMonth ? 'text-gray-900' : 'text-gray-400'} ${isTodayDate ? 'text-yellow-600' : ''}`}>
+                        {format(date, 'd')}
+                      </div>
+                      
+                      {/* Quick actions on hover */}
+                      <AnimatePresence>
+                        {isHovered && (
+                          <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                            className="flex gap-1"
+                          >
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleQuickAdd(date, "entry");
+                                  }}
+                                  className="w-5 h-5 bg-purple-500 rounded-full flex items-center justify-center text-white hover:bg-purple-600 transition-colors"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>Quick Add Entry</TooltipContent>
+                            </Tooltip>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
                     
                     {hasEntries && (
                       <div className="flex-1 overflow-hidden">
-                        <div className="text-xs text-gray-600 mb-1">
-                          {dayEntries.length} {dayEntries.length === 1 ? 'entry' : 'entries'}
-                        </div>
+                        {/* Micro-summary */}
+                        {microSummary && (
+                          <div className="text-xs bg-white/80 rounded px-2 py-1 mb-1 font-medium text-gray-700">
+                            {microSummary}
+                          </div>
+                        )}
                         
-                        {/* Entry previews */}
-                        <div className="space-y-1">
-                          {dayEntries.slice(0, 2).map(entry => (
-                            <div key={entry.id} className="flex items-center gap-1">
-                              <span className="text-xs">{entry.mood}</span>
-                              {entry.photos && entry.photos.length > 0 && (
-                                <Camera className="w-2 h-2 text-gray-500" />
-                              )}
-                              {entry.isPinned && (
-                                <Pin className="w-2 h-2 text-yellow-500" />
-                              )}
-                              {entry.isPrivate && (
-                                <Lock className="w-2 h-2 text-red-500" />
-                              )}
-                            </div>
-                          ))}
-                          {dayEntries.length > 2 && (
-                            <div className="text-xs text-gray-400">
-                              +{dayEntries.length - 2} more
-                            </div>
+                        {/* Entry count with animation */}
+                        <motion.div 
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          className="text-xs text-gray-600 mb-1 font-medium"
+                        >
+                          {dayEntries.length} {dayEntries.length === 1 ? 'memory' : 'memories'}
+                        </motion.div>
+                        
+                        {/* Photo thumbnails */}
+                        {dayEntries.some(e => e.photos && e.photos.length > 0) && (
+                          <div className="flex gap-1 mb-1">
+                            {dayEntries.slice(0, 3).map(entry => 
+                              entry.photos?.slice(0, 2).map((photo, pIndex) => (
+                                <div key={pIndex} className="w-4 h-4 bg-blue-200 rounded border overflow-hidden">
+                                  <Image className="w-full h-full text-blue-600" />
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Special indicators */}
+                        <div className="flex gap-1 items-center">
+                          {dayEntries.some(e => e.isPinned) && (
+                            <motion.div
+                              animate={{ rotate: [0, 10, -10, 0] }}
+                              transition={{ duration: 2, repeat: Infinity }}
+                            >
+                              <Star className="w-3 h-3 text-yellow-500 fill-yellow-400" />
+                            </motion.div>
+                          )}
+                          {dayEntries.some(e => e.isPrivate) && (
+                            <Lock className="w-3 h-3 text-red-500" />
                           )}
                         </div>
                       </div>
+                    )}
+
+                    {/* Empty state with encourage action */}
+                    {!hasEntries && isHovered && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        className="flex-1 flex flex-col items-center justify-center text-center"
+                      >
+                        <Plus className="w-4 h-4 text-gray-400 mb-1" />
+                        <span className="text-xs text-gray-500">Add memory</span>
+                      </motion.div>
                     )}
                   </div>
                 </motion.div>
@@ -385,7 +518,65 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* Memory Lane Timeline - Bottom Section */}
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-4 bg-gradient-to-r from-purple-100 via-pink-50 to-blue-50 rounded-xl p-4 border border-purple-200"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-lg font-bold text-purple-800">🌟 Memory Lane</h3>
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none hover:from-purple-600 hover:to-pink-600"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI Recap This Month
+            </Button>
+          </div>
+          
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {entries.slice(0, 5).map((entry, index) => (
+              <motion.div
+                key={entry.id}
+                initial={{ scale: 0, rotate: -10 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="flex-shrink-0 w-32 h-20 bg-white rounded-lg shadow-md p-2 cursor-pointer border-2 border-transparent hover:border-purple-300"
+                onClick={() => onEntryEdit(entry)}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-lg">{entry.mood}</span>
+                  <div className="text-xs text-gray-500">
+                    {format(entry.date, 'MMM d')}
+                  </div>
+                </div>
+                <div className="text-xs text-gray-700 line-clamp-2">
+                  {entry.title}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {entry.wordCount} words
+                </div>
+              </motion.div>
+            ))}
+            
+            {/* Add Memory Button */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="flex-shrink-0 w-32 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg border-2 border-dashed border-purple-300 flex flex-col items-center justify-center cursor-pointer hover:from-purple-200 hover:to-pink-200"
+              onClick={() => onDateSelect(new Date())}
+            >
+              <Plus className="w-6 h-6 text-purple-500 mb-1" />
+              <span className="text-xs text-purple-600 font-medium">Add Memory</span>
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
     </div>
+    </TooltipProvider>
   );
 }

@@ -100,12 +100,20 @@ export default function EnhancedDashboard() {
     openUnifiedJournal(entry);
   };
 
-  // Convert recentEntries to calendar format
-  const calendarEntries = recentEntries.map(entry => ({
-    ...entry,
-    date: new Date(), // Convert date string to Date object
-    createdAt: new Date().toISOString()
-  }));
+  // Convert recentEntries to calendar format with varied dates
+  const calendarEntries = recentEntries.map((entry, index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - index); // Spread entries across recent days
+    return {
+      ...entry,
+      date: date,
+      createdAt: date.toISOString(),
+      photos: index === 1 ? ["photo1.jpg", "photo2.jpg"] : [], // Add photos to some entries
+      isPinned: index === 0, // Pin the first entry
+      isPrivate: index === 3, // Make one entry private
+      tags: ["mood", "reflection", "daily"]
+    };
+  });
 
   return (
     <div className="relative p-6 space-y-6 bg-gradient-to-br from-slate-900 via-purple-900/20 to-pink-900/20 min-h-screen overflow-hidden">
