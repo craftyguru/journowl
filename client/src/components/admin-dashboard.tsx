@@ -28,6 +28,9 @@ import {
   Crown
 } from "lucide-react";
 
+import EnhancedEmailCampaigns from "./enhanced-email-campaigns";
+import AdvancedRevenueDashboard from "./advanced-revenue-dashboard";
+
 interface User {
   id: number;
   email: string;
@@ -467,77 +470,7 @@ export default function AdminDashboard() {
 
           {/* Revenue Tab */}
           <TabsContent value="revenue">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Revenue Metrics */}
-              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5 text-green-600" />
-                    Revenue Overview
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
-                        <div className="text-2xl font-bold text-green-600">$247</div>
-                        <div className="text-sm text-green-700 dark:text-green-300">This Month</div>
-                      </div>
-                      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
-                        <div className="text-2xl font-bold text-blue-600">$1,823</div>
-                        <div className="text-sm text-blue-700 dark:text-blue-300">Total Revenue</div>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">AI Prompt Top-ups ($2.99)</span>
-                        <span className="font-semibold">83 sales</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Pro Subscriptions ($9.99/mo)</span>
-                        <span className="font-semibold">12 active</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm">Annual Upgrades (10% off)</span>
-                        <span className="font-semibold">3 conversions</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Usage Analytics */}
-              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Sparkles className="h-5 w-5 text-purple-600" />
-                    AI Usage Patterns
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Total AI Prompts Used</span>
-                      <span className="font-bold text-purple-600">1,247</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Average per User</span>
-                      <span className="font-bold text-blue-600">156</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm">Heavy Users (80+ prompts)</span>
-                      <span className="font-bold text-orange-600">5 users</span>
-                    </div>
-                    <div className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                      <div className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                        💡 Opportunity: 5 users near their limit - perfect for prompt top-up offers
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <AdvancedRevenueDashboard />
           </TabsContent>
 
           {/* AI Insights Tab */}
@@ -871,116 +804,12 @@ export default function AdminDashboard() {
 
           {/* Email Campaigns Tab */}
           <TabsContent value="email">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Create Campaign */}
-              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle>Create Email Campaign</CardTitle>
-                  <CardDescription>Send emails to your users</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <Label htmlFor="title">Campaign Title</Label>
-                    <Input
-                      id="title"
-                      value={campaignForm.title}
-                      onChange={(e) => setCampaignForm({...campaignForm, title: e.target.value})}
-                      placeholder="Welcome Newsletter"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="subject">Email Subject</Label>
-                    <Input
-                      id="subject"
-                      value={campaignForm.subject}
-                      onChange={(e) => setCampaignForm({...campaignForm, subject: e.target.value})}
-                      placeholder="Welcome to MoodJournal!"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="audience">Target Audience</Label>
-                    <Select 
-                      value={campaignForm.targetAudience} 
-                      onValueChange={(value) => setCampaignForm({...campaignForm, targetAudience: value})}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Users</SelectItem>
-                        <SelectItem value="active">Active Users</SelectItem>
-                        <SelectItem value="inactive">Inactive Users</SelectItem>
-                        <SelectItem value="admins">Admin Users</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="content">Email Content</Label>
-                    <Textarea
-                      id="content"
-                      value={campaignForm.content}
-                      onChange={(e) => setCampaignForm({...campaignForm, content: e.target.value})}
-                      placeholder="Welcome to MoodJournal! We're excited to have you..."
-                      rows={6}
-                    />
-                  </div>
-
-                  <Button onClick={createEmailCampaign} className="w-full">
-                    <Mail className="mr-2 h-4 w-4" />
-                    Create Campaign
-                  </Button>
-                </CardContent>
-              </Card>
-
-              {/* Campaign List */}
-              <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
-                <CardHeader>
-                  <CardTitle>Recent Campaigns</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {campaigns.length === 0 ? (
-                      <p className="text-gray-500 text-center py-8">No campaigns created yet</p>
-                    ) : (
-                      campaigns.map((campaign) => (
-                        <div key={campaign.id} className="p-4 border rounded-lg bg-white/50 dark:bg-gray-700/50">
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="font-semibold">{campaign.title}</h3>
-                            <Badge variant={
-                              campaign.status === 'sent' ? 'default' :
-                              campaign.status === 'sending' ? 'secondary' :
-                              campaign.status === 'failed' ? 'destructive' : 'outline'
-                            }>
-                              {campaign.status}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                            {campaign.subject}
-                          </p>
-                          <div className="flex justify-between items-center text-xs text-gray-500">
-                            <span>{campaign.targetAudience} • {campaign.recipientCount} recipients</span>
-                            <span>{new Date(campaign.createdAt).toLocaleDateString()}</span>
-                          </div>
-                          {campaign.status === 'draft' && (
-                            <Button 
-                              size="sm" 
-                              className="mt-2"
-                              onClick={() => sendEmailCampaign(campaign.id)}
-                            >
-                              <Send className="mr-2 h-3 w-3" />
-                              Send Now
-                            </Button>
-                          )}
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <EnhancedEmailCampaigns 
+              campaignForm={campaignForm}
+              setCampaignForm={setCampaignForm}
+              sendEmailCampaign={sendEmailCampaign}
+              campaigns={campaigns}
+            />
           </TabsContent>
 
           {/* Activity Tab */}
