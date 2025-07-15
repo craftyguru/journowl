@@ -49,6 +49,12 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
     retry: false,
   });
 
+  // Fetch prompt usage for AI counter
+  const { data: promptUsageData } = useQuery({
+    queryKey: ["/api/prompts/usage"],
+    retry: false,
+  });
+
   const [title, setTitle] = useState(entry?.title || "");
   const [content, setContent] = useState(entry?.content || "");
   const [mood, setMood] = useState(entry?.mood || "😊");
@@ -1593,7 +1599,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               </div>
 
               {/* Quick AI Actions */}
-              <div className="flex gap-1 mt-2 flex-wrap">
+              <div className="flex gap-1 mt-2 flex-wrap items-center">
                 <Button 
                   onClick={() => sendToAi("Create a journal writing prompt based on everything we've discussed in this conversation")}
                   variant="outline" 
@@ -1612,6 +1618,15 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   <Eye className="w-3 h-3 mr-1" />
                   Review
                 </Button>
+                
+                {/* AI Prompt Counter */}
+                {promptUsageData && (
+                  <div className="ml-auto bg-gradient-to-r from-purple-100 to-pink-100 px-2 py-1 rounded-full border border-purple-200">
+                    <span className="text-xs font-medium text-purple-700">
+                      ✨ {promptUsageData.promptsRemaining}/100
+                    </span>
+                  </div>
+                )}
                 {photos.length > 0 && (
                   <Button 
                     onClick={() => sendToAi("Tell me more about my photos and suggest related writing topics")}
