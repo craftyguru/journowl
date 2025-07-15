@@ -232,14 +232,10 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
   }
 
   if (error || !user) {
-    // User is not authenticated, redirect to auth
-    console.log('Auth error, redirecting:', error);
-    setTimeout(() => window.location.reload(), 100);
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-        <div className="text-white">Redirecting to login...</div>
-      </div>
-    );
+    // User is not authenticated, show landing page
+    console.log('User not authenticated, showing landing:', error);
+    window.location.href = '/';
+    return null;
   }
 
   // Admin Dashboard for admin users
