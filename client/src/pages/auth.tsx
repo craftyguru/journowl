@@ -97,10 +97,10 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
           className="w-full max-w-md"
           whileHover={{ scale: 1.02, rotateY: 2 }}
         >
-          <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-purple-500/30 transition-all duration-500 overflow-hidden relative">
+          <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-purple-500/30 transition-all duration-500 overflow-hidden relative" style={{ pointerEvents: 'auto' }}>
             {/* Animated background pattern */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5"></div>
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5" style={{ pointerEvents: 'none' }}></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 animate-pulse" style={{ pointerEvents: 'none' }}></div>
             <CardHeader className="text-center pb-6">
               <motion.div
                 initial={{ scale: 0 }}
@@ -183,6 +183,8 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                         onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                         placeholder="Enter your email"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
+                        autoComplete="email"
                       />
                     </motion.div>
                     <motion.div
@@ -198,6 +200,8 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                         onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                         placeholder="Enter your password"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
+                        autoComplete="current-password"
                       />
                     </motion.div>
                     <motion.div
@@ -334,6 +338,8 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                         onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
                         placeholder="Enter your email"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
+                        autoComplete="email"
                       />
                     </motion.div>
                     <motion.div
@@ -349,6 +355,8 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                         onChange={(e) => setRegisterData(prev => ({ ...prev, username: e.target.value }))}
                         placeholder="Choose a username"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
+                        autoComplete="username"
                       />
                     </motion.div>
                     <motion.div
@@ -364,6 +372,8 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                         onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
                         placeholder="Create a password"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
+                        autoComplete="new-password"
                       />
                     </motion.div>
                     <motion.div
@@ -379,6 +389,8 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
                         onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                         placeholder="Confirm your password"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
+                        autoComplete="new-password"
                       />
                     </motion.div>
                     <Button 
