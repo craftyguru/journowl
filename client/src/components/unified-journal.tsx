@@ -62,6 +62,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
   const [aiAnalyzing, setAiAnalyzing] = useState(false);
+  const [lastFinalTranscript, setLastFinalTranscript] = useState('');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -125,7 +126,20 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
         }
         
         // Show interim results in the input field
-        setAiInput(finalTranscript + interimTranscript);
+        setAiInput(lastFinalTranscript + finalTranscript + interimTranscript);
+        
+        // When we get final transcript, send it to AI for interactive response
+        if (finalTranscript && finalTranscript !== lastFinalTranscript) {
+          const newContent = lastFinalTranscript + finalTranscript;
+          setLastFinalTranscript(newContent);
+          
+          // Send the complete message to AI for real-time interaction
+          setTimeout(() => {
+            sendToAi(newContent);
+            setAiInput(''); // Clear input after sending
+            setLastFinalTranscript(''); // Reset for next interaction
+          }, 500);
+        }
       };
 
       aiRecognitionInstance.onerror = (event) => {
@@ -203,12 +217,16 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
       if (isAiListening) {
         aiRecognition.stop();
         setIsAiListening(false);
+        setAiInput('');
+        setLastFinalTranscript('');
       } else {
+        setAiInput('');
+        setLastFinalTranscript('');
         aiRecognition.start();
         setIsAiListening(true);
         setAiMessages(prev => [...prev, {
           type: 'ai',
-          message: '🎤 I\'m listening... Speak your question or request!'
+          message: '🎤 I\'m listening... Start speaking and I\'ll respond to what you say!'
         }]);
       }
     } else {
