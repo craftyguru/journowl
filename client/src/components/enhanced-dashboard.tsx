@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb } from "lucide-react";
 import { motion } from "framer-motion";
+import InteractiveJournal from "./interactive-journal";
 
 const moodData = [
   { day: 'Mon', mood: 4, entries: 1 },
@@ -65,102 +66,156 @@ const prompts = [
 
 export default function EnhancedDashboard() {
   return (
-    <div className="p-6 space-y-6 bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 min-h-screen">
+    <div className="relative p-6 space-y-6 bg-gradient-to-br from-slate-900 via-purple-900/20 to-pink-900/20 min-h-screen overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-xl animate-pulse"></div>
+        <div className="absolute top-60 right-20 w-24 h-24 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-full blur-lg animate-bounce"></div>
+        <div className="absolute bottom-40 left-1/3 w-40 h-40 bg-gradient-to-r from-emerald-500/15 to-teal-500/15 rounded-full blur-2xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/3 right-1/4 w-20 h-20 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-full blur-lg animate-bounce delay-500"></div>
+      </div>
       {/* Welcome Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center"
+        transition={{ duration: 0.6 }}
+        className="relative text-center bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-3xl p-8 shadow-2xl border border-purple-500/20 overflow-hidden"
       >
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-          Welcome back, Emma! ✨
-        </h1>
-        <p className="text-gray-600 text-lg">Ready to continue your journaling journey?</p>
-        <div className="flex items-center justify-center gap-4 mt-4">
-          <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1">
-            Level 12 • Mindful Writer
-          </Badge>
-          <Badge variant="outline" className="border-amber-500 text-amber-600">
-            28-day streak 🔥
-          </Badge>
+        {/* Animated border effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-3xl blur-sm animate-pulse"></div>
+        <div className="relative z-10">
+          <motion.h1 
+            initial={{ scale: 0.9 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-3"
+          >
+            Welcome back, Emma! ✨
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-gray-300 text-lg"
+          >
+            Ready to continue your creative journaling journey?
+          </motion.p>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="flex items-center justify-center gap-3 mt-6"
+          >
+            <div className="px-6 py-3 bg-gradient-to-r from-purple-500/80 to-pink-500/80 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-purple-300/30 hover:scale-105 transition-transform">
+              Level 12 - Beautiful Writer ✨
+            </div>
+            <div className="px-6 py-3 bg-gradient-to-r from-emerald-500/80 to-teal-500/80 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-emerald-300/30 hover:scale-105 transition-transform">
+              🔥 28-day streak 🔥
+            </div>
+          </motion.div>
         </div>
       </motion.div>
 
-      {/* Quick Stats */}
+      {/* Artistic Stats Cards */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-4 gap-4"
+        className="grid grid-cols-1 md:grid-cols-4 gap-6"
       >
-        <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-purple-100 text-sm">Total Entries</p>
-                <p className="text-2xl font-bold">142</p>
+        <motion.div
+          whileHover={{ scale: 1.05, rotateY: 5 }}
+          className="relative bg-gradient-to-br from-purple-800/80 via-purple-700/70 to-purple-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-400/30 overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-20 h-20 bg-purple-400/20 rounded-full blur-xl"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-300 rounded-xl flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-white" />
               </div>
-              <BookOpen className="w-8 h-8 text-purple-200" />
+              <div className="text-purple-200 text-xs uppercase tracking-wider">Entries</div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="text-3xl font-bold text-white mb-1">142</div>
+            <div className="text-purple-300 text-sm">+3 this week</div>
+          </div>
+        </motion.div>
 
-        <Card className="bg-gradient-to-br from-pink-500 to-pink-600 text-white shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-pink-100 text-sm">Words Written</p>
-                <p className="text-2xl font-bold">28,750</p>
+        <motion.div
+          whileHover={{ scale: 1.05, rotateY: 5 }}
+          className="relative bg-gradient-to-br from-pink-800/80 via-pink-700/70 to-pink-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-pink-400/30 overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-20 h-20 bg-pink-400/20 rounded-full blur-xl"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-pink-300 rounded-xl flex items-center justify-center">
+                <Zap className="w-6 h-6 text-white" />
               </div>
-              <Zap className="w-8 h-8 text-pink-200" />
+              <div className="text-pink-200 text-xs uppercase tracking-wider">Words</div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="text-3xl font-bold text-white mb-1">28,750</div>
+            <div className="text-pink-300 text-sm">+1,240 this week</div>
+          </div>
+        </motion.div>
 
-        <Card className="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-emerald-100 text-sm">Current Streak</p>
-                <p className="text-2xl font-bold">28 days</p>
+        <motion.div
+          whileHover={{ scale: 1.05, rotateY: 5 }}
+          className="relative bg-gradient-to-br from-emerald-800/80 via-emerald-700/70 to-emerald-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-emerald-400/30 overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-12 h-12 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-xl flex items-center justify-center">
+                <Target className="w-6 h-6 text-white" />
               </div>
-              <Target className="w-8 h-8 text-emerald-200" />
+              <div className="text-emerald-200 text-xs uppercase tracking-wider">Streak</div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="text-3xl font-bold text-white mb-1">28</div>
+            <div className="text-emerald-300 text-sm">days strong 🔥</div>
+          </div>
+        </motion.div>
 
-        <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-amber-100 text-sm">XP Points</p>
-                <p className="text-2xl font-bold">11,450</p>
+        <motion.div
+          whileHover={{ scale: 1.05, rotateY: 5 }}
+          className="relative bg-gradient-to-br from-amber-800/80 via-amber-700/70 to-amber-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-amber-400/30 overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 w-20 h-20 bg-amber-400/20 rounded-full blur-xl"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-between mb-2">
+              <div className="w-12 h-12 bg-gradient-to-r from-amber-400 to-amber-300 rounded-xl flex items-center justify-center">
+                <Star className="w-6 h-6 text-white" />
               </div>
-              <Star className="w-8 h-8 text-amber-200" />
+              <div className="text-amber-200 text-xs uppercase tracking-wider">XP</div>
             </div>
-          </CardContent>
-        </Card>
+            <div className="text-3xl font-bold text-white mb-1">11,450</div>
+            <div className="text-amber-300 text-sm">Level 12 ✨</div>
+          </div>
+        </motion.div>
       </motion.div>
 
       {/* Main Content Tabs */}
-      <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 bg-white shadow-sm">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white">
-            Overview
+      <Tabs defaultValue="journal" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5 bg-slate-800/90 backdrop-blur-lg border border-purple-500/20 shadow-2xl">
+          <TabsTrigger value="journal" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
+            📖 Journal
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white">
-            Analytics
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
+            📊 Analytics
           </TabsTrigger>
-          <TabsTrigger value="achievements" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white">
-            Achievements
+          <TabsTrigger value="achievements" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
+            🏆 Achievements
           </TabsTrigger>
-          <TabsTrigger value="goals" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white">
-            Goals
+          <TabsTrigger value="goals" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
+            🎯 Goals
           </TabsTrigger>
-          <TabsTrigger value="insights" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white">
-            AI Insights
+          <TabsTrigger value="insights" className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-300 transition-all">
+            🤖 AI Insights
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="journal">
+          <InteractiveJournal />
+        </TabsContent>
 
         <TabsContent value="overview" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Quick Actions */}
@@ -233,37 +288,50 @@ export default function EnhancedDashboard() {
         </TabsContent>
 
         <TabsContent value="analytics" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-white shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-700">
-                <Heart className="w-5 h-5" />
-                Mood Trends
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={moodData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
-                  <YAxis domain={[1, 5]} />
-                  <Tooltip />
-                  <Area 
-                    type="monotone" 
-                    dataKey="mood" 
-                    stroke="#8B5CF6" 
-                    fill="url(#moodGradient)" 
-                    strokeWidth={2}
-                  />
-                  <defs>
-                    <linearGradient id="moodGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-                      <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1}/>
-                    </linearGradient>
-                  </defs>
-                </AreaChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <Card className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg border border-purple-500/20 shadow-2xl">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Heart className="w-5 h-5 text-pink-400" />
+                  Mood Trends
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={moodData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <XAxis dataKey="day" stroke="#9CA3AF" />
+                    <YAxis domain={[1, 5]} stroke="#9CA3AF" />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: '#1F2937', 
+                        border: '1px solid #7C3AED', 
+                        borderRadius: '8px',
+                        color: '#F3F4F6'
+                      }} 
+                    />
+                    <Area
+                      type="monotone" 
+                      dataKey="mood" 
+                      stroke="#8B5CF6" 
+                      fill="url(#moodGradient)" 
+                      strokeWidth={2}
+                    />
+                    <defs>
+                      <linearGradient id="moodGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.1}/>
+                      </linearGradient>
+                    </defs>
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </motion.div>
 
           <Card className="bg-white shadow-lg">
             <CardHeader>
