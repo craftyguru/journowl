@@ -118,6 +118,16 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             >
               🤖 AI Insights
             </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "referral" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("referral");
+                setMobileMenuOpen(false);
+              }}
+            >
+              🎁 Refer Friends
+            </Button>
             {user && (
               <Button
                 variant="ghost"

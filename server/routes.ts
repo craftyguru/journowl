@@ -1281,6 +1281,97 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
     }
   });
 
+  // Referral system endpoints
+  app.get("/api/referrals", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Generate referral code if not exists
+      const referralCode = user.referralCode || `JOURNOWL${user.username.toUpperCase()}`;
+      
+      // Get referral stats (mock data for now, would need referrals table)
+      const referralStats = {
+        totalReferrals: 0,
+        successfulReferrals: 0,
+        pendingReferrals: 0,
+        totalRewards: 0,
+        referralCode: referralCode,
+        recentReferrals: []
+      };
+
+      res.json(referralStats);
+    } catch (error: any) {
+      console.error("Error fetching referrals:", error);
+      res.status(500).json({ message: "Failed to fetch referral data" });
+    }
+  });
+
+  app.post("/api/referrals/invite", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { emails, message } = req.body;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Generate referral code if not exists
+      const referralCode = user.referralCode || `JOURNOWL${user.username.toUpperCase()}`;
+      const referralLink = `${req.protocol}://${req.get('host')}/register?ref=${referralCode}`;
+      
+      // Send invitation emails (mock for now)
+      for (const email of emails) {
+        console.log(`Sending referral invitation to ${email} from ${user.username}`);
+        // Here you would integrate with SendGrid or similar service
+        // await sendReferralInvitation(email, user.username, referralLink, message);
+      }
+
+      res.json({ 
+        success: true, 
+        message: `Invitations sent to ${emails.length} friends`,
+        emailsSent: emails.length
+      });
+    } catch (error: any) {
+      console.error("Error sending referral invitations:", error);
+      res.status(500).json({ message: "Failed to send invitations" });
+    }
+  });
+
+  app.post("/api/referrals/claim", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { referralCode } = req.body;
+      
+      // Find referrer by code
+      const referrer = await storage.getUserByReferralCode(referralCode);
+      
+      if (!referrer) {
+        return res.status(404).json({ message: "Invalid referral code" });
+      }
+
+      // Award 100 prompts to both users
+      await Promise.all([
+        storage.addUserPrompts(userId, 100),
+        storage.addUserPrompts(referrer.id, 100)
+      ]);
+
+      res.json({ 
+        success: true, 
+        message: "Referral bonus claimed! Both you and your friend received 100 AI prompts!",
+        promptsAwarded: 100
+      });
+    } catch (error: any) {
+      console.error("Error claiming referral:", error);
+      res.status(500).json({ message: "Failed to claim referral bonus" });
+    }
+  });
+
   // Advanced analytics endpoint (admin only)
   app.get("/api/admin/advanced-analytics", requireAdmin, async (req: any, res) => {
     try {

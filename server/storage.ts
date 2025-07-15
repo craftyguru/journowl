@@ -99,6 +99,10 @@ export interface IStorage {
   // Subscription operations
   updateUserSubscription(userId: number, subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }): Promise<void>;
   updateStorageUsage(userId: number, additionalMB: number): Promise<void>;
+  
+  // Referral operations
+  getUserByReferralCode(referralCode: string): Promise<User | undefined>;
+  addUserPrompts(userId: number, promptsToAdd: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -778,6 +782,25 @@ export class DatabaseStorage implements IStorage {
     await db.update(users)
       .set({ 
         storageUsedMB: newUsage
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async getUserByReferralCode(referralCode: string): Promise<User | undefined> {
+    const result = await db.select().from(users).where(eq(users.referralCode, referralCode)).limit(1);
+    return result[0];
+  }
+
+  async addUserPrompts(userId: number, promptsToAdd: number): Promise<void> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error('User not found');
+
+    const currentPrompts = user.promptsRemaining || 0;
+    const newPrompts = currentPrompts + promptsToAdd;
+
+    await db.update(users)
+      .set({ 
+        promptsRemaining: newPrompts
       })
       .where(eq(users.id, userId));
   }

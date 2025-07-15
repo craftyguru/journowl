@@ -14,6 +14,7 @@ import AccountSelector from "@/components/account-selector";
 import AdminDashboard from "@/components/admin-dashboard";
 import EnhancedDashboard from "@/components/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
+import ReferralPage from "@/components/referral-page";
 import LandingHero from "@/components/ui/LandingHero";
 import { HelpBubble } from "@/components/HelpBubble";
 import { SupportChatBubble } from "@/components/SupportChatBubble";
@@ -27,7 +28,7 @@ function App() {
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   
   const handleNavigate = (view: string) => {
-    if (view === "dashboard" || view === "insights" || view === "demo" || view === "landing" || view === "auth") {
+    if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth") {
       setCurrentView(view);
     }
   };
@@ -259,7 +260,7 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
 
   // Regular app interface for standard users
   // Ensure we always show dashboard as default for authenticated users
-  const validView = (currentView === "dashboard" || currentView === "insights") ? currentView : "dashboard";
+  const validView = (currentView === "dashboard" || currentView === "insights" || currentView === "referral") ? currentView : "dashboard";
   
   return (
     <div className="min-h-screen bg-background">
@@ -271,6 +272,7 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
           <>
             {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} />}
             {validView === "insights" && <InsightsPage />}
+            {validView === "referral" && <ReferralPage />}
           </>
         )}
       </main>

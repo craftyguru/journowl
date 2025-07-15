@@ -188,10 +188,14 @@ export default function UsageMeters() {
               </div>
               <Button 
                 onClick={() => setShowSubscriptionModal(true)}
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+                className="w-full relative overflow-hidden bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold text-lg shadow-2xl border-4 border-red-500 animate-pulse hover:scale-105 transition-all duration-300 transform hover:shadow-[0_0_25px_rgba(239,68,68,0.8),0_0_50px_rgba(239,68,68,0.6)] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700"
+                style={{
+                  animation: 'goldButtonPulse 2s ease-in-out infinite',
+                  boxShadow: '0 0 20px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.4), inset 0 0 15px rgba(255, 215, 0, 0.3)'
+                }}
               >
-                <Crown className="w-4 h-4 mr-2" />
-                Upgrade Subscription
+                <Crown className="w-5 h-5 mr-2 text-yellow-900" />
+                <span className="relative z-10">Upgrade Subscription</span>
               </Button>
             </div>
           </CardContent>
