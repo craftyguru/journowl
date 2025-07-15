@@ -316,6 +316,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         stats = await storage.createUserStats(req.session.userId);
       }
       
+      // Force recalculate stats to ensure accuracy
+      await storage.recalculateUserStats(req.session.userId);
+      stats = await storage.getUserStats(req.session.userId);
+      
       res.json({ stats });
     } catch (error: any) {
       res.status(500).json({ message: error.message });

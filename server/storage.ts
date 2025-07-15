@@ -64,6 +64,7 @@ export interface IStorage {
   getUserStats(userId: number): Promise<UserStats | undefined>;
   updateUserStats(userId: number, stats: Partial<UserStats>): Promise<void>;
   createUserStats(userId: number): Promise<UserStats>;
+  recalculateUserStats(userId: number): Promise<void>;
 
   // Goal operations
   getUserGoals(userId: number): Promise<Goal[]>;
@@ -257,6 +258,73 @@ export class DatabaseStorage implements IStorage {
   async createUserStats(userId: number): Promise<UserStats> {
     const result = await db.insert(userStats).values({ userId }).returning();
     return result[0];
+  }
+
+  async recalculateUserStats(userId: number): Promise<void> {
+    // Get all journal entries for this user
+    const entries = await db.select().from(journalEntries)
+      .where(eq(journalEntries.userId, userId))
+      .orderBy(desc(journalEntries.createdAt));
+    
+    // Calculate total entries and words
+    const totalEntries = entries.length;
+    const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
+    
+    // Calculate current streak
+    let currentStreak = 0;
+    let longestStreak = 0;
+    let consecutiveDays = 0;
+    
+    if (entries.length > 0) {
+      const today = new Date();
+      const entryDates = entries.map(entry => {
+        const date = new Date(entry.createdAt);
+        return date.toDateString();
+      });
+      
+      // Remove duplicates and sort
+      const uniqueDates = [...new Set(entryDates)].sort((a, b) => 
+        new Date(b).getTime() - new Date(a).getTime()
+      );
+      
+      // Calculate current streak from today backwards
+      for (let i = 0; i < uniqueDates.length; i++) {
+        const entryDate = new Date(uniqueDates[i]);
+        const expectedDate = new Date(today);
+        expectedDate.setDate(expectedDate.getDate() - i);
+        
+        if (entryDate.toDateString() === expectedDate.toDateString()) {
+          currentStreak = i + 1;
+        } else {
+          break;
+        }
+      }
+      
+      // Calculate longest streak
+      let tempStreak = 1;
+      for (let i = 1; i < uniqueDates.length; i++) {
+        const prevDate = new Date(uniqueDates[i - 1]);
+        const currDate = new Date(uniqueDates[i]);
+        const daysDiff = Math.floor((prevDate.getTime() - currDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (daysDiff === 1) {
+          tempStreak++;
+        } else {
+          longestStreak = Math.max(longestStreak, tempStreak);
+          tempStreak = 1;
+        }
+      }
+      longestStreak = Math.max(longestStreak, tempStreak);
+    }
+    
+    // Update user stats
+    await this.updateUserStats(userId, {
+      totalEntries,
+      totalWords,
+      currentStreak,
+      longestStreak,
+      lastEntryDate: entries.length > 0 ? new Date(entries[0].createdAt) : null,
+    });
   }
 
   async updateUser(id: number, updates: Partial<User>): Promise<void> {
