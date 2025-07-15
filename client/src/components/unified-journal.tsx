@@ -162,27 +162,40 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
     setAiAnalyzing(true);
 
     try {
-      // Simulate AI response - in real app, this would call your AI service
-      setTimeout(() => {
-        const responses = [
-          "That's a fascinating perspective! Want me to help you explore that feeling deeper?",
-          "I love that idea! How about writing about how this connects to your goals?",
-          "That reminds me of your mood today. What triggered that emotion?",
-          "Great insight! Consider adding: What did you learn from this experience?",
-          "Interesting! Would you like me to suggest some writing prompts about this topic?"
-        ];
-        
+      const response = await fetch('/api/ai/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          message,
+          context: {
+            currentContent: content,
+            mood,
+            title,
+            photos: photos.map(p => ({
+              description: p.analysis?.description,
+              tags: p.analysis?.tags
+            })).filter(p => p.description),
+            previousMessages: aiMessages.slice(-5) // Last 5 messages for context
+          }
+        })
+      });
+
+      if (response.ok) {
+        const { reply } = await response.json();
         setAiMessages(prev => [...prev, {
           type: 'ai',
-          message: responses[Math.floor(Math.random() * responses.length)]
+          message: reply
         }]);
-        setAiAnalyzing(false);
-      }, 1500);
+      } else {
+        throw new Error('AI service unavailable');
+      }
     } catch (error) {
+      console.error('AI chat error:', error);
       setAiMessages(prev => [...prev, {
         type: 'ai',
-        message: 'I had trouble processing that. Can you try again?'
+        message: 'I had trouble processing that. Can you try again? Make sure you\'re logged in and have an active internet connection.'
       }]);
+    } finally {
       setAiAnalyzing(false);
     }
   };

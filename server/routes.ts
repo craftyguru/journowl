@@ -163,6 +163,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/ai/generate-prompt", requireAuth, async (req: any, res) => {
+    try {
+      const { recentEntries, mood } = req.body;
+      const prompt = await generatePersonalizedPrompt(recentEntries || []);
+      res.json({ prompt });
+    } catch (error: any) {
+      console.error("Error generating prompt:", error);
+      res.status(500).json({ message: "Failed to generate prompt" });
+    }
+  });
+
+  app.post("/api/ai/chat", requireAuth, async (req: any, res) => {
+    try {
+      const { message, context } = req.body;
+      
+      // Build context for AI
+      let systemPrompt = `You are an AI writing assistant helping someone with their personal journal. Be supportive, insightful, and encouraging. Help them explore their thoughts and feelings deeper.
+
+Current journal context:
+- Title: ${context.title || 'Untitled'}
+- Mood: ${context.mood}
+- Current content: ${context.currentContent || 'No content yet'}`;
+
+      if (context.photos && context.photos.length > 0) {
+        systemPrompt += `\n- Photos analyzed: ${context.photos.map(p => p.description).join(', ')}`;
+      }
+
+      systemPrompt += `\n\nRespond naturally and helpfully. Ask follow-up questions, suggest writing prompts, or help them reflect on their experiences. Keep responses under 150 words.`;
+
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: message }
+          ],
+          max_tokens: 200,
+          temperature: 0.7
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`OpenAI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const reply = data.choices[0].message.content;
+
+      res.json({ reply });
+    } catch (error: any) {
+      console.error("Error in AI chat:", error);
+      res.status(500).json({ message: "Failed to get AI response" });
+    }
+  });
+
   app.get("/api/ai/insight", requireAuth, async (req: any, res) => {
     try {
       const entries = await storage.getJournalEntries(req.session.userId, 5);
@@ -181,36 +241,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Photo AI routes
   app.post("/api/ai/analyze-photo", requireAuth, async (req: any, res) => {
     try {
-      const { image } = req.body;
-      if (!image) {
+      const { base64Image, currentMood } = req.body;
+      if (!base64Image) {
         return res.status(400).json({ error: "Image data required" });
       }
 
       const { analyzePhoto } = await import("./services/photo-ai");
-      const analysis = await analyzePhoto(image);
+      const analysis = await analyzePhoto(base64Image);
       res.json(analysis);
     } catch (error: any) {
       console.error("Error analyzing photo:", error);
       res.status(500).json({ error: "Failed to analyze photo" });
-    }
-  });
-
-  app.post("/api/ai/generate-prompt", requireAuth, async (req: any, res) => {
-    try {
-      const { mood, previousContent, photos, tags } = req.body;
-      
-      const { generateWritingPromptFromContext } = await import("./services/photo-ai");
-      const prompt = await generateWritingPromptFromContext({
-        mood,
-        previousContent,
-        photoAnalysis: photos,
-        tags
-      });
-      
-      res.json({ prompt });
-    } catch (error: any) {
-      console.error("Error generating prompt:", error);
-      res.status(500).json({ error: "Failed to generate prompt" });
     }
   });
 
