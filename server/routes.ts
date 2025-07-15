@@ -70,6 +70,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           title: "Welcome to JournOwl!",
           description: "You've taken your first step on the journey to wise journaling",
           icon: "🦉",
+          type: "milestone",
           category: "getting_started",
           rarity: "common",
           xpReward: 100,
@@ -112,6 +113,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.redirect('/');
     });
+  });
+
+  app.get("/api/auth/me", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json({ 
+        user: {
+          id: user.id, 
+          email: user.email, 
+          username: user.username, 
+          level: user.level, 
+          xp: user.xp, 
+          role: user.role 
+        }
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
 
   app.post("/api/auth/logout", (req, res) => {

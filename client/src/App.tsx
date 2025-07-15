@@ -49,6 +49,7 @@ function App() {
 
   const handleAuthenticated = () => {
     setIsAuthenticated(true);
+    setCurrentView("dashboard"); // Immediately redirect to dashboard after login
   };
 
   // Check authentication status on app load
@@ -228,10 +229,18 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
   }
 
   if (error || !user) {
-    // User is not authenticated, show landing page
-    console.log('User not authenticated, showing landing:', error);
-    window.location.href = '/';
-    return null;
+    // User is not authenticated, redirect to landing page
+    console.log('User not authenticated, redirecting to landing:', error);
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 100);
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="text-white text-center">
+          <p>Redirecting to login...</p>
+        </div>
+      </div>
+    );
   }
 
   // Admin Dashboard for admin users

@@ -18,26 +18,7 @@ import {
 } from "lucide-react";
 import { type JournalEntry, type UserStats } from "@/lib/types";
 
-// Mock data for demo purposes (since we're in demo mode)
-const demoEntries = [
-  { id: 1, title: "Morning Reflections", content: "Today feels promising...", mood: "😊", wordCount: 125, createdAt: "2024-03-15T09:00:00Z", tags: ["morning", "optimistic"] },
-  { id: 2, title: "Challenging Day", content: "Work was tough but I learned...", mood: "🤔", wordCount: 200, createdAt: "2024-03-14T18:30:00Z", tags: ["work", "learning"] },
-  { id: 3, title: "Weekend Adventure", content: "Hiking was amazing...", mood: "😄", wordCount: 180, createdAt: "2024-03-13T15:00:00Z", tags: ["adventure", "nature"] },
-  { id: 4, title: "Quiet Evening", content: "Reading by the fireplace...", mood: "😐", wordCount: 95, createdAt: "2024-03-12T20:00:00Z", tags: ["peaceful", "books"] },
-  { id: 5, title: "Celebration!", content: "Got the promotion I wanted...", mood: "🎉", wordCount: 220, createdAt: "2024-03-11T17:00:00Z", tags: ["success", "career"] },
-  { id: 6, title: "Family Time", content: "Spent the day with loved ones...", mood: "😊", wordCount: 150, createdAt: "2024-03-10T12:00:00Z", tags: ["family", "love"] },
-  { id: 7, title: "New Ideas", content: "Brainstorming session was productive...", mood: "😄", wordCount: 175, createdAt: "2024-03-09T14:00:00Z", tags: ["creativity", "work"] }
-];
-
-const demoStats = {
-  totalEntries: 47,
-  totalWords: 8350,
-  currentStreak: 12,
-  longestStreak: 23,
-  bestMoodDay: "Friday",
-  mostPhotos: 15,
-  averageMood: "😊"
-};
+// Real data from API
 
 export default function InsightsPage() {
   const [viewMode, setViewMode] = useState<"week" | "month" | "year">("month");
@@ -48,9 +29,32 @@ export default function InsightsPage() {
   const [aiQuestion, setAiQuestion] = useState("");
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  // Use demo data for demo mode
-  const entries = demoEntries;
-  const stats = demoStats;
+  // Fetch real user data
+  const { data: entriesData = [], isLoading: entriesLoading } = useQuery({
+    queryKey: ['/api/journal/entries'],
+    retry: false,
+  });
+
+  const { data: statsData, isLoading: statsLoading } = useQuery({
+    queryKey: ['/api/stats'],
+    retry: false,
+  });
+
+  const { data: insightsData, isLoading: insightsLoading } = useQuery({
+    queryKey: ['/api/insights'],
+    retry: false,
+  });
+
+  if (entriesLoading || statsLoading || insightsLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
+  const entries = entriesData || [];
+  const stats = statsData || { totalEntries: 0, totalWords: 0, currentStreak: 0, longestStreak: 0 };
 
   // Process mood data for charts
   const moodData = entries.reduce((acc, entry) => {

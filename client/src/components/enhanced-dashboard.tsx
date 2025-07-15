@@ -14,74 +14,7 @@ import SmartJournalEditor from "./smart-journal-editor";
 import UnifiedJournal from "./unified-journal";
 import InteractiveCalendar from "./interactive-calendar";
 
-const moodData = [
-  { day: 'Mon', mood: 4, entries: 1 },
-  { day: 'Tue', mood: 5, entries: 2 },
-  { day: 'Wed', mood: 3, entries: 1 },
-  { day: 'Thu', mood: 4, entries: 3 },
-  { day: 'Fri', mood: 5, entries: 2 },
-  { day: 'Sat', mood: 4, entries: 1 },
-  { day: 'Sun', mood: 5, entries: 2 },
-];
-
-const progressData = [
-  { month: 'Jan', entries: 15, words: 3200 },
-  { month: 'Feb', entries: 22, words: 4800 },
-  { month: 'Mar', entries: 28, words: 6100 },
-  { month: 'Apr', entries: 35, words: 7500 },
-  { month: 'May', entries: 42, words: 9200 },
-  { month: 'Jun', entries: 38, words: 8700 },
-];
-
-const achievements = [
-  { id: 1, title: "First Steps", description: "Wrote your first journal entry", icon: "🎯", unlocked: true, rarity: "common" },
-  { id: 2, title: "Consistent Writer", description: "7-day writing streak", icon: "🔥", unlocked: true, rarity: "rare" },
-  { id: 3, title: "Wordsmith", description: "Wrote 1000+ words in a single entry", icon: "✍️", unlocked: true, rarity: "epic" },
-  { id: 4, title: "Mood Master", description: "Used all mood types", icon: "🌈", unlocked: false, rarity: "legendary" },
-  { id: 5, title: "AI Collaborator", description: "Used 50 AI prompts", icon: "🤖", unlocked: false, rarity: "rare" },
-  { id: 6, title: "Reflection Guru", description: "30-day streak", icon: "🧘", unlocked: false, rarity: "legendary" },
-];
-
-const goals = [
-  { id: 1, title: "Write Daily", description: "Write at least one entry every day", progress: 75, target: 30, current: 23, type: "streak" },
-  { id: 2, title: "Word Count Champion", description: "Write 10,000 words this month", progress: 65, target: 10000, current: 6500, type: "words" },
-  { id: 3, title: "Mood Tracker", description: "Track mood for 21 days", progress: 90, target: 21, current: 19, type: "consistency" },
-];
-
-// Emma's demo data for test users
-const emmaDemoEntries = [
-  { id: 1, title: "Morning Reflections", mood: "😊", date: "Today", wordCount: 287, tags: ["gratitude", "morning"] },
-  { id: 2, title: "Work Breakthrough", mood: "🎉", date: "Yesterday", wordCount: 423, tags: ["career", "success"] },
-  { id: 3, title: "Weekend Adventures", mood: "😄", date: "2 days ago", wordCount: 356, tags: ["fun", "family"] },
-  { id: 4, title: "Quiet Contemplation", mood: "🤔", date: "3 days ago", wordCount: 198, tags: ["thoughts", "philosophy"] },
-];
-
-const emmaDemoStats = {
-  totalEntries: 47,
-  currentStreak: 12,
-  totalWords: 8420,
-  averageMood: 4.2,
-  longestStreak: 23,
-  wordsThisWeek: 1250
-};
-
-const emmaDemoAchievements = [
-  { id: 1, title: "First Steps", description: "Wrote your first journal entry", icon: "🎯", unlocked: true, rarity: "common" },
-  { id: 2, title: "Consistent Writer", description: "7-day writing streak", icon: "🔥", unlocked: true, rarity: "rare" },
-  { id: 3, title: "Wordsmith", description: "Wrote 1000+ words in a single entry", icon: "✍️", unlocked: true, rarity: "epic" },
-  { id: 4, title: "Mood Master", description: "Used all mood types", icon: "🌈", unlocked: true, rarity: "legendary" },
-  { id: 5, title: "AI Collaborator", description: "Used 50 AI prompts", icon: "🤖", unlocked: true, rarity: "rare" },
-];
-
-// AI insights will be fetched from backend instead of hardcoded
-
-const prompts = [
-  "What are three things you're grateful for today?",
-  "Describe a moment that changed your perspective",
-  "What would you tell your younger self?",
-  "Write about a challenge you overcame recently",
-  "What does success mean to you right now?"
-];
+// All data now fetched from API endpoints instead of hardcoded values
 
 interface EnhancedDashboardProps {
   onSwitchToKid?: () => void;
@@ -115,22 +48,19 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
   
   const user = userResponse?.user;
   
-  // Check if demo mode is enabled via URL parameter
-  const urlParams = new URLSearchParams(window.location.search);
-  const isDemoMode = urlParams.get('demo') === 'true';
-  
-  // Use Emma's demo data when ?demo=true, real data otherwise
-  const stats = isDemoMode ? emmaDemoStats : (statsResponse?.stats || {
+  // Use real user data from API
+  const stats = statsResponse || {
     totalEntries: 0,
     currentStreak: 0,
     totalWords: 0,
     averageMood: 0,
     longestStreak: 0,
     wordsThisWeek: 0
-  });
-  const entries = isDemoMode ? emmaDemoEntries : (entriesResponse || []);
-  const userAchievements = isDemoMode ? emmaDemoAchievements : (achievementsResponse?.achievements || []);
+  };
 
+  const entries = entriesResponse || [];
+  const achievements = achievementsResponse || [];
+  const insights = insightsResponse;
   const handleSaveEntry = (entryData: any) => {
     console.log('Saving entry:', entryData);
     // Here you would typically save to backend
@@ -166,10 +96,10 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
       ...entry,
       date: date,
       createdAt: date.toISOString(),
-      photos: isDemoMode && index === 1 ? ["photo1.jpg", "photo2.jpg"] : [], // Add photos for demo mode
+      photos: entry.photos || [],
       isPinned: index === 0, // Pin the first entry
       isPrivate: index === 3, // Make one entry private
-      tags: isDemoMode ? ["mood", "reflection", "daily"] : (entry.tags || [])
+      tags: entry.tags || []
     };
   });
 
@@ -219,7 +149,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             transition={{ duration: 0.5, delay: 0.2 }}
             className="text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-3"
           >
-            Welcome back to JournOwl, {isDemoMode ? 'Emma' : (user?.username || 'User')}! 🦉✨
+            Welcome back to JournOwl, {user?.username || 'User'}! 🦉✨
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
