@@ -163,7 +163,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/ai/generate-prompt", requireAuth, async (req: any, res) => {
+  app.post("/api/ai/generate-prompt", async (req: any, res) => {
     try {
       const { recentEntries, mood } = req.body;
       const prompt = await generatePersonalizedPrompt(recentEntries || []);
@@ -174,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/ai/chat", requireAuth, async (req: any, res) => {
+  app.post("/api/ai/chat", async (req: any, res) => {
     try {
       const { message, context } = req.body;
       
@@ -187,7 +187,7 @@ Current journal context:
 - Current content: ${context.currentContent || 'No content yet'}`;
 
       if (context.photos && context.photos.length > 0) {
-        systemPrompt += `\n- Photos analyzed: ${context.photos.map(p => p.description).join(', ')}`;
+        systemPrompt += `\n- Photos analyzed: ${context.photos.map((p: any) => p.description).join(', ')}`;
       }
 
       systemPrompt += `\n\nRespond naturally and helpfully. Ask follow-up questions, suggest writing prompts, or help them reflect on their experiences. Keep responses under 150 words.`;
@@ -239,7 +239,7 @@ Current journal context:
   });
 
   // Photo AI routes
-  app.post("/api/ai/analyze-photo", requireAuth, async (req: any, res) => {
+  app.post("/api/ai/analyze-photo", async (req: any, res) => {
     try {
       const { base64Image, currentMood } = req.body;
       if (!base64Image) {
