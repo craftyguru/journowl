@@ -75,7 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { email, password } = req.body;
       const user = await authenticateUser(email, password);
       req.session.userId = user.id;
-      res.json({ user: { id: user.id, email: user.email, username: user.username, level: user.level, xp: user.xp } });
+      res.json({ user: { id: user.id, email: user.email, username: user.username, level: user.level, xp: user.xp, role: user.role } });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -140,7 +140,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      res.json({ user: { id: user.id, email: user.email, username: user.username, level: user.level, xp: user.xp } });
+      res.json({ user: { id: user.id, email: user.email, username: user.username, level: user.level, xp: user.xp, role: user.role } });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
