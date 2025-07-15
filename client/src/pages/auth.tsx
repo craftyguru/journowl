@@ -20,6 +20,10 @@ export default function AuthPage({ onAuthenticated }: AuthPageProps) {
   const [showAuth, setShowAuth] = useState(true);
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const [registerData, setRegisterData] = useState({ email: "", username: "", password: "", confirmPassword: "" });
+  
+  // Debug logging
+  console.log("AuthPage render - loginData:", loginData);
+  console.log("AuthPage render - registerData:", registerData);
   const { toast } = useToast();
 
   const loginMutation = useMutation({
