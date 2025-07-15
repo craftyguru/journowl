@@ -14,7 +14,8 @@ import {
   TrendingUp, Calendar, Search, Filter, Download, Share2, 
   Brain, Sparkles, Trophy, Target, BookOpen, Heart, Zap,
   Flame, Star, ChevronLeft, ChevronRight, Plus, Eye,
-  BarChart3, PieChart as PieChartIcon, Activity, Users
+  BarChart3, PieChart as PieChartIcon, Activity, Users, X,
+  FileText, Globe, Printer
 } from "lucide-react";
 import { type JournalEntry, type UserStats } from "@/lib/types";
 import { useLocation } from "wouter";
@@ -32,6 +33,7 @@ export default function InsightsPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const [showExportModal, setShowExportModal] = useState(false);
 
   // Fetch real user data
   const { data: entriesData = [], isLoading: entriesLoading } = useQuery({
@@ -134,24 +136,18 @@ export default function InsightsPage() {
   };
 
   const handleExport = () => {
-    // Show export options
-    const exportOptions = [
-      { label: "Data Export (JSON)", value: "json" },
-      { label: "Readable Journal (HTML)", value: "html" },
-      { label: "Print-Ready Format (PDF)", value: "pdf" }
-    ];
+    setShowExportModal(true);
+  };
+
+  const handleExportChoice = (format: string) => {
+    setShowExportModal(false);
     
-    // For now, let's create a simple dialog to choose export format
-    const format = prompt("Choose export format:\n1. Data Export (JSON)\n2. Readable Journal (HTML)\n3. Print-Ready Text\n\nEnter 1, 2, or 3:");
-    
-    if (format === "1" || format === "json") {
+    if (format === "json") {
       exportAsJSON();
-    } else if (format === "2" || format === "html") {
+    } else if (format === "html") {
       exportAsHTML();
-    } else if (format === "3" || format === "pdf") {
+    } else if (format === "text") {
       exportAsText();
-    } else {
-      exportAsJSON(); // Default to JSON
     }
   };
 
@@ -1073,6 +1069,120 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                     )}
                   </div>
                 ))}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Export Modal */}
+        <AnimatePresence>
+          {showExportModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+              onClick={() => setShowExportModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl max-w-lg w-full p-6"
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+                    📥 Export Your Journal
+                  </h3>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setShowExportModal(false)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Choose how you'd like to export your journal entries:
+                </p>
+
+                <div className="space-y-4">
+                  {/* JSON Export */}
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      onClick={() => handleExportChoice('json')}
+                      className="w-full h-auto p-4 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white"
+                    >
+                      <div className="flex items-center gap-4">
+                        <FileText className="h-8 w-8" />
+                        <div className="text-left">
+                          <div className="font-semibold">Data Export (JSON)</div>
+                          <div className="text-sm text-blue-100">
+                            Technical backup with all your stats and entries
+                          </div>
+                        </div>
+                      </div>
+                    </Button>
+                  </motion.div>
+
+                  {/* HTML Export */}
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      onClick={() => handleExportChoice('html')}
+                      className="w-full h-auto p-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                    >
+                      <div className="flex items-center gap-4">
+                        <Globe className="h-8 w-8" />
+                        <div className="text-left">
+                          <div className="font-semibold">Beautiful Journal (HTML)</div>
+                          <div className="text-sm text-purple-100">
+                            Styled format perfect for viewing and printing
+                          </div>
+                        </div>
+                      </div>
+                    </Button>
+                  </motion.div>
+
+                  {/* Text Export */}
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <Button
+                      onClick={() => handleExportChoice('text')}
+                      className="w-full h-auto p-4 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white"
+                    >
+                      <div className="flex items-center gap-4">
+                        <Printer className="h-8 w-8" />
+                        <div className="text-left">
+                          <div className="font-semibold">Print-Ready Format</div>
+                          <div className="text-sm text-green-100">
+                            Clean text format ideal for physical journals
+                          </div>
+                        </div>
+                      </div>
+                    </Button>
+                  </motion.div>
+                </div>
+
+                <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 rounded-lg border border-amber-200 dark:border-amber-700">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    <span className="text-sm font-medium text-amber-800 dark:text-amber-200">Tip</span>
+                  </div>
+                  <p className="text-sm text-amber-700 dark:text-amber-300">
+                    Choose HTML for a beautiful digital journal or Print-Ready for creating a physical book. JSON is perfect for backing up your data.
+                  </p>
+                </div>
               </motion.div>
             </motion.div>
           )}
