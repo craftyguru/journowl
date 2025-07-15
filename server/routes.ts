@@ -626,6 +626,24 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
     }
   });
 
+  app.post("/api/ai/ask-question", requireAuth, async (req: any, res) => {
+    try {
+      const { question, entries, stats } = req.body;
+      
+      if (!question || !question.trim()) {
+        return res.status(400).json({ error: "Question is required" });
+      }
+
+      const { askQuestionAboutJournal } = await import("./services/journal-ai");
+      const response = await askQuestionAboutJournal(question, entries, stats);
+      
+      res.json({ response });
+    } catch (error: any) {
+      console.error("Error asking AI question:", error);
+      res.status(500).json({ error: "Failed to process AI question" });
+    }
+  });
+
   // Stats routes
   app.get("/api/stats", requireAuth, async (req: any, res) => {
     try {

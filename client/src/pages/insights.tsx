@@ -37,6 +37,8 @@ export default function InsightsPage() {
   const [showDateSelector, setShowDateSelector] = useState(false);
   const [selectedExportDates, setSelectedExportDates] = useState<Date[]>([]);
   const [selectedExportFormat, setSelectedExportFormat] = useState<string>('');
+  const [aiResponse, setAiResponse] = useState<string>('');
+  const [isAskingAI, setIsAskingAI] = useState(false);
 
   // Fetch real user data
   const { data: entriesData = [], isLoading: entriesLoading } = useQuery({
@@ -505,6 +507,47 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
           variant: "destructive"
         });
       }
+    }
+  };
+
+  const handleAskAI = async () => {
+    if (!aiQuestion.trim()) return;
+    
+    setIsAskingAI(true);
+    try {
+      const response = await fetch('/api/ai/ask-question', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          question: aiQuestion,
+          entries: entries.slice(0, 10), // Send recent entries for context
+          stats: stats
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+      setAiResponse(data.response);
+      
+      toast({
+        title: "AI Analysis Complete",
+        description: "Your question has been analyzed",
+      });
+    } catch (error) {
+      console.error('Error asking AI:', error);
+      setAiResponse('Sorry, I encountered an error while analyzing your question. Please try again.');
+      toast({
+        title: "AI Error",
+        description: "Failed to get AI response. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAskingAI(false);
     }
   };
 
@@ -991,13 +1034,24 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                         placeholder="What was my best week? Show me all happy days..."
                         value={aiQuestion}
                         onChange={(e) => setAiQuestion(e.target.value)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && !isAskingAI && aiQuestion.trim()) {
+                            handleAskAI();
+                          }
+                        }}
                         className="pr-12"
                       />
                       <Button 
                         size="sm" 
-                        className="absolute right-1 top-1 h-8 w-8 p-0 bg-gradient-to-r from-purple-500 to-pink-500"
+                        onClick={handleAskAI}
+                        disabled={isAskingAI || !aiQuestion.trim()}
+                        className="absolute right-1 top-1 h-8 w-8 p-0 bg-gradient-to-r from-purple-500 to-pink-500 disabled:opacity-50"
                       >
-                        <Sparkles className="w-4 h-4" />
+                        {isAskingAI ? (
+                          <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                        ) : (
+                          <Sparkles className="w-4 h-4" />
+                        )}
                       </Button>
                     </div>
                     
@@ -1013,7 +1067,11 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                           key={index}
                           variant="outline"
                           size="sm"
-                          onClick={() => setAiQuestion(question)}
+                          onClick={() => {
+                            setAiQuestion(question);
+                            setTimeout(() => handleAskAI(), 100);
+                          }}
+                          disabled={isAskingAI}
                           className="text-xs"
                         >
                           {question}
@@ -1028,8 +1086,15 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                         <span className="text-sm font-medium text-indigo-800 dark:text-indigo-200">AI Analysis</span>
                       </div>
                       <p className="text-sm text-indigo-700 dark:text-indigo-300">
-                        {stats.totalEntries > 0 ? (
-                          `You've written ${stats.totalEntries} ${stats.totalEntries === 1 ? 'entry' : 'entries'} with ${stats.totalWords} words total. Your current streak is ${stats.currentStreak} ${stats.currentStreak === 1 ? 'day' : 'days'} - keep writing to unlock deeper insights!`
+                        {isAskingAI ? (
+                          <div className="flex items-center gap-2">
+                            <div className="animate-spin w-4 h-4 border-2 border-indigo-600 border-t-transparent rounded-full" />
+                            <span>Analyzing your journal data...</span>
+                          </div>
+                        ) : aiResponse ? (
+                          aiResponse
+                        ) : stats.totalEntries > 0 ? (
+                          `You've written ${stats.totalEntries} ${stats.totalEntries === 1 ? 'entry' : 'entries'} with ${stats.totalWords} words total. Your current streak is ${stats.currentStreak} ${stats.currentStreak === 1 ? 'day' : 'days'} - ask me anything about your journaling patterns!`
                         ) : (
                           "Start writing your first entry to see personalized AI analysis of your patterns, mood trends, and writing habits."
                         )}
