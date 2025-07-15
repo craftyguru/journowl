@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 
 interface LandingHeroProps {
   onGetStarted: () => void;
-  onTryDemo?: () => void;
 }
 
 const features = [
@@ -36,7 +35,7 @@ const features = [
   }
 ];
 
-export default function LandingHero({ onGetStarted, onTryDemo }: LandingHeroProps) {
+export default function LandingHero({ onGetStarted }: LandingHeroProps) {
   const [currentFeature, setCurrentFeature] = useState(0);
 
   useEffect(() => {
@@ -47,7 +46,7 @@ export default function LandingHero({ onGetStarted, onTryDemo }: LandingHeroProp
   }, []);
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Hero Content */}
       <div className="relative z-20 max-w-6xl mx-auto px-6 text-center">
         {/* Main Heading */}
@@ -102,7 +101,7 @@ export default function LandingHero({ onGetStarted, onTryDemo }: LandingHeroProp
           
           <Button
             variant="outline"
-            onClick={onTryDemo}
+            onClick={() => window.location.href = window.location.href + '?demo=true'}
             className="px-8 py-4 text-lg font-semibold border-2 border-purple-500/50 text-purple-300 hover:bg-purple-500/10 rounded-xl backdrop-blur-sm transition-all duration-300"
           >
             <Heart className="w-5 h-5 mr-2" />
