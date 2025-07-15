@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Plus, Edit, Sparkles, Calendar } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
+import { apiRequest } from "@/lib/queryClient";
 import UnifiedJournal from "@/components/unified-journal";
 import RecentEntries from "@/components/recent-entries";
 import MoodTracker from "@/components/mood-tracker";
@@ -15,6 +16,7 @@ export default function Dashboard() {
   const [isJournalOpen, setIsJournalOpen] = useState(false);
   const [editingEntry, setEditingEntry] = useState<any>();
   const [activeTab, setActiveTab] = useState<"dashboard" | "calendar">("dashboard");
+  const queryClient = useQueryClient();
 
   const { data: userResponse } = useQuery({
     queryKey: ["/api/auth/me"],
@@ -53,10 +55,42 @@ export default function Dashboard() {
     setEditingEntry(undefined);
   };
 
-  const handleJournalSave = (entryData: any) => {
-    // Handle save logic here
-    console.log('Saving entry:', entryData);
-    closeJournal();
+  const handleJournalSave = async (entryData: any) => {
+    try {
+      console.log('Saving entry:', entryData);
+      
+      // Remove unnecessary fields that might cause issues
+      const cleanedData = {
+        title: entryData.title || "Untitled Entry",
+        content: entryData.content || "",
+        mood: entryData.mood || "😊",
+        fontFamily: entryData.fontFamily || "Inter",
+        fontSize: entryData.fontSize || 16,
+        textColor: entryData.textColor || "#1f2937",
+        backgroundColor: entryData.backgroundColor || "#ffffff",
+        isPrivate: entryData.isPrivate || false,
+        tags: entryData.tags || [],
+        photos: entryData.photos || [],
+        drawings: entryData.drawings || []
+      };
+
+      if (editingEntry) {
+        // Update existing entry
+        await apiRequest("PUT", `/api/journal/entries/${editingEntry.id}`, cleanedData);
+      } else {
+        // Create new entry
+        await apiRequest("POST", "/api/journal/entries", cleanedData);
+      }
+
+      // Invalidate and refetch the journal entries
+      queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      
+      closeJournal();
+    } catch (error) {
+      console.error('Error saving entry:', error);
+      // Keep the journal open so user can try again
+    }
   };
 
   const handleDateSelect = (date: Date) => {
