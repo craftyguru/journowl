@@ -18,6 +18,8 @@ import InteractiveJournal from "./interactive-journal";
 import SmartJournalEditor from "./smart-journal-editor";
 import UnifiedJournal from "./unified-journal";
 import InteractiveCalendar from "./interactive-calendar";
+import PromptPurchase from "./PromptPurchase";
+import SubscriptionManager from "./SubscriptionManager";
 
 // All data now fetched from API endpoints instead of hardcoded values
 
@@ -33,6 +35,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
   const [showGoalDetailsModal, setShowGoalDetailsModal] = useState(false);
   const [showEditGoalModal, setShowEditGoalModal] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<any>(null);
+  const [showPromptPurchase, setShowPromptPurchase] = useState(false);
   
   // Fetch real user data instead of hardcoded demo data
   const { data: userResponse } = useQuery({
@@ -57,6 +60,10 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
   const { data: insightsResponse } = useQuery({
     queryKey: ["/api/insights"],
+  });
+
+  const { data: promptUsage } = useQuery({
+    queryKey: ["/api/prompts/usage"],
   });
   
   const user = userResponse?.user;
@@ -526,33 +533,37 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
           </div>
         </TabsContent>
 
-        <TabsContent value="overview" className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Quick Actions */}
-          <Card className="bg-white shadow-lg">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-purple-700">
-                <Sparkles className="w-5 h-5" />
-                Quick Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Button 
-                onClick={() => openUnifiedJournal()}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
-              >
-                <BookOpen className="w-4 h-4 mr-2" />
-                Open Journal Book
-              </Button>
-              <Button variant="outline" className="w-full border-purple-300 text-purple-600">
-                <Brain className="w-4 h-4 mr-2" />
-                Get AI Prompt
-              </Button>
-              <Button variant="outline" className="w-full border-emerald-300 text-emerald-600">
-                <TrendingUp className="w-4 h-4 mr-2" />
-                View Progress
-              </Button>
-            </CardContent>
-          </Card>
+        <TabsContent value="overview" className="space-y-6">
+          {/* Usage Meters and Subscription Management */}
+          <SubscriptionManager />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Quick Actions */}
+            <Card className="bg-white shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-purple-700">
+                  <Sparkles className="w-5 h-5" />
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button 
+                  onClick={() => openUnifiedJournal()}
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Open Journal Book
+                </Button>
+                <Button variant="outline" className="w-full border-purple-300 text-purple-600">
+                  <Brain className="w-4 h-4 mr-2" />
+                  Get AI Prompt
+                </Button>
+                <Button variant="outline" className="w-full border-emerald-300 text-emerald-600">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  View Progress
+                </Button>
+              </CardContent>
+            </Card>
 
           {/* Recent Entries */}
           <Card className="lg:col-span-2 bg-white shadow-lg">
@@ -603,6 +614,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               </div>
             </CardContent>
           </Card>
+          </div>
         </TabsContent>
 
         <TabsContent value="analytics">
@@ -636,7 +648,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               </div>
               
               {/* Animated Metric Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -756,6 +768,32 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                     <div className="flex items-center gap-1 text-xs text-pink-300">
                       <Star className="w-3 h-3" />
                       <span>Personal record</span>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* AI Prompts Usage Card */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden cursor-pointer"
+                  onClick={() => setShowPromptPurchase(true)}
+                >
+                  <motion.div
+                    animate={{ rotate: [0, 360], scale: [1, 1.1, 1] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    className="absolute top-2 right-2 text-2xl"
+                  >
+                    🤖
+                  </motion.div>
+                  <div className="relative z-10">
+                    <div className="text-4xl font-bold mb-2">{promptUsage?.promptsRemaining || 0}</div>
+                    <div className="text-white/90 text-sm font-medium mb-1">AI Prompts</div>
+                    <div className="flex items-center gap-1 text-xs text-purple-300">
+                      <Sparkles className="w-3 h-3" />
+                      <span>{(promptUsage?.promptsRemaining || 0) <= 10 ? "Top off soon!" : "Ready to inspire!"}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -2290,6 +2328,19 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             </DialogTitle>
           </DialogHeader>
           {selectedGoal && <EditGoalForm goal={selectedGoal} onClose={() => setShowEditGoalModal(false)} />}
+        </DialogContent>
+      </Dialog>
+
+      {/* Prompt Purchase Modal */}
+      <Dialog open={showPromptPurchase} onOpenChange={setShowPromptPurchase}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-purple-600" />
+              Top Off AI Prompts
+            </DialogTitle>
+          </DialogHeader>
+          <PromptPurchase />
         </DialogContent>
       </Dialog>
     </div>

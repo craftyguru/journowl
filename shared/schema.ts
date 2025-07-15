@@ -24,6 +24,12 @@ export const users = pgTable("users", {
   isActive: boolean("is_active").default(true),
   lastLoginAt: timestamp("last_login_at"),
   emailVerified: boolean("email_verified").default(false),
+  // AI Prompt Usage Tracking
+  currentPlan: text("current_plan").default("free"), // free, pro, power
+  promptsUsedThisMonth: integer("prompts_used_this_month").default(0),
+  promptsRemaining: integer("prompts_remaining").default(100), // Free tier starts with 100
+  storageUsedMB: integer("storage_used_mb").default(0),
+  lastUsageReset: timestamp("last_usage_reset").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -202,6 +208,42 @@ export const supportMessages = pgTable("support_messages", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// AI Prompt Purchases Table
+export const promptPurchases = pgTable("prompt_purchases", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  stripePaymentId: text("stripe_payment_id").notNull().unique(),
+  amount: integer("amount").notNull(), // amount in cents (299 for $2.99)
+  promptsAdded: integer("prompts_added").notNull(), // typically 100
+  status: text("status").default("completed"), // pending, completed, failed, refunded
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User Plan Configurations
+export const planLimits = {
+  free: {
+    name: "Free",
+    priceMonthly: 0,
+    priceYearly: 0,
+    storageLimitMB: 500,
+    promptLimit: 100,
+  },
+  pro: {
+    name: "Pro",
+    priceMonthly: 9.99,
+    priceYearly: 99, // 2 months free
+    storageLimitMB: 5000,
+    promptLimit: 500,
+  },
+  power: {
+    name: "Power",
+    priceMonthly: 19.99,
+    priceYearly: 199, // 2 months free
+    storageLimitMB: 10000,
+    promptLimit: 1000,
+  }
+};
+
 export const insertUserSchema = createInsertSchema(users).pick({
   email: true,
   username: true,
@@ -257,3 +299,5 @@ export type UserActivityLog = typeof userActivityLogs.$inferSelect;
 export type ModerationQueue = typeof moderationQueue.$inferSelect;
 export type Announcement = typeof announcements.$inferSelect;
 export type SupportMessage = typeof supportMessages.$inferSelect;
+export type PromptPurchase = typeof promptPurchases.$inferSelect;
+export type InsertPromptPurchase = typeof promptPurchases.$inferInsert;

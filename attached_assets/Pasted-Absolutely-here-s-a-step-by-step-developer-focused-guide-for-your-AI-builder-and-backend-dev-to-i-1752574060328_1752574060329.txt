@@ -1,0 +1,128 @@
+Absolutely—here’s a step-by-step, developer-focused guide for your AI builder (and backend dev) to implement this system for user and admin dashboards with real-time tracking, caps, and discounted yearly plans. You can hand this directly to your dev team or use it as a spec for your own build:
+
+1. Define the Plans in Code & Database
+Plan Table/Config
+ts
+Copy
+Edit
+const plans = [
+  {
+    name: "Free",
+    priceMonthly: 0,
+    priceYearly: 0,
+    storageLimitMB: 500,
+    promptLimit: 100,
+  },
+  {
+    name: "Pro",
+    priceMonthly: 9.99,
+    priceYearly: 99,   // 2 months free ($9.99*10)
+    storageLimitMB: 5000,
+    promptLimit: 500,
+  },
+  {
+    name: "Power",
+    priceMonthly: 19.99,
+    priceYearly: 199,  // 2 months free
+    storageLimitMB: 10000,
+    promptLimit: 1000,
+  }
+]
+Store plan name, price, yearly discount, storage, and prompt limits in your database or a config file.
+
+2. User Usage Tracking (Backend & DB)
+DB: Add Usage Fields to Users Table
+sql
+Copy
+Edit
+ALTER TABLE users
+ADD COLUMN current_plan VARCHAR,
+ADD COLUMN prompts_used_this_month INT DEFAULT 0,
+ADD COLUMN storage_used_mb INT DEFAULT 0,
+ADD COLUMN last_reset TIMESTAMP DEFAULT NOW();
+Alternatively, store usage in a separate user_usage table if you want time-based logs.
+
+On Every Upload/AI Action:
+Check limits before accepting:
+
+If prompts_used_this_month >= current_plan.promptLimit, block or prompt to upgrade/top up.
+
+If storage_used_mb + new_upload_size > current_plan.storageLimitMB, block or prompt to upgrade/delete.
+
+Increment counters after successful action.
+
+3. Scheduled Monthly Reset Job
+Run a serverless scheduled function/cron on the 1st of each month:
+
+Reset prompts_used_this_month to 0 for all users.
+
+Optionally, reset or archive old data.
+
+4. User Dashboard Display
+Show current plan (name, features, and upgrade link)
+
+Display usage bars/meters:
+
+"You’ve used 35 / 100 AI prompts this month"
+
+"You’ve uploaded 200 / 500 MB this month"
+
+Progress bars and color warnings (green/yellow/red) as limits are approached.
+
+Upgrade/renew/discount yearly call-to-action button
+
+UI Example
+jsx
+Copy
+Edit
+<ProgressBar value={promptsUsed} max={plan.promptLimit} label="AI Prompts Used" />
+<ProgressBar value={storageUsed} max={plan.storageLimitMB} label="Storage Used (MB)" />
+<Button>Upgrade Plan</Button>
+<Button>Save 2 Months: Go Yearly</Button>
+Can be animated, colorful, and include tooltips with more info.
+
+5. Admin Dashboard Display
+List of all users, sortable by plan
+
+Display for each user:
+
+Plan name
+
+Prompts used (this month)
+
+Storage used (MB)
+
+Warnings for users at/near their cap
+
+Option to export/download usage stats
+
+Admin Table Example
+User	Plan	Prompts Used	Storage Used	Status
+user@email	Free	99/100	400/500 MB	Near Limit
+pro@email	Pro	150/500	2,200/5,000	OK
+power@email	Power	200/1000	4,900/10,000	OK
+
+6. Real-Time Updates
+Use WebSockets or real-time DB listeners (e.g. Supabase's real-time, Firebase, or Pusher) to update both user and admin dashboards immediately as actions happen.
+
+Users see usage meters update live after every upload or prompt.
+
+Admin sees changes instantly for monitoring/troubleshooting.
+
+7. Discounted Yearly Purchase
+On the plan selection page, display both monthly and yearly prices ("Save 2 months with yearly!").
+
+At checkout, handle billing accordingly (Stripe, Paddle, etc.).
+
+8. Notify Users Approaching Limits
+Send in-app alerts (toast/notification) and emails when users reach 80%, 90%, and 100% of any limit.
+
+Link directly to the upgrade/plan page.
+
+Summary for Your AI Builder
+Track user AI prompt and storage usage in the database.
+Check limits before every action.
+Show clear, animated progress on user dashboards.
+Give real-time updates for both users and admin.
+Offer and highlight discounted yearly plans.
+Alert users when they’re near their cap.

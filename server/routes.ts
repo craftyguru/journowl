@@ -8,6 +8,15 @@ import { EmailService } from "./email";
 import session from "express-session";
 import ConnectPgSimple from "connect-pg-simple";
 import { setupOAuth, passport } from "./oauth";
+import Stripe from "stripe";
+
+// Initialize Stripe
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2024-06-20",
+});
 
 // Extend session types
 declare module 'express-session' {
@@ -810,6 +819,182 @@ Current journal context:
           "If you could do this again, what would you change?"
         ]
       });
+    }
+  });
+
+  // Prompt purchasing and usage routes
+  app.get("/api/prompts/usage", requireAuth, async (req: any, res) => {
+    try {
+      const usage = await storage.getUserPromptUsage(req.session.userId);
+      res.json(usage);
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get prompt usage" });
+    }
+  });
+
+  app.post("/api/prompts/purchase", requireAuth, async (req: any, res) => {
+    try {
+      const { amount = 299, promptsToAdd = 100 } = req.body; // $2.99 for 100 prompts
+      
+      // Create Stripe payment intent
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency: "usd",
+        description: `${promptsToAdd} AI prompts for JournOwl`,
+        metadata: {
+          userId: req.session.userId.toString(),
+          promptsToAdd: promptsToAdd.toString()
+        }
+      });
+
+      res.json({ 
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id
+      });
+    } catch (error: any) {
+      console.error("Error creating payment intent:", error);
+      res.status(500).json({ message: "Failed to create payment intent" });
+    }
+  });
+
+  app.post("/api/prompts/confirm-purchase", requireAuth, async (req: any, res) => {
+    try {
+      const { paymentIntentId } = req.body;
+      
+      // Verify payment with Stripe
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      if (paymentIntent.status === 'succeeded') {
+        const promptsToAdd = parseInt(paymentIntent.metadata.promptsToAdd || '100');
+        
+        // Add the purchase record and update user prompts
+        await storage.addPromptPurchase(
+          req.session.userId,
+          paymentIntentId,
+          paymentIntent.amount,
+          promptsToAdd
+        );
+        
+        const updatedUsage = await storage.getUserPromptUsage(req.session.userId);
+        res.json({ 
+          success: true, 
+          message: `Successfully added ${promptsToAdd} prompts!`,
+          usage: updatedUsage
+        });
+      } else {
+        res.status(400).json({ message: "Payment not completed" });
+      }
+    } catch (error: any) {
+      console.error("Error confirming purchase:", error);
+      res.status(500).json({ message: "Failed to confirm purchase" });
+    }
+  });
+
+  app.post("/api/prompts/use", requireAuth, async (req: any, res) => {
+    try {
+      await storage.incrementPromptUsage(req.session.userId);
+      const updatedUsage = await storage.getUserPromptUsage(req.session.userId);
+      res.json({ success: true, usage: updatedUsage });
+    } catch (error: any) {
+      if (error.message === 'No prompts remaining') {
+        res.status(402).json({ message: "No prompts remaining. Please purchase more prompts to continue." });
+      } else {
+        res.status(500).json({ message: "Failed to use prompt" });
+      }
+    }
+  });
+
+  // Subscription management routes
+  app.get("/api/subscription", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      const promptUsage = await storage.getUserPromptUsage(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json({
+        tier: user.subscription_tier || 'free',
+        status: user.subscription_status || 'active',
+        expiresAt: user.subscription_expires_at,
+        promptsRemaining: promptUsage.promptsRemaining,
+        storageUsed: user.storage_used_mb || 0,
+        storageLimit: user.storage_limit_mb || 100
+      });
+    } catch (error: any) {
+      console.error("Error fetching subscription:", error);
+      res.status(500).json({ message: "Failed to get subscription data" });
+    }
+  });
+
+  app.post("/api/subscription/create", requireAuth, async (req: any, res) => {
+    try {
+      const { tierId, yearly, amount } = req.body;
+      
+      // Create Stripe subscription
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency: "usd",
+        description: `JournOwl ${tierId} subscription (${yearly ? 'yearly' : 'monthly'})`,
+        metadata: {
+          userId: req.session.userId.toString(),
+          tierId,
+          billing: yearly ? 'yearly' : 'monthly'
+        }
+      });
+
+      res.json({ 
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id
+      });
+    } catch (error: any) {
+      console.error("Error creating subscription:", error);
+      res.status(500).json({ message: "Failed to create subscription" });
+    }
+  });
+
+  app.post("/api/subscription/confirm", requireAuth, async (req: any, res) => {
+    try {
+      const { clientSecret } = req.body;
+      
+      // Extract payment intent ID from client secret
+      const paymentIntentId = clientSecret.split('_secret_')[0];
+      
+      // Verify payment with Stripe
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+      
+      if (paymentIntent.status === 'succeeded') {
+        const { tierId, billing } = paymentIntent.metadata;
+        const userId = req.session.userId;
+        
+        // Calculate expiration date
+        const expiresAt = new Date();
+        if (billing === 'yearly') {
+          expiresAt.setFullYear(expiresAt.getFullYear() + 1);
+        } else {
+          expiresAt.setMonth(expiresAt.getMonth() + 1);
+        }
+        
+        // Update user subscription
+        await storage.updateUserSubscription(userId, {
+          tier: tierId,
+          status: 'active',
+          expiresAt: expiresAt,
+          stripeSubscriptionId: paymentIntentId
+        });
+        
+        res.json({ 
+          success: true, 
+          message: `Successfully upgraded to ${tierId}!`
+        });
+      } else {
+        res.status(400).json({ message: "Payment not completed" });
+      }
+    } catch (error: any) {
+      console.error("Error confirming subscription:", error);
+      res.status(500).json({ message: "Failed to confirm subscription" });
     }
   });
 

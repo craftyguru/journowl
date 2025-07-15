@@ -11,6 +11,7 @@ import {
   userActivityLogs,
   announcements,
   supportMessages,
+  promptPurchases,
   type User, 
   type InsertUser, 
   type JournalEntry, 
@@ -24,7 +25,9 @@ import {
   type SiteSetting,
   type UserActivityLog,
   type Announcement,
-  type SupportMessage
+  type SupportMessage,
+  type PromptPurchase,
+  type InsertPromptPurchase
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
@@ -84,6 +87,16 @@ export interface IStorage {
   getSupportMessages(userId: number): Promise<SupportMessage[]>;
   getAllSupportMessages(): Promise<SupportMessage[]>;
   markSupportMessageAsRead(id: number): Promise<void>;
+  
+  // Prompt usage and purchasing operations
+  getUserPromptUsage(userId: number): Promise<{ promptsRemaining: number; promptsUsedThisMonth: number; currentPlan: string }>;
+  incrementPromptUsage(userId: number): Promise<void>;
+  addPromptPurchase(userId: number, stripePaymentId: string, amount: number, promptsAdded: number): Promise<void>;
+  resetMonthlyUsage(): Promise<void>;
+  updateUserPrompts(userId: number, promptsToAdd: number): Promise<void>;
+  
+  // Subscription operations
+  updateUserSubscription(userId: number, subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -573,6 +586,103 @@ export class DatabaseStorage implements IStorage {
       .update(supportMessages)
       .set({ isRead: true })
       .where(eq(supportMessages.id, id));
+  }
+
+  // Prompt usage and purchasing operations
+  async getUserPromptUsage(userId: number): Promise<{ promptsRemaining: number; promptsUsedThisMonth: number; currentPlan: string }> {
+    const user = await this.getUser(userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    
+    return {
+      promptsRemaining: user.promptsRemaining || 0,
+      promptsUsedThisMonth: user.promptsUsedThisMonth || 0,
+      currentPlan: user.currentPlan || 'free'
+    };
+  }
+
+  async incrementPromptUsage(userId: number): Promise<void> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error('User not found');
+
+    // Check if user has prompts remaining
+    if ((user.promptsRemaining || 0) <= 0) {
+      throw new Error('No prompts remaining');
+    }
+
+    await db.update(users)
+      .set({ 
+        promptsUsedThisMonth: (user.promptsUsedThisMonth || 0) + 1,
+        promptsRemaining: (user.promptsRemaining || 0) - 1
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async addPromptPurchase(userId: number, stripePaymentId: string, amount: number, promptsAdded: number): Promise<void> {
+    // Record the purchase
+    await db.insert(promptPurchases).values({
+      userId,
+      stripePaymentId,
+      amount,
+      promptsAdded,
+      status: 'completed'
+    });
+
+    // Add prompts to user's account
+    await this.updateUserPrompts(userId, promptsAdded);
+  }
+
+  async updateUserPrompts(userId: number, promptsToAdd: number): Promise<void> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error('User not found');
+
+    await db.update(users)
+      .set({ 
+        promptsRemaining: (user.promptsRemaining || 0) + promptsToAdd
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async resetMonthlyUsage(): Promise<void> {
+    // Reset monthly usage for all users on the 1st of each month
+    await db.update(users)
+      .set({ 
+        promptsUsedThisMonth: 0,
+        lastUsageReset: new Date()
+      });
+  }
+
+  async updateUserSubscription(userId: number, subscription: { 
+    tier: string; 
+    status: string; 
+    expiresAt: Date; 
+    stripeSubscriptionId: string 
+  }): Promise<void> {
+    const { tier, status, expiresAt, stripeSubscriptionId } = subscription;
+    
+    // Set storage and prompt limits based on tier
+    let storageLimit = 100; // Default free tier
+    let promptsRemaining = 100;
+    
+    if (tier === 'premium') {
+      storageLimit = 1024; // 1GB
+      promptsRemaining = 1000;
+    } else if (tier === 'pro') {
+      storageLimit = 10240; // 10GB
+      promptsRemaining = 999999; // Unlimited (very high number)
+    }
+    
+    await db.update(users)
+      .set({
+        subscription_tier: tier,
+        subscription_status: status,
+        subscription_expires_at: expiresAt,
+        storage_limit_mb: storageLimit,
+        prompts_remaining: promptsRemaining,
+        stripe_subscription_id: stripeSubscriptionId
+      })
+      .where(eq(users.id, userId));
   }
 }
 
