@@ -91,9 +91,10 @@ export function SupportChatBubble() {
       <motion.button
         whileHover={{ scale: 1.1, rotate: 10 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-gradient-to-tr from-blue-400 to-green-600 text-white w-16 h-16 rounded-full shadow-xl flex items-center justify-center text-3xl border-4 border-white relative overflow-hidden"
+        className="bg-gradient-to-tr from-blue-400 to-green-600 text-white w-16 h-16 rounded-full shadow-xl flex items-center justify-center text-3xl border-4 border-white relative overflow-hidden group"
         onClick={() => setOpen(!open)}
         aria-label="Support Chat"
+        title="💬 Support Chat - Get help with JournOwl features, troubleshooting, or just say hello! We typically reply within minutes."
       >
         <motion.div
           animate={{ 

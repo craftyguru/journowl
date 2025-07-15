@@ -1595,9 +1595,10 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         {/* AI Sidekick Toggle - Right Side, Above Support Chat */}
         <Button
           onClick={() => setShowAiChat(!showAiChat)}
-          className={`fixed bottom-20 right-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl z-40 ${
+          className={`fixed bottom-20 right-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl z-40 group ${
             showAiChat ? 'scale-90' : 'animate-bounce'
           }`}
+          title="🧠 AI Writing Assistant - Get personalized journal prompts, photo analysis, writing suggestions, and real-time conversation help. Hold the mic for full conversation mode!"
         >
           {showAiChat ? <X className="w-5 h-5" /> : <Brain className="w-5 h-5" />}
         </Button>

@@ -87,9 +87,10 @@ export function HelpBubble() {
       <motion.button
         whileHover={{ scale: 1.1, rotate: -10 }}
         whileTap={{ scale: 0.95 }}
-        className="bg-gradient-to-tr from-pink-400 to-purple-600 text-white w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-xl flex items-center justify-center text-2xl sm:text-3xl border-4 border-white relative overflow-hidden"
+        className="bg-gradient-to-tr from-pink-400 to-purple-600 text-white w-14 h-14 sm:w-16 sm:h-16 rounded-full shadow-xl flex items-center justify-center text-2xl sm:text-3xl border-4 border-white relative overflow-hidden group"
         onClick={() => setOpen(!open)}
         aria-label="Help and Guided Tour"
+        title="🎈 Help & Guided Tour - Take an interactive walkthrough of JournOwl's features! Learn how to use the Smart Journal, AI Insights, Memory Calendar, and more."
       >
         <motion.div
           animate={{ 
