@@ -45,8 +45,27 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
     return () => clearInterval(interval);
   }, []);
 
+  // Helper for demo link that doesn't add multiple ?demo=true
+  const handleDemo = () => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("demo", "true");
+    window.location.href = url.toString();
+  };
+
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+      {/* Sparkle and floating elements */}
+      <div className="pointer-events-none z-0">
+        <div className="absolute top-20 left-10 w-20 h-20 bg-purple-500/20 rounded-full blur-xl animate-float"></div>
+        <div className="absolute bottom-20 right-10 w-32 h-32 bg-pink-500/20 rounded-full blur-xl animate-float delay-1000"></div>
+        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-amber-500/20 rounded-full blur-xl animate-float delay-500"></div>
+        <div className="absolute top-32 right-1/4 w-12 h-12 bg-emerald-500/30 rounded-full blur-lg animate-float delay-300"></div>
+        <div className="absolute bottom-32 left-1/3 w-24 h-24 bg-blue-500/20 rounded-full blur-xl animate-float delay-700"></div>
+        <div className="absolute top-1/4 left-1/2 w-2 h-2 bg-white rounded-full animate-sparkle opacity-60"></div>
+        <div className="absolute top-2/3 right-1/3 w-1 h-1 bg-purple-400 rounded-full animate-sparkle delay-200 opacity-80"></div>
+        <div className="absolute bottom-1/4 left-1/5 w-2 h-2 bg-pink-400 rounded-full animate-sparkle delay-500 opacity-70"></div>
+      </div>
+
       {/* Hero Content */}
       <div className="relative z-20 max-w-6xl mx-auto px-6 text-center">
         {/* Main Heading */}
@@ -60,13 +79,13 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             <Sparkles className="w-4 h-4 text-purple-400" />
             <span className="text-sm text-purple-300 font-medium">AI-Powered Journaling</span>
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-amber-400 bg-clip-text text-transparent mb-6 leading-tight">
             Transform Your
             <br />
             <span className="animate-pulse">Mind & Mood</span>
           </h1>
-          
+
           <div className="flex items-center justify-center gap-3 mb-6">
             <div className="flex -space-x-2">
               <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold border-2 border-white">👩‍💼</div>
@@ -77,7 +96,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               <span className="text-purple-400 font-semibold">2,847</span> writers already transforming their lives
             </div>
           </div>
-          
+
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
             Discover the power of journaling with AI insights, mood tracking, and gamified progress. 
             Your personal wellness companion awaits.
@@ -94,15 +113,17 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           <Button
             onClick={onGetStarted}
             className="px-8 py-4 text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-xl shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300"
+            aria-label="Start your journey"
           >
             <BookOpen className="w-5 h-5 mr-2" />
             Start Your Journey
           </Button>
-          
+
           <Button
             variant="outline"
-            onClick={() => window.location.href = window.location.href + '?demo=true'}
+            onClick={handleDemo}
             className="px-8 py-4 text-lg font-semibold border-2 border-purple-500/50 text-purple-300 hover:bg-purple-500/10 rounded-xl backdrop-blur-sm transition-all duration-300"
+            aria-label="View live demos"
           >
             <Heart className="w-5 h-5 mr-2" />
             View Live Demos
@@ -160,18 +181,6 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             </motion.div>
           ))}
         </motion.div>
-
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 bg-purple-500/20 rounded-full blur-xl animate-float"></div>
-        <div className="absolute bottom-20 right-10 w-32 h-32 bg-pink-500/20 rounded-full blur-xl animate-float delay-1000"></div>
-        <div className="absolute top-1/2 left-1/4 w-16 h-16 bg-amber-500/20 rounded-full blur-xl animate-float delay-500"></div>
-        <div className="absolute top-32 right-1/4 w-12 h-12 bg-emerald-500/30 rounded-full blur-lg animate-float delay-300"></div>
-        <div className="absolute bottom-32 left-1/3 w-24 h-24 bg-blue-500/20 rounded-full blur-xl animate-float delay-700"></div>
-        
-        {/* Sparkle effects */}
-        <div className="absolute top-1/4 left-1/2 w-2 h-2 bg-white rounded-full animate-sparkle opacity-60"></div>
-        <div className="absolute top-2/3 right-1/3 w-1 h-1 bg-purple-400 rounded-full animate-sparkle delay-200 opacity-80"></div>
-        <div className="absolute bottom-1/4 left-1/5 w-2 h-2 bg-pink-400 rounded-full animate-sparkle delay-500 opacity-70"></div>
       </div>
     </div>
   );
