@@ -239,7 +239,7 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
   }
 
   // Admin Dashboard for admin users
-  if (user?.role === 'admin') {
+  if (user?.user?.role === 'admin' || user?.role === 'admin') {
     return (
       <div className="min-h-screen">
         <AdminDashboard />

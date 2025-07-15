@@ -350,7 +350,7 @@ export default function AdminDashboard() {
                     <div className="flex justify-between items-center">
                       <span>Email Service</span>
                       <Badge variant="secondary">
-                        {process.env.SENDGRID_API_KEY ? 'Configured' : 'Not Configured'}
+                        {import.meta.env.VITE_SENDGRID_API_KEY ? 'Configured' : 'Not Configured'}
                       </Badge>
                     </div>
                     <div className="flex justify-between items-center">
