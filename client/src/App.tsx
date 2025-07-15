@@ -55,7 +55,10 @@ function App() {
   useEffect(() => {
     getCurrentUser()
       .then(() => setIsAuthenticated(true))
-      .catch(() => setIsAuthenticated(false));
+      .catch((error) => {
+        console.log('Auth check failed:', error);
+        setIsAuthenticated(false);
+      });
   }, []);
 
   if (isAuthenticated === null) {
@@ -214,8 +217,10 @@ function App() {
 function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, onNavigate: (view: string) => void }) {
   const { data: user, isLoading, error } = useQuery({
     queryKey: ['/api/auth/me'],
-    queryFn: () => apiRequest('/api/auth/me'),
-    retry: false
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    staleTime: 15 * 60 * 1000, // 15 minutes
+    retry: false,
   });
 
   if (isLoading) {
@@ -228,8 +233,13 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
 
   if (error || !user) {
     // User is not authenticated, redirect to auth
-    window.location.reload();
-    return null;
+    console.log('Auth error, redirecting:', error);
+    setTimeout(() => window.location.reload(), 100);
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+        <div className="text-white">Redirecting to login...</div>
+      </div>
+    );
   }
 
   // Admin Dashboard for admin users
