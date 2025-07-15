@@ -108,15 +108,24 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
 
       // Initialize separate speech recognition for AI chat
       const aiRecognitionInstance = new SpeechRecognition();
-      aiRecognitionInstance.continuous = false;
-      aiRecognitionInstance.interimResults = false;
+      aiRecognitionInstance.continuous = true;
+      aiRecognitionInstance.interimResults = true;
       aiRecognitionInstance.lang = 'en-US';
 
       aiRecognitionInstance.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setAiInput(transcript);
-        // Automatically send the transcribed message to AI
-        setTimeout(() => sendToAi(transcript), 100);
+        let finalTranscript = '';
+        let interimTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          } else {
+            interimTranscript += event.results[i][0].transcript;
+          }
+        }
+        
+        // Show interim results in the input field
+        setAiInput(finalTranscript + interimTranscript);
       };
 
       aiRecognitionInstance.onerror = (event) => {
