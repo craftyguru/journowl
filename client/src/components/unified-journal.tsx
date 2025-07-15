@@ -455,15 +455,19 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     
     if (isHoldingMic && !showUsageWarning) {
       // Quick press/release - single prompt mode
-      if (aiRecognition) {
+      if (aiRecognition && !isAiListening) {
         setAiInput('');
         setLastFinalTranscript('');
-        aiRecognition.start();
-        setIsAiListening(true);
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '🎤 Say your prompt now... I\'ll respond once you finish!'
-        }]);
+        try {
+          aiRecognition.start();
+          setIsAiListening(true);
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '🎤 Say your prompt now... I\'ll respond once you finish!'
+          }]);
+        } catch (error) {
+          console.error('Error starting AI speech recognition:', error);
+        }
       }
     }
     setIsHoldingMic(false);
@@ -471,15 +475,19 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   // Start full conversation mode after warning confirmation
   const startConversationMode = () => {
-    if (aiRecognition) {
+    if (aiRecognition && !isAiListening) {
       setAiInput('');
       setLastFinalTranscript('');
-      aiRecognition.start();
-      setIsAiListening(true);
-      setAiMessages(prev => [...prev, {
-        type: 'ai',
-        message: '🎤 Conversation mode active! I\'m listening and will respond to everything you say.'
-      }]);
+      try {
+        aiRecognition.start();
+        setIsAiListening(true);
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '🎤 Conversation mode active! I\'m listening and will respond to everything you say.'
+        }]);
+      } catch (error) {
+        console.error('Error starting AI speech recognition:', error);
+      }
     }
     setShowUsageWarning(false);
   };
@@ -487,10 +495,15 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
   // Stop any active voice input
   const stopVoiceInput = () => {
     if (aiRecognition && isAiListening) {
-      aiRecognition.stop();
-      setIsAiListening(false);
-      setAiInput('');
-      setLastFinalTranscript('');
+      try {
+        aiRecognition.stop();
+        setIsAiListening(false);
+        setAiInput('');
+        setLastFinalTranscript('');
+      } catch (error) {
+        console.error('Error stopping AI speech recognition:', error);
+        setIsAiListening(false);
+      }
     }
   };
 

@@ -91,10 +91,13 @@ export default function Dashboard() {
       } else {
         // Create new entry
         console.log('Creating new entry');
+        console.log('Making POST request to /api/journal/entries');
         response = await apiRequest("POST", "/api/journal/entries", cleanedData);
       }
 
-      console.log('API response:', response);
+      console.log('API response received:', response.status, response.statusText);
+      const responseData = await response.json();
+      console.log('API response data:', responseData);
 
       // Invalidate and refetch the journal entries
       queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
