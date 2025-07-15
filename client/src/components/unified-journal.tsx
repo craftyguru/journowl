@@ -963,10 +963,10 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
           )}
         </AnimatePresence>
 
-        {/* AI Sidekick Toggle */}
+        {/* AI Sidekick Toggle - Center Bottom */}
         <Button
           onClick={() => setShowAiChat(!showAiChat)}
-          className={`absolute bottom-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl ${
+          className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl z-40 ${
             showAiChat ? 'scale-90' : 'animate-bounce'
           }`}
         >
