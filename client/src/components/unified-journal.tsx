@@ -76,6 +76,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [showUsageWarning, setShowUsageWarning] = useState(false);
   const [isHoldingMic, setIsHoldingMic] = useState(false);
   const [holdTimeout, setHoldTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [promptUsage, setPromptUsage] = useState<{promptsRemaining: number; promptsUsedThisMonth: number} | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -224,11 +225,25 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
     }
   };
 
+  // Fetch prompt usage data
+  const fetchPromptUsage = async () => {
+    try {
+      const response = await fetch('/api/prompts/usage');
+      if (response.ok) {
+        const data = await response.json();
+        setPromptUsage(data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch prompt usage:', error);
+    }
+  };
+
   // Handle mic button mouse down (start hold-to-speak)
   const handleMicMouseDown = () => {
     setIsHoldingMic(true);
-    const timeout = setTimeout(() => {
-      // After 500ms of holding, show usage warning for conversation mode
+    const timeout = setTimeout(async () => {
+      // After 500ms of holding, fetch usage data and show warning
+      await fetchPromptUsage();
       setShowUsageWarning(true);
     }, 500);
     setHoldTimeout(timeout);
@@ -1280,7 +1295,15 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                 You're about to enter full conversation mode where I'll respond to everything you say. 
                 This uses AI prompts continuously and can burn through your credits quickly.
                 <br /><br />
-                <strong>Your current usage:</strong> You have AI prompts remaining.
+                <strong>Your current usage:</strong> {promptUsage ? (
+                  <>
+                    You have <span className="text-green-600 font-semibold">{promptUsage.promptsRemaining}</span> AI prompts remaining.
+                    <br />
+                    You've used <span className="text-orange-600 font-semibold">{promptUsage.promptsUsedThisMonth}</span> prompts this month.
+                  </>
+                ) : (
+                  'Loading usage data...'
+                )}
                 <br /><br />
                 Would you like to continue or purchase more AI prompts?
               </AlertDialogDescription>
