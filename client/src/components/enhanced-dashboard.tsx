@@ -673,10 +673,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
                   <div>
                     <div className="text-white font-semibold">AI Quick Insight</div>
                     <div className="text-purple-100 text-sm">
-                      {isDemoMode 
-                        ? "You're 85% more positive when writing in the morning. Your happiest day this month was Friday, July 12th!" 
-                        : (insightsResponse?.insights?.[0] || "Start writing to unlock personalized insights!")
-                      }
+                      {insights?.insights?.[0] || "Start writing to unlock personalized insights!"}
                     </div>
                   </div>
                 </div>

@@ -104,14 +104,10 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
 
   const user = userResponse?.user;
   
-  // Check if demo mode is enabled via URL parameter
-  const urlParams = new URLSearchParams(window.location.search);
-  const isDemoMode = urlParams.get('demo') === 'true';
-  
-  // Use Timmy's demo data when ?demo=true, real data otherwise
-  const stats = isDemoMode ? timmyDemoStats : (statsResponse?.stats || {});
-  const entries = isDemoMode ? timmyDemoEntries : (entriesResponse || []);
-  const userAchievements = isDemoMode ? timmyDemoAchievements : (achievementsResponse?.achievements || []);
+  // Use real user data from API
+  const stats = statsResponse || {};
+  const entries = entriesResponse || [];
+  const userAchievements = achievementsResponse?.achievements || [];
 
   const currentLevel = Math.floor((stats.xp || 0) / 1000) + 1;
   const levelProgress = ((stats.xp || 0) % 1000) / 10; // Convert to percentage
@@ -314,7 +310,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       >
         <div className="relative inline-block">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Hey there, {isDemoMode ? 'Little Timmy' : (user?.username || 'Little Writer')}! 🦉🌟
+            Hey there, {user?.username || 'Little Writer'}! 🦉🌟
           </h1>
           <div className="absolute -top-4 -right-4 text-2xl animate-bounce">✨</div>
         </div>
