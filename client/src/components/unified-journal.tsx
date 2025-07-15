@@ -540,19 +540,21 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
                 </div>
 
                 {/* AI & Privacy Controls */}
-                <div className="flex items-center gap-1 ml-auto">
+                <div className="flex items-center gap-2 ml-auto">
                   <Button 
                     onClick={generateAiSuggestions}
                     variant="outline"
                     size="sm"
                     disabled={content.length < 10}
+                    className="h-10 px-3 bg-gray-100 hover:bg-gray-200 border-gray-300"
+                    title="Generate AI writing suggestions based on your content"
                   >
-                    <Lightbulb className="w-3 h-3" />
+                    <Lightbulb className="w-4 h-4 text-gray-600" />
                   </Button>
 
-                  <div className="flex items-center gap-1 ml-2">
+                  <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg border border-gray-300">
                     <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
-                    <span className="text-xs">Private</span>
+                    <span className="text-sm font-medium text-gray-700">Private</span>
                   </div>
                 </div>
               </div>
