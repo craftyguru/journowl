@@ -315,12 +315,30 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="mb-20"
         >
-          <h2 className="text-4xl font-bold text-center text-white mb-4">
-            Everything You Need to <span className="text-purple-300">Level Up</span> Your Writing
-          </h2>
-          <p className="text-xl text-gray-400 text-center mb-12 max-w-3xl mx-auto">
-            From beginner to professional writer, our platform adapts to your needs
-          </p>
+          <motion.h2 
+            className="text-5xl font-bold text-center mb-6 font-poppins"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+          >
+            <span className="bg-gradient-to-r from-yellow-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+              🚀 Everything You Need to 
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+              Level Up Your Writing ✨
+            </span>
+          </motion.h2>
+          <motion.p 
+            className="text-2xl text-center mb-12 max-w-4xl mx-auto font-opensans leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+          >
+            <span className="text-emerald-300 font-semibold">📝 From beginner to professional writer,</span>{" "}
+            <span className="text-amber-300 font-semibold">our platform adapts to your needs</span>{" "}
+            <span className="text-pink-300 font-semibold">🎯 with AI-powered insights!</span>
+          </motion.p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             {mainFeatures.map((feature, index) => (
@@ -332,20 +350,38 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 whileHover={{ y: -5, scale: 1.02 }}
                 className="group relative"
               >
-                <Card className="bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 hover:border-purple-400/60 transition-all duration-300 h-full overflow-hidden shadow-xl">
-                  <CardContent className="p-8">
-                    <div className="flex items-start gap-4 mb-4">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${feature.color} shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                        <feature.icon className="w-6 h-6 text-white" />
+                <Card className="bg-gradient-to-br from-gray-900/95 to-black/90 backdrop-blur-lg border-2 border-purple-500/30 hover:border-cyan-400/60 transition-all duration-500 h-full overflow-hidden shadow-2xl hover:shadow-purple-500/20 group-hover:scale-105">
+                  <CardContent className="p-8 relative">
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-transparent to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                    <div className="relative z-10">
+                      <div className="flex items-start gap-4 mb-6">
+                        <motion.div 
+                          className={`p-4 rounded-2xl bg-gradient-to-br ${feature.color} shadow-lg group-hover:scale-125 transition-all duration-500 group-hover:rotate-6`}
+                          whileHover={{ y: -5 }}
+                        >
+                          <feature.icon className="w-7 h-7 text-white drop-shadow-lg" />
+                        </motion.div>
+                        <div className="flex-1">
+                          <motion.h3 
+                            className="text-2xl font-bold bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent mb-3 font-inter"
+                            initial={{ opacity: 0.8 }}
+                            whileHover={{ opacity: 1, scale: 1.02 }}
+                          >
+                            {feature.title}
+                          </motion.h3>
+                          <Badge variant="secondary" className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-cyan-300 border border-cyan-400/30 font-bold text-sm px-3 py-1">
+                            ✨ {feature.stats}
+                          </Badge>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                        <Badge variant="secondary" className="bg-white/20 text-white border-0 font-medium">
-                          {feature.stats}
-                        </Badge>
-                      </div>
+                      <motion.p 
+                        className="text-gray-200 leading-relaxed font-medium text-lg font-opensans tracking-wide"
+                        initial={{ opacity: 0.9 }}
+                        whileHover={{ opacity: 1, x: 5 }}
+                      >
+                        {feature.description}
+                      </motion.p>
                     </div>
-                    <p className="text-gray-100 leading-relaxed font-medium">{feature.description}</p>
                   </CardContent>
                   
                   {/* Animated border gradient */}
@@ -365,9 +401,20 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           transition={{ duration: 0.8, delay: 1.2 }}
           className="mb-20"
         >
-          <h3 className="text-3xl font-bold text-center text-white mb-12">
-            <span className="text-emerald-400">50+</span> Powerful Features
-          </h3>
+          <motion.h3 
+            className="text-4xl font-bold text-center mb-12 font-roboto"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 1.2 }}
+          >
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+              🎯 50+ Powerful Features
+            </span>
+            <br />
+            <span className="bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              Built for Every Writer ✍️
+            </span>
+          </motion.h3>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {capabilities.map((category, categoryIndex) => (
@@ -376,9 +423,14 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1.4 + categoryIndex * 0.2 }}
-                className="bg-white/15 backdrop-blur-md rounded-xl p-6 border border-white/25 shadow-lg"
+                className="bg-gradient-to-br from-gray-900/90 to-black/80 backdrop-blur-lg rounded-xl p-6 border-2 border-purple-500/40 hover:border-cyan-400/60 shadow-2xl hover:shadow-purple-500/20 transition-all duration-500"
               >
-                <h4 className="text-xl font-bold text-white mb-6">{category.category}</h4>
+                <motion.h4 
+                  className="text-2xl font-bold mb-6 bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300 bg-clip-text text-transparent font-inter"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  🌟 {category.category}
+                </motion.h4>
                 <div className="space-y-4">
                   {category.items.map((item, itemIndex) => (
                     <motion.div

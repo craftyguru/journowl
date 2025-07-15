@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Font Families */
+.font-montserrat { font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+.font-poppins { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+.font-inter { font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+.font-roboto { font-family: 'Roboto', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+.font-opensans { font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+
 :root {
   --background: hsl(0, 0%, 100%);
   --foreground: hsl(20, 14.3%, 4.1%);
