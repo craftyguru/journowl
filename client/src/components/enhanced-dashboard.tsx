@@ -2714,7 +2714,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
       {/* Floating Action Bubbles - Only show when journal editor is closed */}
       {!showSmartEditor && !showUnifiedJournal && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-4 z-50">
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
           <motion.button
             onClick={capturePhoto}
             whileHover={{ scale: 1.1 }}
@@ -2726,28 +2726,6 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
           </motion.button>
           
           <motion.button
-            onClick={() => {
-              const today = new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              });
-              openUnifiedJournal({
-                title: `📝 Quick Note - ${today}`,
-                content: "Quick thought: ",
-                mood: 'neutral'
-              });
-            }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 bg-purple-500 hover:bg-purple-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Quick Note"
-          >
-            📝
-          </motion.button>
-          
-          <motion.button
             onClick={recordAudio}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
@@ -2755,28 +2733,6 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             title="Record Audio"
           >
             🎤
-          </motion.button>
-          
-          <motion.button
-            onClick={() => {
-              const today = new Date().toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              });
-              openUnifiedJournal({
-                title: `🎨 Creative Entry - ${today}`,
-                content: "Today I want to create something special...\n\n",
-                mood: 'creative'
-              });
-            }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 bg-pink-500 hover:bg-pink-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Creative Entry"
-          >
-            🎨
           </motion.button>
         </div>
       )}
