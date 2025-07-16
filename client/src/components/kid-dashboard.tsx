@@ -79,7 +79,8 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const [aiMessages, setAiMessages] = useState<{sender: 'user' | 'ai', text: string}[]>([]);
   const [aiInput, setAiInput] = useState("");
   const [selectedCalendarDate, setSelectedCalendarDate] = useState<number | null>(null);
-  const [calendarEntries, setCalendarEntries] = useState<{[key: number]: boolean}>({});
+  const [calendarEntries, setCalendarEntries] = useState<{[key: number]: any}>({});
+  const [selectedDateEntry, setSelectedDateEntry] = useState<any>(null);
   
   // Refs for media handling
   const canvasRef = useRef<any>(null);
@@ -151,11 +152,16 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       setTitle(entry.title || "");
       setContent(entry.content || "");
       setSelectedMood(entry.mood || "😊");
+      // Load existing photos if any
+      setUploadedPhotos(entry.photos || []);
     } else {
       setCurrentEntry(null);
       setTitle("");
       setContent(prompt ? `Prompt: ${prompt}\n\n` : "");
       setSelectedMood("😊");
+      // Reset photos for new entry
+      setUploadedPhotos([]);
+      setSelectedPhotos([]);
     }
     setShowJournalEditor(true);
   };
@@ -220,39 +226,49 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   // Calendar Functions
   const handleCalendarDateClick = (dayNumber: number) => {
     setSelectedCalendarDate(dayNumber);
-    const hasEntry = calendarEntries[dayNumber];
+    const entryForDay = calendarEntries[dayNumber];
     
-    if (hasEntry) {
-      // Show celebration for visiting a day with an entry
-      console.log(`Viewing entry for day ${dayNumber}!`);
+    if (entryForDay) {
+      // Open the existing entry for viewing/editing
+      setSelectedDateEntry(entryForDay);
+      openJournalEditor(entryForDay, null);
+      console.log(`Opening entry for day ${dayNumber}: "${entryForDay.title}"`);
     } else {
       // Encourage writing on this day
-      const promptForDay = `Write about what happened on the ${dayNumber}th! What made this day special?`;
+      const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+      const promptForDay = `Write about what happened on ${currentMonth} ${dayNumber}! What made this day special?`;
+      setSelectedDateEntry(null);
       openJournalEditor(null, promptForDay);
     }
   };
 
-  const markCalendarEntry = (dayNumber: number) => {
-    setCalendarEntries(prev => ({
-      ...prev,
-      [dayNumber]: true
-    }));
-  };
-
-  // Initialize calendar with some demo entries
-  const initializeCalendar = () => {
-    const demoEntries: {[key: number]: boolean} = {};
-    // Mark some random days as having entries
-    [2, 7, 12, 16, 23, 25, 27].forEach(day => {
-      demoEntries[day] = true;
+  // Build calendar entries from real journal data
+  const buildCalendarFromEntries = (journalEntries: any[]) => {
+    const entriesByDay: {[key: number]: any} = {};
+    
+    journalEntries.forEach(entry => {
+      if (entry.createdAt) {
+        const entryDate = new Date(entry.createdAt);
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+        
+        // Only show entries from current month/year
+        if (entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear) {
+          const dayNumber = entryDate.getDate();
+          entriesByDay[dayNumber] = entry;
+        }
+      }
     });
-    setCalendarEntries(demoEntries);
+    
+    setCalendarEntries(entriesByDay);
   };
 
-  // Initialize calendar on component mount
+  // Build calendar from real journal entries
   useEffect(() => {
-    initializeCalendar();
-  }, []);
+    if (entries && entries.length > 0) {
+      buildCalendarFromEntries(entries);
+    }
+  }, [entries]);
 
   // Photo analysis function
   const analyzePhotos = async () => {
@@ -947,6 +963,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                             animate={{ scale: [1, 1.2, 1] }}
                             transition={{ duration: 2, repeat: Infinity }}
                             className="text-xs"
+                            title={hasEntry.title ? `"${hasEntry.title}"` : "Journal entry"}
                           >
                             ✨
                           </motion.span>
@@ -1020,6 +1037,32 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                     <p className="text-white font-bold text-sm">Clear Selection</p>
                   </motion.div>
                 </div>
+                
+                {/* Selected Entry Preview */}
+                {selectedCalendarDate && calendarEntries[selectedCalendarDate] && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-6 bg-gradient-to-br from-green-50 to-emerald-50 border-3 border-green-200 rounded-2xl p-4"
+                  >
+                    <div className="text-center">
+                      <div className="text-2xl mb-2">📖</div>
+                      <h4 className="font-bold text-green-800 mb-2">
+                        {calendarEntries[selectedCalendarDate].title || `Entry for Day ${selectedCalendarDate}`}
+                      </h4>
+                      <p className="text-green-600 text-sm mb-3">
+                        {calendarEntries[selectedCalendarDate].content?.substring(0, 100)}
+                        {calendarEntries[selectedCalendarDate].content?.length > 100 ? "..." : ""}
+                      </p>
+                      <Button 
+                        onClick={() => handleCalendarDateClick(selectedCalendarDate)}
+                        className="bg-green-500 hover:bg-green-600 text-white rounded-xl"
+                      >
+                        ✏️ Edit This Story
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
               </div>
 
               {/* Writing Streak Counter */}
