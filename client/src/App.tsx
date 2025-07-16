@@ -272,7 +272,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
   
   return (
     <div className="min-h-screen bg-background">
-      {!isKidMode && <Navbar currentView={validView} onNavigate={onNavigate} />}
+      {!isKidMode && <Navbar currentView={validView} activeTab={activeTab} onNavigate={onNavigate} />}
       <main>
         {isKidMode ? (
           <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />

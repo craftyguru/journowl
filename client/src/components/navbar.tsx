@@ -8,10 +8,11 @@ import { useState } from "react";
 
 interface NavbarProps {
   currentView: string;
+  activeTab?: string;
   onNavigate: (view: string) => void;
 }
 
-export default function Navbar({ currentView, onNavigate }: NavbarProps) {
+export default function Navbar({ currentView, activeTab, onNavigate }: NavbarProps) {
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -100,7 +101,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
           <div className="px-4 py-2 space-y-2 max-h-96 overflow-y-auto">
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "dashboard" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${currentView === "dashboard" && activeTab === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("dashboard");
                 setMobileMenuOpen(false);
@@ -110,7 +111,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("journal");
                 setMobileMenuOpen(false);
@@ -120,7 +121,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "analytics" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "analytics" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("analytics");
                 setMobileMenuOpen(false);
@@ -130,7 +131,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("achievements");
                 setMobileMenuOpen(false);
@@ -140,7 +141,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "goals" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "goals" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("goals");
                 setMobileMenuOpen(false);
@@ -150,7 +151,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("insights");
                 setMobileMenuOpen(false);
@@ -160,7 +161,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "analytics-insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "analytics-insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("analytics-insights");
                 setMobileMenuOpen(false);
@@ -170,7 +171,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("calendar");
                 setMobileMenuOpen(false);
@@ -180,7 +181,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("stories");
                 setMobileMenuOpen(false);
