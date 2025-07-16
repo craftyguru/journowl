@@ -75,6 +75,18 @@
     @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 min-h-[44px] flex items-center justify-center;
   }
 
+  /* Pulse animation for recording */
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
+  }
+
   .scrollbar-hide {
     -ms-overflow-style: none;  /* Internet Explorer 10+ */
     scrollbar-width: none;  /* Firefox */
