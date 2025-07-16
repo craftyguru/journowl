@@ -100,19 +100,21 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
           <div className="px-4 py-2 space-y-2">
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "dashboard" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start text-muted-foreground hover:text-primary`}
               onClick={() => {
+                // This will navigate to the journal tab within dashboard
                 onNavigate("dashboard");
                 setMobileMenuOpen(false);
               }}
             >
-              📊 Dashboard
+              📖 Journal
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "analytics" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start text-muted-foreground hover:text-primary`}
               onClick={() => {
-                onNavigate("analytics");
+                // This will navigate to the analytics tab within dashboard  
+                onNavigate("dashboard");
                 setMobileMenuOpen(false);
               }}
             >
@@ -120,9 +122,10 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start text-muted-foreground hover:text-primary`}
               onClick={() => {
-                onNavigate("achievements");
+                // This will navigate to the achievements tab within dashboard
+                onNavigate("dashboard");
                 setMobileMenuOpen(false);
               }}
             >
@@ -130,13 +133,25 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "goals" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start text-muted-foreground hover:text-primary`}
               onClick={() => {
-                onNavigate("goals");
+                // This will navigate to the goals tab within dashboard
+                onNavigate("dashboard");
                 setMobileMenuOpen(false);
               }}
             >
               🎯 Goals
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start text-muted-foreground hover:text-primary`}
+              onClick={() => {
+                // This will navigate to the thoughts tab within dashboard
+                onNavigate("dashboard");
+                setMobileMenuOpen(false);
+              }}
+            >
+              🧠 AI Thoughts
             </Button>
             <Button
               variant="ghost"
@@ -146,13 +161,14 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
                 setMobileMenuOpen(false);
               }}
             >
-              🤖 AI Insights
+              📊 Insights
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start text-muted-foreground hover:text-primary`}
               onClick={() => {
-                onNavigate("calendar");
+                // This will navigate to the calendar tab within dashboard
+                onNavigate("dashboard");
                 setMobileMenuOpen(false);
               }}
             >
@@ -160,9 +176,10 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start text-muted-foreground hover:text-primary`}
               onClick={() => {
-                onNavigate("stories");
+                // This will navigate to the stories tab within dashboard
+                onNavigate("dashboard");
                 setMobileMenuOpen(false);
               }}
             >
@@ -176,7 +193,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
                 setMobileMenuOpen(false);
               }}
             >
-              🎁 Refer Friends
+              🎁 Referral
             </Button>
             {user && (
               <Button
