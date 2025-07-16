@@ -274,33 +274,224 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     }
   }, [entries]);
 
-  // Quick Action Functions for Seamless Entry Creation
-  const createPhotoEntry = () => {
-    const today = new Date().toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-    
-    openJournalEditor(null, `📸 My Photo Story - ${today}`);
-    setActiveTab("photos");
-    setTitle(`📸 My Photo Story - ${today}`);
-    setContent("Here's what I captured today! Let me tell you about this amazing moment...\n\n");
+  // Camera and Media Capture Functions
+  const capturePhoto = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' }, // Use back camera if available
+        audio: false 
+      });
+      
+      // Create video element to show camera preview
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.playsInline = true;
+      
+      // Create canvas to capture photo
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      
+      // Create overlay UI for camera
+      const cameraOverlay = document.createElement('div');
+      cameraOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      `;
+      
+      video.style.cssText = `
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        border-radius: 10px;
+      `;
+      
+      const captureButton = document.createElement('button');
+      captureButton.innerHTML = '📸 Take Photo';
+      captureButton.style.cssText = `
+        margin-top: 20px;
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+      `;
+      
+      const closeButton = document.createElement('button');
+      closeButton.innerHTML = '❌ Close';
+      closeButton.style.cssText = `
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+      `;
+      
+      cameraOverlay.appendChild(video);
+      cameraOverlay.appendChild(captureButton);
+      cameraOverlay.appendChild(closeButton);
+      document.body.appendChild(cameraOverlay);
+      
+      const cleanup = () => {
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(cameraOverlay);
+      };
+      
+      captureButton.onclick = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0);
+        
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          setUploadedPhotos(prev => [...prev, url]);
+          
+          const today = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          });
+          
+          cleanup();
+          openJournalEditor(null, `📸 My Photo Story - ${today}`);
+          setActiveTab("photos");
+          setTitle(`📸 My Photo Story - ${today}`);
+          setContent("Here's what I captured today! Let me tell you about this amazing moment...\n\n");
+        }, 'image/jpeg', 0.8);
+      };
+      
+      closeButton.onclick = cleanup;
+      
+    } catch (error) {
+      console.error('Camera access failed:', error);
+      alert('Unable to access camera. Please check permissions.');
+    }
   };
 
-  const createAudioEntry = () => {
-    const today = new Date().toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-    
-    openJournalEditor(null, `🎤 My Voice Story - ${today}`);
-    setActiveTab("voice");
-    setTitle(`🎤 My Voice Story - ${today}`);
-    setContent("I recorded something special today! Here's what I want to remember...\n\n");
+  const recordAudio = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks = [];
+      
+      // Create recording UI overlay
+      const recordingOverlay = document.createElement('div');
+      recordingOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      `;
+      
+      const recordingStatus = document.createElement('div');
+      recordingStatus.innerHTML = '🎤 Recording...';
+      recordingStatus.style.cssText = `
+        font-size: 24px;
+        margin-bottom: 20px;
+        animation: pulse 1s infinite;
+      `;
+      
+      const stopButton = document.createElement('button');
+      stopButton.innerHTML = '⏹️ Stop Recording';
+      stopButton.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 20px;
+      `;
+      
+      const cancelButton = document.createElement('button');
+      cancelButton.innerHTML = '❌ Cancel';
+      cancelButton.style.cssText = `
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #6b7280;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 10px;
+      `;
+      
+      recordingOverlay.appendChild(recordingStatus);
+      recordingOverlay.appendChild(stopButton);
+      recordingOverlay.appendChild(cancelButton);
+      document.body.appendChild(recordingOverlay);
+      
+      mediaRecorder.ondataavailable = (event) => {
+        chunks.push(event.data);
+      };
+      
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        const audioUrl = URL.createObjectURL(blob);
+        
+        const today = new Date().toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        
+        // Add audio to the entry (you might need to handle audio differently)
+        setUploadedVideos(prev => [...prev, audioUrl]);
+        
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(recordingOverlay);
+        
+        openJournalEditor(null, `🎤 My Voice Story - ${today}`);
+        setActiveTab("voice");
+        setTitle(`🎤 My Voice Story - ${today}`);
+        setContent("I recorded something special today! Here's what I want to remember...\n\n");
+      };
+      
+      const cleanup = () => {
+        mediaRecorder.stop();
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(recordingOverlay);
+      };
+      
+      stopButton.onclick = () => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+      };
+      
+      cancelButton.onclick = cleanup;
+      
+      mediaRecorder.start();
+      
+    } catch (error) {
+      console.error('Audio recording failed:', error);
+      alert('Unable to access microphone. Please check permissions.');
+    }
   };
 
   // Photo analysis function
