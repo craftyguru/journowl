@@ -13,6 +13,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { ReactSketchCanvas } from "react-sketch-canvas";
+import UsageMeters from "@/components/UsageMeters";
 
 // Web Speech API types
 declare global {
@@ -128,6 +129,9 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const stats = statsResponse || {};
   const entries = entriesResponse || [];
   const userAchievements = achievementsResponse?.achievements || [];
+  
+  // Use demo achievements for UI while API is having issues, but keep same structure for consistency
+  const achievements = userAchievements.length > 0 ? userAchievements : timmyDemoAchievements;
 
   const currentLevel = Math.floor((stats.xp || 0) / 1000) + 1;
   const levelProgress = ((stats.xp || 0) % 1000) / 10; // Convert to percentage
@@ -940,6 +944,8 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         </Card>
       </motion.div>
 
+
+
       {/* Welcome Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -997,6 +1003,16 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
             </div>
           </CardContent>
         </Card>
+      </motion.div>
+
+      {/* Usage Meters - Shared with Adult Interface */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mb-6"
+      >
+        <UsageMeters />
       </motion.div>
 
       {/* 6-Tab Navigation System */}
