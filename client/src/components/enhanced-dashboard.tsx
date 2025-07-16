@@ -195,6 +195,221 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
     openUnifiedJournal(entry);
   };
 
+  // Camera and Media Capture Functions
+  const capturePhoto = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' }, 
+        audio: false 
+      });
+      
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.playsInline = true;
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      
+      const cameraOverlay = document.createElement('div');
+      cameraOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      `;
+      
+      video.style.cssText = `
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        border-radius: 10px;
+      `;
+      
+      const captureButton = document.createElement('button');
+      captureButton.innerHTML = '📸 Take Photo';
+      captureButton.style.cssText = `
+        margin-top: 20px;
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+      `;
+      
+      const closeButton = document.createElement('button');
+      closeButton.innerHTML = '❌ Close';
+      closeButton.style.cssText = `
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+      `;
+      
+      cameraOverlay.appendChild(video);
+      cameraOverlay.appendChild(captureButton);
+      cameraOverlay.appendChild(closeButton);
+      document.body.appendChild(cameraOverlay);
+      
+      const cleanup = () => {
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(cameraOverlay);
+      };
+      
+      captureButton.onclick = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0);
+        
+        canvas.toBlob((blob) => {
+          const url = URL.createObjectURL(blob);
+          const today = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          });
+          
+          cleanup();
+          openUnifiedJournal({
+            title: `📸 Photo Story - ${today}`,
+            content: "Here's what I captured today! Let me tell you about this amazing moment...\n\n",
+            photos: [url],
+            mood: 'excited'
+          });
+        }, 'image/jpeg', 0.8);
+      };
+      
+      closeButton.onclick = cleanup;
+      
+    } catch (error) {
+      console.error('Camera access failed:', error);
+      alert('Unable to access camera. Please check permissions.');
+    }
+  };
+
+  const recordAudio = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks = [];
+      
+      const recordingOverlay = document.createElement('div');
+      recordingOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: white;
+      `;
+      
+      const recordingStatus = document.createElement('div');
+      recordingStatus.innerHTML = '🎤 Recording...';
+      recordingStatus.style.cssText = `
+        font-size: 24px;
+        margin-bottom: 20px;
+        animation: pulse 1s infinite;
+      `;
+      
+      const stopButton = document.createElement('button');
+      stopButton.innerHTML = '⏹️ Stop Recording';
+      stopButton.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 20px;
+      `;
+      
+      const cancelButton = document.createElement('button');
+      cancelButton.innerHTML = '❌ Cancel';
+      cancelButton.style.cssText = `
+        padding: 10px 20px;
+        font-size: 16px;
+        background: #6b7280;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        margin-top: 10px;
+      `;
+      
+      recordingOverlay.appendChild(recordingStatus);
+      recordingOverlay.appendChild(stopButton);
+      recordingOverlay.appendChild(cancelButton);
+      document.body.appendChild(recordingOverlay);
+      
+      mediaRecorder.ondataavailable = (event) => {
+        chunks.push(event.data);
+      };
+      
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        const audioUrl = URL.createObjectURL(blob);
+        
+        const today = new Date().toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(recordingOverlay);
+        
+        openUnifiedJournal({
+          title: `🎤 Voice Story - ${today}`,
+          content: "I recorded something special today! Here's what I want to remember...\n\n",
+          audioRecordings: [audioUrl],
+          mood: 'happy'
+        });
+      };
+      
+      const cleanup = () => {
+        mediaRecorder.stop();
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(recordingOverlay);
+      };
+      
+      stopButton.onclick = () => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+      };
+      
+      cancelButton.onclick = cleanup;
+      
+      mediaRecorder.start();
+      
+    } catch (error) {
+      console.error('Audio recording failed:', error);
+      alert('Unable to access microphone. Please check permissions.');
+    }
+  };
+
   // Convert entries to calendar format with varied dates
   const calendarEntries = entries.map((entry, index) => {
     const date = new Date();
@@ -2354,6 +2569,31 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
           <PromptPurchase />
         </DialogContent>
       </Dialog>
+
+      {/* Floating Action Bubbles - Only show when journal editor is closed */}
+      {!showSmartEditor && !showUnifiedJournal && (
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
+          <motion.button
+            onClick={capturePhoto}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
+            title="Take Photo/Video"
+          >
+            📸
+          </motion.button>
+          
+          <motion.button
+            onClick={recordAudio}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
+            title="Record Audio"
+          >
+            🎤
+          </motion.button>
+        </div>
+      )}
     </div>
   );
 }
