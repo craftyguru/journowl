@@ -26,10 +26,22 @@ function App() {
     return urlParams.get('demo') === 'true' ? 'demo' : 'landing';
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
+  const [activeTab, setActiveTab] = useState("journal");
   
   const handleNavigate = (view: string) => {
-    if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth") {
+    // Handle tab navigation within dashboard
+    const tabOptions = ["journal", "analytics", "achievements", "goals", "insights", "analytics-insights", "calendar", "stories", "referral"];
+    
+    if (tabOptions.includes(view)) {
+      if (view === "referral") {
+        setCurrentView("referral");
+      } else {
+        setActiveTab(view);
+        setCurrentView("dashboard");
+      }
+    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth") {
       setCurrentView(view);
+      if (view === "dashboard") setActiveTab("journal");
     }
   };
 
@@ -207,7 +219,7 @@ function App() {
       <ThemeProvider>
         <TooltipProvider>
           <Toaster />
-          <AuthenticatedApp currentView={currentView} onNavigate={handleNavigate} />
+          <AuthenticatedApp currentView={currentView} activeTab={activeTab} onNavigate={handleNavigate} />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
@@ -215,7 +227,7 @@ function App() {
 }
 
 // Authenticated App Component with Role-Based Access
-function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, onNavigate: (view: string) => void }) {
+function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView: string, activeTab: string, onNavigate: (view: string) => void }) {
   const [isKidMode, setIsKidMode] = useState(false);
   
   const { data: user, isLoading, error } = useQuery({
@@ -270,7 +282,7 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
           <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
         ) : (
           <>
-            {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} />}
+            {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} initialTab={activeTab} />}
             {validView === "insights" && <InsightsPage />}
             {validView === "referral" && <ReferralPage />}
           </>

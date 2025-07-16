@@ -26,9 +26,10 @@ import { AIStoryMaker } from "./kid-dashboard";
 
 interface EnhancedDashboardProps {
   onSwitchToKid?: () => void;
+  initialTab?: string;
 }
 
-export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardProps) {
+export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
@@ -744,7 +745,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs defaultValue="journal" className="space-y-6">
+      <Tabs defaultValue={initialTab} className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
         <div className="relative w-full">
           <TabsList className="grid w-full grid-cols-4 md:grid-cols-9 bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5">

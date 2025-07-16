@@ -97,7 +97,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
       {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-card border-t border-border">
-          <div className="px-4 py-2 space-y-2">
+          <div className="px-4 py-2 space-y-2 max-h-96 overflow-y-auto">
             <Button
               variant="ghost"
               className={`w-full justify-start ${currentView === "dashboard" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
@@ -110,13 +110,83 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
+              className={`w-full justify-start ${currentView === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("journal");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📝 Journal
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "analytics" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("analytics");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📈 Analytics
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("achievements");
+                setMobileMenuOpen(false);
+              }}
+            >
+              🏆 Achievements
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "goals" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("goals");
+                setMobileMenuOpen(false);
+              }}
+            >
+              🎯 Goals
+            </Button>
+            <Button
+              variant="ghost"
               className={`w-full justify-start ${currentView === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("insights");
                 setMobileMenuOpen(false);
               }}
             >
-              🤖 AI Insights
+              🤖 AI Thoughts
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "analytics-insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("analytics-insights");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📊 Insights
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("calendar");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📅 Memory Calendar
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("stories");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📖 AI Stories
             </Button>
             <Button
               variant="ghost"
@@ -126,7 +196,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
                 setMobileMenuOpen(false);
               }}
             >
-              🎁 Refer Friends
+              🎁 Referral
             </Button>
             {user && (
               <Button
