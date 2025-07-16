@@ -20,6 +20,8 @@ import UnifiedJournal from "./unified-journal";
 import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
+import ReferralPage from "./referral-page";
+import InsightsPage from "../pages/insights";
 
 
 // All data now fetched from API endpoints instead of hardcoded values
@@ -773,10 +775,16 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               🎯 Goals
             </TabsTrigger>
             <TabsTrigger 
-              value="insights" 
+              value="thoughts" 
               className="flex-shrink-0 min-w-[120px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
             >
-              🤖 AI Insights
+              🧠 AI Thoughts
+            </TabsTrigger>
+            <TabsTrigger 
+              value="insights" 
+              className="flex-shrink-0 min-w-[110px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+            >
+              📊 Insights
             </TabsTrigger>
             <TabsTrigger 
               value="calendar" 
@@ -789,6 +797,12 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               className="flex-shrink-0 min-w-[120px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
             >
               📚 AI Stories
+            </TabsTrigger>
+            <TabsTrigger 
+              value="referral" 
+              className="flex-shrink-0 min-w-[110px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+            >
+              🎁 Referral
             </TabsTrigger>
           </TabsList>
           
@@ -2326,13 +2340,13 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
           </div>
         </TabsContent>
 
-        <TabsContent value="insights">
+        <TabsContent value="thoughts">
           <div className="space-y-6">
-            {/* AI Insights Header */}
+            {/* AI Thoughts Header */}
             <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="text-3xl font-bold">🤖 AI Insights</h2>
+                  <h2 className="text-3xl font-bold">🧠 AI Thoughts</h2>
                   <p className="text-indigo-100 text-lg">Your personal AI writing companion & advisor</p>
                 </div>
                 <div className="flex gap-3">
@@ -2677,6 +2691,14 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="insights">
+          <InsightsPage />
+        </TabsContent>
+
+        <TabsContent value="referral">
+          <ReferralPage />
         </TabsContent>
       </Tabs>
 
