@@ -73,6 +73,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const [activeTab, setActiveTab] = useState("write");
   const [isRecording, setIsRecording] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
+  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
   const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
@@ -175,6 +176,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     setSelectedMood("😊");
     setActiveTab("write");
     setUploadedPhotos([]);
+    setSelectedPhotos([]);
     setUploadedVideos([]);
     setAiSuggestions([]);
     if (canvasRef.current) {
