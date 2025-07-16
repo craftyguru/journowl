@@ -553,26 +553,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
               <Badge className="bg-pink-500 text-white text-xs">Keep going!</Badge>
             </div>
             
-            {/* Floating Quick Action Bubbles */}
-            <motion.button
-              onClick={createPhotoEntry}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="absolute -left-4 top-1/2 transform -translate-y-1/2 w-16 h-16 bg-blue-400 hover:bg-blue-500 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200 z-10"
-              title="Add Photo/Video Story"
-            >
-              📸
-            </motion.button>
-            
-            <motion.button
-              onClick={createAudioEntry}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="absolute -right-4 top-1/2 transform -translate-y-1/2 w-16 h-16 bg-green-400 hover:bg-green-500 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200 z-10"
-              title="Record Voice Story"
-            >
-              🎤
-            </motion.button>
+
           </CardContent>
         </Card>
 
@@ -666,7 +647,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                   🌟
                 </motion.div>
 
-                <Card className="bg-gradient-to-br from-yellow-100 via-pink-100 to-purple-100 border-4 border-rainbow shadow-2xl overflow-hidden relative">
+                <Card className="bg-gradient-to-br from-yellow-100 via-pink-100 to-purple-100 border-4 border-rainbow shadow-2xl overflow-visible relative">
                   <CardHeader className="bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 text-white relative overflow-hidden">
                     <motion.div
                       animate={{ x: [-20, 20, -20] }}
