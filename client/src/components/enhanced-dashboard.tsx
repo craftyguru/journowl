@@ -1081,7 +1081,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
         </TabsContent>
 
         <TabsContent value="analytics" data-tabs-content>
-          <div className="space-y-6">
+          <div className="space-y-6 pt-16">
             {/* Premium Analytics Header with Animated Stats */}
             <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white rounded-3xl p-8 shadow-2xl">
               <div className="flex items-center justify-between mb-8">
@@ -1843,7 +1843,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
         </TabsContent>
 
         <TabsContent value="achievements" data-tabs-content>
-          <div className="space-y-6">
+          <div className="space-y-6 pt-16">
             {/* Achievements Header */}
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
@@ -2108,7 +2108,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
         </TabsContent>
 
         <TabsContent value="goals" data-tabs-content>
-          <div className="space-y-6">
+          <div className="space-y-6 pt-16">
             {/* Goals Header */}
             <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
@@ -2370,7 +2370,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
         </TabsContent>
 
         <TabsContent value="insights" data-tabs-content>
-          <div className="space-y-6">
+          <div className="space-y-6 pt-16">
             {/* AI Insights Header - Mobile Optimized */}
             <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-2xl p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
@@ -2783,7 +2783,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
         </TabsContent>
 
         <TabsContent value="analytics-insights" data-tabs-content>
-          <div className="space-y-6">
+          <div className="space-y-6 pt-16">
             {/* Header Section */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
