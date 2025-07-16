@@ -61,6 +61,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
     next();
   };
 
+  // AI Prompt Protection Middleware
+  const requireAIPrompts = async (req: any, res: any, next: any) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(401).json({ 
+          message: "User not found",
+          promptsExhausted: true
+        });
+      }
+
+      const promptsRemaining = user.promptsRemaining || 0;
+      
+      if (promptsRemaining <= 0) {
+        return res.status(429).json({ 
+          message: "You've used all your AI prompts! Upgrade your subscription or purchase more prompts to continue using AI features.",
+          promptsExhausted: true,
+          promptsRemaining: 0,
+          upgradeRequired: true,
+          upgradeOptions: {
+            buyMore: {
+              price: "$2.99",
+              prompts: 100,
+              action: "buy_prompts"
+            },
+            premium: {
+              price: "$9.99/month", 
+              prompts: 1000,
+              action: "upgrade_premium"
+            },
+            pro: {
+              price: "$19.99/month",
+              prompts: "unlimited",
+              action: "upgrade_pro"
+            }
+          }
+        });
+      }
+
+      // Add prompt info to request for logging
+      req.userPrompts = {
+        remaining: promptsRemaining,
+        userId: userId
+      };
+      
+      next();
+    } catch (error) {
+      console.error("Error checking AI prompts:", error);
+      return res.status(500).json({ 
+        message: "Error checking AI prompt availability",
+        promptsExhausted: true
+      });
+    }
+  };
+
   // Auth routes
   app.post("/api/auth/register", async (req, res) => {
     try {
@@ -457,7 +514,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI routes
-  app.get("/api/ai/prompt", requireAuth, async (req: any, res) => {
+  app.get("/api/ai/prompt", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const prompt = await generateJournalPrompt();
       res.json({ prompt });
@@ -466,7 +523,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/ai/personalized-prompt", requireAuth, async (req: any, res) => {
+  app.get("/api/ai/personalized-prompt", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const entries = await storage.getJournalEntries(req.session.userId, 3);
       const entryTexts = entries.map(entry => entry.content);
@@ -477,7 +534,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/ai/generate-prompt", async (req: any, res) => {
+  app.post("/api/ai/generate-prompt", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const { recentEntries, mood } = req.body;
       const prompt = await generatePersonalizedPrompt(recentEntries || []);
@@ -488,7 +545,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/ai/chat", async (req: any, res) => {
+  app.post("/api/ai/chat", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const { message, context } = req.body;
       
@@ -575,7 +632,7 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
     }
   });
 
-  app.get("/api/ai/insight", requireAuth, async (req: any, res) => {
+  app.get("/api/ai/insight", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const entries = await storage.getJournalEntries(req.session.userId, 5);
       const entriesWithDates = entries.filter(entry => entry.createdAt).map(entry => ({
@@ -591,7 +648,7 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
   });
 
   // Photo AI routes
-  app.post("/api/ai/analyze-photo", async (req: any, res) => {
+  app.post("/api/ai/analyze-photo", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const { base64Image, currentMood } = req.body;
       if (!base64Image) {
@@ -607,7 +664,7 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
     }
   });
 
-  app.post("/api/ai/extract-insights", requireAuth, async (req: any, res) => {
+  app.post("/api/ai/extract-insights", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const { content, mood, photos, tags } = req.body;
       
@@ -626,7 +683,7 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
     }
   });
 
-  app.post("/api/ai/ask-question", requireAuth, async (req: any, res) => {
+  app.post("/api/ai/ask-question", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const { question, entries, stats } = req.body;
       
@@ -913,45 +970,44 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
   });
 
   // AI-powered kid prompts endpoint
-  app.post("/api/ai/kid-prompts", async (req, res) => {
+  app.post("/api/ai/kid-prompts", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const { content, mood, hasPhotos, photoCount } = req.body;
       
-      // Track AI prompt usage before making OpenAI call
-      await storage.incrementPromptUsage(req.session.userId);
-      
-      // Kid-friendly AI prompt generation
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: "gpt-4o",
-          messages: [
-            {
-              role: "system",
-              content: `You are a friendly AI writing assistant for kids aged 6-12. Generate 3-4 fun, encouraging writing prompts based on what the child has written and their mood. Make prompts:
-              - Age-appropriate and positive
-              - Creative and imaginative 
-              - Related to their current content/mood
-              - Encouraging and fun
-              - Short and easy to understand
-              Keep language simple and exciting!`
-            },
-            {
-              role: "user",
-              content: `Current mood: ${mood}
-              What they've written so far: "${content || 'Nothing yet'}"
-              ${hasPhotos ? `They've added ${photoCount} photos to their story.` : ''}
-              
-              Generate fun writing prompts to help them continue their story!`
-            }
-          ],
-          response_format: { type: "json_object" },
-          max_tokens: 500
-        })
+      // Use trackable OpenAI call
+      const response = await trackableOpenAICall(req.session.userId, async () => {
+        return await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [
+              {
+                role: "system",
+                content: `You are a friendly AI writing assistant for kids aged 6-12. Generate 3-4 fun, encouraging writing prompts based on what the child has written and their mood. Make prompts:
+                - Age-appropriate and positive
+                - Creative and imaginative 
+                - Related to their current content/mood
+                - Encouraging and fun
+                - Short and easy to understand
+                Keep language simple and exciting!`
+              },
+              {
+                role: "user",
+                content: `Current mood: ${mood}
+                What they've written so far: "${content || 'Nothing yet'}"
+                ${hasPhotos ? `They've added ${photoCount} photos to their story.` : ''}
+                
+                Generate fun writing prompts to help them continue their story!`
+              }
+            ],
+            response_format: { type: "json_object" },
+            max_tokens: 500
+          })
+        });
       });
 
       if (!response.ok) {

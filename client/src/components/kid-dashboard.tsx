@@ -176,16 +176,14 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     
     setIsGeneratingAI(true);
     try {
-      const response = await apiRequest("/api/ai/kid-prompts", {
-        method: "POST",
-        body: {
-          content: content,
-          mood: selectedMood,
-          hasPhotos: uploadedPhotos.length > 0,
-          photoCount: uploadedPhotos.length
-        }
+      const response = await apiRequest("POST", "/api/ai/kid-prompts", {
+        content: content,
+        mood: selectedMood,
+        hasPhotos: uploadedPhotos.length > 0,
+        photoCount: uploadedPhotos.length
       });
-      setAiSuggestions(response.prompts || []);
+      const data = await response.json();
+      setAiSuggestions(data.prompts || []);
     } catch (error) {
       console.error("AI generation failed:", error);
     } finally {
