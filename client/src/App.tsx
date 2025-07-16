@@ -260,7 +260,7 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
 
   // Regular app interface for standard users
   // Ensure we always show dashboard as default for authenticated users
-  const validView = (["dashboard", "insights", "referral", "analytics", "achievements", "goals", "stories", "calendar"].includes(currentView)) ? currentView : "dashboard";
+  const validView = (currentView === "dashboard" || currentView === "insights" || currentView === "referral") ? currentView : "dashboard";
   
   return (
     <div className="min-h-screen bg-background">
@@ -270,8 +270,7 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
           <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
         ) : (
           <>
-            {(validView === "dashboard" || validView === "analytics" || validView === "achievements" || validView === "goals" || validView === "stories" || validView === "calendar") && 
-              <EnhancedDashboard currentView={validView} onSwitchToKid={() => setIsKidMode(true)} />}
+            {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} />}
             {validView === "insights" && <InsightsPage />}
             {validView === "referral" && <ReferralPage />}
           </>

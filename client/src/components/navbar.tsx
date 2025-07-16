@@ -110,16 +110,6 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("insights");
-                setMobileMenuOpen(false);
-              }}
-            >
-              🤖 AI Insights
-            </Button>
-            <Button
-              variant="ghost"
               className={`w-full justify-start ${currentView === "analytics" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("analytics");
@@ -150,13 +140,13 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${currentView === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${currentView === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
-                onNavigate("stories");
+                onNavigate("insights");
                 setMobileMenuOpen(false);
               }}
             >
-              📚 AI Stories
+              🤖 AI Insights
             </Button>
             <Button
               variant="ghost"
@@ -167,6 +157,16 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
               }}
             >
               📅 Memory Calendar
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("stories");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📚 AI Stories
             </Button>
             <Button
               variant="ghost"

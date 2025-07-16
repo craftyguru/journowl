@@ -20,16 +20,15 @@ import UnifiedJournal from "./unified-journal";
 import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
-import { AIStoryMaker } from "./kid-dashboard";
+
 
 // All data now fetched from API endpoints instead of hardcoded values
 
 interface EnhancedDashboardProps {
-  currentView?: string;
   onSwitchToKid?: () => void;
 }
 
-export default function EnhancedDashboard({ currentView = "dashboard", onSwitchToKid }: EnhancedDashboardProps) {
+export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardProps) {
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
@@ -744,9 +743,66 @@ export default function EnhancedDashboard({ currentView = "dashboard", onSwitchT
         <UsageMeters />
       </div>
 
-      {/* Main Content based on currentView */}
-      <div className="space-y-6">
-        {currentView === "dashboard" && (
+      {/* Main Content Tabs */}
+      <Tabs defaultValue="journal" className="space-y-6">
+        {/* Mobile-Responsive Horizontal Scrolling Tabs */}
+        <div className="relative w-full">
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-2 gap-2 md:grid md:grid-cols-7 md:gap-0">
+            <TabsTrigger 
+              value="journal" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              📖 Journal
+            </TabsTrigger>
+            <TabsTrigger 
+              value="analytics" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              📊 Analytics
+            </TabsTrigger>
+            <TabsTrigger 
+              value="achievements" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              🏆 Achievements
+            </TabsTrigger>
+            <TabsTrigger 
+              value="goals" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              🎯 Goals
+            </TabsTrigger>
+            <TabsTrigger 
+              value="insights" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              🤖 AI Insights
+            </TabsTrigger>
+            <TabsTrigger 
+              value="calendar" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              📅 Memory Calendar
+            </TabsTrigger>
+            <TabsTrigger 
+              value="stories" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              📚 AI Stories
+            </TabsTrigger>
+          </TabsList>
+          
+          {/* Mobile scroll indicator */}
+          <div className="md:hidden absolute -bottom-2 left-1/2 transform -translate-x-1/2">
+            <div className="flex items-center gap-1 px-3 py-1 bg-purple-500/20 backdrop-blur-sm rounded-full border border-purple-400/30">
+              <span className="text-xs text-purple-300">←</span>
+              <span className="text-xs text-purple-200 font-medium">Swipe</span>
+              <span className="text-xs text-purple-300">→</span>
+            </div>
+          </div>
+        </div>
+
+        <TabsContent value="journal">
           <div className="space-y-6">
             {/* Mobile-Optimized Smart Journal Header */}
             <motion.div
@@ -895,10 +951,9 @@ export default function EnhancedDashboard({ currentView = "dashboard", onSwitchT
               </CardContent>
             </Card>
           </div>
-        )}
+        </TabsContent>
 
-        {currentView === "analytics" && (
-          <div className="space-y-6">
+        <TabsContent value="overview" className="space-y-6">
           {/* Usage Meters and Subscription Management */}
           <UsageMeters />
           
@@ -2605,11 +2660,22 @@ export default function EnhancedDashboard({ currentView = "dashboard", onSwitchT
         </TabsContent>
         
         <TabsContent value="stories">
-          <div className="h-[80vh]">
-            <AIStoryMaker 
-              entries={entries}
-              stats={stats}
-            />
+          <div className="h-[80vh] flex items-center justify-center">
+            <Card className="bg-gradient-to-br from-indigo-100 to-purple-100 max-w-md mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="text-6xl mb-4">📚</div>
+                <h3 className="text-2xl font-bold text-indigo-800 mb-4">AI Story Maker</h3>
+                <p className="text-indigo-700 mb-6">
+                  Transform your journal entries into amazing stories using the power of AI!
+                </p>
+                <Button 
+                  className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold"
+                  disabled
+                >
+                  Coming Soon! ✨
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
       </Tabs>
