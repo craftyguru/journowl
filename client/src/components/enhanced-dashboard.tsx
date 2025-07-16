@@ -30,6 +30,7 @@ interface EnhancedDashboardProps {
 }
 
 export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
@@ -38,6 +39,11 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
   const [showEditGoalModal, setShowEditGoalModal] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<any>(null);
   const [showPromptPurchase, setShowPromptPurchase] = useState(false);
+
+  // Update active tab when initialTab prop changes
+  React.useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
   
   // Fetch real user data instead of hardcoded demo data
   const { data: userResponse } = useQuery({
@@ -745,7 +751,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
       </div>
 
       {/* Main Content Tabs */}
-      <Tabs defaultValue={initialTab} className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
         <div className="relative w-full">
           <TabsList className="grid w-full grid-cols-4 md:grid-cols-9 bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5">
