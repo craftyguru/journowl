@@ -284,12 +284,23 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
           });
           
           cleanup();
-          openUnifiedJournal({
+          
+          // Create proper entry object for UnifiedJournal
+          const entryWithPhoto = {
             title: `📸 Photo Story - ${today}`,
             content: "Here's what I captured today! Let me tell you about this amazing moment...\n\n",
-            photos: [url],
-            mood: 'excited'
-          });
+            photos: [{ url: url, timestamp: new Date() }],
+            videoRecordings: [],
+            audioRecordings: [],
+            mood: '😊',
+            tags: ['photo', 'memory'],
+            fontFamily: 'Inter',
+            fontSize: 16,
+            textColor: '#1f2937',
+            backgroundColor: '#ffffff',
+            isPrivate: false
+          };
+          openUnifiedJournal(entryWithPhoto);
         }, 'image/jpeg', 0.8);
       };
       
@@ -503,12 +514,22 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
         stream.getTracks().forEach(track => track.stop());
         document.body.removeChild(recordingOverlay);
         
-        openUnifiedJournal({
+        // Create proper entry object for UnifiedJournal
+        const entryWithAudio = {
           title: `🎤 Voice Story - ${today}`,
           content: "I recorded something special today! Here's what I want to remember...\n\n",
-          audioRecordings: [audioUrl],
-          mood: 'happy'
-        });
+          photos: [],
+          videoRecordings: [],
+          audioRecordings: [{ url: audioUrl, duration: Math.floor((Date.now() - startTime - pausedTime) / 1000), timestamp: new Date() }],
+          mood: '😊',
+          tags: ['audio', 'voice', 'story'],
+          fontFamily: 'Inter',
+          fontSize: 16,
+          textColor: '#1f2937',
+          backgroundColor: '#ffffff',
+          isPrivate: false
+        };
+        openUnifiedJournal(entryWithAudio);
       };
       
       const cleanup = () => {
