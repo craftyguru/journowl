@@ -278,7 +278,76 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const kidMoodEmojis = ["😊", "😄", "🤔", "😐", "😔", "🌈", "🎉", "😴"];
 
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen">
+    <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen relative overflow-hidden">
+      {/* Floating Animated Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            x: [0, 100, 0],
+            y: [0, -50, 0],
+            rotate: [0, 180, 360]
+          }}
+          transition={{ duration: 20, repeat: Infinity }}
+          className="absolute top-20 left-10 text-6xl"
+        >
+          🌟
+        </motion.div>
+        <motion.div
+          animate={{
+            x: [0, -80, 0],
+            y: [0, 100, 0],
+            rotate: [0, -180, -360]
+          }}
+          transition={{ duration: 15, repeat: Infinity }}
+          className="absolute top-40 right-20 text-5xl"
+        >
+          🦋
+        </motion.div>
+        <motion.div
+          animate={{
+            x: [0, 50, 0],
+            y: [0, -100, 0],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ duration: 12, repeat: Infinity }}
+          className="absolute bottom-20 left-1/4 text-4xl"
+        >
+          🌈
+        </motion.div>
+        <motion.div
+          animate={{
+            x: [0, -60, 0],
+            y: [0, 80, 0],
+            rotate: [0, 360, 0]
+          }}
+          transition={{ duration: 18, repeat: Infinity }}
+          className="absolute bottom-40 right-1/3 text-5xl"
+        >
+          🎈
+        </motion.div>
+        <motion.div
+          animate={{
+            x: [0, 120, 0],
+            y: [0, -80, 0],
+            scale: [1, 1.3, 1]
+          }}
+          transition={{ duration: 22, repeat: Infinity }}
+          className="absolute top-1/2 left-1/2 text-4xl"
+        >
+          ✨
+        </motion.div>
+        <motion.div
+          animate={{
+            x: [0, -40, 0],
+            y: [0, 60, 0],
+            rotate: [0, -360, 0]
+          }}
+          transition={{ duration: 16, repeat: Infinity }}
+          className="absolute top-60 left-1/3 text-3xl"
+        >
+          🎨
+        </motion.div>
+      </div>
       {/* Interface Switcher */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -357,8 +426,51 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         </Card>
       </motion.div>
 
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* 6-Tab Navigation System */}
+      <div className="w-full relative z-10">
+        <Tabs defaultValue="write" className="w-full">
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-white/90 backdrop-blur-lg border-3 border-purple-300 shadow-2xl rounded-2xl p-2 gap-2 md:grid md:grid-cols-6 md:gap-1 mb-6">
+            <TabsTrigger 
+              value="write" 
+              className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-400 data-[state=active]:to-blue-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-green-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
+            >
+              ✍️ Write
+            </TabsTrigger>
+            <TabsTrigger 
+              value="achievements" 
+              className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-yellow-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
+            >
+              🏆 Badges
+            </TabsTrigger>
+            <TabsTrigger 
+              value="calendar" 
+              className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-400 data-[state=active]:to-indigo-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-purple-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
+            >
+              📅 Calendar
+            </TabsTrigger>
+            <TabsTrigger 
+              value="photos" 
+              className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-pink-400 data-[state=active]:to-purple-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-pink-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
+            >
+              📸 Photos
+            </TabsTrigger>
+            <TabsTrigger 
+              value="ai" 
+              className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-400 data-[state=active]:to-red-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-orange-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
+            >
+              🤖 AI Help
+            </TabsTrigger>
+            <TabsTrigger 
+              value="stats" 
+              className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-400 data-[state=active]:to-cyan-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-teal-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
+            >
+              📊 My Stats
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Write Tab */}
+          <TabsContent value="write" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Write */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -433,163 +545,140 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
             </CardContent>
           </Card>
         </motion.div>
-      </div>
-
-      {/* Achievements Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-      >
-        <Card className="bg-white shadow-lg border-2 border-amber-200">
-          <CardHeader className="bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-t-lg">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Trophy className="w-6 h-6" />
-              My Awesome Badges!
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {userAchievements.slice(0, showAllAchievements ? userAchievements.length : 6).map((achievement, index) => (
-                <motion.div
-                  key={achievement.id}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 + index * 0.1 }}
-                  className={`p-4 rounded-lg text-center transition-all cursor-pointer ${
-                    achievement.unlocked
-                      ? 'bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-300 shadow-md hover:shadow-lg'
-                      : 'bg-gray-100 border-2 border-gray-200 opacity-60'
-                  }`}
-                >
-                  <div className={`text-3xl mb-2 ${achievement.unlocked ? '' : 'grayscale'}`}>
-                    {achievement.icon}
-                  </div>
-                  <h4 className={`font-semibold text-sm ${achievement.unlocked ? 'text-amber-800' : 'text-gray-500'}`}>
-                    {achievement.title}
-                  </h4>
-                  <p className={`text-xs mt-1 ${achievement.unlocked ? 'text-amber-600' : 'text-gray-400'}`}>
-                    {achievement.description}
-                  </p>
-                  {achievement.unlocked && (
-                    <Badge className="mt-2 bg-amber-500 text-white text-xs">Unlocked!</Badge>
-                  )}
-                </motion.div>
-              ))}
             </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+          </TabsContent>
 
-      {/* My Stories Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-      >
-        <Card className="bg-white shadow-lg border-2 border-cyan-200">
-          <CardHeader className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-t-lg">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <BookOpen className="w-6 h-6" />
-              📚 My Stories
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            {entries.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {entries.slice(0, 6).map((entry: any, index: number) => (
-                  <motion.div
-                    key={entry.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.1 * index }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 border-2 border-blue-200 cursor-pointer hover:shadow-lg transition-all"
-                    onClick={() => openJournalEditor(entry)}
+          {/* Achievements Tab */}
+          <TabsContent value="achievements" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Card className="bg-white shadow-lg border-2 border-amber-200">
+                <CardHeader className="bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Trophy className="w-6 h-6" />
+                    My Awesome Badges!
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {userAchievements.slice(0, showAllAchievements ? userAchievements.length : 6).map((achievement, index) => (
+                      <motion.div
+                        key={achievement.id}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5 + index * 0.1 }}
+                        className={`p-4 rounded-lg text-center transition-all cursor-pointer ${
+                          achievement.unlocked
+                            ? 'bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-300 shadow-md hover:shadow-lg'
+                            : 'bg-gray-100 border-2 border-gray-200 opacity-60'
+                        }`}
+                      >
+                        <div className={`text-3xl mb-2 ${achievement.unlocked ? '' : 'grayscale'}`}>
+                          {achievement.icon}
+                        </div>
+                        <h4 className={`font-semibold text-sm ${achievement.unlocked ? 'text-amber-800' : 'text-gray-500'}`}>
+                          {achievement.title}
+                        </h4>
+                        <p className={`text-xs mt-1 ${achievement.unlocked ? 'text-amber-600' : 'text-gray-400'}`}>
+                          {achievement.description}
+                        </p>
+                        {achievement.unlocked && (
+                          <Badge className="mt-2 bg-amber-500 text-white text-xs">Unlocked!</Badge>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </TabsContent>
+
+          {/* Calendar Tab */}
+          <TabsContent value="calendar" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center p-8"
+            >
+              <div className="text-6xl mb-4">📅</div>
+              <h3 className="text-2xl font-bold text-purple-800 mb-2">Interactive Calendar</h3>
+              <p className="text-purple-600 mb-4">Coming soon! Track your writing journey day by day!</p>
+              <div className="grid grid-cols-7 gap-2 max-w-md mx-auto">
+                {[...Array(30)].map((_, i) => (
+                  <div 
+                    key={i}
+                    className="aspect-square bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg border-2 border-purple-300 flex items-center justify-center text-purple-700 font-bold"
                   >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="text-3xl">{entry.mood || "😊"}</div>
-                      <Badge className="bg-blue-500 text-white text-xs">{entry.date || "Today"}</Badge>
-                    </div>
-                    <h4 className="font-bold text-blue-800 mb-2 line-clamp-1">{entry.title}</h4>
-                    <p className="text-blue-600 text-sm line-clamp-2 mb-3">{entry.preview || entry.content}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-blue-500">{entry.wordCount || 0} words</span>
-                      <div className="flex gap-1">
-                        {entry.hasPhoto && <Camera className="w-4 h-4 text-pink-500" />}
-                        {entry.hasDrawing && <Palette className="w-4 h-4 text-orange-500" />}
-                      </div>
-                    </div>
-                  </motion.div>
+                    {i + 1}
+                  </div>
                 ))}
               </div>
-            ) : (
-              <div className="text-center py-8">
-                <motion.div
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                  className="text-6xl mb-4"
-                >
-                  📖
-                </motion.div>
-                <h3 className="text-lg font-bold text-cyan-700 mb-2">No stories yet!</h3>
-                <p className="text-cyan-600 mb-4">Start writing your first amazing story!</p>
-                <Button
-                  onClick={() => openJournalEditor()}
-                  className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-xl"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Write First Story
-                </Button>
+            </motion.div>
+          </TabsContent>
+
+          {/* Photos Tab */}
+          <TabsContent value="photos" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center p-8"
+            >
+              <div className="text-6xl mb-4">📸</div>
+              <h3 className="text-2xl font-bold text-pink-800 mb-2">Photo Stories</h3>
+              <p className="text-pink-600 mb-4">Add photos to make your stories more colorful!</p>
+              <Button className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
+                <Camera className="w-4 h-4 mr-2" />
+                Add Photos
+              </Button>
+            </motion.div>
+          </TabsContent>
+
+          {/* AI Help Tab */}
+          <TabsContent value="ai" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center p-8"
+            >
+              <div className="text-6xl mb-4">🤖</div>
+              <h3 className="text-2xl font-bold text-orange-800 mb-2">AI Writing Helper</h3>
+              <p className="text-orange-600 mb-4">Get fun ideas and help with your stories!</p>
+              <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
+                <Lightbulb className="w-4 h-4 mr-2" />
+                Ask AI for Ideas
+              </Button>
+            </motion.div>
+          </TabsContent>
+
+          {/* Stats Tab */}
+          <TabsContent value="stats" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center p-8"
+            >
+              <div className="text-6xl mb-4">📊</div>
+              <h3 className="text-2xl font-bold text-teal-800 mb-2">My Writing Stats</h3>
+              <p className="text-teal-600 mb-4">See how awesome you're doing!</p>
+              <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                <div className="bg-gradient-to-br from-teal-100 to-cyan-100 p-4 rounded-2xl border-2 border-teal-300">
+                  <div className="text-2xl mb-1">📝</div>
+                  <div className="text-xl font-bold text-teal-800">{stats.totalEntries || 0}</div>
+                  <div className="text-teal-600 text-sm">Stories</div>
+                </div>
+                <div className="bg-gradient-to-br from-orange-100 to-yellow-100 p-4 rounded-2xl border-2 border-orange-300">
+                  <div className="text-2xl mb-1">🔥</div>
+                  <div className="text-xl font-bold text-orange-800">{stats.currentStreak || 0}</div>
+                  <div className="text-orange-600 text-sm">Day Streak</div>
+                </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Fun Prompts */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
-      >
-        <Card className="bg-white shadow-lg border-2 border-emerald-200">
-          <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-t-lg">
-            <CardTitle className="flex items-center gap-2 text-xl">
-              <Heart className="w-6 h-6" />
-              Fun Ideas to Write About!
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {kidPrompts.map((prompt, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7 + index * 0.1 }}
-                  className="p-3 rounded-lg bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 hover:shadow-md transition-all cursor-pointer"
-                  onClick={() => openJournalEditor(null, prompt)}
-                >
-                  <p className="text-emerald-700 font-medium">{prompt}</p>
-                </motion.div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-      {/* Footer Encouragement */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.8 }}
-        className="text-center p-6 bg-gradient-to-r from-purple-200 to-pink-200 rounded-xl border-2 border-purple-300"
-      >
-        <div className="text-3xl mb-2">🌟</div>
-        <h3 className="text-lg font-semibold text-purple-800 mb-1">You're doing amazing!</h3>
-        <p className="text-purple-600">Keep writing and sharing your wonderful thoughts. Every story makes you a better writer!</p>
-      </motion.div>
+            </motion.div>
+          </TabsContent>
+        </Tabs>
+      </div>
 
       {/* Kid-Friendly Journal Editor Modal */}
       <AnimatePresence>
