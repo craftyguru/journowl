@@ -14,6 +14,14 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 
+// Web Speech API types
+declare global {
+  interface Window {
+    webkitSpeechRecognition: any;
+    SpeechRecognition: any;
+  }
+}
+
 // Demo data for Little Timmy
 const timmyDemoStats = {
   totalEntries: 23,
@@ -134,32 +142,66 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
       const recognitionInstance = new SpeechRecognition();
-      recognitionInstance.continuous = false;
-      recognitionInstance.interimResults = false;
+      recognitionInstance.continuous = true;
+      recognitionInstance.interimResults = true;
       recognitionInstance.lang = 'en-US';
 
+      let finalTranscript = '';
+
       recognitionInstance.onresult = (event) => {
-        const transcript = event.results[0][0].transcript;
-        setContent(prevContent => prevContent + (prevContent ? ' ' : '') + transcript);
+        let interimTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript + ' ';
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+
+        // Clear placeholder and add speech text
+        const currentContent = content.includes('Prompt: Tell your story using your voice!') ? '' : content;
+        const baseContent = currentContent.replace(/Prompt: Tell your story using your voice! What exciting adventure do you want to share today?\s*/g, '');
+        
+        setContent(baseContent + finalTranscript + interimTranscript);
       };
 
       recognitionInstance.onend = () => {
         setIsListening(false);
+        finalTranscript = '';
       };
 
       recognitionInstance.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
-        setIsListening(false);
+        if (event.error === 'no-speech') {
+          // Automatically restart if no speech detected
+          setTimeout(() => {
+            if (isListening && recognition) {
+              recognition.start();
+            }
+          }, 100);
+        } else {
+          setIsListening(false);
+        }
+      };
+
+      recognitionInstance.onstart = () => {
+        finalTranscript = '';
+        // Clear the placeholder text when starting
+        if (content.includes('Prompt: Tell your story using your voice!')) {
+          setContent('');
+        }
       };
 
       setRecognition(recognitionInstance);
     }
-  }, []);
+  }, [content, isListening]);
 
   const startListening = () => {
     if (recognition) {
-      recognition.start();
       setIsListening(true);
+      recognition.start();
     }
   };
 
@@ -2177,7 +2219,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                       </div>
                       <div className="relative">
                         <Textarea
-                          placeholder="Write about your day, your dreams, your adventures... Let your imagination run wild! Or click the microphone to speak your story!"
+                          placeholder={isListening ? "🎤 I'm listening... Start speaking!" : "Write about your day, your dreams, your adventures... Let your imagination run wild! Or click the microphone to speak your story!"}
                           value={content}
                           onChange={(e) => setContent(e.target.value)}
                           className="min-h-[300px] text-lg p-4 rounded-2xl border-3 border-purple-300 bg-white/80 text-purple-800 placeholder:text-purple-400 resize-none"
