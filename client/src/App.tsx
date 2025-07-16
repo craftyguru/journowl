@@ -29,13 +29,16 @@ function App() {
   const [activeTab, setActiveTab] = useState("journal");
   
   const handleNavigate = (view: string) => {
+    console.log("Navigation triggered:", view);
     // Handle tab navigation within dashboard
     const tabOptions = ["journal", "analytics", "achievements", "goals", "insights", "analytics-insights", "calendar", "stories", "referral"];
     
     if (tabOptions.includes(view)) {
+      console.log("Setting activeTab to:", view);
       setActiveTab(view);
       setCurrentView("dashboard");
     } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth") {
+      console.log("Setting currentView to:", view);
       setCurrentView(view);
       if (view === "dashboard") setActiveTab("journal");
     }
