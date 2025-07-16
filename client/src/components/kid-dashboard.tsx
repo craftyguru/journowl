@@ -540,15 +540,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       {/* 6-Tab Navigation System */}
       <div className="w-full relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="write" className="w-full">
-          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-white/90 backdrop-blur-lg border-3 border-purple-300 shadow-2xl rounded-2xl p-2 gap-2 md:grid md:grid-cols-6 md:gap-1 mb-12 md:mb-6 relative">
-            {/* Swipe Indicator Overlay for Mobile */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none md:hidden z-20">
-              <div className="bg-black/20 backdrop-blur-sm text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium">
-                <span>←</span>
-                <span>Swipe</span>
-                <span>→</span>
-              </div>
-            </div>
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-white/90 backdrop-blur-lg border-3 border-purple-300 shadow-2xl rounded-2xl p-2 gap-2 md:grid md:grid-cols-6 md:gap-1 mb-6 relative">
             <TabsTrigger 
               value="write" 
               className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-400 data-[state=active]:to-blue-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-green-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
@@ -586,6 +578,15 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
               📊 My Stats
             </TabsTrigger>
           </TabsList>
+
+          {/* Swipe Indicator Below Tabs for Mobile */}
+          <div className="flex justify-center mb-4 md:hidden">
+            <div className="bg-black/20 backdrop-blur-sm text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium">
+              <span>←</span>
+              <span>Swipe</span>
+              <span>→</span>
+            </div>
+          </div>
 
           {/* Write Tab */}
           <TabsContent value="write" className="space-y-6">
