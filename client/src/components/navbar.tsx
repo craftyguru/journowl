@@ -98,7 +98,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
       {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-card border-t border-border">
-          <div className="px-4 py-2 space-y-2 max-h-96 overflow-y-auto">
+          <div className="px-4 py-2 space-y-2">
             <Button
               variant="ghost"
               className={`w-full justify-start ${currentView === "dashboard" && activeTab === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
