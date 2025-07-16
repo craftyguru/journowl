@@ -48,17 +48,27 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
   // Auto-scroll to tab content when tab changes (for mobile navigation)
   React.useEffect(() => {
     const scrollToTabContent = () => {
-      const tabsElement = document.querySelector('[data-tabs-content]');
-      if (tabsElement) {
-        tabsElement.scrollIntoView({ 
+      // Find the currently active tab content
+      const activeTabContent = document.querySelector(`[data-tabs-content][data-state="active"]`);
+      if (activeTabContent) {
+        activeTabContent.scrollIntoView({ 
           behavior: 'smooth', 
-          block: 'end' // Changed to 'end' to move to bottom of screen
+          block: 'end' // Move to bottom of screen as requested
         });
+      } else {
+        // Fallback: find any tab content with data-tabs-content
+        const tabsElement = document.querySelector('[data-tabs-content]');
+        if (tabsElement) {
+          tabsElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'end'
+          });
+        }
       }
     };
     
     // Small delay to ensure content is rendered
-    const timer = setTimeout(scrollToTabContent, 100);
+    const timer = setTimeout(scrollToTabContent, 150);
     return () => clearTimeout(timer);
   }, [activeTab]);
   
@@ -989,7 +999,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
 
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="overview" data-tabs-content className="space-y-6">
           {/* Usage Meters and Subscription Management */}
           <UsageMeters />
           
