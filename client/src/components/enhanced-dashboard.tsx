@@ -747,7 +747,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
       <Tabs defaultValue="journal" className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
         <div className="relative w-full">
-          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-2 gap-2 md:grid md:grid-cols-6 md:gap-0">
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-2 gap-2 md:grid md:grid-cols-7 md:gap-0">
             <TabsTrigger 
               value="journal" 
               className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
