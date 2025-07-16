@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Palette, Music, GamepadIcon, Calendar, BarChart3, Users, Settings, X, Save, Plus, Mic, MicOff, Upload, Video, Image, Paintbrush, Lightbulb, Send } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 
@@ -78,6 +78,8 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [aiMessages, setAiMessages] = useState<{sender: 'user' | 'ai', text: string}[]>([]);
   const [aiInput, setAiInput] = useState("");
+  const [selectedCalendarDate, setSelectedCalendarDate] = useState<number | null>(null);
+  const [calendarEntries, setCalendarEntries] = useState<{[key: number]: boolean}>({});
   
   // Refs for media handling
   const canvasRef = useRef<any>(null);
@@ -215,6 +217,43 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     }
   };
 
+  // Calendar Functions
+  const handleCalendarDateClick = (dayNumber: number) => {
+    setSelectedCalendarDate(dayNumber);
+    const hasEntry = calendarEntries[dayNumber];
+    
+    if (hasEntry) {
+      // Show celebration for visiting a day with an entry
+      console.log(`Viewing entry for day ${dayNumber}!`);
+    } else {
+      // Encourage writing on this day
+      const promptForDay = `Write about what happened on the ${dayNumber}th! What made this day special?`;
+      openJournalEditor(null, promptForDay);
+    }
+  };
+
+  const markCalendarEntry = (dayNumber: number) => {
+    setCalendarEntries(prev => ({
+      ...prev,
+      [dayNumber]: true
+    }));
+  };
+
+  // Initialize calendar with some demo entries
+  const initializeCalendar = () => {
+    const demoEntries: {[key: number]: boolean} = {};
+    // Mark some random days as having entries
+    [2, 7, 12, 16, 23, 25, 27].forEach(day => {
+      demoEntries[day] = true;
+    });
+    setCalendarEntries(demoEntries);
+  };
+
+  // Initialize calendar on component mount
+  useEffect(() => {
+    initializeCalendar();
+  }, []);
+
   // Speech-to-Text Functions
   const startRecording = async () => {
     try {
@@ -302,7 +341,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const kidMoodEmojis = ["😊", "😄", "🤔", "😐", "😔", "🌈", "🎉", "😴"];
 
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen relative overflow-hidden">
+    <div className="p-3 md:p-6 space-y-4 md:space-y-6 bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen relative overflow-hidden">
       {/* Floating Animated Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -413,10 +452,10 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
+        className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6"
       >
         <Card className="bg-gradient-to-br from-purple-200 to-purple-300 border-purple-300 shadow-lg">
-          <CardContent className="p-6 text-center">
+          <CardContent className="p-3 md:p-6 text-center">
             <div className="text-4xl mb-2">📝</div>
             <h3 className="text-2xl font-bold text-purple-800">{stats.totalEntries || 0}</h3>
             <p className="text-purple-600">Stories Written</p>
@@ -427,18 +466,18 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         </Card>
 
         <Card className="bg-gradient-to-br from-pink-200 to-pink-300 border-pink-300 shadow-lg">
-          <CardContent className="p-6 text-center">
-            <div className="text-4xl mb-2">🔥</div>
-            <h3 className="text-2xl font-bold text-pink-800">{stats.currentStreak || 0}</h3>
-            <p className="text-pink-600">Day Streak</p>
-            <div className="mt-3">
-              <Badge className="bg-pink-500 text-white">Keep going!</Badge>
+          <CardContent className="p-3 md:p-6 text-center">
+            <div className="text-3xl md:text-4xl mb-2">🔥</div>
+            <h3 className="text-xl md:text-2xl font-bold text-pink-800">{stats.currentStreak || 0}</h3>
+            <p className="text-sm md:text-base text-pink-600">Day Streak</p>
+            <div className="mt-2 md:mt-3">
+              <Badge className="bg-pink-500 text-white text-xs">Keep going!</Badge>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-amber-200 to-amber-300 border-amber-300 shadow-lg">
-          <CardContent className="p-6 text-center">
+        <Card className="bg-gradient-to-br from-amber-200 to-amber-300 border-amber-300 shadow-lg col-span-2 md:col-span-1">
+          <CardContent className="p-3 md:p-6 text-center">
             <div className="text-4xl mb-2">⭐</div>
             <h3 className="text-2xl font-bold text-amber-800">Level {currentLevel}</h3>
             <p className="text-amber-600">Super Writer</p>
@@ -822,58 +861,126 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                 <p className="text-purple-600 mb-4">Track your amazing writing adventures!</p>
               </div>
 
-              {/* Calendar Grid */}
-              <div className="bg-white rounded-3xl p-6 border-3 border-purple-300 shadow-xl">
-                <div className="grid grid-cols-7 gap-3 mb-4">
+              {/* Interactive Calendar Grid */}
+              <div className="bg-white rounded-3xl p-4 md:p-6 border-3 border-purple-300 shadow-xl">
+                <div className="grid grid-cols-7 gap-2 md:gap-3 mb-4">
                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                    <div key={day} className="text-center font-bold text-purple-700 py-2">
+                    <div key={day} className="text-center font-bold text-purple-700 py-1 md:py-2 text-xs md:text-sm">
                       {day}
                     </div>
                   ))}
                 </div>
-                <div className="grid grid-cols-7 gap-3">
+                <div className="grid grid-cols-7 gap-2 md:gap-3">
                   {[...Array(30)].map((_, i) => {
-                    const hasEntry = Math.random() > 0.7; // Simulate some days with entries
                     const dayNumber = i + 1;
+                    const hasEntry = calendarEntries[dayNumber];
                     const isToday = dayNumber === new Date().getDate();
+                    const isSelected = selectedCalendarDate === dayNumber;
                     
                     return (
                       <motion.div 
                         key={i}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center text-sm font-bold cursor-pointer transition-all ${
-                          isToday 
-                            ? "bg-gradient-to-br from-yellow-300 to-orange-300 border-orange-400 shadow-lg" 
-                            : hasEntry 
-                              ? "bg-gradient-to-br from-green-200 to-emerald-200 border-green-400" 
-                              : "bg-gradient-to-br from-purple-100 to-pink-100 border-purple-300 hover:from-purple-200 hover:to-pink-200"
+                        whileHover={{ scale: 1.1, rotate: 2 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => handleCalendarDateClick(dayNumber)}
+                        className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center text-xs md:text-sm font-bold cursor-pointer transition-all min-h-[40px] ${
+                          isSelected
+                            ? "bg-gradient-to-br from-purple-400 to-pink-400 border-purple-500 shadow-xl scale-105"
+                            : isToday 
+                              ? "bg-gradient-to-br from-yellow-300 to-orange-300 border-orange-400 shadow-lg" 
+                              : hasEntry 
+                                ? "bg-gradient-to-br from-green-200 to-emerald-200 border-green-400 shadow-md" 
+                                : "bg-gradient-to-br from-purple-100 to-pink-100 border-purple-300 hover:from-purple-200 hover:to-pink-200 hover:shadow-md"
                         }`}
                       >
-                        <span className={isToday ? "text-orange-800" : hasEntry ? "text-green-800" : "text-purple-700"}>
+                        <span className={
+                          isSelected 
+                            ? "text-white" 
+                            : isToday 
+                              ? "text-orange-800" 
+                              : hasEntry 
+                                ? "text-green-800" 
+                                : "text-purple-700"
+                        }>
                           {dayNumber}
                         </span>
-                        {hasEntry && <span className="text-xs">✨</span>}
-                        {isToday && <span className="text-xs">📝</span>}
+                        {hasEntry && (
+                          <motion.span 
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="text-xs"
+                          >
+                            ✨
+                          </motion.span>
+                        )}
+                        {isToday && (
+                          <motion.span 
+                            animate={{ bounce: [0, -2, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                            className="text-xs"
+                          >
+                            📝
+                          </motion.span>
+                        )}
+                        {isSelected && <span className="text-xs text-white">👆</span>}
                       </motion.div>
                     );
                   })}
                 </div>
                 
-                {/* Calendar Legend */}
-                <div className="flex justify-center gap-4 mt-6 flex-wrap">
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-gradient-to-br from-yellow-300 to-orange-300 rounded border-2 border-orange-400"></div>
-                    <span className="text-sm text-purple-700 font-medium">Today</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-gradient-to-br from-green-200 to-emerald-200 rounded border-2 border-green-400"></div>
-                    <span className="text-sm text-purple-700 font-medium">Story Written</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-4 h-4 bg-gradient-to-br from-purple-100 to-pink-100 rounded border-2 border-purple-300"></div>
-                    <span className="text-sm text-purple-700 font-medium">Available</span>
-                  </div>
+                {/* Interactive Calendar Legend */}
+                <div className="flex justify-center gap-3 md:gap-4 mt-6 flex-wrap">
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center gap-2"
+                  >
+                    <motion.div 
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="w-5 h-5 bg-gradient-to-br from-yellow-300 to-orange-300 rounded-lg border-2 border-orange-400 shadow-sm"
+                    ></motion.div>
+                    <span className="text-xs md:text-sm text-purple-700 font-medium">📝 Today</span>
+                  </motion.div>
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center gap-2"
+                  >
+                    <motion.div 
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+                      className="w-5 h-5 bg-gradient-to-br from-green-200 to-emerald-200 rounded-lg border-2 border-green-400 shadow-sm"
+                    ></motion.div>
+                    <span className="text-xs md:text-sm text-purple-700 font-medium">✨ Story Written</span>
+                  </motion.div>
+                  <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center gap-2"
+                  >
+                    <div className="w-5 h-5 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg border-2 border-purple-300 shadow-sm"></div>
+                    <span className="text-xs md:text-sm text-purple-700 font-medium">📅 Available</span>
+                  </motion.div>
+                </div>
+
+                {/* Interactive Calendar Actions */}
+                <div className="grid grid-cols-2 gap-3 mt-6">
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => openJournalEditor(null, "Write about your day today!")}
+                    className="bg-gradient-to-r from-green-400 to-cyan-400 p-4 rounded-2xl border-3 border-green-500 cursor-pointer shadow-lg text-center"
+                  >
+                    <div className="text-2xl mb-2">✍️</div>
+                    <p className="text-white font-bold text-sm">Write Today!</p>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setSelectedCalendarDate(null)}
+                    className="bg-gradient-to-r from-purple-400 to-pink-400 p-4 rounded-2xl border-3 border-purple-500 cursor-pointer shadow-lg text-center"
+                  >
+                    <div className="text-2xl mb-2">🔄</div>
+                    <p className="text-white font-bold text-sm">Clear Selection</p>
+                  </motion.div>
                 </div>
               </div>
 
