@@ -746,53 +746,53 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
       {/* Main Content Tabs */}
       <Tabs defaultValue="journal" className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
-        <div className="relative w-full flex justify-center">
-          <TabsList className="grid grid-cols-4 md:grid-cols-8 bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-2 gap-1 max-w-5xl">
+        <div className="relative w-full">
+          <TabsList className="grid w-full grid-cols-4 md:grid-cols-8 bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5">
             <TabsTrigger 
               value="journal" 
-              className="h-10 px-3 py-2 text-sm font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
+              className="h-8 px-1 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
             >
               📖 Journal
             </TabsTrigger>
             <TabsTrigger 
               value="analytics" 
-              className="h-10 px-3 py-2 text-sm font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
+              className="h-8 px-1 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
             >
               📊 Analytics
             </TabsTrigger>
             <TabsTrigger 
               value="achievements" 
-              className="h-10 px-3 py-2 text-sm font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
+              className="h-8 px-1 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
             >
               🏆 Achievements
             </TabsTrigger>
             <TabsTrigger 
               value="goals" 
-              className="h-10 px-3 py-2 text-sm font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
+              className="h-8 px-1 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
             >
               🎯 Goals
             </TabsTrigger>
             <TabsTrigger 
               value="insights" 
-              className="h-10 px-3 py-2 text-sm font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
+              className="h-8 px-1 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
             >
               🤖 AI Thoughts
             </TabsTrigger>
             <TabsTrigger 
               value="calendar" 
-              className="h-10 px-3 py-2 text-sm font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
+              className="h-8 px-1 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
             >
               📅 Memory Calendar
             </TabsTrigger>
             <TabsTrigger 
               value="stories" 
-              className="h-10 px-3 py-2 text-sm font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
+              className="h-8 px-1 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
             >
               📚 AI Stories
             </TabsTrigger>
             <TabsTrigger 
               value="referral" 
-              className="h-10 px-3 py-2 text-sm font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
+              className="h-8 px-1 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200"
             >
               🎁 Referral
             </TabsTrigger>
