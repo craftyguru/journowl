@@ -166,7 +166,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
                 setMobileMenuOpen(false);
               }}
             >
-              📊 Insights
+              📈 Insights
             </Button>
             <Button
               variant="ghost"
@@ -186,7 +186,7 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
                 setMobileMenuOpen(false);
               }}
             >
-              📖 AI Stories
+              📚 AI Stories
             </Button>
             <Button
               variant="ghost"

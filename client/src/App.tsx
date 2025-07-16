@@ -33,12 +33,8 @@ function App() {
     const tabOptions = ["journal", "analytics", "achievements", "goals", "insights", "analytics-insights", "calendar", "stories", "referral"];
     
     if (tabOptions.includes(view)) {
-      if (view === "referral") {
-        setCurrentView("referral");
-      } else {
-        setActiveTab(view);
-        setCurrentView("dashboard");
-      }
+      setActiveTab(view);
+      setCurrentView("dashboard");
     } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth") {
       setCurrentView(view);
       if (view === "dashboard") setActiveTab("journal");
