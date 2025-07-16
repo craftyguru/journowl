@@ -110,6 +110,36 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
             </Button>
             <Button
               variant="ghost"
+              className={`w-full justify-start ${currentView === "analytics" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("analytics");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📊 Analytics
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("achievements");
+                setMobileMenuOpen(false);
+              }}
+            >
+              🏆 Achievements
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "goals" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("goals");
+                setMobileMenuOpen(false);
+              }}
+            >
+              🎯 Goals
+            </Button>
+            <Button
+              variant="ghost"
               className={`w-full justify-start ${currentView === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
                 onNavigate("insights");
@@ -117,6 +147,26 @@ export default function Navbar({ currentView, onNavigate }: NavbarProps) {
               }}
             >
               🤖 AI Insights
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("calendar");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📅 Memory Calendar
+            </Button>
+            <Button
+              variant="ghost"
+              className={`w-full justify-start ${currentView === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => {
+                onNavigate("stories");
+                setMobileMenuOpen(false);
+              }}
+            >
+              📚 AI Stories
             </Button>
             <Button
               variant="ghost"

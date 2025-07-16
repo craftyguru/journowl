@@ -20,7 +20,7 @@ import UnifiedJournal from "./unified-journal";
 import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
-import { AIStoryMaker } from "./kid-dashboard";
+
 
 // All data now fetched from API endpoints instead of hardcoded values
 
@@ -2660,11 +2660,22 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
         </TabsContent>
         
         <TabsContent value="stories">
-          <div className="h-[80vh]">
-            <AIStoryMaker 
-              entries={entries}
-              stats={stats}
-            />
+          <div className="h-[80vh] flex items-center justify-center">
+            <Card className="bg-gradient-to-br from-indigo-100 to-purple-100 max-w-md mx-auto">
+              <CardContent className="p-8 text-center">
+                <div className="text-6xl mb-4">📚</div>
+                <h3 className="text-2xl font-bold text-indigo-800 mb-4">AI Story Maker</h3>
+                <p className="text-indigo-700 mb-6">
+                  Transform your journal entries into amazing stories using the power of AI!
+                </p>
+                <Button 
+                  className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold"
+                  disabled
+                >
+                  Coming Soon! ✨
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
       </Tabs>
