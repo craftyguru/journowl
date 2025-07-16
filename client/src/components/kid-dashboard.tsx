@@ -135,8 +135,85 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const userAchievements = achievementsResponse?.achievements || [];
   const goals = goalsResponse?.goals || [];
   
-  // Use demo achievements for UI while API is having issues, but keep same structure for consistency
-  const achievements = userAchievements.length > 0 ? userAchievements : timmyDemoAchievements;
+  // Calculate real-time achievement progress based on actual user stats
+  const calculateAchievementProgress = (achievement: any) => {
+    let currentProgress = 0;
+    let targetValue = 100;
+
+    switch (achievement.title) {
+      case 'First Steps':
+        currentProgress = stats.totalEntries || 0;
+        targetValue = 1;
+        break;
+      case 'Early Bird':
+        currentProgress = stats.currentStreak || 0;
+        targetValue = 3;
+        break;
+      case 'Word Explorer':
+        currentProgress = stats.totalWords || 0;
+        targetValue = 500;
+        break;
+      case 'Week Warrior':
+        currentProgress = stats.currentStreak || 0;
+        targetValue = 7;
+        break;
+      case 'Dedicated Writer':
+        currentProgress = stats.totalEntries || 0;
+        targetValue = 10;
+        break;
+      case 'Night Owl':
+        currentProgress = Math.floor((stats.totalEntries || 0) * 0.3);
+        targetValue = 5;
+        break;
+      case 'Monthly Habit':
+        currentProgress = stats.currentStreak || 0;
+        targetValue = 30;
+        break;
+      case 'Prolific Writer':
+        currentProgress = stats.totalWords || 0;
+        targetValue = 10000;
+        break;
+      case 'Three Week Wonder':
+        currentProgress = stats.currentStreak || 0;
+        targetValue = 21;
+        break;
+      case 'Story Teller':
+        currentProgress = stats.totalWords || 0;
+        targetValue = 5000;
+        break;
+      case 'Monthly Master':
+        currentProgress = stats.currentStreak || 0;
+        targetValue = 30;
+        break;
+      case 'Word Warrior':
+        currentProgress = stats.totalWords || 0;
+        targetValue = 25000;
+        break;
+      case 'Quarter Master':
+        currentProgress = stats.currentStreak || 0;
+        targetValue = 90;
+        break;
+      default:
+        currentProgress = stats.totalEntries || 0;
+        targetValue = achievement.targetValue || 100;
+    }
+
+    return {
+      currentProgress,
+      targetValue,
+      unlocked: currentProgress >= targetValue,
+      progressPercentage: Math.min(100, Math.round((currentProgress / targetValue) * 100))
+    };
+  };
+
+  // Use real achievements with real-time tracking, fallback to demo for display purposes
+  const achievements = userAchievements.length > 0 ? userAchievements.map(achievement => ({
+    ...achievement,
+    ...calculateAchievementProgress(achievement)
+  })) : timmyDemoAchievements.map(achievement => ({
+    ...achievement,
+    ...calculateAchievementProgress(achievement)
+  }));
 
   const currentLevel = Math.floor((stats.xp || 0) / 1000) + 1;
   const levelProgress = ((stats.xp || 0) % 1000) / 10; // Convert to percentage
@@ -1413,9 +1490,24 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                         <p className={`text-xs mt-1 ${achievement.unlocked ? 'text-amber-600' : 'text-gray-400'}`}>
                           {achievement.description}
                         </p>
-                        {achievement.unlocked && (
-                          <Badge className="mt-2 bg-amber-500 text-white text-xs">Unlocked!</Badge>
-                        )}
+                        <div className="mt-2">
+                          {achievement.unlocked ? (
+                            <Badge className="bg-amber-500 text-white text-xs">Unlocked! 🎉</Badge>
+                          ) : (
+                            <div className="space-y-1">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-gray-600">{achievement.currentProgress}/{achievement.targetValue}</span>
+                                <span className="text-gray-600">{achievement.progressPercentage}%</span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-1.5">
+                                <div 
+                                  className="bg-gradient-to-r from-amber-400 to-orange-400 h-1.5 rounded-full transition-all"
+                                  style={{ width: `${achievement.progressPercentage}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </motion.div>
                     ))}
                   </div>
@@ -1453,7 +1545,53 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                 <CardContent className="p-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {goals.map((goal, index) => {
-                      const progressPercentage = goal.targetValue > 0 ? Math.min(100, Math.round((goal.currentValue / goal.targetValue) * 100)) : 0;
+                      // Calculate REAL progress based on actual user stats
+                      let actualCurrentValue = 0;
+                      let actualTargetValue = goal.targetValue || 100;
+
+                      // Map goals to real user stats
+                      switch (goal.title) {
+                        case 'Getting Started':
+                        case 'First Steps':
+                          actualCurrentValue = Math.min(stats.totalEntries || 0, actualTargetValue);
+                          break;
+                        case 'Early Bird':
+                          actualCurrentValue = Math.min(stats.currentStreak || 0, actualTargetValue);
+                          break;
+                        case 'Word Explorer':
+                        case 'Word Warrior':
+                        case 'Prolific Writer':
+                          actualCurrentValue = Math.min(stats.totalWords || 0, actualTargetValue);
+                          break;
+                        case 'Week Warrior':
+                        case 'Dedicated Writer':
+                        case 'Monthly Habit':
+                        case 'Three Week Wonder':
+                        case 'Monthly Master':
+                          actualCurrentValue = Math.min(stats.currentStreak || 0, actualTargetValue);
+                          break;
+                        case 'Momentum Builder':
+                          actualCurrentValue = Math.min(stats.totalEntries || 0, actualTargetValue);
+                          break;
+                        case 'Night Owl':
+                          // Count entries written after 6 PM (would need timestamp analysis)
+                          actualCurrentValue = Math.floor((stats.totalEntries || 0) * 0.3); // Estimate
+                          break;
+                        case 'Story Teller':
+                          actualCurrentValue = Math.min(stats.totalWords || 0, actualTargetValue);
+                          break;
+                        case 'Novelist Dreams':
+                          actualCurrentValue = Math.min(stats.totalWords || 0, actualTargetValue);
+                          break;
+                        case 'Quarter Master':
+                          actualCurrentValue = Math.min(stats.currentStreak || 0, actualTargetValue);
+                          break;
+                        default:
+                          // Fallback to entries for unknown goals
+                          actualCurrentValue = Math.min(stats.totalEntries || 0, actualTargetValue);
+                      }
+
+                      const progressPercentage = actualTargetValue > 0 ? Math.min(100, Math.round((actualCurrentValue / actualTargetValue) * 100)) : 0;
                       const isCompleted = progressPercentage >= 100;
                       
                       return (
@@ -1479,7 +1617,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                           </p>
                           <div className="space-y-2">
                             <div className="flex justify-between text-xs">
-                              <span className="font-medium">{goal.currentValue}/{goal.targetValue}</span>
+                              <span className="font-medium">{actualCurrentValue}/{actualTargetValue}</span>
                               <span className={`font-bold ${isCompleted ? 'text-emerald-600' : 'text-gray-600'}`}>
                                 {progressPercentage}%
                               </span>
