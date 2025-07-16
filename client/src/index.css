@@ -75,6 +75,15 @@
     @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 min-h-[44px] flex items-center justify-center;
   }
 
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+  }
+
   .mobile-text-sm {
     @apply text-sm sm:text-base;
   }
