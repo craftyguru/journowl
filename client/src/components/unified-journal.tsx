@@ -94,7 +94,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [recordingStartTime, setRecordingStartTime] = useState<number>(0);
   const [recordingDuration, setRecordingDuration] = useState<number>(0);
-  const [audioRecordings, setAudioRecordings] = useState<{url: string, duration: number, timestamp: Date}[]>([]);
+  const [audioRecordings, setAudioRecordings] = useState<{url: string, duration: number, timestamp: Date}[]>(entry?.audioRecordings || []);
   const [recordingTimer, setRecordingTimer] = useState<number>(0);
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [isVideoMode, setIsVideoMode] = useState(false);

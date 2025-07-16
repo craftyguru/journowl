@@ -85,6 +85,10 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   
+  // Speech recognition state
+  const [isListening, setIsListening] = useState(false);
+  const [recognition, setRecognition] = useState<any>(null);
+  
   // Refs for media handling
   const canvasRef = useRef<any>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -123,6 +127,47 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const getRandomPrompt = () => {
     const randomPrompt = kidPrompts[Math.floor(Math.random() * kidPrompts.length)];
     setSelectedPrompt(randomPrompt);
+  };
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+      const recognitionInstance = new SpeechRecognition();
+      recognitionInstance.continuous = false;
+      recognitionInstance.interimResults = false;
+      recognitionInstance.lang = 'en-US';
+
+      recognitionInstance.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        setContent(prevContent => prevContent + (prevContent ? ' ' : '') + transcript);
+      };
+
+      recognitionInstance.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionInstance.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      setRecognition(recognitionInstance);
+    }
+  }, []);
+
+  const startListening = () => {
+    if (recognition) {
+      recognition.start();
+      setIsListening(true);
+    }
+  };
+
+  const stopListening = () => {
+    if (recognition) {
+      recognition.stop();
+      setIsListening(false);
+    }
   };
 
   // Journal mutation for saving entries
@@ -2108,17 +2153,42 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                   {/* Writing Tab */}
                   <TabsContent value="write" className="mt-4">
                     <div>
-                      <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
-                        <Sparkles className="w-5 h-5" />
-                        Tell your story!
-                      </Label>
-                      <Textarea
-                        placeholder="Write about your day, your dreams, your adventures... Let your imagination run wild!"
-                        value={content}
-                        onChange={(e) => setContent(e.target.value)}
-                        className="min-h-[300px] text-lg p-4 rounded-2xl border-3 border-purple-300 bg-white/80 text-purple-800 placeholder:text-purple-400 resize-none"
-                        style={{ fontFamily: 'Comic Sans MS, cursive' }}
-                      />
+                      <div className="flex items-center justify-between mb-3">
+                        <Label className="text-lg font-bold text-purple-700 flex items-center gap-2">
+                          <Sparkles className="w-5 h-5" />
+                          Tell your story!
+                        </Label>
+                        <Button
+                          onClick={isListening ? stopListening : startListening}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-white transition-all duration-200 ${
+                            isListening 
+                              ? 'bg-gradient-to-r from-red-400 to-red-600 hover:from-red-500 hover:to-red-700 animate-pulse shadow-lg shadow-red-200' 
+                              : 'bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 shadow-lg shadow-green-200'
+                          }`}
+                          title={isListening ? "Stop listening" : "Click to speak your story!"}
+                        >
+                          <div className="text-2xl">
+                            {isListening ? '🛑' : '🎤'}
+                          </div>
+                          <span className="text-sm">
+                            {isListening ? 'Stop' : 'Speak!'}
+                          </span>
+                        </Button>
+                      </div>
+                      <div className="relative">
+                        <Textarea
+                          placeholder="Write about your day, your dreams, your adventures... Let your imagination run wild! Or click the microphone to speak your story!"
+                          value={content}
+                          onChange={(e) => setContent(e.target.value)}
+                          className="min-h-[300px] text-lg p-4 rounded-2xl border-3 border-purple-300 bg-white/80 text-purple-800 placeholder:text-purple-400 resize-none"
+                          style={{ fontFamily: 'Comic Sans MS, cursive' }}
+                        />
+                        {isListening && (
+                          <div className="absolute top-4 right-4 bg-red-100 text-red-600 px-3 py-2 rounded-full text-sm font-bold animate-pulse border-2 border-red-300">
+                            🎤 Listening...
+                          </div>
+                        )}
+                      </div>
                       
                       {/* Word Count */}
                       <div className="mt-2 text-center">
