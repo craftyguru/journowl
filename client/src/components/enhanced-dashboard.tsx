@@ -750,6 +750,13 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
         <UsageMeters />
       </div>
 
+      {/* Current Tab Indicator for Debugging */}
+      <div className="mb-4 p-3 bg-purple-900/30 rounded-lg border border-purple-500/20">
+        <p className="text-purple-300 text-sm">
+          🎯 Current Tab: <span className="text-purple-100 font-semibold capitalize">{activeTab}</span>
+        </p>
+      </div>
+
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
