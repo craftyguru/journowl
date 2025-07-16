@@ -541,12 +541,12 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       <div className="w-full relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="write" className="w-full">
           <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-white/90 backdrop-blur-lg border-3 border-purple-300 shadow-2xl rounded-2xl p-2 gap-2 md:grid md:grid-cols-6 md:gap-1 mb-12 md:mb-6 relative">
-            {/* Swipe Helper Text for Mobile */}
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 md:hidden">
-              <div className="flex items-center gap-2 text-xs text-purple-600 bg-purple-100 px-3 py-1 rounded-full border border-purple-200">
-                <span>👈</span>
-                <span className="font-medium">Swipe to see more tabs!</span>
-                <span>👉</span>
+            {/* Swipe Indicator Overlay for Mobile */}
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none md:hidden z-20">
+              <div className="bg-black/20 backdrop-blur-sm text-white px-4 py-2 rounded-full flex items-center gap-2 text-sm font-medium">
+                <span>←</span>
+                <span>Swipe</span>
+                <span>→</span>
               </div>
             </div>
             <TabsTrigger 
