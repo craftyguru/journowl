@@ -44,6 +44,23 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
   React.useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
+
+  // Auto-scroll to tab content when tab changes (for mobile navigation)
+  React.useEffect(() => {
+    const scrollToTabContent = () => {
+      const tabsElement = document.querySelector('[data-tabs-content]');
+      if (tabsElement) {
+        tabsElement.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start' 
+        });
+      }
+    };
+    
+    // Small delay to ensure content is rendered
+    const timer = setTimeout(scrollToTabContent, 100);
+    return () => clearTimeout(timer);
+  }, [activeTab]);
   
   // Fetch real user data instead of hardcoded demo data
   const { data: userResponse } = useQuery({
@@ -828,7 +845,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </div>
 
-        <TabsContent value="journal">
+        <TabsContent value="journal" data-tabs-content>
           <div className="space-y-6">
             {/* Mobile-Optimized Smart Journal Header */}
             <motion.div
@@ -1063,7 +1080,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
 
-        <TabsContent value="analytics">
+        <TabsContent value="analytics" data-tabs-content>
           <div className="space-y-6">
             {/* Premium Analytics Header with Animated Stats */}
             <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white rounded-3xl p-8 shadow-2xl">
@@ -1825,7 +1842,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
 
-        <TabsContent value="achievements">
+        <TabsContent value="achievements" data-tabs-content>
           <div className="space-y-6">
             {/* Achievements Header */}
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-6">
@@ -2090,7 +2107,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
 
-        <TabsContent value="goals">
+        <TabsContent value="goals" data-tabs-content>
           <div className="space-y-6">
             {/* Goals Header */}
             <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl p-6">
@@ -2352,40 +2369,40 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
 
-        <TabsContent value="insights">
+        <TabsContent value="insights" data-tabs-content>
           <div className="space-y-6">
-            {/* AI Insights Header */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-3xl font-bold">🤖 AI Insights</h2>
-                  <p className="text-indigo-100 text-lg">Your personal AI writing companion & advisor</p>
+            {/* AI Insights Header - Mobile Optimized */}
+            <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-2xl p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
+                <div className="flex-1">
+                  <h2 className="text-2xl sm:text-3xl font-bold">🤖 AI Insights</h2>
+                  <p className="text-indigo-100 text-sm sm:text-lg">Your personal AI writing companion & advisor</p>
                 </div>
-                <div className="flex gap-3">
-                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-sm">
                     <Brain className="w-4 h-4 mr-2" />
                     Ask AI
                   </Button>
-                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-sm">
                     📊 Generate Report
                   </Button>
                 </div>
               </div>
               
-              {/* AI Status Indicators */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">{stats?.totalEntries || 0}</div>
+              {/* AI Status Indicators - Mobile Optimized */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div className="bg-white/20 rounded-xl p-3 sm:p-4 backdrop-blur-lg">
+                  <div className="text-xl sm:text-2xl font-bold">{stats?.totalEntries || 0}</div>
                   <div className="text-indigo-100 text-sm">Total Entries</div>
                   <div className="text-xs text-green-300">Start writing to see progress</div>
                 </div>
-                <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">{stats?.currentStreak || 0}</div>
+                <div className="bg-white/20 rounded-xl p-3 sm:p-4 backdrop-blur-lg">
+                  <div className="text-xl sm:text-2xl font-bold">{stats?.currentStreak || 0}</div>
                   <div className="text-indigo-100 text-sm">Day Streak</div>
                   <div className="text-xs text-green-300">Keep going!</div>
                 </div>
-                <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">{stats?.totalWords || 0}</div>
+                <div className="bg-white/20 rounded-xl p-3 sm:p-4 backdrop-blur-lg">
+                  <div className="text-xl sm:text-2xl font-bold">{stats?.totalWords || 0}</div>
                   <div className="text-indigo-100 text-sm">Words Written</div>
                   <div className="text-xs text-green-300">Express yourself!</div>
                 </div>
@@ -2675,7 +2692,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
 
-        <TabsContent value="calendar">
+        <TabsContent value="calendar" data-tabs-content>
           <div className="h-[80vh]">
             <InteractiveCalendar 
               entries={calendarEntries}
@@ -2685,7 +2702,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
         
-        <TabsContent value="stories">
+        <TabsContent value="stories" data-tabs-content>
           <div className="h-[80vh]">
             <AIStoryMaker 
               entries={entries}
@@ -2694,7 +2711,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
         
-        <TabsContent value="referral">
+        <TabsContent value="referral" data-tabs-content>
           <div className="space-y-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -2765,7 +2782,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
           </div>
         </TabsContent>
 
-        <TabsContent value="analytics-insights">
+        <TabsContent value="analytics-insights" data-tabs-content>
           <div className="space-y-6">
             {/* Header Section */}
             <motion.div
