@@ -271,7 +271,7 @@ function AuthenticatedApp({ currentView, onNavigate }: { currentView: string, on
         ) : (
           <>
             {(validView === "dashboard" || validView === "analytics" || validView === "achievements" || validView === "goals" || validView === "stories" || validView === "calendar") && 
-              <EnhancedDashboard currentView={validView} onSwitchToKid={() => setIsKidMode(true)} />}
+              <EnhancedDashboard currentView={validView} onSwitchToKid={() => setIsKidMode(true)} onNavigate={onNavigate} />}
             {validView === "insights" && <InsightsPage />}
             {validView === "referral" && <ReferralPage />}
           </>
