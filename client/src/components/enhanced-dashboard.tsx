@@ -835,14 +835,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
             </TabsTrigger>
           </TabsList>
           
-          {/* Mobile scroll indicator */}
-          <div className="md:hidden absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-            <div className="flex items-center gap-1 px-3 py-1 bg-purple-500/20 backdrop-blur-sm rounded-full border border-purple-400/30">
-              <span className="text-xs text-purple-300">←</span>
-              <span className="text-xs text-purple-200 font-medium">Swipe</span>
-              <span className="text-xs text-purple-300">→</span>
-            </div>
-          </div>
+
         </div>
 
         <TabsContent value="journal" data-tabs-content>
