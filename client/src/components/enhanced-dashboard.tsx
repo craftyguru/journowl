@@ -20,7 +20,7 @@ import UnifiedJournal from "./unified-journal";
 import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
-
+import { AIStoryMaker } from "./kid-dashboard";
 
 // All data now fetched from API endpoints instead of hardcoded values
 
@@ -746,47 +746,47 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
       {/* Main Content Tabs */}
       <Tabs defaultValue="journal" className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
-        <div className="relative w-full flex justify-center">
-          <TabsList className="flex overflow-x-auto scrollbar-hide bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-2 gap-2 max-w-fit mx-auto md:flex md:justify-center">
+        <div className="relative w-full">
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-2 gap-2 md:grid md:grid-cols-7 md:gap-0">
             <TabsTrigger 
               value="journal" 
-              className="flex-shrink-0 min-w-[110px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
             >
               📖 Journal
             </TabsTrigger>
             <TabsTrigger 
               value="analytics" 
-              className="flex-shrink-0 min-w-[110px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
             >
               📊 Analytics
             </TabsTrigger>
             <TabsTrigger 
               value="achievements" 
-              className="flex-shrink-0 min-w-[120px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
             >
               🏆 Achievements
             </TabsTrigger>
             <TabsTrigger 
               value="goals" 
-              className="flex-shrink-0 min-w-[110px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
             >
               🎯 Goals
             </TabsTrigger>
             <TabsTrigger 
               value="insights" 
-              className="flex-shrink-0 min-w-[120px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
             >
               🤖 AI Insights
             </TabsTrigger>
             <TabsTrigger 
               value="calendar" 
-              className="flex-shrink-0 min-w-[140px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
             >
               📅 Memory Calendar
             </TabsTrigger>
             <TabsTrigger 
               value="stories" 
-              className="flex-shrink-0 min-w-[120px] h-12 px-3 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-200 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20 text-center"
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
             >
               📚 AI Stories
             </TabsTrigger>
@@ -2660,22 +2660,11 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
         </TabsContent>
         
         <TabsContent value="stories">
-          <div className="h-[80vh] flex items-center justify-center">
-            <Card className="bg-gradient-to-br from-indigo-100 to-purple-100 max-w-md mx-auto">
-              <CardContent className="p-8 text-center">
-                <div className="text-6xl mb-4">📚</div>
-                <h3 className="text-2xl font-bold text-indigo-800 mb-4">AI Story Maker</h3>
-                <p className="text-indigo-700 mb-6">
-                  Transform your journal entries into amazing stories using the power of AI!
-                </p>
-                <Button 
-                  className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-3 rounded-xl font-bold"
-                  disabled
-                >
-                  Coming Soon! ✨
-                </Button>
-              </CardContent>
-            </Card>
+          <div className="h-[80vh]">
+            <AIStoryMaker 
+              entries={entries}
+              stats={stats}
+            />
           </div>
         </TabsContent>
       </Tabs>
