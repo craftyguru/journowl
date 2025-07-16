@@ -274,6 +274,35 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     }
   }, [entries]);
 
+  // Quick Action Functions for Seamless Entry Creation
+  const createPhotoEntry = () => {
+    const today = new Date().toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    openJournalEditor(null, `📸 My Photo Story - ${today}`);
+    setActiveTab("photos");
+    setTitle(`📸 My Photo Story - ${today}`);
+    setContent("Here's what I captured today! Let me tell you about this amazing moment...\n\n");
+  };
+
+  const createAudioEntry = () => {
+    const today = new Date().toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    openJournalEditor(null, `🎤 My Voice Story - ${today}`);
+    setActiveTab("voice");
+    setTitle(`🎤 My Voice Story - ${today}`);
+    setContent("I recorded something special today! Here's what I want to remember...\n\n");
+  };
+
   // Photo analysis function
   const analyzePhotos = async () => {
     if (uploadedPhotos.length === 0) {
@@ -515,14 +544,35 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-pink-200 to-pink-300 border-pink-300 shadow-lg">
+        <Card className="bg-gradient-to-br from-pink-200 to-pink-300 border-pink-300 shadow-lg relative overflow-visible">
           <CardContent className="p-3 md:p-6 text-center">
             <div className="text-3xl md:text-4xl mb-2">🔥</div>
-            <h3 className="text-xl md:text-2xl font-bold text-pink-800">{stats.currentStreak || 0}</h3>
-            <p className="text-sm md:text-base text-pink-600">Day Streak</p>
+            <h3 className="text-xl md:text-2xl font-bold text-pink-800">{stats.currentStreak || 0} Day Streak!</h3>
+            <p className="text-sm md:text-base text-pink-600">Keep writing every day to grow your streak!</p>
             <div className="mt-2 md:mt-3">
               <Badge className="bg-pink-500 text-white text-xs">Keep going!</Badge>
             </div>
+            
+            {/* Floating Quick Action Bubbles */}
+            <motion.button
+              onClick={createPhotoEntry}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="absolute -left-4 top-1/2 transform -translate-y-1/2 w-16 h-16 bg-blue-400 hover:bg-blue-500 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200 z-10"
+              title="Add Photo/Video Story"
+            >
+              📸
+            </motion.button>
+            
+            <motion.button
+              onClick={createAudioEntry}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="absolute -right-4 top-1/2 transform -translate-y-1/2 w-16 h-16 bg-green-400 hover:bg-green-500 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200 z-10"
+              title="Record Voice Story"
+            >
+              🎤
+            </motion.button>
           </CardContent>
         </Card>
 
