@@ -45,30 +45,21 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
     setActiveTab(initialTab);
   }, [initialTab]);
 
-  // Auto-scroll to tab content when tab changes (for mobile navigation)
+  // Auto-scroll to tab navigation when tab changes (for mobile navigation)
   React.useEffect(() => {
-    const scrollToTabContent = () => {
-      // Find the currently active tab content
-      const activeTabContent = document.querySelector(`[data-tabs-content][data-state="active"]`);
-      if (activeTabContent) {
-        activeTabContent.scrollIntoView({ 
+    const scrollToTabNavigation = () => {
+      // Find the tab navigation area
+      const tabsNavigation = document.querySelector('[role="tablist"]');
+      if (tabsNavigation) {
+        tabsNavigation.scrollIntoView({ 
           behavior: 'smooth', 
-          block: 'end' // Move to bottom of screen as requested
+          block: 'start' // Stop at the tab navigation area
         });
-      } else {
-        // Fallback: find any tab content with data-tabs-content
-        const tabsElement = document.querySelector('[data-tabs-content]');
-        if (tabsElement) {
-          tabsElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'end'
-          });
-        }
       }
     };
     
     // Small delay to ensure content is rendered
-    const timer = setTimeout(scrollToTabContent, 150);
+    const timer = setTimeout(scrollToTabNavigation, 150);
     return () => clearTimeout(timer);
   }, [activeTab]);
   
@@ -777,12 +768,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
         <UsageMeters />
       </div>
 
-      {/* Current Tab Indicator for Debugging */}
-      <div className="mb-4 p-3 bg-purple-900/30 rounded-lg border border-purple-500/20">
-        <p className="text-purple-300 text-sm">
-          🎯 Current Tab: <span className="text-purple-100 font-semibold capitalize">{activeTab}</span>
-        </p>
-      </div>
+
 
       {/* Main Content Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
