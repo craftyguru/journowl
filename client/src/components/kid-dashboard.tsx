@@ -123,12 +123,17 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     queryKey: ["/api/achievements"],
   });
 
+  const { data: goalsResponse } = useQuery({
+    queryKey: ["/api/goals"],
+  });
+
   const user = userResponse?.user;
   
-  // Use real user data from API
-  const stats = statsResponse || {};
+  // Use real user data from API - SHARED with adult interface
+  const stats = statsResponse?.stats || {};
   const entries = entriesResponse || [];
   const userAchievements = achievementsResponse?.achievements || [];
+  const goals = goalsResponse?.goals || [];
   
   // Use demo achievements for UI while API is having issues, but keep same structure for consistency
   const achievements = userAchievements.length > 0 ? userAchievements : timmyDemoAchievements;
@@ -1015,10 +1020,10 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         <UsageMeters />
       </motion.div>
 
-      {/* 6-Tab Navigation System */}
+      {/* 7-Tab Navigation System */}
       <div className="w-full relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="write" className="w-full">
-          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-white/90 backdrop-blur-lg border-3 border-purple-300 shadow-2xl rounded-2xl p-2 gap-2 md:grid md:grid-cols-6 md:gap-1 mb-6 relative">
+          <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-white/90 backdrop-blur-lg border-3 border-purple-300 shadow-2xl rounded-2xl p-2 gap-2 md:grid md:grid-cols-7 md:gap-1 mb-6 relative">
             <TabsTrigger 
               value="write" 
               className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-400 data-[state=active]:to-blue-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-green-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
@@ -1030,6 +1035,12 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
               className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-400 data-[state=active]:to-orange-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-yellow-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
             >
               🏆 Badges
+            </TabsTrigger>
+            <TabsTrigger 
+              value="goals" 
+              className="flex-shrink-0 min-w-[100px] h-12 px-3 py-2 text-sm font-bold rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-400 data-[state=active]:to-teal-400 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-600 hover:text-white hover:bg-emerald-400/50 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/40"
+            >
+              🎯 Goals
             </TabsTrigger>
             <TabsTrigger 
               value="calendar" 
@@ -1381,7 +1392,7 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                 </CardHeader>
                 <CardContent className="p-6">
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {userAchievements.slice(0, showAllAchievements ? userAchievements.length : 6).map((achievement, index) => (
+                    {achievements.slice(0, showAllAchievements ? achievements.length : 6).map((achievement, index) => (
                       <motion.div
                         key={achievement.id}
                         initial={{ opacity: 0, scale: 0.8 }}
@@ -1407,6 +1418,85 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                         )}
                       </motion.div>
                     ))}
+                  </div>
+                  {achievements.length > 6 && (
+                    <div className="text-center mt-6">
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button
+                          onClick={() => setShowAllAchievements(!showAllAchievements)}
+                          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-2 px-6 rounded-xl shadow-lg"
+                        >
+                          {showAllAchievements ? "Show Less 🔼" : "Show More Badges! 🔽"}
+                        </Button>
+                      </motion.div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          </TabsContent>
+
+          {/* Goals Tab */}
+          <TabsContent value="goals" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Card className="bg-white shadow-lg border-2 border-emerald-200">
+                <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-t-lg">
+                  <CardTitle className="flex items-center gap-2 text-xl">
+                    <Target className="w-6 h-6" />
+                    My Amazing Goals!
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {goals.map((goal, index) => {
+                      const progressPercentage = goal.targetValue > 0 ? Math.min(100, Math.round((goal.currentValue / goal.targetValue) * 100)) : 0;
+                      const isCompleted = progressPercentage >= 100;
+                      
+                      return (
+                        <motion.div
+                          key={goal.id}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.1 + index * 0.05 }}
+                          className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                            isCompleted
+                              ? 'bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-300 shadow-md hover:shadow-lg'
+                              : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 hover:border-emerald-200'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-2xl">{isCompleted ? '🎯' : '⭐'}</span>
+                            <h4 className={`font-semibold text-sm ${isCompleted ? 'text-emerald-800' : 'text-gray-700'}`}>
+                              {goal.title}
+                            </h4>
+                          </div>
+                          <p className={`text-xs mb-3 ${isCompleted ? 'text-emerald-600' : 'text-gray-500'}`}>
+                            {goal.description}
+                          </p>
+                          <div className="space-y-2">
+                            <div className="flex justify-between text-xs">
+                              <span className="font-medium">{goal.currentValue}/{goal.targetValue}</span>
+                              <span className={`font-bold ${isCompleted ? 'text-emerald-600' : 'text-gray-600'}`}>
+                                {progressPercentage}%
+                              </span>
+                            </div>
+                            <Progress 
+                              value={progressPercentage} 
+                              className={`h-2 ${isCompleted ? 'bg-emerald-100' : 'bg-gray-100'}`}
+                            />
+                            {isCompleted && (
+                              <Badge className="w-full justify-center bg-emerald-500 text-white text-xs">
+                                🎉 Goal Completed!
+                              </Badge>
+                            )}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
