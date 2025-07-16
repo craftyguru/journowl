@@ -307,6 +307,16 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
       const mediaRecorder = new MediaRecorder(stream);
       const chunks = [];
       
+      // Create audio context for visualizer
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+      
+      analyser.fftSize = 64;
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
       const recordingOverlay = document.createElement('div');
       recordingOverlay.style.cssText = `
         position: fixed;
@@ -314,53 +324,165 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: rgba(0, 0, 0, 0.9);
+        background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%, rgba(30,30,60,0.95) 100%);
         z-index: 9999;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         color: white;
+        font-family: system-ui;
       `;
       
-      const recordingStatus = document.createElement('div');
-      recordingStatus.innerHTML = '🎤 Recording...';
-      recordingStatus.style.cssText = `
-        font-size: 24px;
+      const recordingTitle = document.createElement('div');
+      recordingTitle.innerHTML = '🎤 Recording Voice Story';
+      recordingTitle.style.cssText = `
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
+      `;
+      
+      const recordingSubtitle = document.createElement('div');
+      recordingSubtitle.innerHTML = 'Speak your thoughts...';
+      recordingSubtitle.style.cssText = `
+        font-size: 16px;
+        opacity: 0.8;
+        margin-bottom: 40px;
+        text-align: center;
+      `;
+      
+      // Audio visualizer canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 150;
+      canvas.style.cssText = `
+        border: 2px solid rgba(255,255,255,0.3);
+        border-radius: 15px;
+        background: rgba(0,0,0,0.3);
+        margin-bottom: 30px;
+      `;
+      
+      const ctx = canvas.getContext('2d');
+      
+      // Timer display
+      const timer = document.createElement('div');
+      timer.innerHTML = '00:00';
+      timer.style.cssText = `
+        font-size: 32px;
+        font-weight: bold;
         margin-bottom: 20px;
-        animation: pulse 1s infinite;
+        color: #ef4444;
+        text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+      `;
+      
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = `
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
       `;
       
       const stopButton = document.createElement('button');
       stopButton.innerHTML = '⏹️ Stop Recording';
       stopButton.style.cssText = `
-        padding: 15px 30px;
-        font-size: 18px;
-        background: #ef4444;
+        padding: 15px 25px;
+        font-size: 16px;
+        background: linear-gradient(45deg, #ef4444, #dc2626);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 25px;
         cursor: pointer;
-        margin-top: 20px;
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        transition: all 0.3s;
+      `;
+      
+      const pauseButton = document.createElement('button');
+      pauseButton.innerHTML = '⏸️ Pause';
+      pauseButton.style.cssText = `
+        padding: 15px 25px;
+        font-size: 16px;
+        background: linear-gradient(45deg, #f59e0b, #d97706);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        transition: all 0.3s;
       `;
       
       const cancelButton = document.createElement('button');
       cancelButton.innerHTML = '❌ Cancel';
       cancelButton.style.cssText = `
-        padding: 10px 20px;
+        padding: 15px 25px;
         font-size: 16px;
-        background: #6b7280;
+        background: linear-gradient(45deg, #6b7280, #4b5563);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 25px;
         cursor: pointer;
-        margin-top: 10px;
+        box-shadow: 0 4px 15px rgba(107, 114, 128, 0.4);
+        transition: all 0.3s;
       `;
       
-      recordingOverlay.appendChild(recordingStatus);
-      recordingOverlay.appendChild(stopButton);
-      recordingOverlay.appendChild(cancelButton);
+      recordingOverlay.appendChild(recordingTitle);
+      recordingOverlay.appendChild(recordingSubtitle);
+      recordingOverlay.appendChild(canvas);
+      recordingOverlay.appendChild(timer);
+      recordingOverlay.appendChild(buttonContainer);
+      buttonContainer.appendChild(stopButton);
+      buttonContainer.appendChild(pauseButton);
+      buttonContainer.appendChild(cancelButton);
       document.body.appendChild(recordingOverlay);
+      
+      // Timer functionality
+      let startTime = Date.now();
+      let isPaused = false;
+      let pausedTime = 0;
+      
+      const updateTimer = () => {
+        if (!isPaused) {
+          const elapsed = Math.floor((Date.now() - startTime - pausedTime) / 1000);
+          const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+          const seconds = (elapsed % 60).toString().padStart(2, '0');
+          timer.innerHTML = `${minutes}:${seconds}`;
+        }
+        if (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused') {
+          requestAnimationFrame(updateTimer);
+        }
+      };
+      
+      // Audio visualizer animation
+      const animate = () => {
+        if (mediaRecorder.state === 'recording' && !isPaused) {
+          analyser.getByteFrequencyData(dataArray);
+          
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          const barWidth = canvas.width / bufferLength * 2;
+          let x = 0;
+          
+          for (let i = 0; i < bufferLength; i++) {
+            const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+            
+            // Create gradient for bars
+            const gradient = ctx.createLinearGradient(0, canvas.height, 0, canvas.height - barHeight);
+            gradient.addColorStop(0, '#ef4444');
+            gradient.addColorStop(0.5, '#f59e0b');
+            gradient.addColorStop(1, '#10b981');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+            
+            x += barWidth;
+          }
+        }
+        
+        if (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused') {
+          requestAnimationFrame(animate);
+        }
+      };
       
       mediaRecorder.ondataavailable = (event) => {
         chunks.push(event.data);
@@ -377,6 +499,7 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
           day: 'numeric' 
         });
         
+        audioContext.close();
         stream.getTracks().forEach(track => track.stop());
         document.body.removeChild(recordingOverlay);
         
@@ -390,19 +513,38 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
       
       const cleanup = () => {
         mediaRecorder.stop();
+        audioContext.close();
         stream.getTracks().forEach(track => track.stop());
         document.body.removeChild(recordingOverlay);
       };
       
       stopButton.onclick = () => {
-        if (mediaRecorder.state === 'recording') {
+        if (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused') {
           mediaRecorder.stop();
+        }
+      };
+      
+      pauseButton.onclick = () => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.pause();
+          isPaused = true;
+          pausedTime += Date.now() - startTime;
+          pauseButton.innerHTML = '▶️ Resume';
+          pauseButton.style.background = 'linear-gradient(45deg, #10b981, #059669)';
+        } else if (mediaRecorder.state === 'paused') {
+          mediaRecorder.resume();
+          isPaused = false;
+          startTime = Date.now();
+          pauseButton.innerHTML = '⏸️ Pause';
+          pauseButton.style.background = 'linear-gradient(45deg, #f59e0b, #d97706)';
         }
       };
       
       cancelButton.onclick = cleanup;
       
       mediaRecorder.start();
+      updateTimer();
+      animate();
       
     } catch (error) {
       console.error('Audio recording failed:', error);
@@ -2572,15 +2714,37 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
 
       {/* Floating Action Bubbles - Only show when journal editor is closed */}
       {!showSmartEditor && !showUnifiedJournal && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-4 z-50">
           <motion.button
             onClick={capturePhoto}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Take Photo/Video"
+            title="Take Photo"
           >
             📸
+          </motion.button>
+          
+          <motion.button
+            onClick={() => {
+              const today = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              });
+              openUnifiedJournal({
+                title: `📝 Quick Note - ${today}`,
+                content: "Quick thought: ",
+                mood: 'neutral'
+              });
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-16 h-16 bg-purple-500 hover:bg-purple-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
+            title="Quick Note"
+          >
+            📝
           </motion.button>
           
           <motion.button
@@ -2591,6 +2755,28 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
             title="Record Audio"
           >
             🎤
+          </motion.button>
+          
+          <motion.button
+            onClick={() => {
+              const today = new Date().toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              });
+              openUnifiedJournal({
+                title: `🎨 Creative Entry - ${today}`,
+                content: "Today I want to create something special...\n\n",
+                mood: 'creative'
+              });
+            }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-16 h-16 bg-pink-500 hover:bg-pink-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
+            title="Creative Entry"
+          >
+            🎨
           </motion.button>
         </div>
       )}

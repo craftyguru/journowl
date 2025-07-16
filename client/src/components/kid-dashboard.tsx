@@ -389,7 +389,16 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       const mediaRecorder = new MediaRecorder(stream);
       const chunks = [];
       
-      // Create recording UI overlay
+      // Create audio context for visualizer
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+      source.connect(analyser);
+      
+      analyser.fftSize = 64;
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      
       const recordingOverlay = document.createElement('div');
       recordingOverlay.style.cssText = `
         position: fixed;
@@ -397,53 +406,176 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: rgba(0, 0, 0, 0.9);
+        background: linear-gradient(135deg, rgba(255,100,150,0.95) 0%, rgba(100,200,255,0.95) 100%);
         z-index: 9999;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         color: white;
+        font-family: system-ui;
       `;
       
-      const recordingStatus = document.createElement('div');
-      recordingStatus.innerHTML = '🎤 Recording...';
-      recordingStatus.style.cssText = `
-        font-size: 24px;
+      const recordingTitle = document.createElement('div');
+      recordingTitle.innerHTML = '🎤 Recording My Amazing Voice!';
+      recordingTitle.style.cssText = `
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: center;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      `;
+      
+      const recordingSubtitle = document.createElement('div');
+      recordingSubtitle.innerHTML = 'Tell me about your day! 🌟';
+      recordingSubtitle.style.cssText = `
+        font-size: 18px;
+        margin-bottom: 40px;
+        text-align: center;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      `;
+      
+      // Kid-friendly audio visualizer canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = 300;
+      canvas.height = 150;
+      canvas.style.cssText = `
+        border: 3px solid rgba(255,255,255,0.8);
+        border-radius: 20px;
+        background: rgba(255,255,255,0.2);
+        margin-bottom: 30px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      `;
+      
+      const ctx = canvas.getContext('2d');
+      
+      // Big friendly timer
+      const timer = document.createElement('div');
+      timer.innerHTML = '00:00';
+      timer.style.cssText = `
+        font-size: 40px;
+        font-weight: bold;
         margin-bottom: 20px;
-        animation: pulse 1s infinite;
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        background: rgba(255,255,255,0.2);
+        padding: 10px 20px;
+        border-radius: 15px;
+        border: 2px solid rgba(255,255,255,0.3);
+      `;
+      
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
       `;
       
       const stopButton = document.createElement('button');
-      stopButton.innerHTML = '⏹️ Stop Recording';
+      stopButton.innerHTML = '⏹️ Stop';
       stopButton.style.cssText = `
-        padding: 15px 30px;
+        padding: 20px 30px;
         font-size: 18px;
-        background: #ef4444;
+        background: linear-gradient(45deg, #ff6b6b, #ff5252);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 25px;
         cursor: pointer;
-        margin-top: 20px;
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        transition: all 0.3s;
+        font-weight: bold;
+      `;
+      
+      const pauseButton = document.createElement('button');
+      pauseButton.innerHTML = '⏸️ Pause';
+      pauseButton.style.cssText = `
+        padding: 20px 30px;
+        font-size: 18px;
+        background: linear-gradient(45deg, #ffa726, #ff9800);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(255, 167, 38, 0.4);
+        transition: all 0.3s;
+        font-weight: bold;
       `;
       
       const cancelButton = document.createElement('button');
       cancelButton.innerHTML = '❌ Cancel';
       cancelButton.style.cssText = `
-        padding: 10px 20px;
-        font-size: 16px;
-        background: #6b7280;
+        padding: 20px 30px;
+        font-size: 18px;
+        background: linear-gradient(45deg, #9e9e9e, #757575);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 25px;
         cursor: pointer;
-        margin-top: 10px;
+        box-shadow: 0 6px 20px rgba(158, 158, 158, 0.4);
+        transition: all 0.3s;
+        font-weight: bold;
       `;
       
-      recordingOverlay.appendChild(recordingStatus);
-      recordingOverlay.appendChild(stopButton);
-      recordingOverlay.appendChild(cancelButton);
+      recordingOverlay.appendChild(recordingTitle);
+      recordingOverlay.appendChild(recordingSubtitle);
+      recordingOverlay.appendChild(canvas);
+      recordingOverlay.appendChild(timer);
+      recordingOverlay.appendChild(buttonContainer);
+      buttonContainer.appendChild(stopButton);
+      buttonContainer.appendChild(pauseButton);
+      buttonContainer.appendChild(cancelButton);
       document.body.appendChild(recordingOverlay);
+      
+      // Timer functionality
+      let startTime = Date.now();
+      let isPaused = false;
+      let pausedTime = 0;
+      
+      const updateTimer = () => {
+        if (!isPaused) {
+          const elapsed = Math.floor((Date.now() - startTime - pausedTime) / 1000);
+          const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+          const seconds = (elapsed % 60).toString().padStart(2, '0');
+          timer.innerHTML = `${minutes}:${seconds}`;
+        }
+        if (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused') {
+          requestAnimationFrame(updateTimer);
+        }
+      };
+      
+      // Kid-friendly rainbow audio visualizer
+      const animate = () => {
+        if (mediaRecorder.state === 'recording' && !isPaused) {
+          analyser.getByteFrequencyData(dataArray);
+          
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          
+          const barWidth = canvas.width / bufferLength * 2;
+          let x = 0;
+          
+          const colors = ['#ff6b6b', '#ffa726', '#66bb6a', '#42a5f5', '#ab47bc', '#26c6da'];
+          
+          for (let i = 0; i < bufferLength; i++) {
+            const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+            
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+            
+            // Add sparkle effect
+            if (barHeight > 50) {
+              ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+              ctx.fillRect(x + barWidth/2 - 1, canvas.height - barHeight - 5, 2, 2);
+            }
+            
+            x += barWidth;
+          }
+        }
+        
+        if (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused') {
+          requestAnimationFrame(animate);
+        }
+      };
       
       mediaRecorder.ondataavailable = (event) => {
         chunks.push(event.data);
@@ -460,9 +592,9 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
           day: 'numeric' 
         });
         
-        // Add audio to the entry (you might need to handle audio differently)
         setUploadedVideos(prev => [...prev, audioUrl]);
         
+        audioContext.close();
         stream.getTracks().forEach(track => track.stop());
         document.body.removeChild(recordingOverlay);
         
@@ -474,19 +606,38 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       
       const cleanup = () => {
         mediaRecorder.stop();
+        audioContext.close();
         stream.getTracks().forEach(track => track.stop());
         document.body.removeChild(recordingOverlay);
       };
       
       stopButton.onclick = () => {
-        if (mediaRecorder.state === 'recording') {
+        if (mediaRecorder.state === 'recording' || mediaRecorder.state === 'paused') {
           mediaRecorder.stop();
+        }
+      };
+      
+      pauseButton.onclick = () => {
+        if (mediaRecorder.state === 'recording') {
+          mediaRecorder.pause();
+          isPaused = true;
+          pausedTime += Date.now() - startTime;
+          pauseButton.innerHTML = '▶️ Go!';
+          pauseButton.style.background = 'linear-gradient(45deg, #66bb6a, #4caf50)';
+        } else if (mediaRecorder.state === 'paused') {
+          mediaRecorder.resume();
+          isPaused = false;
+          startTime = Date.now();
+          pauseButton.innerHTML = '⏸️ Pause';
+          pauseButton.style.background = 'linear-gradient(45deg, #ffa726, #ff9800)';
         }
       };
       
       cancelButton.onclick = cleanup;
       
       mediaRecorder.start();
+      updateTimer();
+      animate();
       
     } catch (error) {
       console.error('Audio recording failed:', error);
