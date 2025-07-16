@@ -20,6 +20,7 @@ import UnifiedJournal from "./unified-journal";
 import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
+import { AIStoryMaker } from "./kid-dashboard";
 
 // All data now fetched from API endpoints instead of hardcoded values
 
@@ -782,6 +783,12 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
             >
               📅 Memory Calendar
+            </TabsTrigger>
+            <TabsTrigger 
+              value="stories" 
+              className="flex-shrink-0 min-w-[120px] h-12 px-4 py-2 text-sm font-medium rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 border-2 border-transparent data-[state=active]:border-white/20"
+            >
+              📚 AI Stories
             </TabsTrigger>
           </TabsList>
           
@@ -2648,6 +2655,15 @@ export default function EnhancedDashboard({ onSwitchToKid }: EnhancedDashboardPr
               entries={calendarEntries}
               onDateSelect={handleDateSelect}
               onEntryEdit={handleEntryEdit}
+            />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="stories">
+          <div className="h-[80vh]">
+            <AIStoryMaker 
+              entries={entries}
+              stats={stats}
             />
           </div>
         </TabsContent>

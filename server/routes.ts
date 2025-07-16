@@ -632,6 +632,71 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
     }
   });
 
+  // AI Story Generation Endpoint
+  app.post("/api/ai/generate-story", requireAuth, requireAIPrompts, async (req: any, res) => {
+    try {
+      const { prompt, entries } = req.body;
+      
+      if (!entries || entries.length === 0) {
+        return res.status(400).json({ message: "No journal entries provided for story generation" });
+      }
+
+      // Check if OpenAI API key is available
+      if (!process.env.OPENAI_API_KEY) {
+        return res.json({ 
+          story: "I'm sorry, but I need an OpenAI API key to generate your amazing story. Please contact the administrator to set up the API key!" 
+        });
+      }
+
+      // Track AI prompt usage before making OpenAI call
+      await storage.incrementPromptUsage(req.session.userId);
+      
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o', // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+          messages: [
+            { 
+              role: 'system', 
+              content: 'You are a creative storyteller who transforms journal entries into engaging, narrative stories. Create cohesive, entertaining stories that connect the events from journal entries into one flowing adventure. Make it feel like a real story with characters, settings, and plot development.' 
+            },
+            { role: 'user', content: prompt }
+          ],
+          max_tokens: 1500,
+          temperature: 0.8
+        })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error(`OpenAI API error: ${response.status} - ${errorData}`);
+        
+        // Provide a fallback story based on entries
+        const fallbackStory = `Here's a wonderful story based on your journal entries:
+
+Once upon a time, you embarked on an amazing journey through your daily adventures. ${entries.map((entry: any, index: number) => {
+          return `${index === 0 ? 'It all started when' : 'Then,'} ${entry.content.substring(0, 100)}...`;
+        }).join(' ')}
+
+Your story shows how every day brings new experiences and emotions, creating the beautiful tapestry of your life! 🌟`;
+        
+        return res.json({ story: fallbackStory });
+      }
+
+      const data = await response.json();
+      const story = data.choices?.[0]?.message?.content || "I couldn't generate a story right now, but your journal entries show an amazing journey!";
+      
+      res.json({ story });
+    } catch (error: any) {
+      console.error("Error generating story:", error);
+      res.status(500).json({ message: "Failed to generate story" });
+    }
+  });
+
   app.get("/api/ai/insight", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const entries = await storage.getJournalEntries(req.session.userId, 5);
