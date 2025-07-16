@@ -134,7 +134,12 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     queryKey: ["/api/goals"],
   });
 
+  const { data: subscriptionResponse } = useQuery({
+    queryKey: ["/api/subscription"],
+  });
+
   const user = userResponse?.user;
+  const subscriptionData = subscriptionResponse;
   
   // Use real user data from API - SHARED with adult interface
   const stats = statsResponse?.stats || {};
@@ -1097,14 +1102,108 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
           </Card>
         </motion.div>
 
-        {/* Usage Meters - Shared with Adult Interface */}
+        {/* AI Prompts and Storage Meters with Large Circular Progress */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-6"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6"
         >
-          <UsageMeters />
+          {/* AI Prompts Meter */}
+          <Card className="bg-gradient-to-br from-purple-500 to-indigo-600 text-white border-none shadow-xl">
+            <CardContent className="p-6 text-center">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">✨ AI Prompts</span>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="text-purple-600 border-white hover:bg-white/20"
+                >
+                  Buy More
+                </Button>
+              </div>
+              
+              {/* Large Circular Progress */}
+              <div className="relative w-32 h-32 mx-auto mb-4">
+                <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="stroke-white/20"
+                    strokeWidth="3"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="stroke-white"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    fill="none"
+                    strokeDasharray={`${(subscriptionData?.promptsRemaining || 62) * 100 / 100}, 100`}
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <div className="text-2xl font-bold">{subscriptionData?.promptsRemaining || 62}</div>
+                  <div className="text-xs opacity-90">of 100 prompts</div>
+                </div>
+              </div>
+              
+              <p className="text-sm opacity-90 mb-3">Resets monthly 02/23/2025</p>
+              <Button 
+                size="sm" 
+                className="bg-gradient-to-r from-pink-500 to-red-500 hover:from-pink-600 hover:to-red-600 border-none text-white font-bold"
+              >
+                💎 Buy 100 Prompts ($2.99)
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Storage Meter */}
+          <Card className="bg-gradient-to-br from-teal-500 to-cyan-600 text-white border-none shadow-xl">
+            <CardContent className="p-6 text-center">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">💾 Storage</span>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  className="text-teal-600 border-white hover:bg-white/20"
+                >
+                  $20/Year
+                </Button>
+              </div>
+              
+              {/* Large Circular Progress */}
+              <div className="relative w-32 h-32 mx-auto mb-4">
+                <svg className="w-32 h-32 transform -rotate-90" viewBox="0 0 36 36">
+                  <path
+                    className="stroke-white/20"
+                    strokeWidth="3"
+                    fill="none"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                  <path
+                    className="stroke-white"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    fill="none"
+                    strokeDasharray="100, 100"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <div className="text-2xl font-bold">100</div>
+                  <div className="text-xs opacity-90">of 100 MB</div>
+                </div>
+              </div>
+              
+              <p className="text-sm opacity-90 mb-3">Includes photos &amp; drawings forever</p>
+              <Button 
+                size="sm" 
+                className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 border-none text-white font-bold"
+              >
+                🎯 Upgrade Subscription
+              </Button>
+            </CardContent>
+          </Card>
         </motion.div>
 
         {/* Quick Writing Panel */}
