@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Palette, Music, GamepadIcon, Calendar, BarChart3, Users, Settings, X, Save, Plus, Mic, MicOff, Upload, Video, Image, Paintbrush, Lightbulb } from "lucide-react";
+import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Palette, Music, GamepadIcon, Calendar, BarChart3, Users, Settings, X, Save, Plus, Mic, MicOff, Upload, Video, Image, Paintbrush, Lightbulb, Send } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useCallback } from "react";
 import { apiRequest } from "@/lib/queryClient";
@@ -76,6 +76,8 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
   const [aiSuggestions, setAiSuggestions] = useState<string[]>([]);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
+  const [aiMessages, setAiMessages] = useState<{sender: 'user' | 'ai', text: string}[]>([]);
+  const [aiInput, setAiInput] = useState("");
   
   // Refs for media handling
   const canvasRef = useRef<any>(null);
@@ -188,6 +190,28 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       console.error("AI generation failed:", error);
     } finally {
       setIsGeneratingAI(false);
+    }
+  };
+
+  const sendAiMessage = async () => {
+    if (!aiInput.trim()) return;
+    
+    const userMessage = { sender: 'user' as const, text: aiInput };
+    setAiMessages(prev => [...prev, userMessage]);
+    setAiInput("");
+    
+    try {
+      const response = await apiRequest("POST", "/api/ai/chat", {
+        message: aiInput,
+        context: "kids_writing_help"
+      });
+      const data = await response.json();
+      const aiMessage = { sender: 'ai' as const, text: data.response || "I'm here to help you write amazing stories!" };
+      setAiMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error("AI chat failed:", error);
+      const errorMessage = { sender: 'ai' as const, text: "Oops! I had trouble understanding. Can you try asking again?" };
+      setAiMessages(prev => [...prev, errorMessage]);
     }
   };
 
@@ -471,80 +495,269 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
           {/* Write Tab */}
           <TabsContent value="write" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Quick Write */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-        >
-          <Card className="bg-white shadow-lg border-2 border-purple-200">
-            <CardHeader className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-t-lg">
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <Sparkles className="w-6 h-6" />
-                Start Writing!
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                <div className="p-4 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg border-2 border-dashed border-purple-300">
-                  <h4 className="font-semibold text-purple-800 mb-2">Today's Fun Prompt:</h4>
-                  <p className="text-purple-700 text-lg">"{selectedPrompt}"</p>
-                </div>
-                <div className="flex gap-3">
-                  <Button 
-                    className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg"
-                    onClick={() => openJournalEditor(null, selectedPrompt)}
-                  >
-                    <BookOpen className="w-4 h-4 mr-2" />
-                    Start Writing
-                  </Button>
-                  <Button variant="outline" className="border-purple-300 text-purple-600 hover:bg-purple-50" onClick={getRandomPrompt}>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    New Prompt
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+              {/* Super Fun Writing Section */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="relative"
+              >
+                {/* Floating Animation Elements */}
+                <motion.div
+                  animate={{ y: [-10, 10, -10] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute -top-2 -right-2 text-3xl z-10"
+                >
+                  ✨
+                </motion.div>
+                <motion.div
+                  animate={{ rotate: [0, 15, -15, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="absolute -top-1 -left-1 text-2xl z-10"
+                >
+                  🌟
+                </motion.div>
 
-        {/* Recent Entries */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-        >
-          <Card className="bg-white shadow-lg border-2 border-blue-200">
-            <CardHeader className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-t-lg">
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <BookOpen className="w-6 h-6" />
-                My Stories
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-3">
-                {entries.slice(0, 3).map((entry, index) => (
-                  <motion.div
-                    key={entry.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                    className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 hover:shadow-md transition-all cursor-pointer"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">{entry.mood}</div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-blue-800">{entry.title}</h4>
-                        <p className="text-blue-600 text-sm">{entry.preview}</p>
-                        <p className="text-blue-500 text-xs mt-1">{entry.date}</p>
+                <Card className="bg-gradient-to-br from-yellow-100 via-pink-100 to-purple-100 border-4 border-rainbow shadow-2xl overflow-hidden relative">
+                  <CardHeader className="bg-gradient-to-r from-orange-400 via-pink-500 to-purple-500 text-white relative overflow-hidden">
+                    <motion.div
+                      animate={{ x: [-20, 20, -20] }}
+                      transition={{ duration: 6, repeat: Infinity }}
+                      className="absolute top-2 left-4 text-2xl"
+                    >
+                      🎨
+                    </motion.div>
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute top-2 right-4 text-2xl"
+                    >
+                      🚀
+                    </motion.div>
+                    <CardTitle className="flex items-center justify-center gap-3 text-2xl font-bold z-10 relative">
+                      <Sparkles className="w-8 h-8" />
+                      Start Your Amazing Story!
+                      <Sparkles className="w-8 h-8" />
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 space-y-6">
+                    {/* Interactive Prompt Selector */}
+                    <motion.div
+                      initial={{ scale: 0.9 }}
+                      animate={{ scale: 1 }}
+                      className="relative p-6 bg-gradient-to-r from-yellow-200 via-pink-200 to-blue-200 rounded-3xl border-3 border-rainbow shadow-lg"
+                    >
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                        className="absolute top-2 right-2 text-2xl"
+                      >
+                        🎭
+                      </motion.div>
+                      <div className="flex items-center gap-3 mb-4">
+                        <motion.div
+                          animate={{ bounce: [0, -5, 0] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                          className="text-3xl"
+                        >
+                          💡
+                        </motion.div>
+                        <span className="font-bold text-xl text-purple-800">Today's Magic Prompt:</span>
                       </div>
+                      <p className="text-purple-700 text-xl font-medium mb-4 leading-relaxed">
+                        "{selectedPrompt}"
+                      </p>
+                      <div className="flex gap-3">
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="flex-1">
+                          <Button 
+                            className="w-full bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 hover:from-green-500 hover:via-blue-600 hover:to-purple-700 text-white font-bold py-4 text-lg rounded-2xl shadow-xl border-2 border-white"
+                            onClick={() => openJournalEditor(null, selectedPrompt)}
+                          >
+                            <BookOpen className="w-5 h-5 mr-2" />
+                            Start Writing! 🎉
+                          </Button>
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <Button 
+                            variant="outline" 
+                            className="border-3 border-purple-400 bg-white text-purple-700 hover:bg-purple-50 font-bold py-4 px-6 rounded-2xl shadow-lg"
+                            onClick={getRandomPrompt}
+                          >
+                            <Sparkles className="w-5 h-5 mr-2" />
+                            ✨ New Magic!
+                          </Button>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+
+                    {/* Fun Writing Tools */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <motion.div
+                        whileHover={{ scale: 1.02, rotate: 1 }}
+                        className="bg-gradient-to-br from-pink-200 to-red-200 p-4 rounded-2xl border-3 border-pink-400 cursor-pointer shadow-lg"
+                      >
+                        <div className="text-center">
+                          <div className="text-3xl mb-2">🎨</div>
+                          <p className="font-bold text-pink-800">Draw & Write</p>
+                          <p className="text-pink-600 text-sm">Add drawings!</p>
+                        </div>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.02, rotate: -1 }}
+                        className="bg-gradient-to-br from-blue-200 to-cyan-200 p-4 rounded-2xl border-3 border-blue-400 cursor-pointer shadow-lg"
+                      >
+                        <div className="text-center">
+                          <div className="text-3xl mb-2">📸</div>
+                          <p className="font-bold text-blue-800">Photo Story</p>
+                          <p className="text-blue-600 text-sm">Add pictures!</p>
+                        </div>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.02, rotate: 1 }}
+                        className="bg-gradient-to-br from-green-200 to-emerald-200 p-4 rounded-2xl border-3 border-green-400 cursor-pointer shadow-lg"
+                      >
+                        <div className="text-center">
+                          <div className="text-3xl mb-2">🎤</div>
+                          <p className="font-bold text-green-800">Voice Story</p>
+                          <p className="text-green-600 text-sm">Talk to write!</p>
+                        </div>
+                      </motion.div>
+                      <motion.div
+                        whileHover={{ scale: 1.02, rotate: -1 }}
+                        className="bg-gradient-to-br from-orange-200 to-yellow-200 p-4 rounded-2xl border-3 border-orange-400 cursor-pointer shadow-lg"
+                      >
+                        <div className="text-center">
+                          <div className="text-3xl mb-2">🤖</div>
+                          <p className="font-bold text-orange-800">AI Helper</p>
+                          <p className="text-orange-600 text-sm">Get ideas!</p>
+                        </div>
+                      </motion.div>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* My Amazing Stories */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="relative"
+              >
+                {/* Floating Elements */}
+                <motion.div
+                  animate={{ y: [10, -10, 10] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="absolute -top-2 -right-2 text-2xl z-10"
+                >
+                  📚
+                </motion.div>
+                <motion.div
+                  animate={{ x: [-5, 5, -5] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute -top-1 -left-1 text-2xl z-10"
+                >
+                  ⭐
+                </motion.div>
+
+                <Card className="bg-gradient-to-br from-cyan-100 via-blue-100 to-indigo-100 border-4 border-rainbow shadow-2xl overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white relative overflow-hidden">
+                    <motion.div
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                      className="absolute top-2 left-4 text-2xl"
+                    >
+                      📖
+                    </motion.div>
+                    <motion.div
+                      animate={{ scale: [1, 1.3, 1] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className="absolute top-2 right-4 text-2xl"
+                    >
+                      🌟
+                    </motion.div>
+                    <CardTitle className="flex items-center justify-center gap-3 text-2xl font-bold z-10 relative">
+                      <BookOpen className="w-8 h-8" />
+                      My Amazing Stories!
+                      <Heart className="w-8 h-8" />
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    {entries.length > 0 ? (
+                      <div className="space-y-4">
+                        {entries.slice(0, 3).map((entry, index) => (
+                          <motion.div
+                            key={entry.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 + index * 0.1 }}
+                            whileHover={{ scale: 1.02, x: 5 }}
+                            className="p-4 rounded-2xl bg-gradient-to-r from-white via-blue-50 to-cyan-50 border-3 border-blue-300 hover:border-blue-500 hover:shadow-xl transition-all cursor-pointer"
+                          >
+                            <div className="flex items-center gap-4">
+                              <motion.div 
+                                animate={{ rotate: [0, 10, -10, 0] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                                className="text-4xl"
+                              >
+                                {entry.mood}
+                              </motion.div>
+                              <div className="flex-1">
+                                <h4 className="font-bold text-blue-800 text-lg mb-1">{entry.title}</h4>
+                                <p className="text-blue-600 text-sm mb-2">{entry.preview}</p>
+                                <div className="flex items-center gap-3">
+                                  <Badge className="bg-blue-500 text-white font-bold">
+                                    {entry.date}
+                                  </Badge>
+                                  <div className="flex gap-1">
+                                    <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full font-bold">
+                                      📝 {entry.wordCount || 0} words
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                              <motion.div
+                                whileHover={{ scale: 1.2 }}
+                                className="text-2xl"
+                              >
+                                ➡️
+                              </motion.div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    ) : (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="text-center py-8"
+                      >
+                        <motion.div
+                          animate={{ 
+                            scale: [1, 1.2, 1],
+                            rotate: [0, 5, -5, 0] 
+                          }}
+                          transition={{ duration: 3, repeat: Infinity }}
+                          className="text-8xl mb-4"
+                        >
+                          📖
+                        </motion.div>
+                        <h3 className="text-2xl font-bold text-blue-800 mb-3">No stories yet!</h3>
+                        <p className="text-blue-600 text-lg mb-6">Time to create your first amazing adventure!</p>
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <Button
+                            onClick={() => openJournalEditor()}
+                            className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold px-8 py-4 text-lg rounded-2xl shadow-xl border-2 border-white"
+                          >
+                            <Plus className="w-5 h-5 mr-2" />
+                            🌟 Write My First Story!
+                          </Button>
+                        </motion.div>
+                      </motion.div>
+                    )}
+                  </CardContent>
+                </Card>
+              </motion.div>
             </div>
           </TabsContent>
 
@@ -601,21 +814,79 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center p-8"
+              className="p-6"
             >
-              <div className="text-6xl mb-4">📅</div>
-              <h3 className="text-2xl font-bold text-purple-800 mb-2">Interactive Calendar</h3>
-              <p className="text-purple-600 mb-4">Coming soon! Track your writing journey day by day!</p>
-              <div className="grid grid-cols-7 gap-2 max-w-md mx-auto">
-                {[...Array(30)].map((_, i) => (
-                  <div 
-                    key={i}
-                    className="aspect-square bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg border-2 border-purple-300 flex items-center justify-center text-purple-700 font-bold"
-                  >
-                    {i + 1}
-                  </div>
-                ))}
+              <div className="text-center mb-6">
+                <div className="text-6xl mb-4">📅</div>
+                <h3 className="text-2xl font-bold text-purple-800 mb-2">My Writing Calendar</h3>
+                <p className="text-purple-600 mb-4">Track your amazing writing adventures!</p>
               </div>
+
+              {/* Calendar Grid */}
+              <div className="bg-white rounded-3xl p-6 border-3 border-purple-300 shadow-xl">
+                <div className="grid grid-cols-7 gap-3 mb-4">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                    <div key={day} className="text-center font-bold text-purple-700 py-2">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-7 gap-3">
+                  {[...Array(30)].map((_, i) => {
+                    const hasEntry = Math.random() > 0.7; // Simulate some days with entries
+                    const dayNumber = i + 1;
+                    const isToday = dayNumber === new Date().getDate();
+                    
+                    return (
+                      <motion.div 
+                        key={i}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center text-sm font-bold cursor-pointer transition-all ${
+                          isToday 
+                            ? "bg-gradient-to-br from-yellow-300 to-orange-300 border-orange-400 shadow-lg" 
+                            : hasEntry 
+                              ? "bg-gradient-to-br from-green-200 to-emerald-200 border-green-400" 
+                              : "bg-gradient-to-br from-purple-100 to-pink-100 border-purple-300 hover:from-purple-200 hover:to-pink-200"
+                        }`}
+                      >
+                        <span className={isToday ? "text-orange-800" : hasEntry ? "text-green-800" : "text-purple-700"}>
+                          {dayNumber}
+                        </span>
+                        {hasEntry && <span className="text-xs">✨</span>}
+                        {isToday && <span className="text-xs">📝</span>}
+                      </motion.div>
+                    );
+                  })}
+                </div>
+                
+                {/* Calendar Legend */}
+                <div className="flex justify-center gap-4 mt-6 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-gradient-to-br from-yellow-300 to-orange-300 rounded border-2 border-orange-400"></div>
+                    <span className="text-sm text-purple-700 font-medium">Today</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-gradient-to-br from-green-200 to-emerald-200 rounded border-2 border-green-400"></div>
+                    <span className="text-sm text-purple-700 font-medium">Story Written</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-gradient-to-br from-purple-100 to-pink-100 rounded border-2 border-purple-300"></div>
+                    <span className="text-sm text-purple-700 font-medium">Available</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Writing Streak Counter */}
+              <motion.div
+                initial={{ scale: 0.8 }}
+                animate={{ scale: 1 }}
+                className="bg-gradient-to-r from-pink-200 to-purple-200 rounded-2xl p-6 border-3 border-pink-300 text-center mt-6"
+              >
+                <div className="text-4xl mb-2">🔥</div>
+                <h4 className="text-xl font-bold text-purple-800 mb-1">{stats.currentStreak || 0} Day Streak!</h4>
+                <p className="text-purple-600">Keep writing every day to grow your streak!</p>
+              </motion.div>
             </motion.div>
           </TabsContent>
 
@@ -624,15 +895,189 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center p-8"
+              className="p-6"
             >
-              <div className="text-6xl mb-4">📸</div>
-              <h3 className="text-2xl font-bold text-pink-800 mb-2">Photo Stories</h3>
-              <p className="text-pink-600 mb-4">Add photos to make your stories more colorful!</p>
-              <Button className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white">
-                <Camera className="w-4 h-4 mr-2" />
-                Add Photos
-              </Button>
+              <div className="text-center mb-8">
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="text-8xl mb-4"
+                >
+                  📸
+                </motion.div>
+                <h3 className="text-3xl font-bold text-pink-800 mb-2">Photo Story Magic!</h3>
+                <p className="text-pink-600 text-lg mb-6">Turn your pictures into amazing stories!</p>
+              </div>
+
+              {/* Interactive Photo Tools */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Upload Photos Section */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 p-6 rounded-3xl border-4 border-pink-400 shadow-2xl relative overflow-hidden"
+                >
+                  <motion.div
+                    animate={{ x: [-10, 10, -10] }}
+                    transition={{ duration: 4, repeat: Infinity }}
+                    className="absolute top-2 right-2 text-2xl"
+                  >
+                    ✨
+                  </motion.div>
+                  <div className="text-center">
+                    <motion.div
+                      animate={{ bounce: [0, -10, 0] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="text-6xl mb-4"
+                    >
+                      🎨
+                    </motion.div>
+                    <h4 className="text-xl font-bold text-pink-800 mb-3">Upload Your Photos</h4>
+                    <p className="text-pink-600 mb-4">Add pictures from your adventures!</p>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-2xl shadow-xl">
+                        <Camera className="w-5 h-5 mr-2" />
+                        📱 Upload Photos!
+                      </Button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                {/* AI Photo Analysis */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-gradient-to-br from-green-200 via-cyan-200 to-blue-200 p-6 rounded-3xl border-4 border-green-400 shadow-2xl relative overflow-hidden"
+                >
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    className="absolute top-2 right-2 text-2xl"
+                  >
+                    🤖
+                  </motion.div>
+                  <div className="text-center">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2.5, repeat: Infinity }}
+                      className="text-6xl mb-4"
+                    >
+                      🔍
+                    </motion.div>
+                    <h4 className="text-xl font-bold text-green-800 mb-3">AI Photo Detective</h4>
+                    <p className="text-green-600 mb-4">Let AI tell you what's in your photos!</p>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button className="bg-gradient-to-r from-green-500 via-cyan-500 to-blue-500 hover:from-green-600 hover:via-cyan-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-2xl shadow-xl">
+                        <Lightbulb className="w-5 h-5 mr-2" />
+                        🕵️ Analyze Photos!
+                      </Button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Fun Photo Features */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                <motion.div
+                  whileHover={{ scale: 1.05, rotate: 2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-br from-yellow-200 to-orange-200 p-4 rounded-2xl border-3 border-yellow-400 cursor-pointer shadow-lg text-center"
+                >
+                  <div className="text-4xl mb-2">🌈</div>
+                  <p className="font-bold text-yellow-800 text-sm">Add Filters</p>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05, rotate: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-br from-purple-200 to-pink-200 p-4 rounded-2xl border-3 border-purple-400 cursor-pointer shadow-lg text-center"
+                >
+                  <div className="text-4xl mb-2">🎭</div>
+                  <p className="font-bold text-purple-800 text-sm">Add Stickers</p>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05, rotate: 2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-br from-blue-200 to-cyan-200 p-4 rounded-2xl border-3 border-blue-400 cursor-pointer shadow-lg text-center"
+                >
+                  <div className="text-4xl mb-2">✏️</div>
+                  <p className="font-bold text-blue-800 text-sm">Draw on Photos</p>
+                </motion.div>
+                <motion.div
+                  whileHover={{ scale: 1.05, rotate: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-gradient-to-br from-green-200 to-emerald-200 p-4 rounded-2xl border-3 border-green-400 cursor-pointer shadow-lg text-center"
+                >
+                  <div className="text-4xl mb-2">📝</div>
+                  <p className="font-bold text-green-800 text-sm">Add Text</p>
+                </motion.div>
+              </div>
+
+              {/* Photo Gallery */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-3xl p-6 border-4 border-rainbow shadow-2xl"
+              >
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <motion.div
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                    className="text-3xl"
+                  >
+                    🎪
+                  </motion.div>
+                  <h4 className="text-2xl font-bold text-center bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+                    My Photo Collection
+                  </h4>
+                  <motion.div
+                    animate={{ scale: [1, 1.3, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-3xl"
+                  >
+                    🖼️
+                  </motion.div>
+                </div>
+                
+                {uploadedPhotos.length > 0 ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {uploadedPhotos.map((photo, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ scale: 1.05, rotate: 1 }}
+                        className="relative group rounded-2xl overflow-hidden border-4 border-pink-300 shadow-lg cursor-pointer"
+                      >
+                        <img 
+                          src={photo} 
+                          alt={`Photo ${index + 1}`}
+                          className="w-full h-32 object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute bottom-2 left-2 right-2 text-center">
+                            <span className="text-white font-bold text-sm">✨ Click to Edit ✨</span>
+                          </div>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <motion.div
+                    animate={{ scale: [1, 1.05, 1] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                    className="text-center py-12"
+                  >
+                    <div className="text-8xl mb-4">📷</div>
+                    <h5 className="text-xl font-bold text-gray-600 mb-2">No photos yet!</h5>
+                    <p className="text-gray-500 mb-6">Upload your first photo to start the magic!</p>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button className="bg-gradient-to-r from-rainbow to-purple-600 text-white font-bold py-3 px-8 rounded-2xl shadow-xl">
+                        <Camera className="w-5 h-5 mr-2" />
+                        🌟 Add Your First Photo!
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </motion.div>
             </motion.div>
           </TabsContent>
 
@@ -641,15 +1086,213 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center p-8"
+              className="p-6"
             >
-              <div className="text-6xl mb-4">🤖</div>
-              <h3 className="text-2xl font-bold text-orange-800 mb-2">AI Writing Helper</h3>
-              <p className="text-orange-600 mb-4">Get fun ideas and help with your stories!</p>
-              <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white">
-                <Lightbulb className="w-4 h-4 mr-2" />
-                Ask AI for Ideas
-              </Button>
+              <div className="text-center mb-8">
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  className="text-8xl mb-4"
+                >
+                  🤖
+                </motion.div>
+                <h3 className="text-3xl font-bold text-orange-800 mb-2">AI Writing Buddy!</h3>
+                <p className="text-orange-600 text-lg mb-6">Your smart friend who helps you write amazing stories!</p>
+              </div>
+
+              {/* AI Chat Interface */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="bg-gradient-to-br from-orange-100 via-yellow-100 to-red-100 rounded-3xl p-6 border-4 border-orange-400 shadow-2xl mb-6 relative overflow-hidden"
+              >
+                <motion.div
+                  animate={{ x: [-5, 5, -5] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute top-2 right-2 text-2xl"
+                >
+                  ✨
+                </motion.div>
+                <div className="flex items-center gap-3 mb-6">
+                  <motion.div
+                    animate={{ bounce: [0, -5, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-4xl"
+                  >
+                    🧠
+                  </motion.div>
+                  <div>
+                    <h4 className="text-2xl font-bold text-orange-800">Ask Me Anything!</h4>
+                    <p className="text-orange-600">I love helping kids with their stories!</p>
+                  </div>
+                </div>
+
+                {/* Chat Messages */}
+                <div className="bg-white rounded-2xl p-4 mb-4 max-h-64 overflow-y-auto border-2 border-orange-300">
+                  {aiMessages.length > 0 ? (
+                    <div className="space-y-3">
+                      {aiMessages.map((message, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, x: message.sender === 'user' ? 20 : -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                        >
+                          <div className={`max-w-xs p-3 rounded-2xl ${
+                            message.sender === 'user' 
+                              ? 'bg-gradient-to-r from-blue-400 to-purple-400 text-white' 
+                              : 'bg-gradient-to-r from-orange-200 to-yellow-200 text-orange-800 border-2 border-orange-300'
+                          }`}>
+                            {message.sender === 'ai' && (
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-sm">🤖</span>
+                                <span className="font-bold text-xs">AI Buddy</span>
+                              </div>
+                            )}
+                            <p className="text-sm">{message.text}</p>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <motion.div
+                        animate={{ rotate: [0, 10, -10, 0] }}
+                        transition={{ duration: 3, repeat: Infinity }}
+                        className="text-4xl mb-3"
+                      >
+                        💭
+                      </motion.div>
+                      <p className="text-orange-600 font-medium">Ask me anything about writing stories!</p>
+                      <p className="text-orange-500 text-sm">I can help with ideas, characters, plots, and more!</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Chat Input */}
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={aiInput}
+                    onChange={(e) => setAiInput(e.target.value)}
+                    placeholder="What should I write about? 🤔"
+                    className="flex-1 p-3 rounded-2xl border-2 border-orange-300 focus:border-orange-500 focus:outline-none text-orange-800 placeholder-orange-400 font-medium"
+                  />
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button 
+                      onClick={sendAiMessage}
+                      className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold px-6 py-3 rounded-2xl shadow-lg"
+                    >
+                      <Send className="w-4 h-4" />
+                    </Button>
+                  </motion.div>
+                </div>
+              </motion.div>
+
+              {/* Quick AI Actions */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Story Ideas */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-gradient-to-br from-purple-200 to-pink-200 p-6 rounded-3xl border-4 border-purple-400 shadow-xl"
+                >
+                  <div className="text-center">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="text-5xl mb-4"
+                    >
+                      💡
+                    </motion.div>
+                    <h4 className="text-xl font-bold text-purple-800 mb-3">Get Story Ideas</h4>
+                    <p className="text-purple-600 mb-4">Need inspiration for your next adventure?</p>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg">
+                        🌟 Get Ideas!
+                      </Button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+
+                {/* Character Creator */}
+                <motion.div
+                  whileHover={{ scale: 1.02 }}
+                  className="bg-gradient-to-br from-green-200 to-cyan-200 p-6 rounded-3xl border-4 border-green-400 shadow-xl"
+                >
+                  <div className="text-center">
+                    <motion.div
+                      animate={{ rotate: [0, 15, -15, 0] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className="text-5xl mb-4"
+                    >
+                      🦸
+                    </motion.div>
+                    <h4 className="text-xl font-bold text-green-800 mb-3">Create Characters</h4>
+                    <p className="text-green-600 mb-4">Build amazing heroes and friends!</p>
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button className="bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-600 hover:to-cyan-600 text-white font-bold py-3 px-6 rounded-2xl shadow-lg">
+                        👥 Make Characters!
+                      </Button>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Fun Quick Prompts */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="bg-white rounded-3xl p-6 border-4 border-rainbow shadow-2xl mt-6"
+              >
+                <div className="text-center mb-6">
+                  <motion.div
+                    animate={{ bounce: [0, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-4xl mb-2"
+                  >
+                    🎲
+                  </motion.div>
+                  <h4 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                    Quick Story Starters
+                  </h4>
+                  <p className="text-gray-600">Click any button to get instant writing ideas!</p>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <motion.div
+                    whileHover={{ scale: 1.05, rotate: 2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-br from-blue-200 to-cyan-200 p-4 rounded-2xl border-3 border-blue-400 cursor-pointer shadow-lg text-center"
+                  >
+                    <div className="text-3xl mb-2">🐉</div>
+                    <p className="font-bold text-blue-800 text-sm">Dragons</p>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05, rotate: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-br from-pink-200 to-purple-200 p-4 rounded-2xl border-3 border-pink-400 cursor-pointer shadow-lg text-center"
+                  >
+                    <div className="text-3xl mb-2">🧚‍♀️</div>
+                    <p className="font-bold text-pink-800 text-sm">Fairies</p>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05, rotate: 2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-br from-green-200 to-emerald-200 p-4 rounded-2xl border-3 border-green-400 cursor-pointer shadow-lg text-center"
+                  >
+                    <div className="text-3xl mb-2">🚀</div>
+                    <p className="font-bold text-green-800 text-sm">Space</p>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ scale: 1.05, rotate: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="bg-gradient-to-br from-yellow-200 to-orange-200 p-4 rounded-2xl border-3 border-yellow-400 cursor-pointer shadow-lg text-center"
+                  >
+                    <div className="text-3xl mb-2">🏰</div>
+                    <p className="font-bold text-yellow-800 text-sm">Castles</p>
+                  </motion.div>
+                </div>
+              </motion.div>
             </motion.div>
           </TabsContent>
 
