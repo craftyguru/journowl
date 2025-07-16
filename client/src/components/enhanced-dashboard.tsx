@@ -2783,19 +2783,19 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
               animate={{ opacity: 1, y: 0 }}
               className="bg-gradient-to-br from-purple-900/90 via-purple-800/80 to-purple-900/90 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-500/20"
             >
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-3xl font-bold text-white mb-2">📊 Insights & Analytics</h2>
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+                <div className="flex-1">
+                  <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">📊 Insights & Analytics</h2>
                   <p className="text-gray-300">Discover patterns in your journaling journey</p>
                 </div>
-                <div className="flex gap-3">
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <Button className="bg-purple-600 hover:bg-purple-700 text-white text-sm px-3 py-2">
                     ➕ Add Entry
                   </Button>
-                  <Button variant="outline" className="border-purple-400 text-purple-200 hover:bg-purple-800">
+                  <Button variant="outline" className="border-purple-400 text-purple-200 hover:bg-purple-800 text-sm px-3 py-2">
                     ⬇️ Export
                   </Button>
-                  <Button variant="outline" className="border-purple-400 text-purple-200 hover:bg-purple-800">
+                  <Button variant="outline" className="border-purple-400 text-purple-200 hover:bg-purple-800 text-sm px-3 py-2">
                     📤 Share
                   </Button>
                 </div>
