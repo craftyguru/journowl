@@ -254,6 +254,36 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     initializeCalendar();
   }, []);
 
+  // Photo analysis function
+  const analyzePhotos = async () => {
+    if (uploadedPhotos.length === 0) {
+      console.log("No photos to analyze");
+      return;
+    }
+    
+    setIsGeneratingAI(true);
+    try {
+      console.log(`Analyzing ${uploadedPhotos.length} photos for the little explorer!`);
+      // Simulate photo analysis for kids
+      setTimeout(() => {
+        const kidFriendlyAnalysis = [
+          "🌈 I see beautiful colors in your photos!",
+          "👦 There are happy people having fun!",
+          "🌳 I spot some amazing nature and trees!",
+          "🎈 This looks like a super fun day!",
+          "✨ Your photos are full of wonderful memories!"
+        ];
+        
+        const randomAnalysis = kidFriendlyAnalysis[Math.floor(Math.random() * kidFriendlyAnalysis.length)];
+        setAiSuggestions(prev => [...prev, randomAnalysis]);
+        setIsGeneratingAI(false);
+      }, 2000);
+    } catch (error) {
+      console.error("Photo analysis failed:", error);
+      setIsGeneratingAI(false);
+    }
+  };
+
   // Speech-to-Text Functions
   const startRecording = async () => {
     try {
@@ -633,7 +663,9 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                     <div className="grid grid-cols-2 gap-4">
                       <motion.div
                         whileHover={{ scale: 1.02, rotate: 1 }}
-                        className="bg-gradient-to-br from-pink-200 to-red-200 p-4 rounded-2xl border-3 border-pink-400 cursor-pointer shadow-lg"
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setActiveTab("draw")}
+                        className="bg-gradient-to-br from-pink-200 to-red-200 p-4 rounded-2xl border-3 border-pink-400 cursor-pointer shadow-lg hover:shadow-xl transition-all"
                       >
                         <div className="text-center">
                           <div className="text-3xl mb-2">🎨</div>
@@ -643,7 +675,9 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                       </motion.div>
                       <motion.div
                         whileHover={{ scale: 1.02, rotate: -1 }}
-                        className="bg-gradient-to-br from-blue-200 to-cyan-200 p-4 rounded-2xl border-3 border-blue-400 cursor-pointer shadow-lg"
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setActiveTab("photos")}
+                        className="bg-gradient-to-br from-blue-200 to-cyan-200 p-4 rounded-2xl border-3 border-blue-400 cursor-pointer shadow-lg hover:shadow-xl transition-all"
                       >
                         <div className="text-center">
                           <div className="text-3xl mb-2">📸</div>
@@ -653,7 +687,9 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                       </motion.div>
                       <motion.div
                         whileHover={{ scale: 1.02, rotate: 1 }}
-                        className="bg-gradient-to-br from-green-200 to-emerald-200 p-4 rounded-2xl border-3 border-green-400 cursor-pointer shadow-lg"
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setActiveTab("videos")}
+                        className="bg-gradient-to-br from-green-200 to-emerald-200 p-4 rounded-2xl border-3 border-green-400 cursor-pointer shadow-lg hover:shadow-xl transition-all"
                       >
                         <div className="text-center">
                           <div className="text-3xl mb-2">🎤</div>
@@ -663,7 +699,9 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                       </motion.div>
                       <motion.div
                         whileHover={{ scale: 1.02, rotate: -1 }}
-                        className="bg-gradient-to-br from-orange-200 to-yellow-200 p-4 rounded-2xl border-3 border-orange-400 cursor-pointer shadow-lg"
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setActiveTab("ai-help")}
+                        className="bg-gradient-to-br from-orange-200 to-yellow-200 p-4 rounded-2xl border-3 border-orange-400 cursor-pointer shadow-lg hover:shadow-xl transition-all"
                       >
                         <div className="text-center">
                           <div className="text-3xl mb-2">🤖</div>
@@ -1041,7 +1079,10 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                     <h4 className="text-xl font-bold text-pink-800 mb-3">Upload Your Photos</h4>
                     <p className="text-pink-600 mb-4">Add pictures from your adventures!</p>
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Button className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-2xl shadow-xl">
+                      <Button 
+                        onClick={() => photoInputRef.current?.click()}
+                        className="bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 hover:from-pink-600 hover:via-purple-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-2xl shadow-xl"
+                      >
                         <Camera className="w-5 h-5 mr-2" />
                         📱 Upload Photos!
                       </Button>
@@ -1072,7 +1113,11 @@ export default function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                     <h4 className="text-xl font-bold text-green-800 mb-3">AI Photo Detective</h4>
                     <p className="text-green-600 mb-4">Let AI tell you what's in your photos!</p>
                     <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Button className="bg-gradient-to-r from-green-500 via-cyan-500 to-blue-500 hover:from-green-600 hover:via-cyan-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-2xl shadow-xl">
+                      <Button 
+                        onClick={analyzePhotos}
+                        disabled={uploadedPhotos.length === 0}
+                        className="bg-gradient-to-r from-green-500 via-cyan-500 to-blue-500 hover:from-green-600 hover:via-cyan-600 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-2xl shadow-xl disabled:opacity-50"
+                      >
                         <Lightbulb className="w-5 h-5 mr-2" />
                         🕵️ Analyze Photos!
                       </Button>
