@@ -9,10 +9,8 @@ import MDEditor from '@uiw/react-md-editor';
 import { HexColorPicker } from "react-colorful";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
@@ -61,7 +59,11 @@ const moodOptions = [
   { value: "😔", label: "Sad", color: "from-blue-400 to-indigo-500" },
   { value: "😠", label: "Angry", color: "from-red-400 to-red-600" },
   { value: "😴", label: "Tired", color: "from-purple-400 to-violet-500" },
-  { value: "🎉", label: "Celebratory", color: "from-yellow-300 to-pink-400" }
+  { value: "🎉", label: "Celebratory", color: "from-yellow-300 to-pink-400" },
+  { value: "😎", label: "Cool", color: "from-sky-400 to-cyan-600" },
+  { value: "😍", label: "Loving", color: "from-red-300 to-rose-300" },
+  { value: "🤯", label: "Amazed", color: "from-orange-300 to-yellow-400" },
+  { value: "😰", label: "Anxious", color: "from-zinc-400 to-gray-500" }
 ];
 
 export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJournalEditorProps) {
@@ -69,30 +71,30 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
   const canvasRef = useRef<any>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
-  
+
   // Editor state
   const [title, setTitle] = useState(entry?.title || "");
   const [content, setContent] = useState(entry?.content || "");
   const [mood, setMood] = useState(entry?.mood || "😊");
   const [isPrivate, setIsPrivate] = useState(entry?.isPrivate || false);
-  
+
   // Styling state
   const [fontFamily, setFontFamily] = useState(entry?.fontFamily || "Inter");
   const [fontSize, setFontSize] = useState(entry?.fontSize || 16);
   const [textColor, setTextColor] = useState(entry?.textColor || "#ffffff");
   const [backgroundColor, setBackgroundColor] = useState(entry?.backgroundColor || "#1e293b");
-  
+
   // Drawing state
   const [showDrawing, setShowDrawing] = useState(false);
   const [brushColor, setBrushColor] = useState("#8B5CF6");
   const [brushSize, setBrushSize] = useState(5);
   const [drawings, setDrawings] = useState(entry?.drawings || []);
-  
+
   // Photo state
   const [photos, setPhotos] = useState(entry?.photos || []);
   const [videos, setVideos] = useState<any[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  
+
   // AI state
   const [aiInsights, setAiInsights] = useState(entry?.aiInsights || null);
   const [isGeneratingPrompt, setIsGeneratingPrompt] = useState(false);
@@ -102,7 +104,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       if (!file.type.startsWith('image/')) continue;
-      
+
       const reader = new FileReader();
       reader.onload = async (e) => {
         const base64 = e.target?.result as string;
@@ -113,9 +115,9 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
           uploadedAt: new Date().toISOString(),
           aiAnalysis: null
         };
-        
+
         setPhotos(prev => [...prev, newPhoto]);
-        
+
         // Start AI analysis
         setIsAnalyzing(true);
         try {
@@ -127,7 +129,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
               prompt: "Analyze this image and extract emotions, objects, people, activities, and mood. Provide a brief description."
             })
           });
-          
+
           if (response.ok) {
             const analysis = await response.json();
             setPhotos(prev => prev.map(p => 
@@ -135,7 +137,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                 ? { ...p, aiAnalysis: analysis }
                 : p
             ));
-            
+
             // Extract tags from AI analysis
             if (analysis.tags) {
               setTags(prev => [...new Set([...prev, ...analysis.tags])]);
@@ -155,7 +157,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       if (!file.type.startsWith('video/')) continue;
-      
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const base64 = e.target?.result as string;
@@ -165,7 +167,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
           filename: file.name,
           uploadedAt: new Date().toISOString()
         };
-        
+
         setVideos(prev => [...prev, newVideo]);
       };
       reader.readAsDataURL(file);
@@ -185,7 +187,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
           context: "journal entry"
         })
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         setContent(prev => prev + (prev ? '\n\n' : '') + data.prompt);
@@ -292,22 +294,18 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
               {/* Mobile-Friendly Mood Selector */}
               <div>
                 <label className="text-sm font-medium text-gray-300 mb-2 block">How are you feeling?</label>
-                <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
-                  {moodOptions.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => setMood(option.value)}
-                      className={`p-3 sm:p-2 rounded-lg border transition-all ${
-                        mood === option.value 
-                          ? 'border-purple-400 bg-purple-500/20 scale-110' 
-                          : 'border-slate-600 bg-slate-700/50 hover:bg-slate-600/50'
-                      }`}
-                    >
-                      <div className="text-2xl sm:text-xl">{option.value}</div>
-                      <div className="text-xs text-gray-400 mt-1 hidden sm:block">{option.label}</div>
-                    </button>
-                  ))}
-                </div>
+                <Select value={mood} onValueChange={setMood}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select a mood..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {moodOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label} ({option.value})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Privacy Toggle */}
@@ -324,7 +322,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                 <h4 className="font-medium text-white flex items-center gap-2">
                   🎨 Quick Tools
                 </h4>
-                
+
                 <div className="grid grid-cols-2 gap-3">
                   <Button
                     variant="outline"
@@ -334,7 +332,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                     <Upload className="w-5 h-5" />
                     Add Photo
                   </Button>
-                  
+
                   <Button
                     onClick={generateAIPrompt}
                     disabled={isGeneratingPrompt}
@@ -438,7 +436,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                           </CardContent>
                         </Card>
                       ))}
-                      
+
                       {photos.length === 0 && (
                         <div className="col-span-full text-center py-12 text-gray-400">
                           <ImageIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
