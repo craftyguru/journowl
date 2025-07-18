@@ -660,27 +660,27 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               </motion.div>
 
               {/* Main Showcase Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-10">
                 
-                {/* Smart Writing Assistant - Enhanced */}
+                {/* Smart Writing Assistant - Mobile Optimized */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 3.2 }}
-                  className="lg:col-span-2 bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-2xl p-8 border-2 border-purple-500/50 hover:border-cyan-400/60 transition-all duration-500 shadow-2xl"
+                  className="lg:col-span-2 bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border-2 border-purple-500/50 hover:border-cyan-400/60 transition-all duration-500 shadow-2xl"
                 >
-                  <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-4 sm:mb-6">
                     <motion.div 
-                      className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-xl"
+                      className="p-2 sm:p-3 lg:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-xl"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                      <PenTool className="w-8 h-8 text-white" />
+                      <PenTool className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
                     </motion.div>
-                    <div>
-                      <h4 className="text-2xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-inter">
+                    <div className="flex-1">
+                      <h4 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-inter">
                         ✨ Smart AI Writing Assistant
                       </h4>
-                      <p className="text-gray-300 font-opensans">Real-time suggestions as you write</p>
+                      <p className="text-sm sm:text-base text-gray-300 font-opensans">Real-time suggestions as you write</p>
                     </div>
                   </div>
                   
@@ -999,10 +999,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 9 }}
-                className="mt-12 text-center bg-gradient-to-r from-purple-900/30 via-pink-900/30 to-cyan-900/30 rounded-3xl p-8 border-2 border-gradient-to-r border-purple-500/50"
+                className="mt-8 sm:mt-10 lg:mt-12 text-center bg-gradient-to-r from-purple-900/30 via-pink-900/30 to-cyan-900/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border-2 border-gradient-to-r border-purple-500/50"
               >
                 <motion.h3
-                  className="text-4xl font-bold mb-4 font-montserrat"
+                  className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 font-montserrat"
                   animate={{ scale: [1, 1.02, 1] }}
                   transition={{ duration: 3, repeat: Infinity }}
                 >
@@ -1011,7 +1011,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   </span>
                 </motion.h3>
                 <motion.p
-                  className="text-xl text-gray-200 mb-8 font-opensans"
+                  className="text-base sm:text-lg lg:text-xl text-gray-200 mb-6 sm:mb-8 font-opensans px-2"
                   initial={{ opacity: 0.8 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
@@ -1019,16 +1019,17 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   <span className="text-cyan-300 font-bold">Join thousands of writers</span> who've discovered the power of AI-assisted journaling!
                 </motion.p>
                 
-                <div className="flex flex-col lg:flex-row gap-6 justify-center items-center">
+                <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:gap-6 justify-center items-center">
                   <motion.div
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
+                    className="w-full sm:w-auto"
                   >
                     <Button
                       onClick={handleDemo}
-                      className="px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white border-0 rounded-2xl text-lg font-bold shadow-2xl shadow-purple-500/30 transition-all duration-300 font-inter"
+                      className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white border-0 rounded-xl sm:rounded-2xl text-sm sm:text-base lg:text-lg font-bold shadow-2xl shadow-purple-500/30 transition-all duration-300 font-inter"
                     >
-                      <Play className="w-5 h-5 mr-2" />
+                      <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       🎯 Try Full Interactive Demo
                     </Button>
                   </motion.div>
@@ -1036,12 +1037,13 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   <motion.div
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
+                    className="w-full sm:w-auto"
                   >
                     <Button
                       onClick={onGetStarted}
-                      className="px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white border-0 rounded-2xl text-lg font-bold shadow-2xl shadow-cyan-500/30 transition-all duration-300 font-inter"
+                      className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white border-0 rounded-xl sm:rounded-2xl text-sm sm:text-base lg:text-lg font-bold shadow-2xl shadow-cyan-500/30 transition-all duration-300 font-inter"
                     >
-                      <ArrowRight className="w-5 h-5 mr-2" />
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       ✨ Start Writing Now - FREE!
                     </Button>
                   </motion.div>
@@ -1049,13 +1051,14 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   <motion.div
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
+                    className="w-full sm:w-auto"
                   >
                     <Button
                       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                       variant="outline"
-                      className="px-8 py-4 border-2 border-yellow-400/60 text-yellow-300 hover:bg-yellow-500/10 hover:border-yellow-300 rounded-2xl text-lg font-bold backdrop-blur-sm transition-all duration-300 font-inter"
+                      className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 border-2 border-yellow-400/60 text-yellow-300 hover:bg-yellow-500/10 hover:border-yellow-300 rounded-xl sm:rounded-2xl text-sm sm:text-base lg:text-lg font-bold backdrop-blur-sm transition-all duration-300 font-inter"
                     >
-                      <Sparkles className="w-5 h-5 mr-2" />
+                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       🎨 Explore More Features
                     </Button>
                   </motion.div>
@@ -1066,7 +1069,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 9.5 }}
-                  className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4"
+                  className="mt-6 sm:mt-8 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4"
                 >
                   {[
                     { icon: '🤖', text: 'AI-Powered', color: 'text-purple-300' },
@@ -1076,14 +1079,14 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   ].map((feature, i) => (
                     <motion.div
                       key={i}
-                      className="flex items-center gap-2 justify-center"
+                      className="flex items-center gap-1 sm:gap-2 justify-center"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: 9.7 + i * 0.1 }}
                       whileHover={{ scale: 1.1 }}
                     >
-                      <span className="text-2xl">{feature.icon}</span>
-                      <span className={`font-bold text-sm ${feature.color} font-inter`}>{feature.text}</span>
+                      <span className="text-lg sm:text-xl lg:text-2xl">{feature.icon}</span>
+                      <span className={`font-bold text-xs sm:text-sm ${feature.color} font-inter`}>{feature.text}</span>
                     </motion.div>
                   ))}
                 </motion.div>
