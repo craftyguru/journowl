@@ -229,22 +229,30 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   // Generate AI suggestions based on content
   const generateAiSuggestions = useCallback(async () => {
+    // Always open AI chat first
+    setShowAiChat(true);
+    
     if (content.length < 10) {
       setAiMessages(prev => [...prev, {
         type: 'ai',
-        message: '💡 Start writing at least 10 characters and I\'ll give you personalized suggestions based on your content!'
+        message: '💡 I see you want writing ideas! Start writing at least 10 characters and I\'ll analyze your content to give you personalized suggestions. Or just ask me for any writing help you need!'
       }]);
-      setShowAiChat(true);
       return;
     }
 
+    // Pre-populate the AI input with analysis request
+    const analysisRequest = `Can you analyze my current journal entry and give me writing suggestions? Here's what I have so far:\n\nTitle: ${title || "Untitled"}\nMood: ${mood}\nContent: ${content}`;
+    setAiInput(analysisRequest);
+
     try {
-      // Show loading state
+      // Show immediate analysis message
       setAiMessages(prev => [...prev, {
+        type: 'user',
+        message: `Please analyze my journal entry and suggest ideas based on what I've written so far.`
+      }, {
         type: 'ai',
-        message: '💭 Analyzing your writing... generating personalized suggestions!'
+        message: '💭 Perfect! I can see your journal content. Let me analyze what you\'ve written and suggest some personalized writing ideas...'
       }]);
-      setShowAiChat(true);
 
       const response = await fetch('/api/ai/generate-prompt', {
         method: 'POST',
@@ -263,7 +271,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           ...prev.slice(0, -1), // Remove loading message
           {
             type: 'ai',
-            message: `💡 **Writing Suggestion Based on Your Content:**\n\n${prompt}\n\n🎯 This suggestion was crafted specifically for your current entry and mood (${mood}). Want more ideas or help developing this further?`
+            message: `💡 **Based on your writing, here are some personalized ideas:**\n\n${prompt}\n\n🎯 I analyzed your content, mood (${mood}), and ${photos.length > 0 ? 'photos' : 'overall theme'} to create this suggestion. Would you like me to:\n\n• Expand on any of these ideas?\n• Suggest different writing directions?\n• Help you develop specific themes?\n• Analyze your writing patterns?\n\nJust ask me anything!`
           }
         ]);
       } else {
@@ -275,7 +283,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         ...prev.slice(0, -1), // Remove loading message
         {
           type: 'ai',
-          message: '😅 I had trouble generating suggestions right now. Try again in a moment, or feel free to ask me for writing ideas directly!'
+          message: '😅 I had trouble analyzing your content automatically, but I can still help! Feel free to ask me for writing ideas, feedback on your entry, or suggestions for how to expand your thoughts. What would you like help with?'
         }
       ]);
     }
