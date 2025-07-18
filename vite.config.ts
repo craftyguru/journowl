@@ -1,15 +1,14 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
-import runtimeErrorOverlay from "vite/runtimeErrorOverlay";
 
-// Helper for ESM-safe dirname
+// Polyfill __dirname for ESM:
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 export default defineConfig({
   plugins: [
     react(),
-    runtimeErrorOverlay(),
+    // REMOVE runtimeErrorOverlay,
   ],
   resolve: {
     alias: {
