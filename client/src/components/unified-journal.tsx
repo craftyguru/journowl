@@ -176,7 +176,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       aiRecognitionInstance.onresult = (event) => {
         let finalTranscript = '';
         let interimTranscript = '';
-        
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript;
@@ -184,17 +184,17 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             interimTranscript += event.results[i][0].transcript;
           }
         }
-        
+
         // Show interim results in the input field
         setAiInput(lastFinalTranscript + finalTranscript + interimTranscript);
-        
+
         // When we get final transcript, send it to AI for interactive response
         if (finalTranscript && finalTranscript !== lastFinalTranscript) {
           const newContent = lastFinalTranscript + finalTranscript;
           setLastFinalTranscript(newContent);
-          
+
           console.log('AI Recognition received:', newContent);
-          
+
           // For click-and-hold mode, wait for user to release button
           // The message will be sent when mouse is released
         }
@@ -229,63 +229,67 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   // Generate AI suggestions based on content
   const generateAiSuggestions = useCallback(async () => {
-    // Always open AI chat first
+    // Always open the AI chat first
     setShowAiChat(true);
-    
+
     if (content.length < 10) {
       setAiMessages(prev => [...prev, {
         type: 'ai',
-        message: '💡 I see you want writing ideas! Start writing at least 10 characters and I\'ll analyze your content to give you personalized suggestions. Or just ask me for any writing help you need!'
+        message: '💡 Start writing at least 10 characters and I\'ll give you personalized suggestions based on your content!'
       }]);
       return;
     }
 
-    // Pre-populate the AI input with analysis request
-    const analysisRequest = `Can you analyze my current journal entry and give me writing suggestions? Here's what I have so far:\n\nTitle: ${title || "Untitled"}\nMood: ${mood}\nContent: ${content}`;
-    setAiInput(analysisRequest);
+    // Pre-populate the input with current content for AI analysis
+    const currentText = content.trim();
+    if (currentText) {
+      setAiInput(`Please analyze this text and give me writing suggestions: "${currentText}"`);
 
-    try {
-      // Show immediate analysis message
+      // Add a user message showing what's being analyzed
       setAiMessages(prev => [...prev, {
         type: 'user',
-        message: `Please analyze my journal entry and suggest ideas based on what I've written so far.`
-      }, {
-        type: 'ai',
-        message: '💭 Perfect! I can see your journal content. Let me analyze what you\'ve written and suggest some personalized writing ideas...'
+        message: `Please analyze this text and give me writing suggestions: "${currentText.substring(0, 200)}${currentText.length > 200 ? '...' : ''}"`
       }]);
 
-      const response = await fetch('/api/ai/generate-prompt', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          recentEntries: [content],
-          mood,
-          photos: photos.map(p => p.analysis?.description).filter(Boolean),
-          title: title || "Untitled"
-        })
-      });
+      // Automatically send for AI analysis
+      try {
+        setAiAnalyzing(true);
+        const response = await fetch('/api/ai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            message: `Please analyze this text and give me writing suggestions: "${currentText}"`,
+            context: {
+              currentContent: content,
+              mood,
+              title,
+              photos: photos.map(p => ({
+                description: p.analysis?.description,
+                tags: p.analysis?.tags
+              })).filter(p => p.description)
+            }
+          })
+        });
 
-      if (response.ok) {
-        const { prompt } = await response.json();
-        setAiMessages(prev => [
-          ...prev.slice(0, -1), // Remove loading message
-          {
+        if (response.ok) {
+          const { reply } = await response.json();
+          setAiMessages(prev => [...prev, {
             type: 'ai',
-            message: `💡 **Based on your writing, here are some personalized ideas:**\n\n${prompt}\n\n🎯 I analyzed your content, mood (${mood}), and ${photos.length > 0 ? 'photos' : 'overall theme'} to create this suggestion. Would you like me to:\n\n• Expand on any of these ideas?\n• Suggest different writing directions?\n• Help you develop specific themes?\n• Analyze your writing patterns?\n\nJust ask me anything!`
-          }
-        ]);
-      } else {
-        throw new Error('Failed to generate suggestion');
-      }
-    } catch (error) {
-      console.error('Failed to generate AI suggestion:', error);
-      setAiMessages(prev => [
-        ...prev.slice(0, -1), // Remove loading message
-        {
-          type: 'ai',
-          message: '😅 I had trouble analyzing your content automatically, but I can still help! Feel free to ask me for writing ideas, feedback on your entry, or suggestions for how to expand your thoughts. What would you like help with?'
+            message: reply
+          }]);
+        } else {
+          throw new Error('AI service unavailable');
         }
-      ]);
+      } catch (error) {
+        console.error('AI analysis error:', error);
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '😅 I had trouble analyzing your text right now. Try asking me directly for writing suggestions!'
+        }]);
+      } finally {
+        setAiAnalyzing(false);
+        setAiInput(''); // Clear the input after sending
+      }
     }
   }, [content, mood, photos, title]);
 
@@ -329,7 +333,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
-      
+
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           setAudioChunks(prev => [...prev, event.data]);
@@ -378,7 +382,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.stop();
       setIsRecordingAudio(false);
-      
+
       const duration = Math.round((Date.now() - recordingStartTime) / 1000);
       setRecordingDuration(duration);
     }
@@ -389,13 +393,13 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     if (audioChunks.length > 0 && !isRecordingAudio) {
       const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
       const audioUrl = URL.createObjectURL(audioBlob);
-      
+
       setAudioRecordings(prev => [...prev, {
         url: audioUrl,
         duration: recordingDuration,
         timestamp: new Date()
       }]);
-      
+
       setAudioChunks([]);
     }
   }, [audioChunks, isRecordingAudio, recordingDuration]);
@@ -406,18 +410,18 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' } // Use back camera on mobile
       });
-      
+
       const video = document.createElement('video');
       video.srcObject = stream;
       video.play();
-      
+
       video.onloadedmetadata = () => {
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(video, 0, 0);
-        
+
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob);
@@ -430,7 +434,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             }]);
           }
         });
-        
+
         stream.getTracks().forEach(track => track.stop());
         setShowCameraModal(false);
       };
@@ -445,14 +449,14 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         video: { facingMode: 'environment' }, 
         audio: true 
       });
-      
+
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: Blob[] = [];
-      
+
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) chunks.push(event.data);
       };
-      
+
       mediaRecorder.onstop = () => {
         const videoBlob = new Blob(chunks, { type: 'video/mp4' });
         const videoUrl = URL.createObjectURL(videoBlob);
@@ -465,16 +469,16 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         stream.getTracks().forEach(track => track.stop());
         setShowCameraModal(false);
       };
-      
+
       mediaRecorder.start();
-      
+
       // Stop after 30 seconds
       setTimeout(() => {
         if (mediaRecorder.state === 'recording') {
           mediaRecorder.stop();
         }
       }, 30000);
-      
+
     } catch (error) {
       console.error('Error starting video recording:', error);
     }
@@ -489,7 +493,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         aiRecognition.stop();
       }
       setIsAiListening(false);
-      
+
       // Send the captured speech to AI if we have content
       const finalInput = lastFinalTranscript || aiInput;
       if (finalInput.trim()) {
@@ -620,7 +624,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     // Extract prompt from AI response if it contains prompt-like text
     const promptMatch = aiResponse.match(/(?:prompt|write about|consider|reflect on)[\s\S]*?(?:[.!?]|$)/gi);
     const promptText = promptMatch ? promptMatch.join(' ') : aiResponse;
-    
+
     setContent(prev => prev + '\n\n' + promptText);
     setAiMessages(prev => [...prev, {
       type: 'ai',
@@ -665,7 +669,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             setPhotos(prev => prev.map(p => 
               p.id === newPhoto.id ? { ...p, analysis } : p
             ));
-            
+
             // Add AI-generated tags
             if (analysis.tags) {
               setTags(prev => [...new Set([...prev, ...analysis.tags])]);
@@ -727,7 +731,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     if (!canvasRef.current) return;
     setIsDrawing(true);
     const { x, y } = getCanvasCoordinates(e);
-    
+
     const ctx = canvasRef.current.getContext('2d');
     if (ctx) {
       ctx.beginPath();
@@ -737,9 +741,9 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !canvasRef.current) return;
-    
+
     const { x, y } = getCanvasCoordinates(e);
-    
+
     const ctx = canvasRef.current.getContext('2d');
     if (ctx) {
       ctx.lineWidth = brushSize;
@@ -779,7 +783,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               <p className="text-amber-100 text-sm">Your AI-powered writing companion</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <Button 
               onClick={handleSave}
@@ -806,7 +810,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               <div className="p-4 relative flex flex-col overflow-hidden h-full">
                 {/* Page shadow effect */}
                 <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
-                
+
                 {/* Entry Header */}
                 <div className="space-y-3 mb-4 flex-shrink-0">
                   <div className="flex items-center gap-3">
@@ -828,7 +832,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                       {new Date().toLocaleDateString()}
                     </div>
                   </div>
-              
+
               {/* Unified Font & Color Controls */}
               <div className="space-y-2">
                 {/* Target Selector */}
@@ -859,7 +863,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                       Content
                     </Button>
                   </div>
-                  
+
                   <div className="flex items-center gap-2 ml-auto">
                     <Popover>
                       <PopoverTrigger asChild>
@@ -888,7 +892,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                               ))}
                             </SelectContent>
                           </Select>
-                          
+
                           {editingTarget === 'content' && (
                             <div>
                               <label className="text-sm font-semibold text-gray-700">Size: {fontSize}px</label>
@@ -905,7 +909,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                         </div>
                       </PopoverContent>
                     </Popover>
-                    
+
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button className="bg-gray-800 hover:bg-gray-900 text-white h-10 px-4 rounded-lg font-medium">
@@ -1051,7 +1055,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                         Drawing Canvas
                       </h3>
                     </div>
-                    
+
                     {/* Mobile-Friendly Controls */}
                     <div className="space-y-2">
                       {/* Top Row - Main Tools */}
@@ -1082,7 +1086,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                             </div>
                           </PopoverContent>
                         </Popover>
-                        
+
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -1096,7 +1100,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                             <span className="text-xs">Undo</span>
                           </div>
                         </Button>
-                        
+
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -1111,7 +1115,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                           </div>
                         </Button>
                       </div>
-                      
+
                       {/* Bottom Row - Secondary Tools */}
                       <div className="grid grid-cols-3 gap-2">
                         <Button 
@@ -1130,7 +1134,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                             <span className="text-xs">Clear</span>
                           </div>
                         </Button>
-                        
+
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -1150,7 +1154,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                             <span className="text-xs">Save</span>
                           </div>
                         </Button>
-                        
+
                         <div className="flex flex-col items-center justify-center gap-1 p-2 bg-gray-50 rounded-lg">
                           <div 
                             className="w-6 h-6 rounded-full border-2 border-gray-300 shadow-sm" 
@@ -1161,7 +1165,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                       </div>
                     </div>
                   </div>
-                  
+
                   <canvas
                     ref={canvasRef}
                     width={400}
@@ -1260,7 +1264,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                               <X className="w-3 h-3" />
                             </Button>
                           </div>
-                          
+
                           {/* Photo Size Controls */}
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -1436,7 +1440,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
         {/* Floating Action Buttons - Evenly Spaced */}
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-40">
-            
+
             {/* Voice-to-Text Button */}
             <motion.div
               className="group"
@@ -1459,11 +1463,11 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     <Mic className="w-6 h-6 text-white" />
                   )}
                 </Button>
-                
+
                 {isListening && (
                   <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
                 )}
-                
+
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
                     <span>🎤 Voice to Text</span>
@@ -1495,7 +1499,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     <div className="w-4 h-4 bg-white rounded-full" />
                   )}
                 </Button>
-                
+
                 {isRecordingAudio && (
                   <>
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
@@ -1504,7 +1508,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     </div>
                   </>
                 )}
-                
+
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
                     <span>🎵 Audio Record</span>
@@ -1528,7 +1532,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 >
                   <Camera className="w-6 h-6 text-white" />
                 </Button>
-                
+
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
                     <span>📷 Camera</span>
@@ -1670,7 +1674,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   <Eye className="w-3 h-3 mr-1" />
                   Review
                 </Button>
-                
+
                 {/* AI Prompt Counter - Clickable to buy more */}
                 {promptUsageData && (
                   <Button
@@ -1712,7 +1716,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           >
             {showAiChat ? <X className="w-5 h-5" /> : <Brain className="w-5 h-5" />}
           </Button>
-          
+
           {/* Custom Tooltip */}
           <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
             <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
@@ -1789,7 +1793,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   <div className="text-xs opacity-75">Capture a moment instantly</div>
                 </div>
               </Button>
-              
+
               <Button 
                 onClick={startVideoRecording}
                 className="flex items-center gap-3 h-12 justify-start bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200"
@@ -1803,7 +1807,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   <div className="text-xs opacity-75">Up to 30 seconds</div>
                 </div>
               </Button>
-              
+
               <Button 
                 onClick={() => fileInputRef.current?.click()}
                 className="flex items-center gap-3 h-12 justify-start bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
