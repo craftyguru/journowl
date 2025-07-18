@@ -588,39 +588,39 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             transition={{ duration: 0.8, delay: 2.6 }}
             className="max-w-7xl mx-auto bg-gradient-to-br from-gray-900/95 to-black/90 backdrop-blur-xl rounded-3xl border-2 border-purple-500/40 shadow-2xl overflow-hidden"
           >
-            {/* Epic Header */}
-            <div className="bg-gradient-to-r from-purple-600/80 via-pink-600/80 to-cyan-600/80 p-6 border-b-2 border-purple-400/50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex gap-2">
+            {/* Epic Header - Mobile Optimized */}
+            <div className="bg-gradient-to-r from-purple-600/80 via-pink-600/80 to-cyan-600/80 p-3 sm:p-4 lg:p-6 border-b-2 border-purple-400/50">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <div className="flex gap-1 sm:gap-2">
                     <motion.div 
-                      className="w-4 h-4 rounded-full bg-red-400"
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-red-400"
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     />
                     <motion.div 
-                      className="w-4 h-4 rounded-full bg-yellow-400"
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-yellow-400"
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
                     />
                     <motion.div 
-                      className="w-4 h-4 rounded-full bg-green-400"
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-400"
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
                     />
                   </div>
-                  <span className="text-white font-bold text-xl font-inter">🌟 MoodJournal - Complete Experience</span>
+                  <span className="text-white font-bold text-sm sm:text-lg lg:text-xl font-inter">🌟 MoodJournal - Complete Experience</span>
                 </div>
-                <div className="flex items-center gap-3 text-white/90">
+                <div className="flex items-center gap-2 sm:gap-3 text-white/90">
                   <motion.div 
-                    className="flex items-center gap-2 bg-green-500/30 px-3 py-1 rounded-full border border-green-400/50"
+                    className="flex items-center gap-1 sm:gap-2 bg-green-500/30 px-2 sm:px-3 py-1 rounded-full border border-green-400/50"
                     animate={{ opacity: [0.7, 1, 0.7] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-sm font-medium">🤖 AI Assistant Online</span>
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse" />
+                    <span className="text-xs sm:text-sm font-medium">🤖 AI Assistant Online</span>
                   </motion.div>
-                  <Badge className="bg-purple-500/30 text-purple-200 border border-purple-400/50 font-bold">
+                  <Badge className="bg-purple-500/30 text-purple-200 border border-purple-400/50 font-bold text-xs sm:text-sm">
                     ✨ Live Demo
                   </Badge>
                 </div>
@@ -628,15 +628,15 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             </div>
 
             {/* Comprehensive App Showcase */}
-            <div className="p-10">
-              {/* Tab Navigation */}
+            <div className="p-3 sm:p-6 lg:p-10">
+              {/* Tab Navigation - Mobile Optimized */}
               <motion.div 
-                className="flex justify-center mb-8"
+                className="flex justify-center mb-6 sm:mb-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 2.8 }}
               >
-                <div className="flex bg-gray-800/50 backdrop-blur-lg rounded-2xl p-2 border border-purple-500/30">
+                <div className="grid grid-cols-2 sm:flex bg-gray-800/50 backdrop-blur-lg rounded-xl sm:rounded-2xl p-1 sm:p-2 border border-purple-500/30 gap-1 sm:gap-0 w-full max-w-md sm:max-w-none sm:w-auto">
                   {[
                     { id: 'write', name: '✍️ Write', icon: PenTool, color: 'from-purple-500 to-pink-500' },
                     { id: 'analyze', name: '📊 Analytics', icon: BarChart3, color: 'from-cyan-500 to-blue-500' },
@@ -645,15 +645,16 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   ].map((tab, i) => (
                     <motion.button
                       key={tab.id}
-                      className={`px-6 py-3 rounded-xl text-white font-bold transition-all duration-300 bg-gradient-to-r ${tab.color} hover:scale-105 hover:shadow-lg`}
+                      className={`px-2 sm:px-4 lg:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl text-white font-bold transition-all duration-300 bg-gradient-to-r ${tab.color} hover:scale-105 hover:shadow-lg text-xs sm:text-sm lg:text-base`}
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: 3 + i * 0.1 }}
                     >
-                      <tab.icon className="w-5 h-5 inline mr-2" />
-                      {tab.name}
+                      <tab.icon className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 inline mr-1 sm:mr-2" />
+                      <span className="hidden sm:inline">{tab.name}</span>
+                      <span className="sm:hidden">{tab.name.split(' ')[1] || tab.name.split(' ')[0]}</span>
                     </motion.button>
                   ))}
                 </div>
@@ -1048,20 +1049,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                     </Button>
                   </motion.div>
                   
-                  <motion.div
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-full sm:w-auto"
-                  >
-                    <Button
-                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                      variant="outline"
-                      className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 border-2 border-yellow-400/60 text-yellow-300 hover:bg-yellow-500/10 hover:border-yellow-300 rounded-xl sm:rounded-2xl text-sm sm:text-base lg:text-lg font-bold backdrop-blur-sm transition-all duration-300 font-inter"
-                    >
-                      <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                      🎨 Explore More Features
-                    </Button>
-                  </motion.div>
+
                 </div>
                 
                 {/* Feature Highlights */}
