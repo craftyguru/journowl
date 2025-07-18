@@ -802,188 +802,337 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           </div>
         </div>
 
-        {/* Main Journal Layout - Full Width */}
+        {/* Main Journal Layout - Mobile Optimized */}
         <div className="flex flex-1 min-h-0">
-          <PanelGroup direction="horizontal" className="w-full">
-            {/* Left Page - Writing Area (Expanded) */}
-            <Panel defaultSize={65} minSize={0}>
-              <div className="p-4 relative flex flex-col overflow-hidden h-full">
-                {/* Page shadow effect */}
-                <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
+          {/* Mobile: Single column layout, Desktop: Panel layout */}
+          <div className="w-full md:hidden">
+            {/* Mobile Layout */}
+            <div className="p-3 relative flex flex-col overflow-hidden h-full">
+              {/* Mobile Entry Header */}
+              <div className="space-y-3 mb-4 flex-shrink-0">
+                <div className="flex flex-col gap-2">
+                  <Input
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="What's on your mind today?"
+                    className="text-lg font-bold border border-purple-300 bg-white/90 focus:ring-2 focus:ring-purple-400 rounded-xl px-4 py-3 h-12"
+                    style={{ 
+                      fontFamily: titleFont,
+                      color: titleColor
+                    }}
+                  />
+                  <div className="text-sm font-bold text-center py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl" style={{
+                    textShadow: '0 0 10px rgba(255,255,255,0.5)'
+                  }}>
+                    📅 {new Date().toLocaleDateString('en-US', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </div>
+                </div></div>
+            </div>
+          </div>
 
-                {/* Entry Header */}
-                <div className="space-y-3 mb-4 flex-shrink-0">
-                  <div className="flex items-center gap-3">
-                    <Input
-                      value={title}
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Entry title..."
-                      className="text-lg font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
-                      style={{ 
-                        fontFamily: titleFont,
-                        color: titleColor
-                      }}
-                    />
-                    <div className="text-lg font-bold whitespace-nowrap" style={{
-                      color: '#ff0040',
-                      textShadow: '0 0 5px #ff0040, 0 0 10px #ff0040, 0 0 15px #ff0040',
-                      fontFamily: 'Arial, sans-serif'
-                    }}>
-                      {new Date().toLocaleDateString()}
+          {/* Desktop Layout with Panels */}
+          <div className="hidden md:block w-full">
+            <PanelGroup direction="horizontal" className="w-full">
+              {/* Left Page - Writing Area (Expanded) */}
+              <Panel defaultSize={65} minSize={0}>
+                <div className="p-4 relative flex flex-col overflow-hidden h-full">
+                  {/* Page shadow effect */}
+                  <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
+
+                  {/* Entry Header */}
+                  <div className="space-y-3 mb-4 flex-shrink-0">
+                    <div className="flex items-center gap-3">
+                      <Input
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="Entry title..."
+                        className="text-lg font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
+                        style={{ 
+                          fontFamily: titleFont,
+                          color: titleColor
+                        }}
+                      />
+                      <div className="text-lg font-bold whitespace-nowrap" style={{
+                        color: '#ff0040',
+                        textShadow: '0 0 5px #ff0040, 0 0 10px #ff0040, 0 0 15px #ff0040',
+                        fontFamily: 'Arial, sans-serif'
+                      }}>
+                        {new Date().toLocaleDateString()}
+                      </div>
+                    </div>
+
+              {/* Mobile Controls - Stacked Layout */}
+              <div className="space-y-3 md:space-y-2">
+                {/* Mobile: Simplified Controls */}
+                <div className="md:hidden">
+                  {/* Mood Selection - Full Width on Mobile */}
+                  <div className="flex items-center gap-3 p-4 bg-white/90 rounded-xl border border-purple-200 shadow-sm">
+                    <Smile className="w-5 h-5 text-purple-600 flex-shrink-0" />
+                    <span className="text-sm font-semibold text-gray-700">How are you feeling?</span>
+                    <Select value={mood} onValueChange={setMood}>
+                      <SelectTrigger className="flex-1 h-12 bg-white border-purple-300 text-base rounded-lg">
+                        <SelectValue placeholder="Select your mood" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-purple-300">
+                        {moodEmojis.map(emoji => (
+                          <SelectItem 
+                            key={emoji} 
+                            value={emoji}
+                            className="hover:bg-purple-50 focus:bg-purple-50 text-lg py-3"
+                          >
+                            <span className="text-2xl mr-3">{emoji}</span>
+                            <span className="text-base">
+                              {emoji === '😊' ? 'Happy' : 
+                               emoji === '😐' ? 'Neutral' :
+                               emoji === '😔' ? 'Sad' :
+                               emoji === '🤔' ? 'Thoughtful' :
+                               emoji === '😄' ? 'Excited' :
+                               emoji === '🎉' ? 'Celebrating' :
+                               emoji === '😠' ? 'Frustrated' :
+                               emoji === '😴' ? 'Tired' :
+                               emoji === '💪' ? 'Motivated' :
+                               emoji === '🥰' ? 'Loved' : 'Mood'}
+                            </span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Action Buttons - Mobile Grid */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button 
+                      onClick={generateAiSuggestions}
+                      disabled={content.length < 10}
+                      className="h-14 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 border-0 text-white font-semibold shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
+                      title={content.length < 10 ? "Write at least 10 characters to get AI suggestions" : "Generate AI writing suggestions based on your content"}
+                    >
+                      <div className="flex flex-col items-center gap-1">
+                        <Lightbulb className="w-5 h-5" />
+                        <span className="text-sm">AI Ideas</span>
+                      </div>
+                    </Button>
+
+                    <div className="flex items-center justify-center gap-3 bg-gray-100 px-4 py-3 rounded-xl border border-gray-300 h-14">
+                      <Switch checked={isPrivate} onCheckedChange={setIsPrivate} className="scale-125" />
+                      <span className="text-sm font-semibold text-gray-700">Private</span>
                     </div>
                   </div>
 
-              {/* Unified Font & Color Controls */}
-              <div className="space-y-2">
-                {/* Target Selector */}
-                <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg backdrop-blur-sm">
-                  <div className="flex items-center gap-2">
-                    <Button
-                      onClick={() => setEditingTarget('title')}
-                      variant={editingTarget === 'title' ? 'default' : 'outline'}
-                      size="sm"
-                      className={`h-8 px-3 text-xs ${
-                        editingTarget === 'title' 
-                          ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                          : 'border-purple-300 text-purple-800 hover:bg-purple-50'
-                      }`}
-                    >
-                      Title
-                    </Button>
-                    <Button
-                      onClick={() => setEditingTarget('content')}
-                      variant={editingTarget === 'content' ? 'default' : 'outline'}
-                      size="sm"
-                      className={`h-8 px-3 text-xs ${
-                        editingTarget === 'content' 
-                          ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                          : 'border-purple-300 text-purple-800 hover:bg-purple-50'
-                      }`}
-                    >
-                      Content
-                    </Button>
-                  </div>
-
-                  <div className="flex items-center gap-2 ml-auto">
+                  {/* Quick Style Controls */}
+                  <div className="flex gap-2">
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button className="bg-emerald-500 hover:bg-emerald-600 text-white h-10 px-4 rounded-lg font-medium">
+                        <Button className="flex-1 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold shadow-lg">
                           <Type className="w-4 h-4 mr-2" />
-                          Font
+                          Style
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-64 p-4">
-                        <div className="space-y-3">
-                          <label className="text-sm font-semibold text-gray-700">
-                            {editingTarget === 'title' ? 'Title' : 'Content'} Font
-                          </label>
-                          <Select 
-                            value={editingTarget === 'title' ? titleFont : selectedFont} 
-                            onValueChange={editingTarget === 'title' ? setTitleFont : setSelectedFont}
-                          >
-                            <SelectTrigger className="h-10">
-                              <SelectValue placeholder="Select font" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {fontFamilies.map(font => (
-                                <SelectItem key={font} value={font} style={{ fontFamily: font }}>
-                                  {font}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-
-                          {editingTarget === 'content' && (
-                            <div>
-                              <label className="text-sm font-semibold text-gray-700">Size: {fontSize}px</label>
-                              <Slider
-                                value={[fontSize]}
-                                onValueChange={(value) => setFontSize(value[0])}
-                                min={12}
-                                max={24}
-                                step={1}
-                                className="mt-2"
-                              />
-                            </div>
-                          )}
+                      <PopoverContent className="w-80 p-4">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-sm font-semibold text-gray-700 mb-2 block">Font Family</label>
+                            <Select value={selectedFont} onValueChange={setSelectedFont}>
+                              <SelectTrigger className="h-12">
+                                <SelectValue placeholder="Select font" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {fontFamilies.map(font => (
+                                  <SelectItem key={font} value={font} style={{ fontFamily: font }}>
+                                    {font}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div>
+                            <label className="text-sm font-semibold text-gray-700 mb-2 block">Font Size: {fontSize}px</label>
+                            <Slider
+                              value={[fontSize]}
+                              onValueChange={(value) => setFontSize(value[0])}
+                              min={14}
+                              max={24}
+                              step={1}
+                              className="mt-2"
+                            />
+                          </div>
                         </div>
                       </PopoverContent>
                     </Popover>
 
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button className="bg-gray-800 hover:bg-gray-900 text-white h-10 px-4 rounded-lg font-medium">
+                        <Button className="flex-1 h-12 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-semibold shadow-lg">
                           <Palette className="w-4 h-4 mr-2" />
-                          Color
+                          Colors
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-64 p-4">
-                        <div className="space-y-3">
-                          <label className="text-sm font-semibold text-gray-700">
-                            {editingTarget === 'title' ? 'Title' : 'Content'} Color
-                          </label>
-                          <HexColorPicker 
-                            color={editingTarget === 'title' ? titleColor : textColor} 
-                            onChange={editingTarget === 'title' ? setTitleColor : setTextColor} 
-                          />
-                          <div className="flex items-center gap-2 mt-2">
-                            <div 
-                              className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm" 
-                              style={{ backgroundColor: editingTarget === 'title' ? titleColor : textColor }}
-                            />
-                            <span className="text-xs text-gray-600 font-mono">
-                              {editingTarget === 'title' ? titleColor : textColor}
-                            </span>
+                      <PopoverContent className="w-80 p-4">
+                        <div className="space-y-4">
+                          <div>
+                            <label className="text-sm font-semibold text-gray-700 mb-2 block">Text Color</label>
+                            <HexColorPicker color={textColor} onChange={setTextColor} />
                           </div>
                         </div>
                       </PopoverContent>
                     </Popover>
                   </div>
                 </div>
-              </div>
 
-              {/* Mood & Controls - Mobile Optimized */}
-              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-2 bg-white/50 rounded-lg backdrop-blur-sm text-sm">
-                {/* Top Row - Mood Selection */}
-                <div className="flex items-center gap-2 flex-1">
-                  <Smile className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                  <span className="text-xs font-medium whitespace-nowrap">Mood:</span>
-                  <Select value={mood} onValueChange={setMood}>
-                    <SelectTrigger className="w-full sm:w-32 h-10 bg-white/70 border-amber-300 text-sm">
-                      <SelectValue placeholder="Select mood" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-amber-300">
-                      {moodEmojis.map(emoji => (
-                        <SelectItem 
-                          key={emoji} 
-                          value={emoji}
-                          className="hover:bg-amber-50 focus:bg-amber-50"
-                        >
-                          <span className="text-lg">{emoji}</span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                {/* Desktop Controls - Original Layout */}
+                <div className="hidden md:block">
+                  {/* Target Selector */}
+                  <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg backdrop-blur-sm">
+                    <div className="flex items-center gap-2">
+                      <Button
+                        onClick={() => setEditingTarget('title')}
+                        variant={editingTarget === 'title' ? 'default' : 'outline'}
+                        size="sm"
+                        className={`h-8 px-3 text-xs ${
+                          editingTarget === 'title' 
+                            ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                            : 'border-purple-300 text-purple-800 hover:bg-purple-50'
+                        }`}
+                      >
+                        Title
+                      </Button>
+                      <Button
+                        onClick={() => setEditingTarget('content')}
+                        variant={editingTarget === 'content' ? 'default' : 'outline'}
+                        size="sm"
+                        className={`h-8 px-3 text-xs ${
+                          editingTarget === 'content' 
+                            ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                            : 'border-purple-300 text-purple-800 hover:bg-purple-50'
+                        }`}
+                      >
+                        Content
+                      </Button>
+                    </div>
 
-                {/* Bottom Row - AI & Privacy Controls */}
-                <div className="flex items-center gap-2 justify-between sm:justify-end">
-                  <Button 
-                    onClick={generateAiSuggestions}
-                    variant="outline"
-                    size="sm"
-                    disabled={content.length < 10}
-                    className="h-10 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 border-0 text-white font-medium shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                    title={content.length < 10 ? "Write at least 10 characters to get AI suggestions" : "Generate AI writing suggestions based on your content"}
-                  >
-                    <Lightbulb className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">AI Ideas</span>
-                    <span className="sm:hidden">Ideas</span>
-                  </Button>
+                    <div className="flex items-center gap-2 ml-auto">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button className="bg-emerald-500 hover:bg-emerald-600 text-white h-10 px-4 rounded-lg font-medium">
+                            <Type className="w-4 h-4 mr-2" />
+                            Font
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-64 p-4">
+                          <div className="space-y-3">
+                            <label className="text-sm font-semibold text-gray-700">
+                              {editingTarget === 'title' ? 'Title' : 'Content'} Font
+                            </label>
+                            <Select 
+                              value={editingTarget === 'title' ? titleFont : selectedFont} 
+                              onValueChange={editingTarget === 'title' ? setTitleFont : setSelectedFont}
+                            >
+                              <SelectTrigger className="h-10">
+                                <SelectValue placeholder="Select font" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {fontFamilies.map(font => (
+                                  <SelectItem key={font} value={font} style={{ fontFamily: font }}>
+                                    {font}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
 
-                  <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg border border-gray-300">
-                    <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
-                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Private</span>
+                            {editingTarget === 'content' && (
+                              <div>
+                                <label className="text-sm font-semibold text-gray-700">Size: {fontSize}px</label>
+                                <Slider
+                                  value={[fontSize]}
+                                  onValueChange={(value) => setFontSize(value[0])}
+                                  min={12}
+                                  max={24}
+                                  step={1}
+                                  className="mt-2"
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button className="bg-gray-800 hover:bg-gray-900 text-white h-10 px-4 rounded-lg font-medium">
+                            <Palette className="w-4 h-4 mr-2" />
+                            Color
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-64 p-4">
+                          <div className="space-y-3">
+                            <label className="text-sm font-semibold text-gray-700">
+                              {editingTarget === 'title' ? 'Title' : 'Content'} Color
+                            </label>
+                            <HexColorPicker 
+                              color={editingTarget === 'title' ? titleColor : textColor} 
+                              onChange={editingTarget === 'title' ? setTitleColor : setTextColor} 
+                            />
+                            <div className="flex items-center gap-2 mt-2">
+                              <div 
+                                className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm" 
+                                style={{ backgroundColor: editingTarget === 'title' ? titleColor : textColor }}
+                              />
+                              <span className="text-xs text-gray-600 font-mono">
+                                {editingTarget === 'title' ? titleColor : textColor}
+                              </span>
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  </div>
+
+                  {/* Mood & Controls - Desktop */}
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-2 bg-white/50 rounded-lg backdrop-blur-sm text-sm">
+                    <div className="flex items-center gap-2 flex-1">
+                      <Smile className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                      <span className="text-xs font-medium whitespace-nowrap">Mood:</span>
+                      <Select value={mood} onValueChange={setMood}>
+                        <SelectTrigger className="w-full sm:w-32 h-10 bg-white/70 border-amber-300 text-sm">
+                          <SelectValue placeholder="Select mood" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white border-amber-300">
+                          {moodEmojis.map(emoji => (
+                            <SelectItem 
+                              key={emoji} 
+                              value={emoji}
+                              className="hover:bg-amber-50 focus:bg-amber-50"
+                            >
+                              <span className="text-lg">{emoji}</span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="flex items-center gap-2 justify-between sm:justify-end">
+                      <Button 
+                        onClick={generateAiSuggestions}
+                        variant="outline"
+                        size="sm"
+                        disabled={content.length < 10}
+                        className="h-10 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 border-0 text-white font-medium shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Lightbulb className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">AI Ideas</span>
+                        <span className="sm:hidden">Ideas</span>
+                      </Button>
+
+                      <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg border border-gray-300">
+                        <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
+                        <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Private</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1010,7 +1159,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               )}
             </div>
 
-                {/* Rich Text Editor */}
+                {/* Rich Text Editor - Mobile/Desktop */}
                 <div className="flex-1 min-h-0">
                   <MDEditor
                     value={content}
@@ -1032,16 +1181,157 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 <div className="mt-2 text-xs text-gray-500 flex-shrink-0">
                   {content.split(' ').filter(word => word.length > 0).length} words
                 </div>
+
+                {/* Mobile: Tags Section */}
+                <div className="md:hidden">
+                  {tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {tags.map((tag, index) => (
+                        <Badge 
+                          key={index} 
+                          variant="secondary" 
+                          className="bg-purple-100 text-purple-800 hover:bg-purple-200 text-sm py-1 px-3"
+                        >
+                          {tag}
+                          <button
+                            onClick={() => setTags(prev => prev.filter((_, i) => i !== index))}
+                            className="ml-2 hover:text-red-500 text-lg"
+                          >
+                            ×
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-            </Panel>
 
-            {/* Resize Handle */}
-            <PanelResizeHandle className="w-2 bg-amber-300 hover:bg-amber-400 transition-colors cursor-col-resize flex items-center justify-center">
-              <div className="h-8 w-1 bg-amber-600 rounded-full"></div>
-            </PanelResizeHandle>
+              {/* Mobile: Quick Media Section */}
+              <div className="md:hidden p-3 border-t border-purple-200 bg-white/50">
+                <div className="space-y-3">
+                  {/* Photos Grid */}
+                  {photos.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-700 mb-2">📸 Photos ({photos.length})</h4>
+                      <div className="grid grid-cols-3 gap-2">
+                        {photos.slice(0, 6).map((photo, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={photo.src}
+                              alt={`Photo ${index + 1}`}
+                              className="w-full h-20 object-cover rounded-lg border border-gray-200"
+                            />
+                            {photo.analysis && (
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="absolute bottom-1 left-1 right-1">
+                                  <p className="text-white text-xs font-medium truncate">
+                                    {photo.analysis.description}
+                                  </p>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        {photos.length > 6 && (
+                          <div className="w-full h-20 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
+                            <span className="text-xs text-gray-500 font-medium">
+                              +{photos.length - 6} more
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
-            {/* Right Page - Creative Area with Resizable Panels */}
-            <Panel defaultSize={35} minSize={0}>
+                  {/* Audio Recordings */}
+                  {audioRecordings.length > 0 && (
+                    <div>
+                      <h4 className="text-sm font-semibold text-gray-700 mb-2">🎵 Audio ({audioRecordings.length})</h4>
+                      <div className="space-y-2">
+                        {audioRecordings.slice(0, 2).map((recording, index) => (
+                          <div key={index} className="bg-gray-50 rounded-lg p-2 border border-gray-200">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-xs text-gray-500">Recording {index + 1}</span>
+                              <span className="text-xs text-gray-400">{recording.duration}s</span>
+                            </div>
+                            <audio controls className="w-full h-6" src={recording.url} />
+                          </div>
+                        ))}
+                        {audioRecordings.length > 2 && (
+                          <div className="text-center py-2">
+                            <span className="text-xs text-gray-500">+{audioRecordings.length - 2} more recordings</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Layout with Panels */}
+          <div className="hidden md:block w-full">
+            <PanelGroup direction="horizontal" className="w-full">
+              {/* Left Page - Writing Area (Expanded) */}
+              <Panel defaultSize={65} minSize={0}>
+                <div className="p-4 relative flex flex-col overflow-hidden h-full">
+                  {/* Page shadow effect */}
+                  <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
+
+                  {/* Rich Text Editor */}
+                  <div className="flex-1 min-h-0">
+                    <MDEditor
+                      value={content}
+                      onChange={(val) => setContent(val || "")}
+                      preview="edit"
+                      hideToolbar={false}
+                      data-color-mode="light"
+                      height="100%"
+                      style={{
+                        fontFamily: selectedFont,
+                        fontSize: `${fontSize}px`,
+                        color: textColor,
+                        height: '100%'
+                      }}
+                    />
+                  </div>
+
+                  {/* Tags */}
+                  {tags.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      {tags.map((tag, index) => (
+                        <Badge 
+                          key={index} 
+                          variant="secondary" 
+                          className="bg-amber-100 text-amber-800 hover:bg-amber-200"
+                        >
+                          {tag}
+                          <button
+                            onClick={() => setTags(prev => prev.filter((_, i) => i !== index))}
+                            className="ml-1 hover:text-red-500"
+                          >
+                            ×
+                          </button>
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Word Count */}
+                  <div className="mt-2 text-xs text-gray-500 flex-shrink-0">
+                    {content.split(' ').filter(word => word.length > 0).length} words
+                  </div>
+                </div>
+              </Panel>
+
+              {/* Resize Handle */}
+              <PanelResizeHandle className="w-2 bg-amber-300 hover:bg-amber-400 transition-colors cursor-col-resize flex items-center justify-center">
+                <div className="h-8 w-1 bg-amber-600 rounded-full"></div>
+              </PanelResizeHandle>
+
+              {/* Right Page - Creative Area with Resizable Panels */}
+              <Panel defaultSize={35} minSize={0}>
               <div className="p-4 relative overflow-hidden h-full">
                 <PanelGroup direction="vertical" className="h-full">
               {/* Drawing Canvas Panel */}
@@ -1438,9 +1728,77 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           </PanelGroup>
         </div>
 
-        {/* Floating Action Buttons - Evenly Spaced */}
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-40">
+        {/* Mobile-Optimized Floating Action Buttons */}
+        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
+          {/* Mobile: Compact horizontal layout */}
+          <div className="md:hidden flex items-center gap-4 px-4 py-3 bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-purple-200">
+            {/* Voice-to-Text Button */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Button
+                onClick={toggleVoiceRecording}
+                className={`w-12 h-12 rounded-full shadow-lg ${
+                  isListening 
+                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
+                } transition-all duration-300`}
+              >
+                {isListening ? (
+                  <MicOff className="w-5 h-5 text-white" />
+                ) : (
+                  <Mic className="w-5 h-5 text-white" />
+                )}
+              </Button>
+              {isListening && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
+              )}
+            </motion.div>
 
+            {/* Audio Recording Button */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Button
+                onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
+                className={`w-12 h-12 rounded-full shadow-lg ${
+                  isRecordingAudio 
+                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
+                } transition-all duration-300`}
+              >
+                {isRecordingAudio ? (
+                  <div className="w-3 h-3 bg-white rounded-sm" />
+                ) : (
+                  <div className="w-3 h-3 bg-white rounded-full" />
+                )}
+              </Button>
+              {isRecordingAudio && (
+                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
+              )}
+            </motion.div>
+
+            {/* Camera Button */}
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <Button
+                onClick={() => setShowCameraModal(true)}
+                className="w-12 h-12 rounded-full shadow-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300"
+              >
+                <Camera className="w-5 h-5 text-white" />
+              </Button>
+            </motion.div>
+          </div>
+
+          {/* Desktop: Original spaced layout */}
+          <div className="hidden md:flex items-center gap-6">
             {/* Voice-to-Text Button */}
             <motion.div
               className="group"
@@ -1541,7 +1899,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 </div>
               </div>
             </motion.div>
-
+          </div>
         </div>
 
         {/* AI Sidekick - Centered */}
