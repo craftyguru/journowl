@@ -32,7 +32,7 @@ import {
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
 // Use Replit PostgreSQL database with SSL
-const dbUrl = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}?sslmode=require`;
+const dbUrl = process.env.DATABASE_URL;
 const client = postgres(dbUrl);
 const db = drizzle(client);
 
