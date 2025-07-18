@@ -685,58 +685,58 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   </div>
                   
                   {/* Enhanced Editor Simulation */}
-                  <div className="bg-gray-900/60 rounded-xl p-6 border border-purple-400/30 backdrop-blur-sm">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-gray-300 font-medium font-inter">📝 Today's Entry - March 15, 2024</span>
-                      <div className="flex gap-2">
-                        <Badge className="bg-green-500/20 text-green-300 border-0">🟢 Auto-Save</Badge>
-                        <Badge className="bg-blue-500/20 text-blue-300 border-0">📊 524 words</Badge>
+                  <div className="bg-gray-900/60 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 border border-purple-400/30 backdrop-blur-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+                      <span className="text-gray-300 font-medium font-inter text-xs sm:text-sm">📝 Today's Entry - March 15, 2024</span>
+                      <div className="flex gap-1 sm:gap-2">
+                        <Badge className="bg-green-500/20 text-green-300 border-0 text-xs">🟢 Auto-Save</Badge>
+                        <Badge className="bg-blue-500/20 text-blue-300 border-0 text-xs">📊 524 words</Badge>
                       </div>
                     </div>
                     
-                    <div className="space-y-4 mb-6">
+                    <div className="space-y-2 sm:space-y-3 lg:space-y-4 mb-4 sm:mb-6">
                       <motion.div
                         initial={{ opacity: 0, width: 0 }}
                         animate={{ opacity: 1, width: "100%" }}
                         transition={{ duration: 2, delay: 3.5 }}
-                        className="h-5 bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-lg flex items-center px-3"
+                        className="min-h-[2rem] sm:min-h-[2.5rem] bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-md sm:rounded-lg flex items-center px-2 sm:px-3"
                       >
-                        <span className="text-white text-sm font-opensans">Today was absolutely amazing! I finally got to try that new cafe...</span>
+                        <span className="text-white text-xs sm:text-sm font-opensans leading-relaxed">Today was absolutely amazing! I finally got to try that new cafe...</span>
                       </motion.div>
                       <motion.div
                         initial={{ opacity: 0, width: 0 }}
                         animate={{ opacity: 1, width: "85%" }}
                         transition={{ duration: 2, delay: 4 }}
-                        className="h-5 bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-lg flex items-center px-3"
+                        className="min-h-[2rem] sm:min-h-[2.5rem] bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-md sm:rounded-lg flex items-center px-2 sm:px-3"
                       >
-                        <span className="text-white text-sm font-opensans">The coffee was incredible and the atmosphere was so peaceful...</span>
+                        <span className="text-white text-xs sm:text-sm font-opensans leading-relaxed">The coffee was incredible and the atmosphere was so peaceful...</span>
                       </motion.div>
                       <motion.div
                         initial={{ opacity: 0, width: 0 }}
                         animate={{ opacity: 1, width: "70%" }}
                         transition={{ duration: 2, delay: 4.5 }}
-                        className="h-5 bg-gradient-to-r from-emerald-400/40 via-cyan-400/40 to-blue-400/40 rounded-lg animate-pulse"
+                        className="min-h-[2rem] sm:min-h-[2.5rem] bg-gradient-to-r from-emerald-400/40 via-cyan-400/40 to-blue-400/40 rounded-md sm:rounded-lg animate-pulse"
                       >
-                        <div className="flex items-center px-3 h-full">
-                          <span className="text-white text-sm font-opensans">I feel so grateful for</span>
-                          <div className="w-2 h-4 bg-cyan-400 ml-1 animate-pulse" />
+                        <div className="flex items-center px-2 sm:px-3 h-full">
+                          <span className="text-white text-xs sm:text-sm font-opensans leading-relaxed">I feel so grateful for</span>
+                          <div className="w-1 sm:w-2 h-3 sm:h-4 bg-cyan-400 ml-1 animate-pulse" />
                         </div>
                       </motion.div>
                     </div>
                     
                     {/* Multiple AI Suggestions */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 5 }}
-                        className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/50 rounded-xl p-4"
+                        className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/50 rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4"
                       >
-                        <div className="flex items-start gap-3">
-                          <Lightbulb className="w-5 h-5 text-yellow-400 mt-0.5" />
-                          <div>
-                            <div className="text-white font-bold text-sm">💡 AI Writing Suggestion</div>
-                            <div className="text-gray-200 text-sm font-opensans">Try expanding on what made this moment special - your emotions, the details...</div>
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-white font-bold text-xs sm:text-sm">💡 AI Writing Suggestion</div>
+                            <div className="text-gray-200 text-xs sm:text-sm font-opensans leading-relaxed">Try expanding on what made this moment special - your emotions, the details...</div>
                           </div>
                         </div>
                       </motion.div>
@@ -745,13 +745,13 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 5.3 }}
-                        className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/50 rounded-xl p-4"
+                        className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/50 rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4"
                       >
-                        <div className="flex items-start gap-3">
-                          <Sparkles className="w-5 h-5 text-purple-400 mt-0.5" />
-                          <div>
-                            <div className="text-white font-bold text-sm">🎯 Mood Insight</div>
-                            <div className="text-gray-200 text-sm font-opensans">Your writing shows joy and gratitude - perfect for a happiness entry!</div>
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 mt-0.5 flex-shrink-0" />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-white font-bold text-xs sm:text-sm">🎯 Mood Insight</div>
+                            <div className="text-gray-200 text-xs sm:text-sm font-opensans leading-relaxed">Your writing shows joy and gratitude - perfect for a happiness entry!</div>
                           </div>
                         </div>
                       </motion.div>
