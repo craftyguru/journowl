@@ -47,6 +47,20 @@ app.use((req, res, next) => {
     res.json({ status: "OK", message: "JournOwl server is running!", timestamp: new Date().toISOString() });
   });
 
+  // Add a simple root route for Railway health checks
+  app.get("/", (req, res, next) => {
+    // Only handle this if we're in production without static files
+    if (process.env.NODE_ENV === "production") {
+      res.json({ 
+        message: "JournOwl API is running", 
+        status: "OK",
+        environment: process.env.NODE_ENV || "development"
+      });
+    } else {
+      next(); // Let Vite handle this in development
+    }
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
@@ -58,16 +72,21 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  if (app.get("env") === "development" || process.env.NODE_ENV === "development") {
     await setupVite(app, server);
   } else {
-    serveStatic(app);
+    try {
+      serveStatic(app);
+    } catch (error) {
+      console.warn("Static files not found, falling back to development mode");
+      await setupVite(app, server);
+    }
   }
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5000;
+  const port = process.env.PORT || 5000;
   server.listen({
     port,
     host: "0.0.0.0",
