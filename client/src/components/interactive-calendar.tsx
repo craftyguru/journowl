@@ -165,49 +165,85 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
 
   const selectedDateEntries = selectedDate ? getEntriesForDate(selectedDate) : [];
 
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const [showMobileStats, setShowMobileStats] = useState(false);
+
   return (
     <TooltipProvider>
       <div className="h-full flex flex-col bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl overflow-hidden">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 flex-shrink-0">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <CalendarIcon className="w-6 h-6" />
+      {/* Mobile-Optimized Header */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-3 sm:p-4 flex-shrink-0">
+        <div className="flex items-center justify-between mb-3 sm:mb-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <CalendarIcon className="w-5 h-5 sm:w-6 sm:h-6" />
             <div>
-              <h2 className="text-xl font-bold">Memory Calendar</h2>
-              <p className="text-purple-100 text-sm">Your journey through time</p>
+              <h2 className="text-lg sm:text-xl font-bold">Memory Calendar</h2>
+              <p className="text-purple-100 text-xs sm:text-sm hidden sm:block">Your journey through time</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
-            <motion.div 
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="bg-gradient-to-r from-orange-500/80 to-red-500/80 rounded-lg px-3 py-1 text-sm font-bold shadow-lg"
+          {/* Mobile Stats Toggle */}
+          {isMobile ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowMobileStats(!showMobileStats)}
+              className="text-white hover:bg-white/10 p-2"
             >
-              🔥 {calculateStreak()} day streak
-            </motion.div>
-            <div className="bg-white/20 rounded-lg px-3 py-1 text-sm">
-              📊 {entries.length} memories
+              <Sparkles className="w-5 h-5" />
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <motion.div 
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="bg-gradient-to-r from-orange-500/80 to-red-500/80 rounded-lg px-3 py-1 text-sm font-bold shadow-lg"
+              >
+                🔥 {calculateStreak()} day streak
+              </motion.div>
+              <div className="bg-white/20 rounded-lg px-3 py-1 text-sm">
+                📊 {entries.length} memories
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* Search and Filters */}
-        <div className="flex gap-2 items-center">
+        {/* Mobile Stats Dropdown */}
+        {isMobile && showMobileStats && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-3 flex gap-2"
+          >
+            <div className="bg-white/20 rounded-lg px-3 py-2 text-xs font-medium flex-1 text-center">
+              🔥 {calculateStreak()} day streak
+            </div>
+            <div className="bg-white/20 rounded-lg px-3 py-2 text-xs font-medium flex-1 text-center">
+              📊 {entries.length} memories
+            </div>
+          </motion.div>
+        )}
+
+        {/* Mobile-Optimized Search and Filters */}
+        <div className="space-y-2 sm:space-y-0 sm:flex sm:gap-2 sm:items-center">
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
-              placeholder="Search entries, tags, or content..."
+              placeholder={isMobile ? "Search..." : "Search entries, tags, or content..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 bg-white/20 border-white/30 text-white placeholder:text-purple-200"
+              className="pl-10 bg-white/20 border-white/30 text-white placeholder:text-purple-200 h-10 sm:h-auto"
             />
           </div>
           
           <Popover>
             <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="border-white/30 text-white hover:bg-white/10">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="border-white/30 text-white hover:bg-white/10 w-full sm:w-auto h-10 sm:h-auto"
+              >
                 <Filter className="w-4 h-4 mr-2" />
                 Mood
               </Button>
@@ -241,40 +277,42 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
 
       <div className="flex flex-1 min-h-0">
         {/* Calendar Grid */}
-        <div className="flex-1 p-4 overflow-auto">
+        <div className="flex-1 p-2 sm:p-4 overflow-auto">
           {/* Month Navigation */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
             <Button
               variant="outline"
               size="sm"
               onClick={() => navigateMonth('prev')}
+              className="h-8 w-8 sm:h-auto sm:w-auto p-1 sm:p-2"
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
             
-            <h3 className="text-xl font-bold text-gray-800">
-              {format(currentDate, 'MMMM yyyy')}
+            <h3 className="text-lg sm:text-xl font-bold text-gray-800">
+              {format(currentDate, isMobile ? 'MMM yyyy' : 'MMMM yyyy')}
             </h3>
             
             <Button
               variant="outline"
               size="sm"
               onClick={() => navigateMonth('next')}
+              className="h-8 w-8 sm:h-auto sm:w-auto p-1 sm:p-2"
             >
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
 
-          {/* Calendar Days */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
+          {/* Calendar Days Header */}
+          <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-1 sm:mb-2">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-              <div key={day} className="text-center text-sm font-medium text-gray-600 p-2">
-                {day}
+              <div key={day} className="text-center text-xs sm:text-sm font-medium text-gray-600 p-1 sm:p-2">
+                {isMobile ? day.charAt(0) : day}
               </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-7 gap-1">
+          <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
             {calendarDays.map((date, index) => {
               const dayEntries = getEntriesForDate(date);
               const primaryMood = getDateMood(date);
@@ -289,23 +327,23 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                 <motion.div
                   key={index}
                   whileHover={{ 
-                    scale: 1.05,
-                    rotateY: 5,
+                    scale: isMobile ? 1.02 : 1.05,
+                    rotateY: isMobile ? 0 : 5,
                     z: 10
                   }}
                   whileTap={{ scale: 0.95 }}
-                  onHoverStart={() => setHoveredDate(date)}
-                  onHoverEnd={() => setHoveredDate(null)}
+                  onHoverStart={() => !isMobile && setHoveredDate(date)}
+                  onHoverEnd={() => !isMobile && setHoveredDate(null)}
                   className={`
-                    relative h-24 border-2 rounded-xl cursor-pointer transition-all duration-300 overflow-hidden group
+                    relative h-16 sm:h-24 border border-gray-200 sm:border-2 rounded-lg sm:rounded-xl cursor-pointer transition-all duration-300 overflow-hidden group
                     ${isCurrentMonth ? 'opacity-100' : 'opacity-60'}
-                    ${isSelected ? 'ring-4 ring-purple-400 shadow-2xl transform scale-105' : ''}
-                    ${isTodayDate ? 'ring-2 ring-yellow-400 shadow-lg' : ''}
+                    ${isSelected ? 'ring-2 sm:ring-4 ring-purple-400 shadow-lg sm:shadow-2xl transform scale-105' : ''}
+                    ${isTodayDate ? 'ring-1 sm:ring-2 ring-yellow-400 shadow-sm sm:shadow-lg' : ''}
                     ${hasEntries && primaryMood ? 
                       moodBackgrounds[primaryMood as keyof typeof moodBackgrounds] : 
                       'bg-white border-gray-200'}
-                    ${isHovered ? 'shadow-xl transform translate-y-1' : 'shadow-md'}
-                    hover:shadow-2xl
+                    ${isHovered && !isMobile ? 'shadow-xl transform translate-y-1' : 'shadow-sm sm:shadow-md'}
+                    hover:shadow-lg sm:hover:shadow-2xl
                   `}
                   onClick={() => handleDateClick(date)}
                 >
@@ -323,15 +361,22 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                     />
                   )}
 
-                  <div className="p-2 h-full flex flex-col relative z-10">
-                    <div className="flex items-center justify-between mb-1">
-                      <div className={`text-lg font-bold ${isCurrentMonth ? 'text-gray-900' : 'text-gray-400'} ${isTodayDate ? 'text-yellow-600' : ''}`}>
+                  <div className="p-1 sm:p-2 h-full flex flex-col relative z-10">
+                    <div className="flex items-center justify-between mb-0.5 sm:mb-1">
+                      <div className={`text-sm sm:text-lg font-bold ${isCurrentMonth ? 'text-gray-900' : 'text-gray-400'} ${isTodayDate ? 'text-yellow-600' : ''}`}>
                         {format(date, 'd')}
                       </div>
                       
-                      {/* Quick actions on hover */}
+                      {/* Mobile: Primary mood indicator */}
+                      {isMobile && hasEntries && primaryMood && (
+                        <div className="text-xs">
+                          {primaryMood}
+                        </div>
+                      )}
+                      
+                      {/* Desktop: Quick actions on hover */}
                       <AnimatePresence>
-                        {isHovered && (
+                        {isHovered && !isMobile && (
                           <motion.div
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -359,49 +404,72 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                     
                     {hasEntries && (
                       <div className="flex-1 overflow-hidden">
-                        {/* Micro-summary */}
-                        {microSummary && (
-                          <div className="text-xs bg-white/80 rounded px-2 py-1 mb-1 font-medium text-gray-700">
-                            {microSummary}
+                        {/* Mobile: Compact indicators */}
+                        {isMobile ? (
+                          <div className="flex items-center justify-between">
+                            <div className="text-xs text-gray-600 font-medium">
+                              {dayEntries.length}
+                            </div>
+                            <div className="flex gap-0.5 items-center">
+                              {dayEntries.some(e => e.photos && e.photos.length > 0) && (
+                                <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                              )}
+                              {dayEntries.some(e => e.isPinned) && (
+                                <Star className="w-2 h-2 text-yellow-500 fill-yellow-400" />
+                              )}
+                              {dayEntries.some(e => e.isPrivate) && (
+                                <Lock className="w-2 h-2 text-red-500" />
+                              )}
+                            </div>
                           </div>
-                        )}
-                        
-                        {/* Entry count with animation */}
-                        <motion.div 
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          className="text-xs text-gray-600 mb-1 font-medium"
-                        >
-                          {dayEntries.length} {dayEntries.length === 1 ? 'memory' : 'memories'}
-                        </motion.div>
-                        
-                        {/* Photo thumbnails */}
-                        {dayEntries.some(e => e.photos && e.photos.length > 0) && (
-                          <div className="flex gap-1 mb-1">
-                            {dayEntries.slice(0, 3).map(entry => 
-                              entry.photos?.slice(0, 2).map((photo, pIndex) => (
-                                <div key={pIndex} className="w-4 h-4 bg-blue-200 rounded border overflow-hidden">
-                                  <Image className="w-full h-full text-blue-600" />
-                                </div>
-                              ))
+                        ) : (
+                          /* Desktop: Full content */
+                          <>
+                            {/* Micro-summary */}
+                            {microSummary && (
+                              <div className="text-xs bg-white/80 rounded px-2 py-1 mb-1 font-medium text-gray-700">
+                                {microSummary}
+                              </div>
                             )}
-                          </div>
-                        )}
-                        
-                        {/* Special indicators */}
-                        <div className="flex gap-1 items-center">
-                          {dayEntries.some(e => e.isPinned) && (
-                            <motion.div
-                              animate={{ rotate: [0, 10, -10, 0] }}
-                              transition={{ duration: 2, repeat: Infinity }}
+                            
+                            {/* Entry count with animation */}
+                            <motion.div 
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="text-xs text-gray-600 mb-1 font-medium"
                             >
-                              <Star className="w-3 h-3 text-yellow-500 fill-yellow-400" />
+                              {dayEntries.length} {dayEntries.length === 1 ? 'memory' : 'memories'}
                             </motion.div>
-                          )}
-                          {dayEntries.some(e => e.isPrivate) && (
-                            <Lock className="w-3 h-3 text-red-500" />
-                          )}
-                        </div>
+                            
+                            {/* Photo thumbnails */}
+                            {dayEntries.some(e => e.photos && e.photos.length > 0) && (
+                              <div className="flex gap-1 mb-1">
+                                {dayEntries.slice(0, 3).map(entry => 
+                                  entry.photos?.slice(0, 2).map((photo, pIndex) => (
+                                    <div key={pIndex} className="w-4 h-4 bg-blue-200 rounded border overflow-hidden">
+                                      <Image className="w-full h-full text-blue-600" />
+                                    </div>
+                                  ))
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Special indicators */}
+                            <div className="flex gap-1 items-center">
+                              {dayEntries.some(e => e.isPinned) && (
+                                <motion.div
+                                  animate={{ rotate: [0, 10, -10, 0] }}
+                                  transition={{ duration: 2, repeat: Infinity }}
+                                >
+                                  <Star className="w-3 h-3 text-yellow-500 fill-yellow-400" />
+                                </motion.div>
+                              )}
+                              {dayEntries.some(e => e.isPrivate) && (
+                                <Lock className="w-3 h-3 text-red-500" />
+                              )}
+                            </div>
+                          </>
+                        )}
                       </div>
                     )}
 
@@ -435,22 +503,36 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
           </div>
         </div>
 
-        {/* Selected Date Sidebar */}
+        {/* Selected Date Sidebar - Mobile Responsive */}
         <AnimatePresence>
           {selectedDate && (
             <motion.div
-              initial={{ x: 300, opacity: 0 }}
+              initial={{ x: isMobile ? "100%" : 300, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: 300, opacity: 0 }}
-              className="w-80 bg-white border-l border-gray-200 flex flex-col"
+              exit={{ x: isMobile ? "100%" : 300, opacity: 0 }}
+              className={`${isMobile ? 'fixed inset-0 z-50' : 'w-80'} bg-white ${isMobile ? '' : 'border-l border-gray-200'} flex flex-col`}
             >
-              <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                <h3 className="font-bold text-lg">
-                  {format(selectedDate, 'MMMM d, yyyy')}
-                </h3>
-                <p className="text-purple-100 text-sm">
-                  {selectedDateEntries.length} {selectedDateEntries.length === 1 ? 'entry' : 'entries'}
-                </p>
+              <div className="p-3 sm:p-4 border-b border-gray-200 bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-bold text-lg">
+                      {format(selectedDate, isMobile ? 'MMM d, yyyy' : 'MMMM d, yyyy')}
+                    </h3>
+                    <p className="text-purple-100 text-sm">
+                      {selectedDateEntries.length} {selectedDateEntries.length === 1 ? 'entry' : 'entries'}
+                    </p>
+                  </div>
+                  {isMobile && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setSelectedDate(null)}
+                      className="text-white hover:bg-white/10 p-2"
+                    >
+                      ×
+                    </Button>
+                  )}
+                </div>
               </div>
 
               <div className="flex-1 overflow-auto p-4 space-y-4">
@@ -541,62 +623,64 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
           )}
         </AnimatePresence>
 
-        {/* Memory Lane Timeline - Bottom Section */}
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-4 bg-gradient-to-r from-purple-100 via-pink-50 to-blue-50 rounded-xl p-4 border border-purple-200"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-lg font-bold text-purple-800">🌟 Memory Lane</h3>
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none hover:from-purple-600 hover:to-pink-600"
-            >
-              <Sparkles className="w-4 h-4 mr-2" />
-              AI Recap This Month
-            </Button>
-          </div>
-          
-          <div className="flex gap-3 overflow-x-auto pb-2">
-            {entries.slice(0, 5).map((entry, index) => (
-              <motion.div
-                key={entry.id}
-                initial={{ scale: 0, rotate: -10 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ delay: index * 0.1 }}
-                whileHover={{ scale: 1.05, y: -5 }}
-                className="flex-shrink-0 w-32 h-20 bg-white rounded-lg shadow-md p-2 cursor-pointer border-2 border-transparent hover:border-purple-300"
-                onClick={() => onEntryEdit(entry)}
+        {/* Memory Lane Timeline - Mobile Optimized */}
+        {!isMobile && (
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="mt-4 bg-gradient-to-r from-purple-100 via-pink-50 to-blue-50 rounded-xl p-4 border border-purple-200"
+          >
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-lg font-bold text-purple-800">🌟 Memory Lane</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-none hover:from-purple-600 hover:to-pink-600"
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{entry.mood}</span>
-                  <div className="text-xs text-gray-500">
-                    {format(entry.date, 'MMM d')}
-                  </div>
-                </div>
-                <div className="text-xs text-gray-700 line-clamp-2">
-                  {entry.title}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {entry.wordCount} words
-                </div>
-              </motion.div>
-            ))}
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI Recap This Month
+              </Button>
+            </div>
             
-            {/* Add Memory Button */}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex-shrink-0 w-32 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg border-2 border-dashed border-purple-300 flex flex-col items-center justify-center cursor-pointer hover:from-purple-200 hover:to-pink-200"
-              onClick={() => onDateSelect(new Date())}
-            >
-              <Plus className="w-6 h-6 text-purple-500 mb-1" />
-              <span className="text-xs text-purple-600 font-medium">Add Memory</span>
-            </motion.div>
-          </div>
-        </motion.div>
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {entries.slice(0, 5).map((entry, index) => (
+                <motion.div
+                  key={entry.id}
+                  initial={{ scale: 0, rotate: -10 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="flex-shrink-0 w-32 h-20 bg-white rounded-lg shadow-md p-2 cursor-pointer border-2 border-transparent hover:border-purple-300"
+                  onClick={() => onEntryEdit(entry)}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">{entry.mood}</span>
+                    <div className="text-xs text-gray-500">
+                      {format(entry.date, 'MMM d')}
+                    </div>
+                  </div>
+                  <div className="text-xs text-gray-700 line-clamp-2">
+                    {entry.title}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {entry.wordCount} words
+                  </div>
+                </motion.div>
+              ))}
+              
+              {/* Add Memory Button */}
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                className="flex-shrink-0 w-32 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg border-2 border-dashed border-purple-300 flex flex-col items-center justify-center cursor-pointer hover:from-purple-200 hover:to-pink-200"
+                onClick={() => onDateSelect(new Date())}
+              >
+                <Plus className="w-6 h-6 text-purple-500 mb-1" />
+                <span className="text-xs text-purple-600 font-medium">Add Memory</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
     </TooltipProvider>
