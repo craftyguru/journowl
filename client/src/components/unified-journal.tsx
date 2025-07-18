@@ -229,30 +229,57 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   // Generate AI suggestions based on content
   const generateAiSuggestions = useCallback(async () => {
-    if (content.length > 10) {
-      try {
-        const response = await fetch('/api/ai/generate-prompt', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            recentEntries: [content],
-            mood,
-            photos: photos.map(p => p.analysis?.description).filter(Boolean)
-          })
-        });
-
-        if (response.ok) {
-          const { prompt } = await response.json();
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: `💡 Writing suggestion: ${prompt}`
-          }]);
-        }
-      } catch (error) {
-        console.error('Failed to generate AI suggestion:', error);
-      }
+    if (content.length < 10) {
+      setAiMessages(prev => [...prev, {
+        type: 'ai',
+        message: '💡 Start writing at least 10 characters and I\'ll give you personalized suggestions based on your content!'
+      }]);
+      setShowAiChat(true);
+      return;
     }
-  }, [content, mood, photos]);
+
+    try {
+      // Show loading state
+      setAiMessages(prev => [...prev, {
+        type: 'ai',
+        message: '💭 Analyzing your writing... generating personalized suggestions!'
+      }]);
+      setShowAiChat(true);
+
+      const response = await fetch('/api/ai/generate-prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          recentEntries: [content],
+          mood,
+          photos: photos.map(p => p.analysis?.description).filter(Boolean),
+          title: title || "Untitled"
+        })
+      });
+
+      if (response.ok) {
+        const { prompt } = await response.json();
+        setAiMessages(prev => [
+          ...prev.slice(0, -1), // Remove loading message
+          {
+            type: 'ai',
+            message: `💡 **Writing Suggestion Based on Your Content:**\n\n${prompt}\n\n🎯 This suggestion was crafted specifically for your current entry and mood (${mood}). Want more ideas or help developing this further?`
+          }
+        ]);
+      } else {
+        throw new Error('Failed to generate suggestion');
+      }
+    } catch (error) {
+      console.error('Failed to generate AI suggestion:', error);
+      setAiMessages(prev => [
+        ...prev.slice(0, -1), // Remove loading message
+        {
+          type: 'ai',
+          message: '😅 I had trouble generating suggestions right now. Try again in a moment, or feel free to ask me for writing ideas directly!'
+        }
+      ]);
+    }
+  }, [content, mood, photos, title]);
 
   // Start/stop voice recording for journal
   const toggleVoiceRecording = () => {
@@ -903,13 +930,14 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 </div>
               </div>
 
-              {/* Mood & Controls */}
-              <div className="flex items-center gap-3 p-2 bg-white/50 rounded-lg backdrop-blur-sm text-sm">
-                <div className="flex items-center gap-2">
-                  <Smile className="w-3 h-3 text-amber-600" />
-                  <span className="text-xs font-medium">Mood:</span>
+              {/* Mood & Controls - Mobile Optimized */}
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-2 bg-white/50 rounded-lg backdrop-blur-sm text-sm">
+                {/* Top Row - Mood Selection */}
+                <div className="flex items-center gap-2 flex-1">
+                  <Smile className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <span className="text-xs font-medium whitespace-nowrap">Mood:</span>
                   <Select value={mood} onValueChange={setMood}>
-                    <SelectTrigger className="w-32 h-8 bg-white/70 border-amber-300 text-sm">
+                    <SelectTrigger className="w-full sm:w-32 h-10 bg-white/70 border-amber-300 text-sm">
                       <SelectValue placeholder="Select mood" />
                     </SelectTrigger>
                     <SelectContent className="bg-white border-amber-300">
@@ -926,22 +954,24 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   </Select>
                 </div>
 
-                {/* AI & Privacy Controls */}
-                <div className="flex items-center gap-2 ml-auto">
+                {/* Bottom Row - AI & Privacy Controls */}
+                <div className="flex items-center gap-2 justify-between sm:justify-end">
                   <Button 
                     onClick={generateAiSuggestions}
                     variant="outline"
                     size="sm"
                     disabled={content.length < 10}
-                    className="h-10 px-3 bg-gray-100 hover:bg-gray-200 border-gray-300"
-                    title="Generate AI writing suggestions based on your content"
+                    className="h-10 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 border-0 text-white font-medium shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={content.length < 10 ? "Write at least 10 characters to get AI suggestions" : "Generate AI writing suggestions based on your content"}
                   >
-                    <Lightbulb className="w-4 h-4 text-gray-600" />
+                    <Lightbulb className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">AI Ideas</span>
+                    <span className="sm:hidden">Ideas</span>
                   </Button>
 
                   <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg border border-gray-300">
                     <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
-                    <span className="text-sm font-medium text-gray-700">Private</span>
+                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Private</span>
                   </div>
                 </div>
               </div>
