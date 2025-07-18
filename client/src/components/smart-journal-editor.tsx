@@ -291,17 +291,24 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                 />
               </div>
 
-              {/* Mobile-Friendly Mood Selector */}
+              {/* Mood Dropdown Selector */}
               <div>
                 <label className="text-sm font-medium text-gray-300 mb-2 block">How are you feeling?</label>
                 <Select value={mood} onValueChange={setMood}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select a mood..." />
+                  <SelectTrigger className="w-full bg-slate-700/80 border-slate-600 text-white h-12 rounded-lg">
+                    <SelectValue placeholder="Select your mood..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-800 border-slate-600">
                     {moodOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label} ({option.value})
+                      <SelectItem 
+                        key={option.value} 
+                        value={option.value}
+                        className="text-white hover:bg-slate-700 focus:bg-slate-700"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-lg">{option.value}</span>
+                          <span>{option.label}</span>
+                        </div>
                       </SelectItem>
                     ))}
                   </SelectContent>
