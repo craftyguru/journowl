@@ -905,22 +905,25 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
               {/* Mood & Controls */}
               <div className="flex items-center gap-3 p-2 bg-white/50 rounded-lg backdrop-blur-sm text-sm">
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2">
                   <Smile className="w-3 h-3 text-amber-600" />
                   <span className="text-xs font-medium">Mood:</span>
-                  <div className="flex gap-1">
-                    {moodEmojis.slice(0, 6).map(emoji => (
-                      <button
-                        key={emoji}
-                        onClick={() => setMood(emoji)}
-                        className={`p-1 rounded text-sm transition-all hover:scale-110 ${
-                          mood === emoji ? 'bg-amber-200 scale-110' : 'hover:bg-white/50'
-                        }`}
-                      >
-                        {emoji}
-                      </button>
-                    ))}
-                  </div>
+                  <Select value={mood} onValueChange={setMood}>
+                    <SelectTrigger className="w-32 h-8 bg-white/70 border-amber-300 text-sm">
+                      <SelectValue placeholder="Select mood" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-amber-300">
+                      {moodEmojis.map(emoji => (
+                        <SelectItem 
+                          key={emoji} 
+                          value={emoji}
+                          className="hover:bg-amber-50 focus:bg-amber-50"
+                        >
+                          <span className="text-lg">{emoji}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 {/* AI & Privacy Controls */}
