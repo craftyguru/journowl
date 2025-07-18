@@ -42,6 +42,11 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
+  // Add a simple test route to verify server is working
+  app.get("/health", (req, res) => {
+    res.json({ status: "OK", message: "JournOwl server is running!", timestamp: new Date().toISOString() });
+  });
+
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
