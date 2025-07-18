@@ -764,7 +764,6 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
           </div>
         </motion.div>
       )}
-      </div>
     </div>
     </TooltipProvider>
   );

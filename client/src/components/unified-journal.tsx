@@ -1332,10 +1332,10 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
               {/* Right Page - Creative Area with Resizable Panels */}
               <Panel defaultSize={35} minSize={0}>
-              <div className="p-4 relative overflow-hidden h-full">
-                <PanelGroup direction="vertical" className="h-full">
-              {/* Drawing Canvas Panel */}
-              <Panel defaultSize={60} minSize={30}>
+                <div className="p-4 relative overflow-hidden h-full">
+                  <PanelGroup direction="vertical" className="h-full">
+                    {/* Drawing Canvas Panel */}
+                    <Panel defaultSize={60} minSize={30}>
                 <Card className="h-full bg-white/80 backdrop-blur-sm">
                 <CardContent className="p-3 h-full flex flex-col">
                   <div className="mb-2 flex-shrink-0">
