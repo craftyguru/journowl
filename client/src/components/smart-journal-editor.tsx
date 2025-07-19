@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Bold, Italic, Underline, Type, Palette, Image as ImageIcon, 
   Brush, Save, Sparkles, Camera, Upload, Eye, EyeOff,
-  Undo, Redo, Layers, Circle, Square, Minus, Video
+  Undo, Redo, Layers, Circle, Square, Minus, Video, PenTool,
+  Eraser, Download, RotateCcw
 } from "lucide-react";
 import MDEditor from '@uiw/react-md-editor';
 import { HexColorPicker } from "react-colorful";
+import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,7 +70,7 @@ const moodOptions = [
 
 export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJournalEditorProps) {
   const { toast } = useToast();
-  const canvasRef = useRef<any>(null);
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
@@ -89,6 +91,8 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
   const [brushColor, setBrushColor] = useState("#8B5CF6");
   const [brushSize, setBrushSize] = useState(5);
   const [drawings, setDrawings] = useState(entry?.drawings || []);
+  const [drawingTool, setDrawingTool] = useState<'pen' | 'eraser'>('pen');
+  const [canvasBackground, setCanvasBackground] = useState("#1e293b");
 
   // Photo state
   const [photos, setPhotos] = useState(entry?.photos || []);
@@ -207,13 +211,75 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
     }
   };
 
-  const saveDrawing = () => {
-    // Save canvas drawing functionality
-    toast({
-      title: "Drawing Saved",
-      description: "Your drawing has been added to the entry."
-    });
-  };
+  const saveDrawing = useCallback(async () => {
+    if (!canvasRef.current) return;
+    
+    try {
+      const canvasData = await canvasRef.current.exportImage("png");
+      const newDrawing = {
+        id: Date.now(),
+        data: canvasData,
+        timestamp: new Date().toISOString(),
+        brushColor,
+        brushSize
+      };
+      
+      setDrawings(prev => [...prev, newDrawing]);
+      toast({
+        title: "Drawing Saved",
+        description: "Your drawing has been added to the entry."
+      });
+    } catch (error) {
+      console.error('Failed to save drawing:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save drawing. Please try again.",
+        variant: "destructive"
+      });
+    }
+  }, [brushColor, brushSize, toast]);
+
+  const clearCanvas = useCallback(() => {
+    if (canvasRef.current) {
+      canvasRef.current.clearCanvas();
+    }
+  }, []);
+
+  const undoDrawing = useCallback(() => {
+    if (canvasRef.current) {
+      canvasRef.current.undo();
+    }
+  }, []);
+
+  const redoDrawing = useCallback(() => {
+    if (canvasRef.current) {
+      canvasRef.current.redo();
+    }
+  }, []);
+
+  const downloadDrawing = useCallback(async () => {
+    if (!canvasRef.current) return;
+    
+    try {
+      const canvasData = await canvasRef.current.exportImage("png");
+      const link = document.createElement('a');
+      link.download = `journal-drawing-${Date.now()}.png`;
+      link.href = canvasData;
+      link.click();
+      
+      toast({
+        title: "Drawing Downloaded",
+        description: "Your drawing has been saved to your device."
+      });
+    } catch (error) {
+      console.error('Failed to download drawing:', error);
+      toast({
+        title: "Error",
+        description: "Failed to download drawing. Please try again.",
+        variant: "destructive"
+      });
+    }
+  }, [toast]);
 
   const handleSave = () => {
     const entryData = {
@@ -403,8 +469,9 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
             {/* Mobile-Optimized Tabs */}
             <div className="flex-1 p-2 sm:p-4 overflow-hidden">
               <Tabs defaultValue="write" className="h-full flex flex-col">
-                <TabsList className="grid w-full grid-cols-3 bg-slate-800 mb-4">
+                <TabsList className="grid w-full grid-cols-4 bg-slate-800 mb-4">
                   <TabsTrigger value="write" className="text-xs sm:text-sm">✍️ Write</TabsTrigger>
+                  <TabsTrigger value="draw" className="text-xs sm:text-sm">🎨 Draw</TabsTrigger>
                   <TabsTrigger value="photos" className="text-xs sm:text-sm">📸 Photos</TabsTrigger>
                   <TabsTrigger value="preview" className="text-xs sm:text-sm">👁️ Preview</TabsTrigger>
                 </TabsList>
@@ -417,6 +484,179 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                       height={window.innerHeight > 600 ? 400 : 300}
                       data-color-mode="dark"
                     />
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="draw" className="flex-1">
+                  <div className="h-full flex flex-col">
+                    {/* Drawing Toolbar */}
+                    <div className="flex flex-wrap items-center gap-2 p-3 bg-slate-800/50 rounded-lg mb-3">
+                      {/* Tool Selection */}
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant={drawingTool === 'pen' ? 'default' : 'outline'}
+                          onClick={() => setDrawingTool('pen')}
+                          className="h-8 w-8 sm:h-10 sm:w-10"
+                        >
+                          <PenTool className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant={drawingTool === 'eraser' ? 'default' : 'outline'}
+                          onClick={() => setDrawingTool('eraser')}
+                          className="h-8 w-8 sm:h-10 sm:w-10"
+                        >
+                          <Eraser className="w-4 h-4" />
+                        </Button>
+                      </div>
+
+                      <Separator orientation="vertical" className="h-8" />
+
+                      {/* Color Picker */}
+                      <div className="flex items-center gap-2">
+                        <div className="flex flex-col gap-1">
+                          <div 
+                            className="w-8 h-8 rounded border-2 border-white cursor-pointer"
+                            style={{ backgroundColor: brushColor }}
+                            onClick={() => {
+                              const colors = ['#8B5CF6', '#EF4444', '#22C55E', '#3B82F6', '#F59E0B', '#EC4899', '#10B981', '#F97316'];
+                              const currentIndex = colors.indexOf(brushColor);
+                              const nextIndex = (currentIndex + 1) % colors.length;
+                              setBrushColor(colors[nextIndex]);
+                            }}
+                            title="Click to cycle colors"
+                          />
+                        </div>
+                        
+                        {/* Quick Color Palette */}
+                        <div className="flex gap-1">
+                          {['#8B5CF6', '#EF4444', '#22C55E', '#3B82F6', '#F59E0B', '#FFFFFF', '#000000'].map((color) => (
+                            <button
+                              key={color}
+                              className="w-6 h-6 rounded border border-gray-600 hover:scale-110 transition-transform"
+                              style={{ backgroundColor: color }}
+                              onClick={() => setBrushColor(color)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      <Separator orientation="vertical" className="h-8" />
+
+                      {/* Brush Size */}
+                      <div className="flex items-center gap-2 min-w-[100px]">
+                        <label className="text-xs text-gray-300">Size</label>
+                        <Slider
+                          value={[brushSize]}
+                          onValueChange={(value) => setBrushSize(value[0])}
+                          max={50}
+                          min={1}
+                          step={1}
+                          className="flex-1"
+                        />
+                        <span className="text-xs text-gray-300 w-8">{brushSize}</span>
+                      </div>
+
+                      <Separator orientation="vertical" className="h-8" />
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={undoDrawing}
+                          className="h-8 w-8 sm:h-10 sm:w-10"
+                          title="Undo"
+                        >
+                          <Undo className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={redoDrawing}
+                          className="h-8 w-8 sm:h-10 sm:w-10"
+                          title="Redo"
+                        >
+                          <Redo className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={clearCanvas}
+                          className="h-8 w-8 sm:h-10 sm:w-10"
+                          title="Clear Canvas"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={downloadDrawing}
+                          className="h-8 w-8 sm:h-10 sm:w-10"
+                          title="Download Drawing"
+                        >
+                          <Download className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={saveDrawing}
+                          className="h-8 px-3 sm:h-10 sm:px-4 bg-purple-600 hover:bg-purple-700"
+                        >
+                          <Save className="w-4 h-4 mr-1" />
+                          Save
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Drawing Canvas */}
+                    <div className="flex-1 bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
+                      <ReactSketchCanvas
+                        ref={canvasRef}
+                        style={{
+                          border: 'none',
+                          borderRadius: '8px',
+                        }}
+                        width="100%"
+                        height="400px"
+                        strokeWidth={brushSize}
+                        strokeColor={drawingTool === 'eraser' ? canvasBackground : brushColor}
+                        canvasColor={canvasBackground}
+                        backgroundImage=""
+                        exportWithBackgroundImage={true}
+                        allowOnlyPointerType="all"
+                        svgStyle={{}}
+                      />
+                    </div>
+
+                    {/* Saved Drawings */}
+                    {drawings.length > 0 && (
+                      <div className="mt-4 p-3 bg-slate-800/30 rounded-lg">
+                        <h4 className="text-sm font-medium text-white mb-2 flex items-center">
+                          <Layers className="w-4 h-4 mr-2" />
+                          Saved Drawings ({drawings.length})
+                        </h4>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                          {drawings.map((drawing) => (
+                            <div key={drawing.id} className="relative group">
+                              <img 
+                                src={drawing.data} 
+                                alt="Drawing" 
+                                className="w-full aspect-square object-cover rounded border border-slate-600 hover:border-purple-400 cursor-pointer transition-colors"
+                                onClick={() => {
+                                  // Future: implement drawing preview modal
+                                  toast({
+                                    title: "Drawing Preview",
+                                    description: "Drawing preview feature coming soon!"
+                                  });
+                                }}
+                              />
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded transition-colors" />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
 
