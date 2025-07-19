@@ -47,19 +47,7 @@ app.use((req, res, next) => {
     res.json({ status: "OK", message: "JournOwl server is running!", timestamp: new Date().toISOString() });
   });
 
-  // Add a simple root route for Railway health checks
-  app.get("/", (req, res, next) => {
-    // Only handle this if we're in production without static files
-    if (process.env.NODE_ENV === "production") {
-      res.json({ 
-        message: "JournOwl API is running", 
-        status: "OK",
-        environment: process.env.NODE_ENV || "development"
-      });
-    } else {
-      next(); // Let Vite handle this in development
-    }
-  });
+  // Remove the root route override - let Vite handle everything in development
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
