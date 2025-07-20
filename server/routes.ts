@@ -34,7 +34,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Session middleware with PostgreSQL store
   app.use(session({
     store: new PgSession({
-      conString: `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}?sslmode=require`,
+      conString: "postgresql://postgres:CzuYLahCEgyGOhgyERweTArgAgDqUhSL@ballast.proxy.rlwy.net:32118/railway",
       tableName: 'session',
       createTableIfMissing: true
     }),

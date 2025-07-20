@@ -31,10 +31,12 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
-// Force use of correct Replit Neon PostgreSQL database
-const dbUrl = "postgresql://neondb_owner:npg_1gRarUMvfDH8@ep-square-waterfall-af0ahqiu.c-2.us-west-2.aws.neon.tech:5432/neondb?sslmode=require";
-console.log("Database connecting to:", dbUrl.split('@')[1]?.split('/')[0] + '/neondb');
-const client = postgres(dbUrl);
+// Use Railway PostgreSQL database - force correct connection
+const dbUrl = "postgresql://postgres:CzuYLahCEgyGOhgyERweTArgAgDqUhSL@ballast.proxy.rlwy.net:32118/railway";
+console.log("Database connecting to:", dbUrl.split('@')[1]?.split('?')[0]);
+const client = postgres(dbUrl, {
+  ssl: { rejectUnauthorized: false } // Handle self-signed certificates
+});
 const db = drizzle(client);
 
 export interface IStorage {
