@@ -32,7 +32,7 @@ import {
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
 // Use Supabase PostgreSQL database
-const dbUrl = process.env.DATABASE_URL || "postgresql://postgres.asjcxaiabjsbjbasssfe:CraftyGuru7756@db.asjcxaiabjsbjbasssfe.supabase.co:5432/postgres";
+const dbUrl = process.env.DATABASE_URL || "postgresql://postgres:CtopXd3xkGpDjOk6@db.asjcxaiabjsbjbasssfe.supabase.co:5432/postgres";
 console.log("Database connecting to:", dbUrl.split('@')[1]?.split('?')[0]);
 const client = postgres(dbUrl, {
   ssl: { rejectUnauthorized: false }
