@@ -164,6 +164,36 @@ const tutorialSteps: TutorialStep[] = [
       "Personal growth insights",
       "Trend visualizations"
     ]
+  },
+  {
+    id: 7,
+    title: "Your Free Account 🎁",
+    description: "Start with 100 AI prompts and 50MB storage. Upgrade anytime for unlimited features!",
+    icon: <Gift className="h-8 w-8" />,
+    color: "text-emerald-600",
+    bgGradient: "from-emerald-500 to-teal-500",
+    features: [
+      "100 AI prompts per month",
+      "50MB photo storage",
+      "All core features included",
+      "Upgrade options available"
+    ],
+    demo: (
+      <div className="space-y-3">
+        <div className="flex justify-between items-center p-2 bg-white/20 rounded-lg">
+          <span className="text-sm text-white">AI Prompts</span>
+          <span className="text-sm font-bold text-white">100/100</span>
+        </div>
+        <div className="flex justify-between items-center p-2 bg-white/20 rounded-lg">
+          <span className="text-sm text-white">Storage</span>
+          <span className="text-sm font-bold text-white">50MB</span>
+        </div>
+        <div className="text-xs text-center text-white/80">
+          Pro: 1,000 prompts + 500MB ($9.99/mo)<br/>
+          Power: Unlimited everything ($19.99/mo)
+        </div>
+      </div>
+    )
   }
 ];
 

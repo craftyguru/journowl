@@ -14,7 +14,7 @@ export interface EmailTemplate {
 }
 
 export function createWelcomeEmailTemplate(userEmail: string, userName: string, verificationToken: string): EmailTemplate {
-  const verificationUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${process.env.BASE_URL || 'https://7ba85678f8f4b618.id.repl.co'}/api/auth/verify-email?token=${verificationToken}`;
   
   const html = `
     <!DOCTYPE html>
@@ -168,6 +168,30 @@ export function createWelcomeEmailTemplate(userEmail: string, userName: string, 
             </div>
           </div>
 
+          <!-- Subscription Information -->
+          <div style="background: linear-gradient(135deg, #e0f2fe 0%, #bbdefb 100%); padding: 20px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #2196f3;">
+            <h4 style="color: #1565c0; margin: 0 0 15px 0;">🎯 Your Free Account Includes:</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; color: #1565c0;">
+              <div style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 5px;">✨</div>
+                <strong>100 AI Prompts</strong><br>
+                <small>Smart writing suggestions</small>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 5px;">☁️</div>
+                <strong>50MB Storage</strong><br>
+                <small>For photos & attachments</small>
+              </div>
+            </div>
+            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 10px; text-align: center;">
+              <p style="margin: 0; color: #1565c0; font-weight: bold;">Need more? Upgrade anytime!</p>
+              <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">
+                🚀 <strong>Pro Plan ($9.99/month):</strong> 1,000 prompts + 500MB<br>
+                ⚡ <strong>Power Plan ($19.99/month):</strong> Unlimited everything
+              </p>
+            </div>
+          </div>
+
           <!-- Quick Tips -->
           <div class="tips">
             <h4 style="color: #92400e; margin: 0 0 15px 0;">💡 Quick Start Tips:</h4>
@@ -177,6 +201,7 @@ export function createWelcomeEmailTemplate(userEmail: string, userName: string, 
               <li>Customize your writing style with fonts & colors</li>
               <li>Set your first journaling goal</li>
               <li>Explore the achievement system</li>
+              <li><strong>Monitor your AI prompts</strong> - they refresh monthly!</li>
             </ul>
           </div>
 
@@ -223,12 +248,22 @@ What makes JournOwl special:
 • Achievement system with XP, levels, and rewards
 • AI Insights that discover patterns in your writing
 
+Your Free Account Includes:
+✨ 100 AI Prompts per month - Smart writing suggestions
+☁️ 50MB Storage - For photos and attachments
+🎯 Full access to all core features
+
+Need more? Upgrade anytime:
+🚀 Pro Plan ($9.99/month): 1,000 prompts + 500MB storage
+⚡ Power Plan ($19.99/month): Unlimited prompts + 5GB storage
+
 Quick Start Tips:
 - Start with a simple mood check-in
 - Try uploading a photo for AI analysis  
 - Customize your writing style
 - Set your first journaling goal
 - Explore achievements
+- Monitor your AI prompts - they refresh monthly!
 
 Ready to begin your mindful writing journey? Click the verification link above!
 
@@ -266,7 +301,7 @@ export async function sendWelcomeEmail(userEmail: string, userName: string, veri
 }
 
 export function createEmailVerificationTemplate(userEmail: string, userName: string, verificationToken: string): EmailTemplate {
-  const verificationUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${process.env.BASE_URL || 'https://7ba85678f8f4b618.id.repl.co'}/api/auth/verify-email?token=${verificationToken}`;
   
   const html = `
     <!DOCTYPE html>
