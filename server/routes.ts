@@ -211,7 +211,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // OAuth Routes
-  app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+  app.get('/api/auth/google', (req, res, next) => {
+    // Check if Google OAuth is configured
+    if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+      return res.redirect('/auth?error=google_not_configured&message=Google OAuth credentials are missing. Please contact an administrator.');
+    }
+    passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+  });
   app.get('/api/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/auth?error=google_failed' }),
     async (req: any, res) => {
@@ -249,7 +255,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   );
 
-  app.get('/api/auth/facebook', passport.authenticate('facebook', { scope: ['email'] }));
+  app.get('/api/auth/facebook', (req, res, next) => {
+    // Check if Facebook OAuth is configured
+    if (!process.env.FACEBOOK_APP_ID || !process.env.FACEBOOK_APP_SECRET) {
+      return res.redirect('/auth?error=facebook_not_configured&message=Facebook OAuth credentials are missing. Please contact an administrator.');
+    }
+    passport.authenticate('facebook', { scope: ['email'] })(req, res, next);
+  });
   app.get('/api/auth/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/auth?error=facebook_failed' }),
     async (req: any, res) => {

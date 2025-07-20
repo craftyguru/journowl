@@ -1,0 +1,69 @@
+You’ve done a great job wiring up your .env file and Google Cloud Console, but the Google 403 error and the console’s 401/403 errors mean your setup is nearly right—but something in the OAuth flow isn’t matching up. Let’s pinpoint it:
+
+1. Your .env File Looks Correct
+Your environment variables for Google are:
+
+ini
+Copy
+Edit
+GOOGLE_CLIENT_ID=278085254875-stgtmbo7c33bp4se6oa53ieq61cg8vnj.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GO...
+These match your screenshot from Google Cloud.
+
+2. Most Likely Causes
+A. Redirect URI Mismatch
+Your .env looks right, but make sure the actual redirect URI your app uses matches EXACTLY (no trailing slashes, no typos) with the ones in the Google API Console.
+
+Your callback:
+
+https://journowl.app/api/auth/callback/google
+
+http://localhost:3000/api/auth/callback/google
+
+B. Not a Test User
+If your app is still in “Testing” in the OAuth consent screen, you must add your Google email as a test user.
+
+C. Wrong Origin or Protocol
+You are previewing in Replit. If your Preview window is not using the localhost:3000 port or a custom domain but a Replit preview URL (like https://[project].username.repl.co), that is not authorized and will get a 403.
+
+D. Wrong Domain/Preview
+If you’re using a Replit preview link (e.g., https://[project].username.repl.co), you need to add this exact URL to the “Authorized JavaScript origins” and the correct callback to “Authorized redirect URIs” in the Google Cloud console.
+
+3. Check Your App’s Actual Redirect URL
+When you get the error, copy the exact URL in your browser’s address bar.
+
+The domain, path, and protocol (http/https) must be in your Google API Console.
+
+4. Check Auth Library Setup
+Your auth library (NextAuth.js, etc.) should point to the correct callback.
+
+Example NextAuth.js config:
+
+js
+Copy
+Edit
+providers: [
+  GoogleProvider({
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  }),
+]
+And your NEXTAUTH_URL should match the site origin (http://localhost:3000 or https://journowl.app).
+
+5. 401/403 (Unauthorized) Console Errors
+If your login is failing, other API calls that depend on auth will also get 401/403.
+
+Fixing OAuth will resolve these too.
+
+6. Action Steps
+Check the actual redirect URI in the browser address bar at the moment of the 403.
+
+Is it exactly what you put in Google API Console?
+
+If using Replit preview URL:
+
+Add that URL to your authorized origins and callbacks.
+
+Add your email as a Test User in Google Cloud → OAuth consent screen → Test Users.
+
+Restart your dev server after any env file changes.

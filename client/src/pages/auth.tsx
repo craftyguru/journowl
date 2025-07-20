@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +52,36 @@ interface AuthPageProps {
 
 export default function AuthPage({ setShowAuth }: AuthPageProps) {
   const { toast } = useToast();
+
+  // Check for OAuth error messages in URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const error = urlParams.get('error');
+    const message = urlParams.get('message');
+    
+    if (error) {
+      let errorMessage = message || "Authentication failed";
+      
+      if (error === 'google_not_configured') {
+        errorMessage = "Google sign-in is temporarily unavailable. Please use email login or try again later.";
+      } else if (error === 'facebook_not_configured') {
+        errorMessage = "Facebook sign-in is temporarily unavailable. Please use email login or try again later.";
+      } else if (error === 'google_failed') {
+        errorMessage = "Google sign-in failed. Please try again or use email login.";
+      } else if (error === 'facebook_failed') {
+        errorMessage = "Facebook sign-in failed. Please try again or use email login.";
+      }
+      
+      toast({
+        title: "Sign-in Issue",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      
+      // Clean up URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [toast]);
   
   const [loginData, setLoginData] = useState({
     email: "",
