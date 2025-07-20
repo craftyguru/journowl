@@ -31,9 +31,8 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
-// Force use of correct Replit Neon PostgreSQL database
-const dbUrl = "postgresql://neondb_owner:npg_1gRarUMvfDH8@ep-square-waterfall-af0ahqiu.c-2.us-west-2.aws.neon.tech:5432/neondb?sslmode=require";
-console.log("Database connecting to:", dbUrl.split('@')[1]?.split('/')[0] + '/neondb');
+// Use Replit PostgreSQL database with SSL
+const dbUrl = `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}?sslmode=require`;
 const client = postgres(dbUrl);
 const db = drizzle(client);
 
