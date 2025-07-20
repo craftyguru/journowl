@@ -176,7 +176,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       aiRecognitionInstance.onresult = (event) => {
         let finalTranscript = '';
         let interimTranscript = '';
-
+        
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript;
@@ -184,17 +184,17 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             interimTranscript += event.results[i][0].transcript;
           }
         }
-
+        
         // Show interim results in the input field
         setAiInput(lastFinalTranscript + finalTranscript + interimTranscript);
-
+        
         // When we get final transcript, send it to AI for interactive response
         if (finalTranscript && finalTranscript !== lastFinalTranscript) {
           const newContent = lastFinalTranscript + finalTranscript;
           setLastFinalTranscript(newContent);
-
+          
           console.log('AI Recognition received:', newContent);
-
+          
           // For click-and-hold mode, wait for user to release button
           // The message will be sent when mouse is released
         }
@@ -229,67 +229,55 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   // Generate AI suggestions based on content
   const generateAiSuggestions = useCallback(async () => {
-    // Always open the AI chat first
-    setShowAiChat(true);
-
     if (content.length < 10) {
       setAiMessages(prev => [...prev, {
         type: 'ai',
         message: '💡 Start writing at least 10 characters and I\'ll give you personalized suggestions based on your content!'
       }]);
+      setShowAiChat(true);
       return;
     }
 
-    // Pre-populate the input with current content for AI analysis
-    const currentText = content.trim();
-    if (currentText) {
-      setAiInput(`Please analyze this text and give me writing suggestions: "${currentText}"`);
-
-      // Add a user message showing what's being analyzed
+    try {
+      // Show loading state
       setAiMessages(prev => [...prev, {
-        type: 'user',
-        message: `Please analyze this text and give me writing suggestions: "${currentText.substring(0, 200)}${currentText.length > 200 ? '...' : ''}"`
+        type: 'ai',
+        message: '💭 Analyzing your writing... generating personalized suggestions!'
       }]);
+      setShowAiChat(true);
 
-      // Automatically send for AI analysis
-      try {
-        setAiAnalyzing(true);
-        const response = await fetch('/api/ai/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            message: `Please analyze this text and give me writing suggestions: "${currentText}"`,
-            context: {
-              currentContent: content,
-              mood,
-              title,
-              photos: photos.map(p => ({
-                description: p.analysis?.description,
-                tags: p.analysis?.tags
-              })).filter(p => p.description)
-            }
-          })
-        });
+      const response = await fetch('/api/ai/generate-prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          recentEntries: [content],
+          mood,
+          photos: photos.map(p => p.analysis?.description).filter(Boolean),
+          title: title || "Untitled"
+        })
+      });
 
-        if (response.ok) {
-          const { reply } = await response.json();
-          setAiMessages(prev => [...prev, {
+      if (response.ok) {
+        const { prompt } = await response.json();
+        setAiMessages(prev => [
+          ...prev.slice(0, -1), // Remove loading message
+          {
             type: 'ai',
-            message: reply
-          }]);
-        } else {
-          throw new Error('AI service unavailable');
-        }
-      } catch (error) {
-        console.error('AI analysis error:', error);
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '😅 I had trouble analyzing your text right now. Try asking me directly for writing suggestions!'
-        }]);
-      } finally {
-        setAiAnalyzing(false);
-        setAiInput(''); // Clear the input after sending
+            message: `💡 **Writing Suggestion Based on Your Content:**\n\n${prompt}\n\n🎯 This suggestion was crafted specifically for your current entry and mood (${mood}). Want more ideas or help developing this further?`
+          }
+        ]);
+      } else {
+        throw new Error('Failed to generate suggestion');
       }
+    } catch (error) {
+      console.error('Failed to generate AI suggestion:', error);
+      setAiMessages(prev => [
+        ...prev.slice(0, -1), // Remove loading message
+        {
+          type: 'ai',
+          message: '😅 I had trouble generating suggestions right now. Try again in a moment, or feel free to ask me for writing ideas directly!'
+        }
+      ]);
     }
   }, [content, mood, photos, title]);
 
@@ -333,7 +321,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
-
+      
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           setAudioChunks(prev => [...prev, event.data]);
@@ -382,7 +370,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.stop();
       setIsRecordingAudio(false);
-
+      
       const duration = Math.round((Date.now() - recordingStartTime) / 1000);
       setRecordingDuration(duration);
     }
@@ -393,13 +381,13 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     if (audioChunks.length > 0 && !isRecordingAudio) {
       const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
       const audioUrl = URL.createObjectURL(audioBlob);
-
+      
       setAudioRecordings(prev => [...prev, {
         url: audioUrl,
         duration: recordingDuration,
         timestamp: new Date()
       }]);
-
+      
       setAudioChunks([]);
     }
   }, [audioChunks, isRecordingAudio, recordingDuration]);
@@ -410,18 +398,18 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' } // Use back camera on mobile
       });
-
+      
       const video = document.createElement('video');
       video.srcObject = stream;
       video.play();
-
+      
       video.onloadedmetadata = () => {
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         const ctx = canvas.getContext('2d');
         ctx?.drawImage(video, 0, 0);
-
+        
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob);
@@ -434,7 +422,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             }]);
           }
         });
-
+        
         stream.getTracks().forEach(track => track.stop());
         setShowCameraModal(false);
       };
@@ -449,14 +437,14 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         video: { facingMode: 'environment' }, 
         audio: true 
       });
-
+      
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: Blob[] = [];
-
+      
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) chunks.push(event.data);
       };
-
+      
       mediaRecorder.onstop = () => {
         const videoBlob = new Blob(chunks, { type: 'video/mp4' });
         const videoUrl = URL.createObjectURL(videoBlob);
@@ -469,16 +457,16 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         stream.getTracks().forEach(track => track.stop());
         setShowCameraModal(false);
       };
-
+      
       mediaRecorder.start();
-
+      
       // Stop after 30 seconds
       setTimeout(() => {
         if (mediaRecorder.state === 'recording') {
           mediaRecorder.stop();
         }
       }, 30000);
-
+      
     } catch (error) {
       console.error('Error starting video recording:', error);
     }
@@ -493,7 +481,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         aiRecognition.stop();
       }
       setIsAiListening(false);
-
+      
       // Send the captured speech to AI if we have content
       const finalInput = lastFinalTranscript || aiInput;
       if (finalInput.trim()) {
@@ -624,7 +612,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     // Extract prompt from AI response if it contains prompt-like text
     const promptMatch = aiResponse.match(/(?:prompt|write about|consider|reflect on)[\s\S]*?(?:[.!?]|$)/gi);
     const promptText = promptMatch ? promptMatch.join(' ') : aiResponse;
-
+    
     setContent(prev => prev + '\n\n' + promptText);
     setAiMessages(prev => [...prev, {
       type: 'ai',
@@ -669,7 +657,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             setPhotos(prev => prev.map(p => 
               p.id === newPhoto.id ? { ...p, analysis } : p
             ));
-
+            
             // Add AI-generated tags
             if (analysis.tags) {
               setTags(prev => [...new Set([...prev, ...analysis.tags])]);
@@ -731,7 +719,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     if (!canvasRef.current) return;
     setIsDrawing(true);
     const { x, y } = getCanvasCoordinates(e);
-
+    
     const ctx = canvasRef.current.getContext('2d');
     if (ctx) {
       ctx.beginPath();
@@ -741,9 +729,9 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing || !canvasRef.current) return;
-
+    
     const { x, y } = getCanvasCoordinates(e);
-
+    
     const ctx = canvasRef.current.getContext('2d');
     if (ctx) {
       ctx.lineWidth = brushSize;
@@ -783,7 +771,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               <p className="text-amber-100 text-sm">Your AI-powered writing companion</p>
             </div>
           </div>
-
+          
           <div className="flex items-center gap-4">
             <Button 
               onClick={handleSave}
@@ -802,337 +790,188 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           </div>
         </div>
 
-        {/* Main Journal Layout - Mobile Optimized */}
+        {/* Main Journal Layout - Full Width */}
         <div className="flex flex-1 min-h-0">
-          {/* Mobile: Single column layout, Desktop: Panel layout */}
-          <div className="w-full md:hidden">
-            {/* Mobile Layout */}
-            <div className="p-3 relative flex flex-col overflow-hidden h-full">
-              {/* Mobile Entry Header */}
-              <div className="space-y-3 mb-4 flex-shrink-0">
-                <div className="flex flex-col gap-2">
-                  <Input
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="What's on your mind today?"
-                    className="text-lg font-bold border border-purple-300 bg-white/90 focus:ring-2 focus:ring-purple-400 rounded-xl px-4 py-3 h-12"
-                    style={{ 
-                      fontFamily: titleFont,
-                      color: titleColor
-                    }}
-                  />
-                  <div className="text-sm font-bold text-center py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl" style={{
-                    textShadow: '0 0 10px rgba(255,255,255,0.5)'
-                  }}>
-                    📅 {new Date().toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </div>
-                </div></div>
-            </div>
-          </div>
-
-          {/* Desktop Layout with Panels */}
-          <div className="hidden md:block w-full">
-            <PanelGroup direction="horizontal" className="w-full">
-              {/* Left Page - Writing Area (Expanded) */}
-              <Panel defaultSize={65} minSize={0}>
-                <div className="p-4 relative flex flex-col overflow-hidden h-full">
-                  {/* Page shadow effect */}
-                  <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
-
-                  {/* Entry Header */}
-                  <div className="space-y-3 mb-4 flex-shrink-0">
-                    <div className="flex items-center gap-3">
-                      <Input
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="Entry title..."
-                        className="text-lg font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
-                        style={{ 
-                          fontFamily: titleFont,
-                          color: titleColor
-                        }}
-                      />
-                      <div className="text-lg font-bold whitespace-nowrap" style={{
-                        color: '#ff0040',
-                        textShadow: '0 0 5px #ff0040, 0 0 10px #ff0040, 0 0 15px #ff0040',
-                        fontFamily: 'Arial, sans-serif'
-                      }}>
-                        {new Date().toLocaleDateString()}
-                      </div>
+          <PanelGroup direction="horizontal" className="w-full">
+            {/* Left Page - Writing Area (Expanded) */}
+            <Panel defaultSize={65} minSize={0}>
+              <div className="p-4 relative flex flex-col overflow-hidden h-full">
+                {/* Page shadow effect */}
+                <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
+                
+                {/* Entry Header */}
+                <div className="space-y-3 mb-4 flex-shrink-0">
+                  <div className="flex items-center gap-3">
+                    <Input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Entry title..."
+                      className="text-lg font-bold border-none bg-transparent focus:ring-2 focus:ring-amber-300 rounded-lg"
+                      style={{ 
+                        fontFamily: titleFont,
+                        color: titleColor
+                      }}
+                    />
+                    <div className="text-lg font-bold whitespace-nowrap" style={{
+                      color: '#ff0040',
+                      textShadow: '0 0 5px #ff0040, 0 0 10px #ff0040, 0 0 15px #ff0040',
+                      fontFamily: 'Arial, sans-serif'
+                    }}>
+                      {new Date().toLocaleDateString()}
                     </div>
-
-              {/* Mobile Controls - Stacked Layout */}
-              <div className="space-y-3 md:space-y-2">
-                {/* Mobile: Simplified Controls */}
-                <div className="md:hidden">
-                  {/* Mood Selection - Full Width on Mobile */}
-                  <div className="flex items-center gap-3 p-4 bg-white/90 rounded-xl border border-purple-200 shadow-sm">
-                    <Smile className="w-5 h-5 text-purple-600 flex-shrink-0" />
-                    <span className="text-sm font-semibold text-gray-700">How are you feeling?</span>
-                    <Select value={mood} onValueChange={setMood}>
-                      <SelectTrigger className="flex-1 h-12 bg-white border-purple-300 text-base rounded-lg">
-                        <SelectValue placeholder="Select your mood" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white border-purple-300">
-                        {moodEmojis.map(emoji => (
-                          <SelectItem 
-                            key={emoji} 
-                            value={emoji}
-                            className="hover:bg-purple-50 focus:bg-purple-50 text-lg py-3"
-                          >
-                            <span className="text-2xl mr-3">{emoji}</span>
-                            <span className="text-base">
-                              {emoji === '😊' ? 'Happy' : 
-                               emoji === '😐' ? 'Neutral' :
-                               emoji === '😔' ? 'Sad' :
-                               emoji === '🤔' ? 'Thoughtful' :
-                               emoji === '😄' ? 'Excited' :
-                               emoji === '🎉' ? 'Celebrating' :
-                               emoji === '😠' ? 'Frustrated' :
-                               emoji === '😴' ? 'Tired' :
-                               emoji === '💪' ? 'Motivated' :
-                               emoji === '🥰' ? 'Loved' : 'Mood'}
-                            </span>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
                   </div>
-
-                  {/* Action Buttons - Mobile Grid */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <Button 
-                      onClick={generateAiSuggestions}
-                      disabled={content.length < 10}
-                      className="h-14 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 border-0 text-white font-semibold shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
-                      title={content.length < 10 ? "Write at least 10 characters to get AI suggestions" : "Generate AI writing suggestions based on your content"}
+              
+              {/* Unified Font & Color Controls */}
+              <div className="space-y-2">
+                {/* Target Selector */}
+                <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg backdrop-blur-sm">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => setEditingTarget('title')}
+                      variant={editingTarget === 'title' ? 'default' : 'outline'}
+                      size="sm"
+                      className={`h-8 px-3 text-xs ${
+                        editingTarget === 'title' 
+                          ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                          : 'border-purple-300 text-purple-800 hover:bg-purple-50'
+                      }`}
                     >
-                      <div className="flex flex-col items-center gap-1">
-                        <Lightbulb className="w-5 h-5" />
-                        <span className="text-sm">AI Ideas</span>
-                      </div>
+                      Title
                     </Button>
-
-                    <div className="flex items-center justify-center gap-3 bg-gray-100 px-4 py-3 rounded-xl border border-gray-300 h-14">
-                      <Switch checked={isPrivate} onCheckedChange={setIsPrivate} className="scale-125" />
-                      <span className="text-sm font-semibold text-gray-700">Private</span>
-                    </div>
+                    <Button
+                      onClick={() => setEditingTarget('content')}
+                      variant={editingTarget === 'content' ? 'default' : 'outline'}
+                      size="sm"
+                      className={`h-8 px-3 text-xs ${
+                        editingTarget === 'content' 
+                          ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                          : 'border-purple-300 text-purple-800 hover:bg-purple-50'
+                      }`}
+                    >
+                      Content
+                    </Button>
                   </div>
-
-                  {/* Quick Style Controls */}
-                  <div className="flex gap-2">
+                  
+                  <div className="flex items-center gap-2 ml-auto">
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button className="flex-1 h-12 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-semibold shadow-lg">
+                        <Button className="bg-emerald-500 hover:bg-emerald-600 text-white h-10 px-4 rounded-lg font-medium">
                           <Type className="w-4 h-4 mr-2" />
-                          Style
+                          Font
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-80 p-4">
-                        <div className="space-y-4">
-                          <div>
-                            <label className="text-sm font-semibold text-gray-700 mb-2 block">Font Family</label>
-                            <Select value={selectedFont} onValueChange={setSelectedFont}>
-                              <SelectTrigger className="h-12">
-                                <SelectValue placeholder="Select font" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {fontFamilies.map(font => (
-                                  <SelectItem key={font} value={font} style={{ fontFamily: font }}>
-                                    {font}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-                          <div>
-                            <label className="text-sm font-semibold text-gray-700 mb-2 block">Font Size: {fontSize}px</label>
-                            <Slider
-                              value={[fontSize]}
-                              onValueChange={(value) => setFontSize(value[0])}
-                              min={14}
-                              max={24}
-                              step={1}
-                              className="mt-2"
-                            />
-                          </div>
+                      <PopoverContent className="w-64 p-4">
+                        <div className="space-y-3">
+                          <label className="text-sm font-semibold text-gray-700">
+                            {editingTarget === 'title' ? 'Title' : 'Content'} Font
+                          </label>
+                          <Select 
+                            value={editingTarget === 'title' ? titleFont : selectedFont} 
+                            onValueChange={editingTarget === 'title' ? setTitleFont : setSelectedFont}
+                          >
+                            <SelectTrigger className="h-10">
+                              <SelectValue placeholder="Select font" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {fontFamilies.map(font => (
+                                <SelectItem key={font} value={font} style={{ fontFamily: font }}>
+                                  {font}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          
+                          {editingTarget === 'content' && (
+                            <div>
+                              <label className="text-sm font-semibold text-gray-700">Size: {fontSize}px</label>
+                              <Slider
+                                value={[fontSize]}
+                                onValueChange={(value) => setFontSize(value[0])}
+                                min={12}
+                                max={24}
+                                step={1}
+                                className="mt-2"
+                              />
+                            </div>
+                          )}
                         </div>
                       </PopoverContent>
                     </Popover>
-
+                    
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button className="flex-1 h-12 bg-purple-500 hover:bg-purple-600 text-white rounded-xl font-semibold shadow-lg">
+                        <Button className="bg-gray-800 hover:bg-gray-900 text-white h-10 px-4 rounded-lg font-medium">
                           <Palette className="w-4 h-4 mr-2" />
-                          Colors
+                          Color
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-80 p-4">
-                        <div className="space-y-4">
-                          <div>
-                            <label className="text-sm font-semibold text-gray-700 mb-2 block">Text Color</label>
-                            <HexColorPicker color={textColor} onChange={setTextColor} />
+                      <PopoverContent className="w-64 p-4">
+                        <div className="space-y-3">
+                          <label className="text-sm font-semibold text-gray-700">
+                            {editingTarget === 'title' ? 'Title' : 'Content'} Color
+                          </label>
+                          <HexColorPicker 
+                            color={editingTarget === 'title' ? titleColor : textColor} 
+                            onChange={editingTarget === 'title' ? setTitleColor : setTextColor} 
+                          />
+                          <div className="flex items-center gap-2 mt-2">
+                            <div 
+                              className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm" 
+                              style={{ backgroundColor: editingTarget === 'title' ? titleColor : textColor }}
+                            />
+                            <span className="text-xs text-gray-600 font-mono">
+                              {editingTarget === 'title' ? titleColor : textColor}
+                            </span>
                           </div>
                         </div>
                       </PopoverContent>
                     </Popover>
                   </div>
                 </div>
+              </div>
 
-                {/* Desktop Controls - Original Layout */}
-                <div className="hidden md:block">
-                  {/* Target Selector */}
-                  <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg backdrop-blur-sm">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        onClick={() => setEditingTarget('title')}
-                        variant={editingTarget === 'title' ? 'default' : 'outline'}
-                        size="sm"
-                        className={`h-8 px-3 text-xs ${
-                          editingTarget === 'title' 
-                            ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                            : 'border-purple-300 text-purple-800 hover:bg-purple-50'
-                        }`}
-                      >
-                        Title
-                      </Button>
-                      <Button
-                        onClick={() => setEditingTarget('content')}
-                        variant={editingTarget === 'content' ? 'default' : 'outline'}
-                        size="sm"
-                        className={`h-8 px-3 text-xs ${
-                          editingTarget === 'content' 
-                            ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                            : 'border-purple-300 text-purple-800 hover:bg-purple-50'
-                        }`}
-                      >
-                        Content
-                      </Button>
-                    </div>
+              {/* Mood & Controls - Mobile Optimized */}
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-2 bg-white/50 rounded-lg backdrop-blur-sm text-sm">
+                {/* Top Row - Mood Selection */}
+                <div className="flex items-center gap-2 flex-1">
+                  <Smile className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                  <span className="text-xs font-medium whitespace-nowrap">Mood:</span>
+                  <Select value={mood} onValueChange={setMood}>
+                    <SelectTrigger className="w-full sm:w-32 h-10 bg-white/70 border-amber-300 text-sm">
+                      <SelectValue placeholder="Select mood" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border-amber-300">
+                      {moodEmojis.map(emoji => (
+                        <SelectItem 
+                          key={emoji} 
+                          value={emoji}
+                          className="hover:bg-amber-50 focus:bg-amber-50"
+                        >
+                          <span className="text-lg">{emoji}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                    <div className="flex items-center gap-2 ml-auto">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button className="bg-emerald-500 hover:bg-emerald-600 text-white h-10 px-4 rounded-lg font-medium">
-                            <Type className="w-4 h-4 mr-2" />
-                            Font
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-64 p-4">
-                          <div className="space-y-3">
-                            <label className="text-sm font-semibold text-gray-700">
-                              {editingTarget === 'title' ? 'Title' : 'Content'} Font
-                            </label>
-                            <Select 
-                              value={editingTarget === 'title' ? titleFont : selectedFont} 
-                              onValueChange={editingTarget === 'title' ? setTitleFont : setSelectedFont}
-                            >
-                              <SelectTrigger className="h-10">
-                                <SelectValue placeholder="Select font" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {fontFamilies.map(font => (
-                                  <SelectItem key={font} value={font} style={{ fontFamily: font }}>
-                                    {font}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
+                {/* Bottom Row - AI & Privacy Controls */}
+                <div className="flex items-center gap-2 justify-between sm:justify-end">
+                  <Button 
+                    onClick={generateAiSuggestions}
+                    variant="outline"
+                    size="sm"
+                    disabled={content.length < 10}
+                    className="h-10 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 border-0 text-white font-medium shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title={content.length < 10 ? "Write at least 10 characters to get AI suggestions" : "Generate AI writing suggestions based on your content"}
+                  >
+                    <Lightbulb className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">AI Ideas</span>
+                    <span className="sm:hidden">Ideas</span>
+                  </Button>
 
-                            {editingTarget === 'content' && (
-                              <div>
-                                <label className="text-sm font-semibold text-gray-700">Size: {fontSize}px</label>
-                                <Slider
-                                  value={[fontSize]}
-                                  onValueChange={(value) => setFontSize(value[0])}
-                                  min={12}
-                                  max={24}
-                                  step={1}
-                                  className="mt-2"
-                                />
-                              </div>
-                            )}
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button className="bg-gray-800 hover:bg-gray-900 text-white h-10 px-4 rounded-lg font-medium">
-                            <Palette className="w-4 h-4 mr-2" />
-                            Color
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-64 p-4">
-                          <div className="space-y-3">
-                            <label className="text-sm font-semibold text-gray-700">
-                              {editingTarget === 'title' ? 'Title' : 'Content'} Color
-                            </label>
-                            <HexColorPicker 
-                              color={editingTarget === 'title' ? titleColor : textColor} 
-                              onChange={editingTarget === 'title' ? setTitleColor : setTextColor} 
-                            />
-                            <div className="flex items-center gap-2 mt-2">
-                              <div 
-                                className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm" 
-                                style={{ backgroundColor: editingTarget === 'title' ? titleColor : textColor }}
-                              />
-                              <span className="text-xs text-gray-600 font-mono">
-                                {editingTarget === 'title' ? titleColor : textColor}
-                              </span>
-                            </div>
-                          </div>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
-
-                  {/* Mood & Controls - Desktop */}
-                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 p-2 bg-white/50 rounded-lg backdrop-blur-sm text-sm">
-                    <div className="flex items-center gap-2 flex-1">
-                      <Smile className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                      <span className="text-xs font-medium whitespace-nowrap">Mood:</span>
-                      <Select value={mood} onValueChange={setMood}>
-                        <SelectTrigger className="w-full sm:w-32 h-10 bg-white/70 border-amber-300 text-sm">
-                          <SelectValue placeholder="Select mood" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-white border-amber-300">
-                          {moodEmojis.map(emoji => (
-                            <SelectItem 
-                              key={emoji} 
-                              value={emoji}
-                              className="hover:bg-amber-50 focus:bg-amber-50"
-                            >
-                              <span className="text-lg">{emoji}</span>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="flex items-center gap-2 justify-between sm:justify-end">
-                      <Button 
-                        onClick={generateAiSuggestions}
-                        variant="outline"
-                        size="sm"
-                        disabled={content.length < 10}
-                        className="h-10 px-4 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 border-0 text-white font-medium shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        <Lightbulb className="w-4 h-4 mr-2" />
-                        <span className="hidden sm:inline">AI Ideas</span>
-                        <span className="sm:hidden">Ideas</span>
-                      </Button>
-
-                      <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg border border-gray-300">
-                        <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
-                        <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Private</span>
-                      </div>
-                    </div>
+                  <div className="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg border border-gray-300">
+                    <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
+                    <span className="text-sm font-medium text-gray-700 whitespace-nowrap">Private</span>
                   </div>
                 </div>
               </div>
@@ -1159,7 +998,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               )}
             </div>
 
-                {/* Rich Text Editor - Mobile/Desktop */}
+                {/* Rich Text Editor */}
                 <div className="flex-1 min-h-0">
                   <MDEditor
                     value={content}
@@ -1181,157 +1020,16 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 <div className="mt-2 text-xs text-gray-500 flex-shrink-0">
                   {content.split(' ').filter(word => word.length > 0).length} words
                 </div>
-
-                {/* Mobile: Tags Section */}
-                <div className="md:hidden">
-                  {tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {tags.map((tag, index) => (
-                        <Badge 
-                          key={index} 
-                          variant="secondary" 
-                          className="bg-purple-100 text-purple-800 hover:bg-purple-200 text-sm py-1 px-3"
-                        >
-                          {tag}
-                          <button
-                            onClick={() => setTags(prev => prev.filter((_, i) => i !== index))}
-                            className="ml-2 hover:text-red-500 text-lg"
-                          >
-                            ×
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                </div>
               </div>
+            </Panel>
 
-              {/* Mobile: Quick Media Section */}
-              <div className="md:hidden p-3 border-t border-purple-200 bg-white/50">
-                <div className="space-y-3">
-                  {/* Photos Grid */}
-                  {photos.length > 0 && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-700 mb-2">📸 Photos ({photos.length})</h4>
-                      <div className="grid grid-cols-3 gap-2">
-                        {photos.slice(0, 6).map((photo, index) => (
-                          <div key={index} className="relative group">
-                            <img
-                              src={photo.src}
-                              alt={`Photo ${index + 1}`}
-                              className="w-full h-20 object-cover rounded-lg border border-gray-200"
-                            />
-                            {photo.analysis && (
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="absolute bottom-1 left-1 right-1">
-                                  <p className="text-white text-xs font-medium truncate">
-                                    {photo.analysis.description}
-                                  </p>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                        {photos.length > 6 && (
-                          <div className="w-full h-20 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
-                            <span className="text-xs text-gray-500 font-medium">
-                              +{photos.length - 6} more
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
+            {/* Resize Handle */}
+            <PanelResizeHandle className="w-2 bg-amber-300 hover:bg-amber-400 transition-colors cursor-col-resize flex items-center justify-center">
+              <div className="h-8 w-1 bg-amber-600 rounded-full"></div>
+            </PanelResizeHandle>
 
-                  {/* Audio Recordings */}
-                  {audioRecordings.length > 0 && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-700 mb-2">🎵 Audio ({audioRecordings.length})</h4>
-                      <div className="space-y-2">
-                        {audioRecordings.slice(0, 2).map((recording, index) => (
-                          <div key={index} className="bg-gray-50 rounded-lg p-2 border border-gray-200">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="text-xs text-gray-500">Recording {index + 1}</span>
-                              <span className="text-xs text-gray-400">{recording.duration}s</span>
-                            </div>
-                            <audio controls className="w-full h-6" src={recording.url} />
-                          </div>
-                        ))}
-                        {audioRecordings.length > 2 && (
-                          <div className="text-center py-2">
-                            <span className="text-xs text-gray-500">+{audioRecordings.length - 2} more recordings</span>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Desktop Layout with Panels */}
-          <div className="hidden md:block w-full">
-            <PanelGroup direction="horizontal" className="w-full">
-              {/* Left Page - Writing Area (Expanded) */}
-              <Panel defaultSize={65} minSize={0}>
-                <div className="p-4 relative flex flex-col overflow-hidden h-full">
-                  {/* Page shadow effect */}
-                  <div className="absolute right-0 top-0 bottom-0 w-4 bg-gradient-to-l from-amber-300/20 to-transparent pointer-events-none" />
-
-                  {/* Rich Text Editor */}
-                  <div className="flex-1 min-h-0">
-                    <MDEditor
-                      value={content}
-                      onChange={(val) => setContent(val || "")}
-                      preview="edit"
-                      hideToolbar={false}
-                      data-color-mode="light"
-                      height="100%"
-                      style={{
-                        fontFamily: selectedFont,
-                        fontSize: `${fontSize}px`,
-                        color: textColor,
-                        height: '100%'
-                      }}
-                    />
-                  </div>
-
-                  {/* Tags */}
-                  {tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-3">
-                      {tags.map((tag, index) => (
-                        <Badge 
-                          key={index} 
-                          variant="secondary" 
-                          className="bg-amber-100 text-amber-800 hover:bg-amber-200"
-                        >
-                          {tag}
-                          <button
-                            onClick={() => setTags(prev => prev.filter((_, i) => i !== index))}
-                            className="ml-1 hover:text-red-500"
-                          >
-                            ×
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Word Count */}
-                  <div className="mt-2 text-xs text-gray-500 flex-shrink-0">
-                    {content.split(' ').filter(word => word.length > 0).length} words
-                  </div>
-                </div>
-              </Panel>
-
-              {/* Resize Handle */}
-              <PanelResizeHandle className="w-2 bg-amber-300 hover:bg-amber-400 transition-colors cursor-col-resize flex items-center justify-center">
-                <div className="h-8 w-1 bg-amber-600 rounded-full"></div>
-              </PanelResizeHandle>
-
-              {/* Right Page - Creative Area with Resizable Panels */}
-              <Panel defaultSize={35} minSize={0}>
+            {/* Right Page - Creative Area with Resizable Panels */}
+            <Panel defaultSize={35} minSize={0}>
               <div className="p-4 relative overflow-hidden h-full">
                 <PanelGroup direction="vertical" className="h-full">
               {/* Drawing Canvas Panel */}
@@ -1345,7 +1043,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                         Drawing Canvas
                       </h3>
                     </div>
-
+                    
                     {/* Mobile-Friendly Controls */}
                     <div className="space-y-2">
                       {/* Top Row - Main Tools */}
@@ -1376,7 +1074,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                             </div>
                           </PopoverContent>
                         </Popover>
-
+                        
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -1390,7 +1088,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                             <span className="text-xs">Undo</span>
                           </div>
                         </Button>
-
+                        
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -1405,7 +1103,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                           </div>
                         </Button>
                       </div>
-
+                      
                       {/* Bottom Row - Secondary Tools */}
                       <div className="grid grid-cols-3 gap-2">
                         <Button 
@@ -1424,7 +1122,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                             <span className="text-xs">Clear</span>
                           </div>
                         </Button>
-
+                        
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -1444,7 +1142,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                             <span className="text-xs">Save</span>
                           </div>
                         </Button>
-
+                        
                         <div className="flex flex-col items-center justify-center gap-1 p-2 bg-gray-50 rounded-lg">
                           <div 
                             className="w-6 h-6 rounded-full border-2 border-gray-300 shadow-sm" 
@@ -1455,7 +1153,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                       </div>
                     </div>
                   </div>
-
+                  
                   <canvas
                     ref={canvasRef}
                     width={400}
@@ -1554,7 +1252,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                               <X className="w-3 h-3" />
                             </Button>
                           </div>
-
+                          
                           {/* Photo Size Controls */}
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -1724,82 +1422,13 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               </Panel>
                 </PanelGroup>
               </div>
-              </Panel>
-            </PanelGroup>
-          </div>
+            </Panel>
+          </PanelGroup>
         </div>
 
-        {/* Mobile-Optimized Floating Action Buttons */}
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
-          {/* Mobile: Compact horizontal layout */}
-          <div className="md:hidden flex items-center gap-4 px-4 py-3 bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-purple-200">
-            {/* Voice-to-Text Button */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Button
-                onClick={toggleVoiceRecording}
-                className={`w-12 h-12 rounded-full shadow-lg ${
-                  isListening 
-                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
-                } transition-all duration-300`}
-              >
-                {isListening ? (
-                  <MicOff className="w-5 h-5 text-white" />
-                ) : (
-                  <Mic className="w-5 h-5 text-white" />
-                )}
-              </Button>
-              {isListening && (
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
-              )}
-            </motion.div>
-
-            {/* Audio Recording Button */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Button
-                onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
-                className={`w-12 h-12 rounded-full shadow-lg ${
-                  isRecordingAudio 
-                    ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                    : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
-                } transition-all duration-300`}
-              >
-                {isRecordingAudio ? (
-                  <div className="w-3 h-3 bg-white rounded-sm" />
-                ) : (
-                  <div className="w-3 h-3 bg-white rounded-full" />
-                )}
-              </Button>
-              {isRecordingAudio && (
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
-              )}
-            </motion.div>
-
-            {/* Camera Button */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-            >
-              <Button
-                onClick={() => setShowCameraModal(true)}
-                className="w-12 h-12 rounded-full shadow-lg bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300"
-              >
-                <Camera className="w-5 h-5 text-white" />
-              </Button>
-            </motion.div>
-          </div>
-
-          {/* Desktop: Original spaced layout */}
-          <div className="hidden md:flex items-center gap-6">
+        {/* Floating Action Buttons - Evenly Spaced */}
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-40">
+            
             {/* Voice-to-Text Button */}
             <motion.div
               className="group"
@@ -1822,11 +1451,11 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     <Mic className="w-6 h-6 text-white" />
                   )}
                 </Button>
-
+                
                 {isListening && (
                   <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
                 )}
-
+                
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
                     <span>🎤 Voice to Text</span>
@@ -1858,7 +1487,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     <div className="w-4 h-4 bg-white rounded-full" />
                   )}
                 </Button>
-
+                
                 {isRecordingAudio && (
                   <>
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
@@ -1867,7 +1496,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     </div>
                   </>
                 )}
-
+                
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
                     <span>🎵 Audio Record</span>
@@ -1891,7 +1520,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 >
                   <Camera className="w-6 h-6 text-white" />
                 </Button>
-
+                
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
                     <span>📷 Camera</span>
@@ -1900,7 +1529,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 </div>
               </div>
             </motion.div>
-          </div>
+
         </div>
 
         {/* AI Sidekick - Centered */}
@@ -2033,7 +1662,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   <Eye className="w-3 h-3 mr-1" />
                   Review
                 </Button>
-
+                
                 {/* AI Prompt Counter - Clickable to buy more */}
                 {promptUsageData && (
                   <Button
@@ -2075,7 +1704,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           >
             {showAiChat ? <X className="w-5 h-5" /> : <Brain className="w-5 h-5" />}
           </Button>
-
+          
           {/* Custom Tooltip */}
           <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
             <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
@@ -2152,7 +1781,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   <div className="text-xs opacity-75">Capture a moment instantly</div>
                 </div>
               </Button>
-
+              
               <Button 
                 onClick={startVideoRecording}
                 className="flex items-center gap-3 h-12 justify-start bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200"
@@ -2166,7 +1795,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   <div className="text-xs opacity-75">Up to 30 seconds</div>
                 </div>
               </Button>
-
+              
               <Button 
                 onClick={() => fileInputRef.current?.click()}
                 className="flex items-center gap-3 h-12 justify-start bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"

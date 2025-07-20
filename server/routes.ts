@@ -10,13 +10,16 @@ import ConnectPgSimple from "connect-pg-simple";
 import { setupOAuth, passport } from "./oauth";
 import Stripe from "stripe";
 
-// Initialize Stripe
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+// Initialize Stripe (optional)
+let stripe: Stripe | null = null;
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: "2024-06-20",
+  });
+  console.log('Stripe initialized successfully');
+} else {
+  console.warn('Stripe not initialized: STRIPE_SECRET_KEY not provided. Payment features will be disabled.');
 }
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-06-20",
-});
 
 // Extend session types
 declare module 'express-session' {
@@ -1115,6 +1118,13 @@ Your story shows how every day brings new experiences and emotions, creating the
 
   app.post("/api/prompts/purchase", requireAuth, async (req: any, res) => {
     try {
+      if (!stripe) {
+        return res.status(503).json({ 
+          message: "Payment processing is currently unavailable. Please contact support.",
+          paymentDisabled: true
+        });
+      }
+
       const { amount = 299, promptsToAdd = 100 } = req.body; // $2.99 for 100 prompts
       
       // Create Stripe payment intent
@@ -1140,6 +1150,13 @@ Your story shows how every day brings new experiences and emotions, creating the
 
   app.post("/api/prompts/confirm-purchase", requireAuth, async (req: any, res) => {
     try {
+      if (!stripe) {
+        return res.status(503).json({ 
+          message: "Payment processing is currently unavailable. Please contact support.",
+          paymentDisabled: true
+        });
+      }
+
       const { paymentIntentId } = req.body;
       
       // Verify payment with Stripe
@@ -1214,6 +1231,13 @@ Your story shows how every day brings new experiences and emotions, creating the
 
   app.post("/api/subscription/create", requireAuth, async (req: any, res) => {
     try {
+      if (!stripe) {
+        return res.status(503).json({ 
+          message: "Payment processing is currently unavailable. Please contact support.",
+          paymentDisabled: true
+        });
+      }
+
       const { tierId, yearly, amount } = req.body;
       
       // Create Stripe subscription
@@ -1240,6 +1264,13 @@ Your story shows how every day brings new experiences and emotions, creating the
 
   app.post("/api/subscription/confirm", requireAuth, async (req: any, res) => {
     try {
+      if (!stripe) {
+        return res.status(503).json({ 
+          message: "Payment processing is currently unavailable. Please contact support.",
+          paymentDisabled: true
+        });
+      }
+
       const { clientSecret } = req.body;
       
       // Extract payment intent ID from client secret

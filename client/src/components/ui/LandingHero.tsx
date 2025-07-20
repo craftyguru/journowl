@@ -588,39 +588,39 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             transition={{ duration: 0.8, delay: 2.6 }}
             className="max-w-7xl mx-auto bg-gradient-to-br from-gray-900/95 to-black/90 backdrop-blur-xl rounded-3xl border-2 border-purple-500/40 shadow-2xl overflow-hidden"
           >
-            {/* Epic Header */}
-            <div className="bg-gradient-to-r from-purple-600/80 via-pink-600/80 to-cyan-600/80 p-6 border-b-2 border-purple-400/50">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex gap-2">
+            {/* Epic Header - Mobile Optimized */}
+            <div className="bg-gradient-to-r from-purple-600/80 via-pink-600/80 to-cyan-600/80 p-3 sm:p-4 lg:p-6 border-b-2 border-purple-400/50">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
+                  <div className="flex gap-1 sm:gap-2">
                     <motion.div 
-                      className="w-4 h-4 rounded-full bg-red-400"
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-red-400"
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 2, repeat: Infinity }}
                     />
                     <motion.div 
-                      className="w-4 h-4 rounded-full bg-yellow-400"
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-yellow-400"
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 2, repeat: Infinity, delay: 0.3 }}
                     />
                     <motion.div 
-                      className="w-4 h-4 rounded-full bg-green-400"
+                      className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-400"
                       animate={{ scale: [1, 1.2, 1] }}
                       transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
                     />
                   </div>
-                  <span className="text-white font-bold text-xl font-inter">🌟 MoodJournal - Complete Experience</span>
+                  <span className="text-white font-bold text-sm sm:text-lg lg:text-xl font-inter">🌟 MoodJournal - Complete Experience</span>
                 </div>
-                <div className="flex items-center gap-3 text-white/90">
+                <div className="flex items-center gap-2 sm:gap-3 text-white/90">
                   <motion.div 
-                    className="flex items-center gap-2 bg-green-500/30 px-3 py-1 rounded-full border border-green-400/50"
+                    className="flex items-center gap-1 sm:gap-2 bg-green-500/30 px-2 sm:px-3 py-1 rounded-full border border-green-400/50"
                     animate={{ opacity: [0.7, 1, 0.7] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                    <span className="text-sm font-medium">🤖 AI Assistant Online</span>
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-400 rounded-full animate-pulse" />
+                    <span className="text-xs sm:text-sm font-medium">🤖 AI Assistant Online</span>
                   </motion.div>
-                  <Badge className="bg-purple-500/30 text-purple-200 border border-purple-400/50 font-bold">
+                  <Badge className="bg-purple-500/30 text-purple-200 border border-purple-400/50 font-bold text-xs sm:text-sm">
                     ✨ Live Demo
                   </Badge>
                 </div>
@@ -628,15 +628,15 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             </div>
 
             {/* Comprehensive App Showcase */}
-            <div className="p-10">
-              {/* Tab Navigation */}
+            <div className="p-3 sm:p-6 lg:p-10">
+              {/* Tab Navigation - Mobile Optimized */}
               <motion.div 
-                className="flex justify-center mb-8"
+                className="flex justify-center mb-6 sm:mb-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 2.8 }}
               >
-                <div className="flex bg-gray-800/50 backdrop-blur-lg rounded-2xl p-2 border border-purple-500/30">
+                <div className="grid grid-cols-2 sm:flex bg-gray-800/50 backdrop-blur-lg rounded-xl sm:rounded-2xl p-1 sm:p-2 border border-purple-500/30 gap-1 sm:gap-0 w-full max-w-md sm:max-w-none sm:w-auto">
                   {[
                     { id: 'write', name: '✍️ Write', icon: PenTool, color: 'from-purple-500 to-pink-500' },
                     { id: 'analyze', name: '📊 Analytics', icon: BarChart3, color: 'from-cyan-500 to-blue-500' },
@@ -645,98 +645,99 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   ].map((tab, i) => (
                     <motion.button
                       key={tab.id}
-                      className={`px-6 py-3 rounded-xl text-white font-bold transition-all duration-300 bg-gradient-to-r ${tab.color} hover:scale-105 hover:shadow-lg`}
+                      className={`px-2 sm:px-4 lg:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl text-white font-bold transition-all duration-300 bg-gradient-to-r ${tab.color} hover:scale-105 hover:shadow-lg text-xs sm:text-sm lg:text-base`}
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.5, delay: 3 + i * 0.1 }}
                     >
-                      <tab.icon className="w-5 h-5 inline mr-2" />
-                      {tab.name}
+                      <tab.icon className="w-3 h-3 sm:w-4 sm:h-4 lg:w-5 lg:h-5 inline mr-1 sm:mr-2" />
+                      <span className="hidden sm:inline">{tab.name}</span>
+                      <span className="sm:hidden">{tab.name.split(' ')[1] || tab.name.split(' ')[0]}</span>
                     </motion.button>
                   ))}
                 </div>
               </motion.div>
 
               {/* Main Showcase Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-8 sm:mb-10">
                 
-                {/* Smart Writing Assistant - Enhanced */}
+                {/* Smart Writing Assistant - Mobile Optimized */}
                 <motion.div
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 3.2 }}
-                  className="lg:col-span-2 bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-2xl p-8 border-2 border-purple-500/50 hover:border-cyan-400/60 transition-all duration-500 shadow-2xl"
+                  className="lg:col-span-2 bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-xl sm:rounded-2xl p-4 sm:p-6 lg:p-8 border-2 border-purple-500/50 hover:border-cyan-400/60 transition-all duration-500 shadow-2xl"
                 >
-                  <div className="flex items-center gap-4 mb-6">
+                  <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 mb-4 sm:mb-6">
                     <motion.div 
-                      className="p-4 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-xl"
+                      className="p-2 sm:p-3 lg:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 shadow-xl"
                       whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                      <PenTool className="w-8 h-8 text-white" />
+                      <PenTool className="w-5 h-5 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-white" />
                     </motion.div>
-                    <div>
-                      <h4 className="text-2xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-inter">
+                    <div className="flex-1">
+                      <h4 className="text-lg sm:text-xl lg:text-2xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent font-inter">
                         ✨ Smart AI Writing Assistant
                       </h4>
-                      <p className="text-gray-300 font-opensans">Real-time suggestions as you write</p>
+                      <p className="text-sm sm:text-base text-gray-300 font-opensans">Real-time suggestions as you write</p>
                     </div>
                   </div>
                   
                   {/* Enhanced Editor Simulation */}
-                  <div className="bg-gray-900/60 rounded-xl p-6 border border-purple-400/30 backdrop-blur-sm">
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-gray-300 font-medium font-inter">📝 Today's Entry - March 15, 2024</span>
-                      <div className="flex gap-2">
-                        <Badge className="bg-green-500/20 text-green-300 border-0">🟢 Auto-Save</Badge>
-                        <Badge className="bg-blue-500/20 text-blue-300 border-0">📊 524 words</Badge>
+                  <div className="bg-gray-900/60 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-6 border border-purple-400/30 backdrop-blur-sm">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
+                      <span className="text-gray-300 font-medium font-inter text-xs sm:text-sm">📝 Today's Entry - March 15, 2024</span>
+                      <div className="flex gap-1 sm:gap-2">
+                        <Badge className="bg-green-500/20 text-green-300 border-0 text-xs">🟢 Auto-Save</Badge>
+                        <Badge className="bg-blue-500/20 text-blue-300 border-0 text-xs">📊 524 words</Badge>
                       </div>
                     </div>
                     
-                    <div className="space-y-4 mb-6">
+                    <div className="space-y-2 sm:space-y-3 lg:space-y-4 mb-4 sm:mb-6">
                       <motion.div
                         initial={{ opacity: 0, width: 0 }}
                         animate={{ opacity: 1, width: "100%" }}
                         transition={{ duration: 2, delay: 3.5 }}
-                        className="h-5 bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-lg flex items-center px-3"
+                        className="min-h-[2rem] sm:min-h-[2.5rem] bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-md sm:rounded-lg flex items-center px-2 sm:px-3"
                       >
-                        <span className="text-white text-sm font-opensans">Today was absolutely amazing! I finally got to try that new cafe...</span>
+                        <span className="text-white text-xs sm:text-sm font-opensans leading-relaxed">Today was absolutely amazing! I finally got to try that new cafe...</span>
                       </motion.div>
                       <motion.div
                         initial={{ opacity: 0, width: 0 }}
                         animate={{ opacity: 1, width: "85%" }}
                         transition={{ duration: 2, delay: 4 }}
-                        className="h-5 bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-lg flex items-center px-3"
+                        className="min-h-[2rem] sm:min-h-[2.5rem] bg-gradient-to-r from-purple-400/40 via-pink-400/40 to-cyan-400/40 rounded-md sm:rounded-lg flex items-center px-2 sm:px-3"
                       >
-                        <span className="text-white text-sm font-opensans">The coffee was incredible and the atmosphere was so peaceful...</span>
+                        <span className="text-white text-xs sm:text-sm font-opensans leading-relaxed">The coffee was incredible and the atmosphere was so peaceful...</span>
                       </motion.div>
                       <motion.div
                         initial={{ opacity: 0, width: 0 }}
                         animate={{ opacity: 1, width: "70%" }}
                         transition={{ duration: 2, delay: 4.5 }}
-                        className="h-5 bg-gradient-to-r from-emerald-400/40 via-cyan-400/40 to-blue-400/40 rounded-lg animate-pulse"
+                        className="min-h-[2rem] sm:min-h-[2.5rem] bg-gradient-to-r from-emerald-400/40 via-cyan-400/40 to-blue-400/40 rounded-md sm:rounded-lg animate-pulse"
                       >
-                        <div className="flex items-center px-3 h-full">
-                          <span className="text-white text-sm font-opensans">I feel so grateful for</span>
-                          <div className="w-2 h-4 bg-cyan-400 ml-1 animate-pulse" />
+                        <div className="flex items-center px-2 sm:px-3 h-full">
+                          <span className="text-white text-xs sm:text-sm font-opensans leading-relaxed">I feel so grateful for</span>
+                          <div className="w-1 sm:w-2 h-3 sm:h-4 bg-cyan-400 ml-1 animate-pulse" />
                         </div>
                       </motion.div>
                     </div>
                     
                     {/* Multiple AI Suggestions */}
-                    <div className="space-y-3">
+                    <div className="space-y-2 sm:space-y-3">
                       <motion.div
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 5 }}
-                        className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/50 rounded-xl p-4"
+                        className="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 border border-yellow-400/50 rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4"
                       >
-                        <div className="flex items-start gap-3">
-                          <Lightbulb className="w-5 h-5 text-yellow-400 mt-0.5" />
-                          <div>
-                            <div className="text-white font-bold text-sm">💡 AI Writing Suggestion</div>
-                            <div className="text-gray-200 text-sm font-opensans">Try expanding on what made this moment special - your emotions, the details...</div>
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-white font-bold text-xs sm:text-sm">💡 AI Writing Suggestion</div>
+                            <div className="text-gray-200 text-xs sm:text-sm font-opensans leading-relaxed">Try expanding on what made this moment special - your emotions, the details...</div>
                           </div>
                         </div>
                       </motion.div>
@@ -745,13 +746,13 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5, delay: 5.3 }}
-                        className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/50 rounded-xl p-4"
+                        className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/50 rounded-lg sm:rounded-xl p-2 sm:p-3 lg:p-4"
                       >
-                        <div className="flex items-start gap-3">
-                          <Sparkles className="w-5 h-5 text-purple-400 mt-0.5" />
-                          <div>
-                            <div className="text-white font-bold text-sm">🎯 Mood Insight</div>
-                            <div className="text-gray-200 text-sm font-opensans">Your writing shows joy and gratitude - perfect for a happiness entry!</div>
+                        <div className="flex items-start gap-2 sm:gap-3">
+                          <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 mt-0.5 flex-shrink-0" />
+                          <div className="min-w-0 flex-1">
+                            <div className="text-white font-bold text-xs sm:text-sm">🎯 Mood Insight</div>
+                            <div className="text-gray-200 text-xs sm:text-sm font-opensans leading-relaxed">Your writing shows joy and gratitude - perfect for a happiness entry!</div>
                           </div>
                         </div>
                       </motion.div>
@@ -999,10 +1000,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 9 }}
-                className="mt-12 text-center bg-gradient-to-r from-purple-900/30 via-pink-900/30 to-cyan-900/30 rounded-3xl p-8 border-2 border-gradient-to-r border-purple-500/50"
+                className="mt-8 sm:mt-10 lg:mt-12 text-center bg-gradient-to-r from-purple-900/30 via-pink-900/30 to-cyan-900/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 border-2 border-gradient-to-r border-purple-500/50"
               >
                 <motion.h3
-                  className="text-4xl font-bold mb-4 font-montserrat"
+                  className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 font-montserrat"
                   animate={{ scale: [1, 1.02, 1] }}
                   transition={{ duration: 3, repeat: Infinity }}
                 >
@@ -1011,7 +1012,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   </span>
                 </motion.h3>
                 <motion.p
-                  className="text-xl text-gray-200 mb-8 font-opensans"
+                  className="text-base sm:text-lg lg:text-xl text-gray-200 mb-6 sm:mb-8 font-opensans px-2"
                   initial={{ opacity: 0.8 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
@@ -1019,16 +1020,17 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   <span className="text-cyan-300 font-bold">Join thousands of writers</span> who've discovered the power of AI-assisted journaling!
                 </motion.p>
                 
-                <div className="flex flex-col lg:flex-row gap-6 justify-center items-center">
+                <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:gap-6 justify-center items-center">
                   <motion.div
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
+                    className="w-full sm:w-auto"
                   >
                     <Button
                       onClick={handleDemo}
-                      className="px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white border-0 rounded-2xl text-lg font-bold shadow-2xl shadow-purple-500/30 transition-all duration-300 font-inter"
+                      className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white border-0 rounded-xl sm:rounded-2xl text-sm sm:text-base lg:text-lg font-bold shadow-2xl shadow-purple-500/30 transition-all duration-300 font-inter"
                     >
-                      <Play className="w-5 h-5 mr-2" />
+                      <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       🎯 Try Full Interactive Demo
                     </Button>
                   </motion.div>
@@ -1036,29 +1038,18 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   <motion.div
                     whileHover={{ scale: 1.05, y: -5 }}
                     whileTap={{ scale: 0.95 }}
+                    className="w-full sm:w-auto"
                   >
                     <Button
                       onClick={onGetStarted}
-                      className="px-8 py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white border-0 rounded-2xl text-lg font-bold shadow-2xl shadow-cyan-500/30 transition-all duration-300 font-inter"
+                      className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 hover:from-cyan-600 hover:via-blue-600 hover:to-indigo-600 text-white border-0 rounded-xl sm:rounded-2xl text-sm sm:text-base lg:text-lg font-bold shadow-2xl shadow-cyan-500/30 transition-all duration-300 font-inter"
                     >
-                      <ArrowRight className="w-5 h-5 mr-2" />
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                       ✨ Start Writing Now - FREE!
                     </Button>
                   </motion.div>
                   
-                  <motion.div
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button
-                      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                      variant="outline"
-                      className="px-8 py-4 border-2 border-yellow-400/60 text-yellow-300 hover:bg-yellow-500/10 hover:border-yellow-300 rounded-2xl text-lg font-bold backdrop-blur-sm transition-all duration-300 font-inter"
-                    >
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      🎨 Explore More Features
-                    </Button>
-                  </motion.div>
+
                 </div>
                 
                 {/* Feature Highlights */}
@@ -1066,7 +1057,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, delay: 9.5 }}
-                  className="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-4"
+                  className="mt-6 sm:mt-8 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4"
                 >
                   {[
                     { icon: '🤖', text: 'AI-Powered', color: 'text-purple-300' },
@@ -1076,14 +1067,14 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   ].map((feature, i) => (
                     <motion.div
                       key={i}
-                      className="flex items-center gap-2 justify-center"
+                      className="flex items-center gap-1 sm:gap-2 justify-center"
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.5, delay: 9.7 + i * 0.1 }}
                       whileHover={{ scale: 1.1 }}
                     >
-                      <span className="text-2xl">{feature.icon}</span>
-                      <span className={`font-bold text-sm ${feature.color} font-inter`}>{feature.text}</span>
+                      <span className="text-lg sm:text-xl lg:text-2xl">{feature.icon}</span>
+                      <span className={`font-bold text-xs sm:text-sm ${feature.color} font-inter`}>{feature.text}</span>
                     </motion.div>
                   ))}
                 </motion.div>
