@@ -1724,8 +1724,9 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               </Panel>
                 </PanelGroup>
               </div>
-            </Panel>
-          </PanelGroup>
+              </Panel>
+            </PanelGroup>
+          </div>
         </div>
 
         {/* Mobile-Optimized Floating Action Buttons */}
