@@ -31,11 +31,24 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
-// Use Supabase PostgreSQL database
+// Use Supabase PostgreSQL database with SSL parameters
 const dbUrl = process.env.DATABASE_URL || "postgresql://postgres:CtopXd3xkGpDjOk6@db.asjcxaiabjsbjbasssfe.supabase.co:5432/postgres";
 console.log("Database connecting to:", dbUrl.split('@')[1]?.split('?')[0]);
-const client = postgres(dbUrl, {
-  ssl: { rejectUnauthorized: false }
+
+// Add SSL and connection parameters for Supabase
+const connectionUrl = `${dbUrl}?sslmode=require`;
+console.log("Full connection URL:", connectionUrl.replace(/:[^:]*@/, ':****@'));
+
+const client = postgres(connectionUrl, {
+  ssl: {
+    rejectUnauthorized: false,
+    ca: false,
+    key: false,
+    cert: false
+  },
+  connect_timeout: 10,
+  idle_timeout: 20,
+  max: 20
 });
 export const db = drizzle(client);
 
