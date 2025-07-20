@@ -13,6 +13,9 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, gte } from "drizzle-orm";
 import { EmailService } from "./email";
+import { sendWelcomeEmail as sendWelcomeEmailTemplate, createEmailVerificationTemplate } from "./emailTemplates";
+import sgMail from '@sendgrid/mail';
+import crypto from 'crypto';
 import session from "express-session";
 import ConnectPgSimple from "connect-pg-simple";
 import { setupOAuth, passport } from "./oauth";
@@ -133,8 +136,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/register", async (req, res) => {
     try {
       const userData = insertUserSchema.parse(req.body);
-      const user = await createUser(userData);
-      req.session.userId = user.id;
+      
+      // Generate email verification token
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      
+      // Create user with email verification required
+      const user = await createUser({
+        ...userData,
+        emailVerificationToken: verificationToken,
+        emailVerificationExpires: verificationExpires,
+        requiresEmailVerification: true,
+        emailVerified: false
+      });
+      
+      // Don't log in user until email is verified
+      // req.session.userId = user.id;
       
       // Initialize user progress tracking
       try {
@@ -145,17 +162,117 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error('Failed to initialize user progress:', initError);
       }
       
-      // Send welcome email
+      // Send welcome email with verification
       try {
-        await EmailService.sendWelcomeEmail(user);
+        await sendWelcomeEmailTemplate(user.email, user.username || 'New User', verificationToken);
       } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
         // Don't fail registration if email fails
       }
       
-      res.json({ user: { id: user.id, email: user.email, username: user.username, level: user.level, xp: user.xp, role: user.role } });
+      res.json({ 
+        message: "Account created! Please check your email to verify your account before signing in.",
+        emailSent: true,
+        email: user.email
+      });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Email verification endpoint
+  app.get("/api/auth/verify-email", async (req, res) => {
+    try {
+      const { token } = req.query;
+      
+      if (!token || typeof token !== 'string') {
+        return res.status(400).json({ message: "Verification token is required" });
+      }
+      
+      // Find user with this verification token
+      const [user] = await db.select()
+        .from(users)
+        .where(eq(users.emailVerificationToken, token));
+      
+      if (!user) {
+        return res.status(400).json({ message: "Invalid verification token" });
+      }
+      
+      // Check if token is expired
+      if (user.emailVerificationExpires && new Date() > user.emailVerificationExpires) {
+        return res.status(400).json({ message: "Verification token has expired" });
+      }
+      
+      // Verify the user
+      await db.update(users)
+        .set({
+          emailVerified: true,
+          emailVerificationToken: null,
+          emailVerificationExpires: null,
+          requiresEmailVerification: false
+        })
+        .where(eq(users.id, user.id));
+      
+      // Log them in
+      req.session.userId = user.id;
+      
+      // Redirect to app with success message
+      res.redirect('/?verified=true&welcome=true');
+    } catch (error: any) {
+      console.error('Email verification error:', error);
+      res.status(500).json({ message: "Failed to verify email" });
+    }
+  });
+
+  // Resend verification email
+  app.post("/api/auth/resend-verification", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Find unverified user
+      const [user] = await db.select()
+        .from(users)
+        .where(eq(users.email, email));
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      if (user.emailVerified) {
+        return res.status(400).json({ message: "Email is already verified" });
+      }
+      
+      // Generate new verification token
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      
+      // Update user with new token
+      await db.update(users)
+        .set({
+          emailVerificationToken: verificationToken,
+          emailVerificationExpires: verificationExpires
+        })
+        .where(eq(users.id, user.id));
+      
+      // Send verification email
+      try {
+        const emailTemplate = createEmailVerificationTemplate(user.email, user.username || 'User', verificationToken);
+        if (process.env.SENDGRID_API_KEY) {
+          await sgMail.send(emailTemplate);
+        }
+      } catch (emailError) {
+        console.error('Failed to send verification email:', emailError);
+        return res.status(500).json({ message: "Failed to send verification email" });
+      }
+      
+      res.json({ message: "Verification email sent successfully" });
+    } catch (error: any) {
+      console.error('Resend verification error:', error);
+      res.status(500).json({ message: "Failed to resend verification email" });
     }
   });
 
@@ -163,6 +280,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
       const user = await authenticateUser(email, password);
+      
+      // Check if email verification is required
+      if (user.requiresEmailVerification && !user.emailVerified) {
+        return res.status(403).json({ 
+          message: "Please verify your email before signing in. Check your inbox for a verification link.",
+          emailVerificationRequired: true,
+          email: user.email
+        });
+      }
+      
       req.session.userId = user.id;
       res.json({ user: { id: user.id, email: user.email, username: user.username, level: user.level, xp: user.xp, role: user.role } });
     } catch (error: any) {

@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { Eye, EyeOff, Mail, RefreshCw, CheckCircle } from "lucide-react";
+import { WelcomeTutorial } from "@/components/welcome-tutorial";
 
 // Animated background component
 const AnimatedBackground = () => {
@@ -52,12 +54,28 @@ interface AuthPageProps {
 
 export default function AuthPage({ setShowAuth }: AuthPageProps) {
   const { toast } = useToast();
+  const [showWelcomeTutorial, setShowWelcomeTutorial] = useState(false);
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [showEmailVerification, setShowEmailVerification] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState("");
+  const [showPasswordLogin, setShowPasswordLogin] = useState(false);
+  const [showPasswordRegister, setShowPasswordRegister] = useState(false);
 
-  // Check for OAuth error messages in URL parameters
+  // Check for verification success and welcome tutorial trigger
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    const verified = urlParams.get('verified');
+    const welcome = urlParams.get('welcome');
     const error = urlParams.get('error');
     const message = urlParams.get('message');
+    
+    if (verified === 'true' && welcome === 'true') {
+      // Show welcome tutorial for newly verified users
+      setShowWelcomeTutorial(true);
+      // Clean up URL parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return;
+    }
     
     if (error) {
       let errorMessage = message || "Authentication failed";
@@ -107,6 +125,10 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
       window.location.href = "/dashboard";
     },
     onError: (error: any) => {
+      if (error.message?.includes("verify your email")) {
+        setVerificationEmail(loginData.email);
+        setShowEmailVerification(true);
+      }
       toast({
         title: "Sign in failed",
         description: error.message || "Please check your credentials and try again.",
@@ -117,19 +139,48 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
 
   const registerMutation = useMutation({
     mutationFn: async (data: typeof registerData) => {
-      return await apiRequest("POST", "/api/auth/register", data);
+      const { confirmPassword, ...submitData } = data;
+      return await apiRequest("POST", "/api/auth/register", submitData);
     },
-    onSuccess: () => {
-      toast({
-        title: "Account created!",
-        description: "Welcome to JournOwl! Your account has been successfully created.",
-      });
-      window.location.href = "/dashboard";
+    onSuccess: (data: any) => {
+      if (data.emailSent) {
+        setVerificationEmail(data.email);
+        setShowEmailVerification(true);
+        toast({
+          title: "Account created!",
+          description: "Please check your email to verify your account before signing in.",
+        });
+      } else {
+        toast({
+          title: "Account created!",
+          description: "Welcome to JournOwl! Your account has been successfully created.",
+        });
+        window.location.href = "/dashboard";
+      }
     },
     onError: (error: any) => {
       toast({
         title: "Registration failed",
         description: error.message || "Please try again with different details.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const resendVerificationMutation = useMutation({
+    mutationFn: async (email: string) => {
+      return await apiRequest("POST", "/api/auth/resend-verification", { email });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Verification email sent!",
+        description: "Please check your inbox for the verification link.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to resend email",
+        description: error.message || "Please try again",
         variant: "destructive",
       });
     },
@@ -168,6 +219,102 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
     }
     registerMutation.mutate(registerData);
   };
+
+  // Welcome Tutorial Component
+  if (showWelcomeTutorial) {
+    return (
+      <WelcomeTutorial
+        onComplete={() => {
+          setShowWelcomeTutorial(false);
+          setShowAuth(false);
+        }}
+        userEmail={newUserEmail}
+      />
+    );
+  }
+
+  // Email Verification Component
+  if (showEmailVerification) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <AnimatedBackground />
+        
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-md"
+        >
+          <Card className="bg-white/95 backdrop-blur-sm border-white/20 shadow-2xl">
+            <CardHeader className="text-center pb-4">
+              <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
+                <Mail className="h-8 w-8 text-white" />
+              </div>
+              <CardTitle className="text-2xl font-bold text-gray-900">
+                Check Your Email! 📧
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="text-center">
+                <p className="text-gray-600 mb-4">
+                  We've sent a verification link to:
+                </p>
+                <p className="font-medium text-gray-900 bg-gray-100 p-3 rounded-lg">
+                  {verificationEmail}
+                </p>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  Click the verification link in your email
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  You'll be automatically signed in
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  Start your journaling journey!
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-gray-200">
+                <p className="text-sm text-gray-600 mb-3">
+                  Didn't receive the email? Check your spam folder or:
+                </p>
+                <Button
+                  onClick={() => resendVerificationMutation.mutate(verificationEmail)}
+                  disabled={resendVerificationMutation.isPending}
+                  variant="outline"
+                  className="w-full"
+                >
+                  {resendVerificationMutation.isPending ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Mail className="h-4 w-4 mr-2" />
+                      Resend Verification Email
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              <Button
+                onClick={() => setShowEmailVerification(false)}
+                variant="ghost"
+                className="w-full"
+              >
+                Back to Sign In
+              </Button>
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">

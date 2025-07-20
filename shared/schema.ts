@@ -34,6 +34,9 @@ export const users = pgTable("users", {
   lastSuspiciousActivity: timestamp("last_suspicious_activity"),
   lastLoginAt: timestamp("last_login_at"),
   emailVerified: boolean("email_verified").default(false),
+  emailVerificationToken: text("email_verification_token"),
+  emailVerificationExpires: timestamp("email_verification_expires"),
+  requiresEmailVerification: boolean("requires_email_verification").default(true),
   // AI Prompt Usage Tracking
   currentPlan: text("current_plan").default("free"), // free, pro, power
   promptsUsedThisMonth: integer("prompts_used_this_month").default(0),
