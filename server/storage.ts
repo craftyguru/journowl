@@ -31,13 +31,12 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
-// Use Replit's provided PostgreSQL database
-const dbUrl = process.env.DATABASE_URL;
-if (!dbUrl) {
-  throw new Error("DATABASE_URL environment variable is required");
-}
+// Use Supabase PostgreSQL database
+const dbUrl = process.env.DATABASE_URL || "postgresql://postgres.asjcxaiabjsbjbasssfe:CraftyGuru7756@db.asjcxaiabjsbjbasssfe.supabase.co:5432/postgres";
 console.log("Database connecting to:", dbUrl.split('@')[1]?.split('?')[0]);
-const client = postgres(dbUrl);
+const client = postgres(dbUrl, {
+  ssl: { rejectUnauthorized: false }
+});
 export const db = drizzle(client);
 
 export interface IStorage {
