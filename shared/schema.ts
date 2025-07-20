@@ -40,6 +40,15 @@ export const users = pgTable("users", {
   promptsRemaining: integer("prompts_remaining").default(100), // Free tier starts with 100
   storageUsedMB: integer("storage_used_mb").default(0),
   lastUsageReset: timestamp("last_usage_reset").defaultNow(),
+  // Moderation columns
+  isBanned: boolean("is_banned").default(false),
+  isFlagged: boolean("is_flagged").default(false),
+  bannedAt: timestamp("banned_at"),
+  banReason: text("ban_reason"),
+  flaggedReason: text("flagged_reason"),
+  moderationNotes: text("moderation_notes"),
+  suspiciousActivityCount: integer("suspicious_activity_count").default(0),
+  lastModerationAction: timestamp("last_moderation_action"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
