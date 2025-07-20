@@ -97,10 +97,7 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
 
   const loginMutation = useMutation({
     mutationFn: async (data: typeof loginData) => {
-      return await apiRequest("/api/auth/login", {
-        method: "POST",
-        body: data
-      });
+      return await apiRequest("POST", "/api/auth/login", data);
     },
     onSuccess: () => {
       toast({
@@ -120,10 +117,7 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
 
   const registerMutation = useMutation({
     mutationFn: async (data: typeof registerData) => {
-      return await apiRequest("/api/auth/register", {
-        method: "POST",
-        body: data
-      });
+      return await apiRequest("POST", "/api/auth/register", data);
     },
     onSuccess: () => {
       toast({
