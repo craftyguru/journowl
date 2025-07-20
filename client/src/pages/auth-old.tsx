@@ -1,124 +1,58 @@
 import { useState } from "react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-
-// Animated background component
-const AnimatedBackground = () => {
-  return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-      {/* Smoke particles */}
-      <div className="absolute inset-0">
-        {[...Array(50)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-white/20 rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -100, 0],
-              x: [0, Math.random() * 50 - 25, 0],
-              opacity: [0, 0.7, 0],
-              scale: [0, 1, 0],
-            }}
-            transition={{
-              duration: Math.random() * 8 + 4,
-              repeat: Infinity,
-              delay: Math.random() * 5,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-      
-      {/* Gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: "2s" }} />
-    </div>
-  );
-};
+import { login, register } from "@/lib/auth";
+import { useToast } from "@/hooks/use-toast";
+import { motion } from "framer-motion";
+import AnimatedBackground from "@/components/animated-background";
+import LandingHero from "@/components/ui/LandingHero";
+import { Sparkles, Heart, Brain, Zap } from "lucide-react";
 
 interface AuthPageProps {
-  setShowAuth: (show: boolean) => void;
+  onAuthenticated: () => void;
 }
 
-export default function AuthPage({ setShowAuth }: AuthPageProps) {
+export default function AuthPage({ onAuthenticated }: AuthPageProps) {
+  const [showAuth, setShowAuth] = useState(true);
+  const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [registerData, setRegisterData] = useState({ email: "", username: "", password: "", confirmPassword: "" });
+  
+  // Debug logging
+  console.log("AuthPage render - loginData:", loginData);
+  console.log("AuthPage render - registerData:", registerData);
   const { toast } = useToast();
-  
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: ""
-  });
-  
-  const [registerData, setRegisterData] = useState({
-    email: "",
-    username: "",
-    password: "",
-    confirmPassword: ""
-  });
 
   const loginMutation = useMutation({
-    mutationFn: async (data: typeof loginData) => {
-      return await apiRequest("/api/auth/login", {
-        method: "POST",
-        body: data
-      });
-    },
+    mutationFn: ({ email, password }: { email: string; password: string }) => login(email, password),
     onSuccess: () => {
-      toast({
-        title: "Welcome back!",
-        description: "Successfully signed in to your account.",
-      });
-      window.location.href = "/dashboard";
+      toast({ title: "Welcome back!", description: "You've been logged in successfully." });
+      onAuthenticated();
     },
     onError: (error: any) => {
-      toast({
-        title: "Sign in failed",
-        description: error.message || "Please check your credentials and try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message || "Login failed", variant: "destructive" });
     },
   });
 
   const registerMutation = useMutation({
-    mutationFn: async (data: typeof registerData) => {
-      return await apiRequest("/api/auth/register", {
-        method: "POST",
-        body: data
-      });
-    },
+    mutationFn: ({ email, username, password }: { email: string; username: string; password: string }) => 
+      register(email, username, password),
     onSuccess: () => {
-      toast({
-        title: "Account created!",
-        description: "Welcome to JournOwl! Your account has been successfully created.",
-      });
-      window.location.href = "/dashboard";
+      toast({ title: "Welcome!", description: "Your account has been created successfully." });
+      onAuthenticated();
     },
     onError: (error: any) => {
-      toast({
-        title: "Registration failed",
-        description: error.message || "Please try again with different details.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: error.message || "Registration failed", variant: "destructive" });
     },
   });
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginData.email || !loginData.password) {
-      toast({
-        title: "Missing information",
-        description: "Please enter both email and password.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Please fill in all fields", variant: "destructive" });
       return;
     }
     loginMutation.mutate(loginData);
@@ -127,49 +61,104 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     if (!registerData.email || !registerData.username || !registerData.password || !registerData.confirmPassword) {
-      toast({
-        title: "Missing information",
-        description: "Please fill in all fields.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Please fill in all fields", variant: "destructive" });
       return;
     }
     if (registerData.password !== registerData.confirmPassword) {
-      toast({
-        title: "Password mismatch",
-        description: "Passwords do not match. Please try again.",
-        variant: "destructive",
-      });
+      toast({ title: "Error", description: "Passwords do not match", variant: "destructive" });
       return;
     }
-    registerMutation.mutate(registerData);
+    registerMutation.mutate({
+      email: registerData.email,
+      username: registerData.username,
+      password: registerData.password,
+    });
   };
 
+  if (!showAuth) {
+    return (
+      <div className="relative min-h-screen overflow-hidden">
+        <AnimatedBackground />
+        <LandingHero onGetStarted={() => setShowAuth(true)} />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4">
+    <div className="relative min-h-screen overflow-hidden">
       <AnimatedBackground />
       
-      <div className="w-full max-w-md relative z-10">
+      {/* Auth Card Container */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, scale: 0.9, y: 20, rotateX: -15 }}
+          animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut", type: "spring", stiffness: 100 }}
+          className="w-full max-w-md"
+          whileHover={{ scale: 1.02, rotateY: 2 }}
         >
-          <Card className="bg-black/20 backdrop-blur-xl border-white/10 shadow-2xl">
-            <CardHeader className="text-center pb-2">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                🦉 JournOwl
-              </CardTitle>
-              <p className="text-gray-300 mt-2">Your Wise Writing Companion</p>
+          <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl hover:shadow-purple-500/30 transition-all duration-500 overflow-hidden relative" style={{ pointerEvents: 'auto' }}>
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-cyan-500/5" style={{ pointerEvents: 'none' }}></div>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 animate-pulse" style={{ pointerEvents: 'none' }}></div>
+            <CardHeader className="text-center pb-6">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                className="relative mx-auto mb-6"
+              >
+                <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <svg className="w-12 h-12 animate-bounce" viewBox="0 0 100 100" fill="none">
+                    <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+                    <circle cx="42" cy="40" r="4" fill="white"/>
+                    <circle cx="58" cy="40" r="4" fill="white"/>
+                    <circle cx="42" cy="40" r="2" fill="black"/>
+                    <circle cx="58" cy="40" r="2" fill="black"/>
+                    <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+                    <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+                    <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+                    <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+                  </svg>
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-amber-400 to-orange-500 rounded-full flex items-center justify-center">
+                  <Heart className="w-3 h-3 text-white" />
+                </div>
+              </motion.div>
+              
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent mb-2"
+                           style={{ fontFamily: '"Rock Salt", cursive' }}>
+                  JournOwl
+                </CardTitle>
+                <p className="text-gray-300">Your Wise Writing Companion</p>
+                <div className="flex items-center justify-center gap-2 mt-3 text-sm text-gray-400">
+                  <Brain className="w-4 h-4 text-purple-400" />
+                  <span>AI-Powered Insights</span>
+                  <Zap className="w-4 h-4 text-amber-400" />
+                  <span>Gamified Progress</span>
+                </div>
+              </motion.div>
             </CardHeader>
-            <CardContent>
+            
+            <CardContent className="px-6 pb-6">
               <Tabs defaultValue="login" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 bg-white/10 border-white/20">
-                  <TabsTrigger value="login" className="text-gray-300 data-[state=active]:bg-white/20 data-[state=active]:text-white">
+                <TabsList className="grid w-full grid-cols-2 bg-white/5 backdrop-blur-sm border border-white/10">
+                  <TabsTrigger 
+                    value="login" 
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white transition-all duration-300"
+                  >
                     Sign In
                   </TabsTrigger>
-                  <TabsTrigger value="register" className="text-gray-300 data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                    Sign Up
+                  <TabsTrigger 
+                    value="register"
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white transition-all duration-300"
+                  >
+                    Join Now
                   </TabsTrigger>
                 </TabsList>
                 
@@ -194,6 +183,7 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
                         onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
                         placeholder="Enter your email"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
                         autoComplete="email"
                       />
                     </motion.div>
@@ -210,6 +200,7 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
                         onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                         placeholder="Enter your password"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
                         autoComplete="current-password"
                       />
                     </motion.div>
@@ -273,21 +264,56 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
                       </Button>
                     </motion.div>
 
+                    {/* Apple Login Button */}
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full bg-blue-600/20 border-blue-500/30 text-blue-300 hover:bg-blue-600/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
-                        onClick={() => window.location.href = '/api/auth/facebook'}
+                        className="w-full bg-black/20 border-gray-600/30 text-white hover:bg-black/30 transition-all duration-300 hover:shadow-lg hover:shadow-gray-800/20"
+                        onClick={() => window.location.href = '/api/auth/apple'}
                       >
                         <div className="flex items-center gap-3">
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
                           </svg>
-                          <span>Continue with Facebook</span>
+                          <span>Continue with Apple</span>
                         </div>
                       </Button>
                     </motion.div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full bg-blue-600/20 border-blue-500/30 text-blue-300 hover:bg-blue-600/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
+                          onClick={() => window.location.href = '/api/auth/facebook'}
+                        >
+                          <div className="flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            <span className="text-sm">Facebook</span>
+                          </div>
+                        </Button>
+                      </motion.div>
+
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full bg-blue-500/20 border-blue-400/30 text-blue-300 hover:bg-blue-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-400/20"
+                          onClick={() => window.location.href = '/api/auth/linkedin'}
+                        >
+                          <div className="flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                            <span className="text-sm">LinkedIn</span>
+                          </div>
+                        </Button>
+                      </motion.div>
+                    </div>
                   </motion.div>
                 </TabsContent>
                 
@@ -312,6 +338,7 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
                         onChange={(e) => setRegisterData(prev => ({ ...prev, email: e.target.value }))}
                         placeholder="Enter your email"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
                         autoComplete="email"
                       />
                     </motion.div>
@@ -328,6 +355,7 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
                         onChange={(e) => setRegisterData(prev => ({ ...prev, username: e.target.value }))}
                         placeholder="Choose a username"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
                         autoComplete="username"
                       />
                     </motion.div>
@@ -344,6 +372,7 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
                         onChange={(e) => setRegisterData(prev => ({ ...prev, password: e.target.value }))}
                         placeholder="Create a password"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
                         autoComplete="new-password"
                       />
                     </motion.div>
@@ -360,6 +389,7 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
                         onChange={(e) => setRegisterData(prev => ({ ...prev, confirmPassword: e.target.value }))}
                         placeholder="Confirm your password"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        style={{ pointerEvents: 'auto' }}
                         autoComplete="new-password"
                       />
                     </motion.div>
@@ -415,21 +445,56 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
                       </Button>
                     </motion.div>
 
+                    {/* Apple Login Button */}
                     <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                       <Button
                         type="button"
                         variant="outline"
-                        className="w-full bg-blue-600/20 border-blue-500/30 text-blue-300 hover:bg-blue-600/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
-                        onClick={() => window.location.href = '/api/auth/facebook'}
+                        className="w-full bg-black/20 border-gray-600/30 text-white hover:bg-black/30 transition-all duration-300 hover:shadow-lg hover:shadow-gray-800/20"
+                        onClick={() => window.location.href = '/api/auth/apple'}
                       >
                         <div className="flex items-center gap-3">
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
                           </svg>
-                          <span>Continue with Facebook</span>
+                          <span>Continue with Apple</span>
                         </div>
                       </Button>
                     </motion.div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full bg-blue-600/20 border-blue-500/30 text-blue-300 hover:bg-blue-600/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
+                          onClick={() => window.location.href = '/api/auth/facebook'}
+                        >
+                          <div className="flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                            </svg>
+                            <span className="text-sm">Facebook</span>
+                          </div>
+                        </Button>
+                      </motion.div>
+
+                      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full bg-blue-500/20 border-blue-400/30 text-blue-300 hover:bg-blue-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-blue-400/20"
+                          onClick={() => window.location.href = '/api/auth/linkedin'}
+                        >
+                          <div className="flex items-center gap-2">
+                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                            <span className="text-sm">LinkedIn</span>
+                          </div>
+                        </Button>
+                      </motion.div>
+                    </div>
                   </motion.div>
                 </TabsContent>
               </Tabs>

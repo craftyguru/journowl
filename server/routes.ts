@@ -286,42 +286,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   );
 
-  app.get('/api/auth/linkedin', passport.authenticate('linkedin', { scope: ['r_emailaddress', 'r_liteprofile'] }));
-  app.get('/api/auth/linkedin/callback',
-    passport.authenticate('linkedin', { failureRedirect: '/auth?error=linkedin_failed' }),
-    async (req: any, res) => {
-      req.session.userId = req.user.id;
-      
-      if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
-        // Create initial user stats
-        try {
-          await storage.createUserStats(req.user.id);
-        } catch (statsError) {
-          console.error('Failed to create user stats:', statsError);
-        }
-        
-        // Create welcome achievement
-        try {
-          await storage.createAchievement({
-            userId: req.user.id,
-            title: "Welcome to JournOwl!",
-            description: "You've taken your first step on the journey to wise journaling",
-            icon: "🦉",
-            category: "getting_started",
-            rarity: "common",
-            xpReward: 100,
-            unlockedAt: new Date()
-          });
-        } catch (achievementError) {
-          console.error('Failed to create welcome achievement:', achievementError);
-        }
-        
-        await EmailService.sendWelcomeEmail(req.user);
-      }
-      
-      res.redirect('/dashboard');
-    }
-  );
+
 
   app.get("/api/auth/me", requireAuth, async (req: any, res) => {
     try {
