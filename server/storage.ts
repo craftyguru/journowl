@@ -31,12 +31,13 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
-// Use Railway PostgreSQL database - force correct connection
-const dbUrl = "postgresql://postgres:CzuYLahCEgyGOhgyERweTArgAgDqUhSL@ballast.proxy.rlwy.net:32118/railway";
+// Use Replit's provided PostgreSQL database
+const dbUrl = process.env.DATABASE_URL;
+if (!dbUrl) {
+  throw new Error("DATABASE_URL environment variable is required");
+}
 console.log("Database connecting to:", dbUrl.split('@')[1]?.split('?')[0]);
-const client = postgres(dbUrl, {
-  ssl: { rejectUnauthorized: false } // Handle self-signed certificates
-});
+const client = postgres(dbUrl);
 export const db = drizzle(client);
 
 export interface IStorage {
