@@ -9,6 +9,7 @@ import {
   ArrowRight, Play, CheckCircle, Globe, Lightbulb
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { StarryBackground } from "@/components/starry-background";
 
 interface LandingHeroProps {
   onGetStarted: () => void;
@@ -129,61 +130,13 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
   return (
     <div 
       ref={heroRef}
-      className="relative min-h-screen overflow-hidden bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900"
-      style={{
-        background: `radial-gradient(circle at ${mousePosition.x * 100}% ${mousePosition.y * 100}%, rgba(147, 51, 234, 0.3) 0%, transparent 50%), linear-gradient(135deg, #1e1b4b 0%, #581c87 50%, #be185d 100%)`
-      }}
+      className="relative min-h-screen overflow-hidden bg-black"
     >
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Floating Orbs */}
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className={`absolute rounded-full blur-xl opacity-30`}
-            style={{
-              width: `${Math.random() * 300 + 50}px`,
-              height: `${Math.random() * 300 + 50}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              background: `linear-gradient(45deg, 
-                hsl(${Math.random() * 60 + 240}, 70%, 60%), 
-                hsl(${Math.random() * 60 + 300}, 70%, 60%))`
-            }}
-            animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              scale: [1, 1.2, 1],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        ))}
-
-        {/* Sparkle Effects */}
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={`sparkle-${i}`}
-            className="absolute w-1 h-1 bg-white rounded-full"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              opacity: [0, 1, 0],
-              scale: [0, 1.5, 0],
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Infinity,
-              delay: Math.random() * 5,
-            }}
-          />
-        ))}
-      </div>
+      {/* Starry Background */}
+      <StarryBackground />
+      
+      {/* Subtle overlay for better text readability */}
+      <div className="absolute inset-0 bg-black/20 z-0" />
 
       {/* Main Content */}
       <div className="relative z-20 mobile-container py-8 sm:py-12 lg:py-20 pt-16 sm:pt-24 lg:pt-32">
