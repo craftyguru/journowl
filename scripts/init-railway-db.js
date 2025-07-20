@@ -167,7 +167,115 @@ async function initializeDatabase() {
         active_users INTEGER DEFAULT 0,
         new_users_today INTEGER DEFAULT 0,
         average_words_per_entry INTEGER DEFAULT 0,
+        date TIMESTAMP DEFAULT NOW() NOT NULL,
         updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+
+    // Create email_campaigns table
+    await sql`
+      CREATE TABLE IF NOT EXISTS email_campaigns (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        subject TEXT NOT NULL,
+        content TEXT NOT NULL,
+        html_content TEXT,
+        target_audience TEXT DEFAULT 'all',
+        status TEXT DEFAULT 'draft',
+        scheduled_at TIMESTAMP,
+        sent_at TIMESTAMP,
+        recipient_count INTEGER DEFAULT 0,
+        open_rate INTEGER DEFAULT 0,
+        click_rate INTEGER DEFAULT 0,
+        created_by INTEGER REFERENCES users(id) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+
+    // Create user_activity_logs table
+    await sql`
+      CREATE TABLE IF NOT EXISTS user_activity_logs (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id),
+        action TEXT NOT NULL,
+        details JSON,
+        ip_address TEXT,
+        user_agent TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+
+    // Create site_settings table
+    await sql`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        id SERIAL PRIMARY KEY,
+        key TEXT NOT NULL UNIQUE,
+        value TEXT,
+        type TEXT DEFAULT 'string',
+        description TEXT,
+        updated_by INTEGER REFERENCES users(id),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+
+    // Create moderation_queue table
+    await sql`
+      CREATE TABLE IF NOT EXISTS moderation_queue (
+        id SERIAL PRIMARY KEY,
+        content_type TEXT NOT NULL,
+        content_id INTEGER NOT NULL,
+        reported_by INTEGER REFERENCES users(id),
+        reason TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        reviewed_by INTEGER REFERENCES users(id),
+        reviewed_at TIMESTAMP,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+
+    // Create announcements table
+    await sql`
+      CREATE TABLE IF NOT EXISTS announcements (
+        id SERIAL PRIMARY KEY,
+        title TEXT NOT NULL,
+        content TEXT NOT NULL,
+        type TEXT DEFAULT 'info',
+        target_audience TEXT DEFAULT 'all',
+        is_active BOOLEAN DEFAULT TRUE,
+        expires_at TIMESTAMP,
+        created_by INTEGER REFERENCES users(id) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW(),
+        updated_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+
+    // Create support_messages table
+    await sql`
+      CREATE TABLE IF NOT EXISTS support_messages (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        message TEXT NOT NULL,
+        sender VARCHAR(10) NOT NULL,
+        attachment_url VARCHAR,
+        attachment_type VARCHAR(20),
+        admin_name VARCHAR,
+        is_read BOOLEAN DEFAULT FALSE,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+
+    // Create prompt_purchases table
+    await sql`
+      CREATE TABLE IF NOT EXISTS prompt_purchases (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) NOT NULL,
+        stripe_payment_id TEXT NOT NULL UNIQUE,
+        amount INTEGER NOT NULL,
+        prompts_added INTEGER NOT NULL,
+        status TEXT DEFAULT 'completed',
+        created_at TIMESTAMP DEFAULT NOW()
       )
     `;
 

@@ -37,7 +37,7 @@ console.log("Database connecting to:", dbUrl.split('@')[1]?.split('?')[0]);
 const client = postgres(dbUrl, {
   ssl: { rejectUnauthorized: false } // Handle self-signed certificates
 });
-const db = drizzle(client);
+export const db = drizzle(client);
 
 export interface IStorage {
   // User operations
