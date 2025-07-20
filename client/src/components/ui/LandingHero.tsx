@@ -195,14 +195,72 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           transition={{ duration: 0.8 }}
           className="text-center mb-8 sm:mb-12 lg:mb-16"
         >
-          {/* JournOwl Brand Title - Most Prominent */}
+          {/* JournOwl Brand Title - Most Prominent with Animated Owls */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.1 }}
-            className="mb-4 sm:mb-6 lg:mb-8"
+            className="mb-4 sm:mb-6 lg:mb-8 relative flex items-center justify-center"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-2 sm:mb-4 leading-tight" 
+            {/* Left Animated Owl */}
+            <motion.div
+              initial={{ opacity: 0, x: -100, rotate: -15 }}
+              animate={{ 
+                opacity: 1, 
+                x: 0, 
+                rotate: [0, 10, -5, 0],
+                y: [0, -10, 5, 0]
+              }}
+              transition={{ 
+                duration: 2, 
+                delay: 0.5,
+                rotate: { duration: 3, repeat: Infinity, ease: "easeInOut" },
+                y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+              }}
+              className="absolute left-0 sm:left-4 md:left-8 lg:left-12 top-1/2 transform -translate-y-1/2 z-10"
+            >
+              <svg className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" viewBox="0 0 100 100" fill="none">
+                <motion.circle 
+                  cx="50" cy="45" r="20" fill="#8B4513"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <motion.circle 
+                  cx="44" cy="40" r="3" fill="white"
+                  animate={{ scale: [1, 0.8, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+                />
+                <motion.circle 
+                  cx="56" cy="40" r="3" fill="white"
+                  animate={{ scale: [1, 0.8, 1] }}
+                  transition={{ duration: 1.5, repeat: Infinity, delay: 0.2 }}
+                />
+                <circle cx="44" cy="40" r="1.5" fill="black"/>
+                <circle cx="56" cy="40" r="1.5" fill="black"/>
+                <path d="M46 46 L50 50 L54 46" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+                <motion.path 
+                  d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"
+                  animate={{ rotate: [0, -10, 10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  style={{ transformOrigin: "35px 35px" }}
+                />
+                <motion.path 
+                  d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"
+                  animate={{ rotate: [0, 10, -10, 0] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  style={{ transformOrigin: "65px 35px" }}
+                />
+                <ellipse cx="50" cy="60" rx="12" ry="6" fill="#D2691E"/>
+                <motion.circle
+                  cx="35" cy="25" r="2" fill="#FFD700"
+                  animate={{ opacity: [0, 1, 0], scale: [0.5, 1.2, 0.5] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                />
+              </svg>
+            </motion.div>
+
+            {/* Center Title */}
+            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-2 sm:mb-4 leading-tight px-8 sm:px-12 md:px-16 lg:px-20" 
                 style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)', lineHeight: '1.2' }}>
               <svg className="inline-block w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 mr-2 sm:mr-3 mb-1 sm:mb-2" viewBox="0 0 100 100" fill="none">
                 <circle cx="50" cy="45" r="25" fill="#8B4513"/>
@@ -217,6 +275,64 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               </svg>
               JournOwl
             </h1>
+
+            {/* Right Animated Owl */}
+            <motion.div
+              initial={{ opacity: 0, x: 100, rotate: 15 }}
+              animate={{ 
+                opacity: 1, 
+                x: 0, 
+                rotate: [0, -10, 5, 0],
+                y: [0, 5, -10, 0]
+              }}
+              transition={{ 
+                duration: 2, 
+                delay: 0.7,
+                rotate: { duration: 3.5, repeat: Infinity, ease: "easeInOut" },
+                y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" }
+              }}
+              className="absolute right-0 sm:right-4 md:right-8 lg:right-12 top-1/2 transform -translate-y-1/2 z-10"
+            >
+              <svg className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 lg:w-24 lg:h-24" viewBox="0 0 100 100" fill="none">
+                <motion.circle 
+                  cx="50" cy="45" r="20" fill="#654321"
+                  animate={{ scale: [1, 1.08, 1] }}
+                  transition={{ duration: 2.5, repeat: Infinity }}
+                />
+                <motion.circle 
+                  cx="44" cy="40" r="3" fill="white"
+                  animate={{ scale: [1, 0.7, 1] }}
+                  transition={{ duration: 1.8, repeat: Infinity, delay: 0.5 }}
+                />
+                <motion.circle 
+                  cx="56" cy="40" r="3" fill="white"
+                  animate={{ scale: [1, 0.7, 1] }}
+                  transition={{ duration: 1.8, repeat: Infinity, delay: 0.5 }}
+                />
+                <circle cx="44" cy="40" r="1.5" fill="black"/>
+                <circle cx="56" cy="40" r="1.5" fill="black"/>
+                <path d="M46 46 L50 50 L54 46" stroke="#FF6B35" strokeWidth="2" fill="none"/>
+                <motion.path 
+                  d="M35 35 L25 25" stroke="#654321" strokeWidth="3"
+                  animate={{ rotate: [0, 15, -5, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity }}
+                  style={{ transformOrigin: "35px 35px" }}
+                />
+                <motion.path 
+                  d="M65 35 L75 25" stroke="#654321" strokeWidth="3"
+                  animate={{ rotate: [0, -15, 5, 0] }}
+                  transition={{ duration: 3.5, repeat: Infinity }}
+                  style={{ transformOrigin: "65px 35px" }}
+                />
+                <ellipse cx="50" cy="60" rx="12" ry="6" fill="#8B4513"/>
+                <motion.circle
+                  cx="65" cy="25" r="2" fill="#FF69B4"
+                  animate={{ opacity: [0, 1, 0], scale: [0.5, 1.3, 0.5] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: 1.5 }}
+                />
+              </svg>
+            </motion.div>
+          </motion.div></h1>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
