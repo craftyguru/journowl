@@ -22,6 +22,16 @@ export const users = pgTable("users", {
   firstName: text("first_name"),
   lastName: text("last_name"),
   isActive: boolean("is_active").default(true),
+  isBanned: boolean("is_banned").default(false),
+  banReason: text("ban_reason"),
+  bannedAt: timestamp("banned_at"),
+  bannedBy: integer("banned_by"), // Admin user ID who banned them
+  isFlagged: boolean("is_flagged").default(false),
+  flagReason: text("flag_reason"),
+  flaggedAt: timestamp("flagged_at"),
+  flaggedBy: integer("flagged_by"), // Admin user ID who flagged them
+  suspiciousActivityCount: integer("suspicious_activity_count").default(0),
+  lastSuspiciousActivity: timestamp("last_suspicious_activity"),
   lastLoginAt: timestamp("last_login_at"),
   emailVerified: boolean("email_verified").default(false),
   // AI Prompt Usage Tracking
@@ -216,6 +226,19 @@ export const promptPurchases = pgTable("prompt_purchases", {
   amount: integer("amount").notNull(), // amount in cents (299 for $2.99)
   promptsAdded: integer("prompts_added").notNull(), // typically 100
   status: text("status").default("completed"), // pending, completed, failed, refunded
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Admin moderation actions tracking
+export const moderationActions = pgTable("moderation_actions", {
+  id: serial("id").primaryKey(),
+  targetUserId: integer("target_user_id").references(() => users.id).notNull(),
+  adminUserId: integer("admin_user_id").references(() => users.id).notNull(),
+  action: text("action").notNull(), // ban, unban, flag, unflag, delete, warn, reset_prompts
+  reason: text("reason").notNull(),
+  notes: text("notes"),
+  severity: text("severity").default("medium"), // low, medium, high, critical
+  expiresAt: timestamp("expires_at"), // for temporary bans
   createdAt: timestamp("created_at").defaultNow(),
 });
 

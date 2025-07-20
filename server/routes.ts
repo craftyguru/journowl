@@ -1690,6 +1690,138 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Enhanced Admin User Management Endpoints
+  
+  // Ban/Unban User
+  app.post("/api/admin/users/:userId/ban", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { reason, duration } = req.body; // duration in hours, null for permanent
+      const adminId = req.session.userId;
+      
+      const expiresAt = duration ? new Date(Date.now() + duration * 60 * 60 * 1000) : null;
+      
+      // Update user ban status
+      await storage.updateUser(parseInt(userId), {
+        isBanned: true,
+        banReason: reason,
+        bannedAt: new Date(),
+        bannedBy: adminId,
+      });
+      
+      res.json({ message: "User banned successfully", expiresAt });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Unban User
+  app.post("/api/admin/users/:userId/unban", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { reason } = req.body;
+      const adminId = req.session.userId;
+      
+      // Update user ban status
+      await storage.updateUser(parseInt(userId), {
+        isBanned: false,
+        banReason: null,
+        bannedAt: null,
+        bannedBy: null,
+      });
+      
+      res.json({ message: "User unbanned successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Flag/Unflag User for Suspicious Activity
+  app.post("/api/admin/users/:userId/flag", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { reason, severity = 'medium' } = req.body;
+      const adminId = req.session.userId;
+      
+      // Update user flag status
+      await storage.updateUser(parseInt(userId), {
+        isFlagged: true,
+        flagReason: reason,
+        flaggedAt: new Date(),
+        flaggedBy: adminId,
+        suspiciousActivityCount: 1,
+      });
+      
+      res.json({ message: "User flagged for review" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Unflag User
+  app.post("/api/admin/users/:userId/unflag", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { reason } = req.body;
+      const adminId = req.session.userId;
+      
+      // Update user flag status
+      await storage.updateUser(parseInt(userId), {
+        isFlagged: false,
+        flagReason: null,
+        flaggedAt: null,
+        flaggedBy: null,
+        suspiciousActivityCount: 0,
+      });
+      
+      res.json({ message: "User unflagged successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Delete User Account (Soft Delete)
+  app.delete("/api/admin/users/:userId", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { reason } = req.body;
+      
+      // Soft delete: deactivate user and clear sensitive data
+      await storage.updateUser(parseInt(userId), {
+        isActive: false,
+        email: `deleted_${userId}@journowl.com`,
+        username: `deleted_user_${userId}`,
+        password: null,
+        profileImageUrl: null,
+        firstName: null,
+        lastName: null,
+      });
+      
+      res.json({ message: "User account deleted successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Reset User AI Prompts (For abuse cases)
+  app.post("/api/admin/users/:userId/reset-prompts", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { reason } = req.body;
+      
+      // Reset user AI prompts
+      await storage.updateUser(parseInt(userId), {
+        promptsUsedThisMonth: 0,
+        promptsRemaining: 0, // Set to 0 to prevent abuse
+        lastUsageReset: new Date(),
+      });
+      
+      res.json({ message: "User AI prompts reset successfully" });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
