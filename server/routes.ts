@@ -221,7 +221,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/auth/google/callback', 
     passport.authenticate('google', { failureRedirect: '/auth?error=google_failed' }),
     async (req: any, res) => {
+      console.log('Google OAuth callback - User:', req.user);
+      if (!req.user) {
+        console.error('No user found in Google OAuth callback');
+        return res.redirect('/auth?error=google_failed');
+      }
+      
       req.session.userId = req.user.id;
+      console.log('Google OAuth - Set session userId:', req.user.id);
       
       // Send welcome email for new users and create initial data
       if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
@@ -239,7 +246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             title: "Welcome to JournOwl!",
             description: "You've taken your first step on the journey to wise journaling",
             icon: "🦉",
-            category: "getting_started",
+            type: "getting_started",
             rarity: "common",
             xpReward: 100,
             unlockedAt: new Date()
@@ -251,7 +258,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await EmailService.sendWelcomeEmail(req.user);
       }
       
-      res.redirect('/dashboard');
+      // Save session before redirect
+      req.session.save((err: any) => {
+        if (err) {
+          console.error('Google OAuth session save error:', err);
+          return res.redirect('/auth?error=session_failed');
+        }
+        console.log('Google OAuth - Session saved, redirecting to dashboard');
+        res.redirect('/dashboard');
+      });
     }
   );
 
@@ -265,7 +280,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/auth/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/auth?error=facebook_failed' }),
     async (req: any, res) => {
+      console.log('Facebook OAuth callback - User:', req.user);
+      if (!req.user) {
+        console.error('No user found in Facebook OAuth callback');
+        return res.redirect('/auth?error=facebook_failed');
+      }
+      
       req.session.userId = req.user.id;
+      console.log('Facebook OAuth - Set session userId:', req.user.id);
       
       if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
         // Create initial user stats
@@ -282,7 +304,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             title: "Welcome to JournOwl!",
             description: "You've taken your first step on the journey to wise journaling",
             icon: "🦉",
-            category: "getting_started",
+            type: "getting_started",
             rarity: "common",
             xpReward: 100,
             unlockedAt: new Date()
@@ -294,7 +316,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await EmailService.sendWelcomeEmail(req.user);
       }
       
-      res.redirect('/dashboard');
+      // Save session before redirect
+      req.session.save((err: any) => {
+        if (err) {
+          console.error('Facebook OAuth session save error:', err);
+          return res.redirect('/auth?error=session_failed');
+        }
+        console.log('Facebook OAuth - Session saved, redirecting to dashboard');
+        res.redirect('/dashboard');
+      });
     }
   );
 
