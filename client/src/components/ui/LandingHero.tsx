@@ -332,18 +332,19 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 />
               </svg>
             </motion.div>
-          </motion.div></h1>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold"
-              style={{ fontFamily: '"Rock Salt", cursive' }}
-            >
-              <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg">
-                Your Wise Writing Companion
-              </span>
-            </motion.div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold"
+            style={{ fontFamily: '"Rock Salt", cursive' }}
+          >
+            <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg">
+              Your Wise Writing Companion
+            </span>
+          </motion.div>
           </motion.div>
 
           {/* Badge */}
