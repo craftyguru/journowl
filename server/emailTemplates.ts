@@ -179,7 +179,7 @@ export async function sendEmailWithSendGrid(template: EmailTemplate): Promise<bo
           enableText: false
         },
         openTracking: {
-          enable: false  // Disable ALL tracking
+          enable: true
         },
         subscriptionTracking: {
           enable: false
@@ -190,22 +190,11 @@ export async function sendEmailWithSendGrid(template: EmailTemplate): Promise<bo
       },
       mailSettings: {
         bypassListManagement: {
-          enable: true
+          enable: false
         },
         bypassSpamManagement: {
           enable: false
-        },
-        bypassBounceManagement: {
-          enable: false
-        },
-        bypassUnsubscribeManagement: {
-          enable: true
         }
-      },
-      // Add custom headers to prevent tracking
-      customArgs: {
-        'disable_click_tracking': 'true',
-        'disable_open_tracking': 'true'
       }
     });
 
