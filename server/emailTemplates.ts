@@ -1,227 +1,245 @@
-export function createWelcomeEmailTemplate(userEmail, userName, verificationToken) {
+import sgMail from '@sendgrid/mail';
+
+// Initialize SendGrid
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
+
+export interface EmailTemplate {
+  to: string;
+  from: string;
+  subject: string;
+  html: string;
+  text: string;
+}
+
+export function createWelcomeEmailTemplate(userEmail: string, userName: string, verificationToken: string): EmailTemplate {
+  // Use REPLIT_DOMAINS for Replit deployment or BASE_URL for custom domains
   const baseUrl = process.env.REPLIT_DOMAINS 
-    ? `https://${process.env.REPLIT_DOMAINS}` 
+    ? `https://${process.env.REPLIT_DOMAINS}`
     : process.env.BASE_URL || 'http://localhost:5000';
-
+  
+  console.log('Email template - REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
+  console.log('Email template - BASE_URL:', process.env.BASE_URL);
+  console.log('Email template - Final baseUrl:', baseUrl);
+  
   const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
-
+  console.log('Email template - Generated verification URL:', verificationUrl);
+  
   const html = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to JournOwl!</title>
-    <style>
-      @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap');
-      body {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        margin: 0;
-        padding: 0;
-        font-family: 'Montserrat', Arial, sans-serif;
-        color: #1e293b;
-      }
-      .container {
-        max-width: 600px;
-        margin: 30px auto;
-        background: #fff;
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: 0 18px 40px rgba(0,0,0,0.12);
-        animation: fadeIn 1s ease;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px);}
-        to { opacity: 1; transform: none;}
-      }
-      .header {
-        padding: 48px 20px 24px 20px;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #fff;
-        text-align: center;
-        border-bottom: 6px solid #a78bfa;
-        position: relative;
-      }
-      .owl {
-        font-size: 70px;
-        margin-bottom: 10px;
-        display: inline-block;
-        animation: owlBounce 2.2s infinite;
-      }
-      @keyframes owlBounce {
-        0%, 100% { transform: translateY(0);}
-        15% { transform: translateY(-12px);}
-        30% { transform: translateY(0);}
-        45% { transform: translateY(-8px);}
-        60% { transform: translateY(0);}
-      }
-      h1 {
-        margin: 0 0 6px 0;
-        font-size: 2.1em;
-        font-weight: 700;
-        letter-spacing: -1px;
-      }
-      .subhead {
-        font-size: 18px;
-        font-weight: 400;
-        opacity: 0.92;
-        margin-bottom: 0;
-      }
-      .content {
-        padding: 36px 32px;
-      }
-      .verify-btn {
-        display: inline-block;
-        background: linear-gradient(135deg, #667eea 0%, #a855f7 100%);
-        color: #fff;
-        font-size: 17px;
-        font-weight: bold;
-        border-radius: 50px;
-        padding: 15px 34px;
-        text-decoration: none;
-        margin: 32px 0 22px 0;
-        box-shadow: 0 8px 20px rgba(102,126,234,0.20);
-        letter-spacing: 0.03em;
-        transition: transform 0.22s cubic-bezier(.46,.03,.52,.96), box-shadow 0.22s;
-        animation: pulseGlow 2s infinite;
-      }
-      @keyframes pulseGlow {
-        0%, 100% { box-shadow: 0 8px 20px rgba(102,126,234,0.20);}
-        50% { box-shadow: 0 8px 40px 8px #a78bfa33;}
-      }
-      .feature-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 18px;
-        margin: 34px 0 22px 0;
-        justify-content: center;
-      }
-      .feature-card {
-        flex: 1 1 210px;
-        min-width: 170px;
-        background: linear-gradient(120deg,#f3e8ff 60%, #e0f2fe 100%);
-        border-radius: 14px;
-        text-align: center;
-        padding: 18px 12px;
-        box-shadow: 0 3px 10px rgba(174,198,255,0.07);
-        font-size: 15px;
-        transition: transform .16s;
-      }
-      .feature-card span {
-        font-size: 32px;
-        display: block;
-        margin-bottom: 7px;
-      }
-      .plan-block {
-        background: linear-gradient(90deg, #fdf2f8 60%, #e0f2fe 100%);
-        padding: 20px 16px 10px 16px;
-        border-radius: 13px;
-        margin: 30px 0 0 0;
-        border-left: 5px solid #a78bfa;
-        font-size: 15px;
-      }
-      .tips-block {
-        background: linear-gradient(120deg,#fef3c7 40%,#fde68a 100%);
-        padding: 14px 18px;
-        border-radius: 12px;
-        margin: 22px 0;
-        color: #9a580c;
-        border-left: 4px solid #f59e0b;
-        font-size: 15px;
-      }
-      .footer {
-        background: #f8fafc;
-        padding: 28px 16px;
-        text-align: center;
-        color: #64748b;
-        border-top: 1px solid #f1f5f9;
-        font-size: 13px;
-      }
-      .links a { color: #8b5cf6; text-decoration: none; margin: 0 8px; }
-      @media (max-width: 600px) {
-        .container, .content { padding: 16px; }
-        .feature-list { flex-direction: column; gap: 12px;}
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <div class="owl">🦉</div>
-        <h1>Welcome to JournOwl</h1>
-        <p class="subhead">Your Wise Writing Companion</p>
-      </div>
-      <div class="content">
-        <h2 style="margin: 0 0 16px 0; font-size: 1.3em; color: #3b3762;">Hi ${userName}! 👋</h2>
-        <p>We're absolutely thrilled to have you join our mindful community of writers and dreamers.<br>JournOwl is where your story gets the wise sidekick it deserves!</p>
-        <div style="text-align: center;">
-          <a href="${verificationUrl}" class="verify-btn">✅ Verify Email & Start Your Journey</a>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Welcome to JournOwl! 🦉</title>
+      <style>
+        body {
+          font-family: 'Arial', sans-serif;
+          line-height: 1.6;
+          margin: 0;
+          padding: 0;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background: white;
+          border-radius: 20px;
+          overflow: hidden;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          padding: 40px 20px;
+          text-align: center;
+          color: white;
+        }
+        .owl-icon {
+          font-size: 60px;
+          margin-bottom: 20px;
+          animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+          40% { transform: translateY(-10px); }
+          60% { transform: translateY(-5px); }
+        }
+        .content {
+          padding: 40px;
+        }
+        .feature-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+          margin: 30px 0;
+        }
+        .feature-item {
+          padding: 20px;
+          border-radius: 15px;
+          text-align: center;
+          border: 2px solid #f1f5f9;
+          transition: transform 0.3s ease;
+        }
+        .feature-item:hover {
+          transform: translateY(-5px);
+        }
+        .feature-purple { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); color: white; }
+        .feature-blue { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); color: white; }
+        .feature-green { background: linear-gradient(135deg, #10b981 0%, #34d399 100%); color: white; }
+        .feature-orange { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; }
+        .btn {
+          display: inline-block;
+          padding: 15px 30px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          text-decoration: none;
+          border-radius: 50px;
+          font-weight: bold;
+          font-size: 16px;
+          margin: 20px 0;
+          box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+          transition: transform 0.3s ease;
+        }
+        .btn:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+        }
+        .footer {
+          background: #f8fafc;
+          padding: 30px;
+          text-align: center;
+          color: #64748b;
+        }
+        .tips {
+          background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+          padding: 20px;
+          border-radius: 15px;
+          margin: 20px 0;
+          border-left: 5px solid #f59e0b;
+        }
+        @media (max-width: 600px) {
+          .feature-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <!-- Header -->
+        <div class="header">
+          <div class="owl-icon">🦉</div>
+          <h1 style="margin: 0; font-size: 32px; font-weight: bold;">Welcome to JournOwl!</h1>
+          <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">Your Wise Writing Companion</p>
         </div>
-        <h3 style="margin: 32px 0 10px 0; text-align: center; color: #5b21b6;">Why you'll ❤️ JournOwl:</h3>
-        <div class="feature-list">
-          <div class="feature-card">
-            <span>🎨</span>
-            <b>Smart Editor</b><br>
-            Beautiful fonts, themes & creative prompts
+
+        <!-- Main Content -->
+        <div class="content">
+          <h2 style="color: #1e293b; margin-bottom: 20px;">Hi ${userName}! 👋</h2>
+          
+          <p style="color: #475569; font-size: 16px; margin-bottom: 30px;">
+            Welcome to JournOwl, where journaling becomes magical! We're thrilled to have you join our community of mindful writers and storytellers.
+          </p>
+
+          <!-- Verification Button -->
+          <div style="text-align: center; margin: 40px 0;">
+            <a href="${verificationUrl}" class="btn">
+              ✅ Verify Your Email & Start Journaling!
+            </a>
           </div>
-          <div class="feature-card">
-            <span>📸</span>
-            <b>Photo AI</b><br>
-            Instant insights & inspiration from your images
+
+          <!-- Features Grid -->
+          <h3 style="color: #1e293b; text-align: center; margin: 40px 0 30px 0;">What makes JournOwl special? ✨</h3>
+          
+          <div class="feature-grid">
+            <div class="feature-item feature-purple">
+              <div style="font-size: 32px; margin-bottom: 10px;">🎨</div>
+              <h4 style="margin: 0 0 10px 0;">Smart Editor</h4>
+              <p style="margin: 0; font-size: 14px;">Beautiful fonts, colors, and AI writing prompts</p>
+            </div>
+            
+            <div class="feature-item feature-blue">
+              <div style="font-size: 32px; margin-bottom: 10px;">📸</div>
+              <h4 style="margin: 0 0 10px 0;">Photo AI</h4>
+              <p style="margin: 0; font-size: 14px;">Upload photos and get instant AI insights</p>
+            </div>
+            
+            <div class="feature-item feature-green">
+              <div style="font-size: 32px; margin-bottom: 10px;">🏆</div>
+              <h4 style="margin: 0 0 10px 0;">Achievements</h4>
+              <p style="margin: 0; font-size: 14px;">Level up with XP, streaks, and rewards</p>
+            </div>
+            
+            <div class="feature-item feature-orange">
+              <div style="font-size: 32px; margin-bottom: 10px;">🧠</div>
+              <h4 style="margin: 0 0 10px 0;">AI Insights</h4>
+              <p style="margin: 0; font-size: 14px;">Discover patterns in your writing journey</p>
+            </div>
           </div>
-          <div class="feature-card">
-            <span>🏆</span>
-            <b>Achievements</b><br>
-            Level up with XP, streaks, rewards & medals
+
+          <!-- Subscription Information -->
+          <div style="background: linear-gradient(135deg, #e0f2fe 0%, #bbdefb 100%); padding: 20px; border-radius: 15px; margin: 20px 0; border-left: 5px solid #2196f3;">
+            <h4 style="color: #1565c0; margin: 0 0 15px 0;">🎯 Your Free Account Includes:</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; color: #1565c0;">
+              <div style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 5px;">✨</div>
+                <strong>100 AI Prompts</strong><br>
+                <small>Smart writing suggestions</small>
+              </div>
+              <div style="text-align: center;">
+                <div style="font-size: 24px; margin-bottom: 5px;">☁️</div>
+                <strong>50MB Storage</strong><br>
+                <small>For photos & attachments</small>
+              </div>
+            </div>
+            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 10px; text-align: center;">
+              <p style="margin: 0; color: #1565c0; font-weight: bold;">Need more? Upgrade anytime!</p>
+              <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">
+                🚀 <strong>Pro Plan ($9.99/month):</strong> 1,000 prompts + 500MB<br>
+                ⚡ <strong>Power Plan ($19.99/month):</strong> Unlimited everything
+              </p>
+            </div>
           </div>
-          <div class="feature-card">
-            <span>🧠</span>
-            <b>AI Insights</b><br>
-            Discover patterns in your writing journey
+
+          <!-- Quick Tips -->
+          <div class="tips">
+            <h4 style="color: #92400e; margin: 0 0 15px 0;">💡 Quick Start Tips:</h4>
+            <ul style="color: #92400e; margin: 0; padding-left: 20px;">
+              <li>Start with a simple mood check-in</li>
+              <li>Try uploading a photo for AI analysis</li>
+              <li>Customize your writing style with fonts & colors</li>
+              <li>Set your first journaling goal</li>
+              <li>Explore the achievement system</li>
+              <li><strong>Monitor your AI prompts</strong> - they refresh monthly!</li>
+            </ul>
+          </div>
+
+          <p style="color: #475569; font-size: 16px; margin-top: 30px;">
+            Ready to begin your mindful writing journey? Click the verification button above to activate your account and unlock all features!
+          </p>
+
+          <div style="text-align: center; margin: 30px 0;">
+            <p style="color: #64748b; font-size: 14px;">
+              Questions? Reply to this email - we're here to help! 💌
+            </p>
           </div>
         </div>
-        <div class="plan-block">
-          <b>Your Free Account Includes:</b>
-          <ul style="padding-left: 18px; margin:12px 0 0 0;">
-            <li>✨ <b>100 AI Prompts</b> – Smart writing suggestions</li>
-            <li>☁️ <b>50MB Storage</b> – Save photos & files</li>
-            <li>🎯 Full access to all essential features</li>
-          </ul>
-          <div style="margin-top: 10px;">
-            Need more? <b>Upgrade anytime!</b><br>
-            🚀 <b>Pro Plan ($9.99/mo):</b> 1,000 prompts, 500MB storage<br>
-            ⚡ <b>Power Plan ($19.99/mo):</b> Unlimited everything!
-          </div>
-        </div>
-        <div class="tips-block">
-          <b>Quick Start Tips:</b>
-          <ul style="padding-left: 18px; margin:10px 0;">
-            <li>Start with a simple mood check-in</li>
-            <li>Upload a photo for AI magic</li>
-            <li>Customize your journal’s look</li>
-            <li>Set your first writing goal</li>
-            <li>Unlock your first achievement badge</li>
-            <li>Track your monthly AI prompts</li>
-          </ul>
-        </div>
-        <p style="margin: 26px 0 12px 0;">
-          Ready to begin? Just click the button above to activate your account.<br>
-          Any questions? <b>Just reply</b>—our wise team is here to help! 💌
-        </p>
-      </div>
-      <div class="footer">
-        Happy journaling! 🦉✨<br>
-        <span style="color:#a78bfa;">The JournOwl Team</span>
-        <div class="links" style="margin-top:10px;">
-          <a href="#">Unsubscribe</a> | <a href="#">Privacy Policy</a>
-        </div>
-        <div style="color: #9ca3af; margin-top:7px; font-size:11px;">
-          You're receiving this because you signed up for JournOwl.
+
+        <!-- Footer -->
+        <div class="footer">
+          <p style="margin: 0; font-size: 14px;">
+            Happy journaling! 🦉✨<br>
+            The JournOwl Team
+          </p>
+          <p style="margin: 15px 0 0 0; font-size: 12px;">
+            You're receiving this because you signed up for JournOwl.<br>
+            <a href="#" style="color: #64748b;">Unsubscribe</a> | <a href="#" style="color: #64748b;">Privacy Policy</a>
+          </p>
         </div>
       </div>
-    </div>
-  </body>
-  </html>
+    </body>
+    </html>
   `;
 
   const text = `
@@ -229,44 +247,114 @@ Welcome to JournOwl! 🦉
 
 Hi ${userName}!
 
-Welcome to JournOwl, your wise writing companion. We're thrilled to have you with us.
+Welcome to JournOwl, your wise writing companion! We're thrilled to have you join our community of mindful writers.
 
 Please verify your email to activate your account:
 ${verificationUrl}
 
 What makes JournOwl special:
-• Smart Editor with beautiful fonts & AI prompts
-• Photo AI for creative inspiration
-• XP, streaks, and achievement badges
-• AI Insights into your journaling
+• Smart Editor with beautiful fonts, colors, and AI prompts
+• Photo AI that analyzes your images and creates writing inspiration
+• Achievement system with XP, levels, and rewards
+• AI Insights that discover patterns in your writing
 
 Your Free Account Includes:
-✨ 100 AI Prompts/month
-☁️ 50MB Storage for photos/files
-🎯 Full access to core features
+✨ 100 AI Prompts per month - Smart writing suggestions
+☁️ 50MB Storage - For photos and attachments
+🎯 Full access to all core features
 
 Need more? Upgrade anytime:
 🚀 Pro Plan ($9.99/month): 1,000 prompts + 500MB storage
-⚡ Power Plan ($19.99/month): Unlimited prompts & features
+⚡ Power Plan ($19.99/month): Unlimited prompts + 5GB storage
 
 Quick Start Tips:
-- Do a mood check-in
-- Upload a photo for AI analysis
+- Start with a simple mood check-in
+- Try uploading a photo for AI analysis  
 - Customize your writing style
-- Set your first goal
-- Unlock achievements
+- Set your first journaling goal
+- Explore achievements
+- Monitor your AI prompts - they refresh monthly!
 
-Questions? Reply to this email—we’re always here!
+Ready to begin your mindful writing journey? Click the verification link above!
+
+Questions? Just reply to this email - we're here to help!
 
 Happy journaling! 🦉✨
 The JournOwl Team
-`;
+  `;
 
   return {
     to: userEmail,
-    from: 'craftyguru@1ofakindpiece.com',
-    subject: '🦉 Welcome to JournOwl – Verify Your Email & Start Your Journey!',
+    from: 'craftyguru@1ofakindpiece.com', // Using verified sender email
+    subject: '🦉 Welcome to JournOwl - Verify Your Email & Start Your Journey!',
     html,
     text
+  };
+}
+
+export async function sendWelcomeEmail(userEmail: string, userName: string, verificationToken: string): Promise<boolean> {
+  try {
+    if (!process.env.SENDGRID_API_KEY) {
+      console.log('SendGrid API key not configured, skipping email');
+      return false;
+    }
+
+    const emailTemplate = createWelcomeEmailTemplate(userEmail, userName, verificationToken);
+    await sgMail.send(emailTemplate);
+    
+    console.log(`Welcome email sent successfully to ${userEmail}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send welcome email:', error);
+    return false;
+  }
+}
+
+export function createEmailVerificationTemplate(userEmail: string, userName: string, verificationToken: string): EmailTemplate {
+  // Use REPLIT_DOMAINS for Replit deployment or BASE_URL for custom domains
+  const baseUrl = process.env.REPLIT_DOMAINS 
+    ? `https://${process.env.REPLIT_DOMAINS}`
+    : process.env.BASE_URL || 'http://localhost:5000';
+    
+  console.log('Verification email - REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
+  console.log('Verification email - BASE_URL:', process.env.BASE_URL);
+  console.log('Verification email - Final baseUrl:', baseUrl);
+    
+  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
+  console.log('Verification email - Generated URL:', verificationUrl);
+  
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <style>
+        body { font-family: Arial, sans-serif; background: #f8fafc; margin: 0; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; border-radius: 15px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .header { text-align: center; margin-bottom: 30px; }
+        .btn { display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 50px; font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1 style="color: #1e293b;">🦉 Verify Your Email</h1>
+        </div>
+        <p>Hi ${userName},</p>
+        <p>Please verify your email address to complete your JournOwl registration:</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${verificationUrl}" class="btn">Verify Email Address</a>
+        </div>
+        <p style="color: #64748b; font-size: 14px;">This link will expire in 24 hours.</p>
+      </div>
+    </body>
+    </html>
+  `;
+
+  return {
+    to: userEmail,
+    from: 'craftyguru@1ofakindpiece.com', // Using verified sender email
+    subject: '🦉 Verify Your JournOwl Email Address',
+    html,
+    text: `Hi ${userName}, please verify your email: ${verificationUrl}`
   };
 }
