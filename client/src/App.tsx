@@ -28,7 +28,7 @@ function App() {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
     if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
-    if (window.location.pathname === '/email-verified' || urlParams.get('success') !== null || urlParams.get('verified') === 'true') return 'email-verified';
+    if (window.location.pathname === '/email-verified' || urlParams.get('success') === '1' || urlParams.get('success') === '0' || urlParams.get('verified') === 'true') return 'email-verified';
     return 'landing';
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
