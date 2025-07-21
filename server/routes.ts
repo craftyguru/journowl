@@ -21,6 +21,7 @@ import session from "express-session";
 import ConnectPgSimple from "connect-pg-simple";
 import { setupOAuth, passport } from "./oauth";
 import Stripe from "stripe";
+import path from "path";
 
 // Initialize Stripe (optional)
 let stripe: Stripe | null = null;
@@ -2447,6 +2448,18 @@ Your story shows how every day brings new experiences and emotions, creating the
       console.error('Make admin error:', error);
       res.status(500).json({ message: "Failed to make user admin" });
     }
+  });
+
+  // Serve PWA files
+  const projectRoot = path.dirname(new URL(import.meta.url).pathname);
+  
+  app.get('/manifest.json', (req, res) => {
+    res.sendFile(path.join(projectRoot, '../client/public/manifest.json'));
+  });
+  
+  app.get('/service-worker.js', (req, res) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    res.sendFile(path.join(projectRoot, '../client/public/service-worker.js'));
   });
 
   const httpServer = createServer(app);

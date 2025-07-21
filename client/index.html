@@ -4,6 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>🦉 JournOwl - Your Wise Writing Companion ✨</title>
+    <meta name="description" content="AI-powered journaling platform for capturing thoughts, analyzing emotions, and unlocking insights from your daily experiences">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    
+    <!-- Theme colors for PWA -->
+    <meta name="theme-color" content="#764ba2">
+    <meta name="background-color" content="#667eea">
+    
+    <!-- Apple Touch Icons for iOS -->
+    <link rel="apple-touch-icon" sizes="72x72" href="/icons/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="/icons/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="/icons/icon-128x128.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="/icons/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="384x384" href="/icons/icon-384x384.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png">
+    
+    <!-- Standard favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png">
+    
+    <!-- iOS Safari specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="JournOwl">
+    
+    <!-- Microsoft specific -->
+    <meta name="msapplication-TileColor" content="#764ba2">
+    <meta name="msapplication-TileImage" content="/icons/icon-144x144.png">
     
     <!-- Google Fonts for enhanced typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,6 +44,54 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+              console.log('JournOwl SW registered: ', registration);
+              
+              // Check for updates
+              registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    // New content is available, show update notification
+                    if (confirm('New version of JournOwl is available. Refresh to update?')) {
+                      window.location.reload();
+                    }
+                  }
+                });
+              });
+            })
+            .catch((registrationError) => {
+              console.log('JournOwl SW registration failed: ', registrationError);
+            });
+        });
+      }
+      
+      // PWA Install Prompt
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        // Show install button or banner
+        console.log('JournOwl can be installed as an app!');
+        
+        // You can show a custom install button here
+        // For now, we'll store the event for later use
+      });
+      
+      // Track PWA installation
+      window.addEventListener('appinstalled', (evt) => {
+        console.log('JournOwl has been installed as a PWA!');
+        // Track this event in analytics if needed
+      });
+    </script>
+    
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
   </body>

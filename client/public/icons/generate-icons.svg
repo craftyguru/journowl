@@ -1,0 +1,50 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="owl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ffb347;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="url(#bg)" />
+  
+  <!-- Owl body -->
+  <ellipse cx="256" cy="280" rx="120" ry="140" fill="url(#owl)" />
+  
+  <!-- Owl head -->
+  <circle cx="256" cy="180" r="100" fill="url(#owl)" />
+  
+  <!-- Eyes -->
+  <circle cx="230" cy="160" r="25" fill="white" />
+  <circle cx="282" cy="160" r="25" fill="white" />
+  <circle cx="230" cy="160" r="15" fill="#333" />
+  <circle cx="282" cy="160" r="15" fill="#333" />
+  <circle cx="233" cy="157" r="5" fill="white" />
+  <circle cx="285" cy="157" r="5" fill="white" />
+  
+  <!-- Beak -->
+  <polygon points="256,185 245,200 267,200" fill="#ff8c00" />
+  
+  <!-- Wings -->
+  <ellipse cx="180" cy="260" rx="35" ry="80" fill="#daa520" transform="rotate(-15 180 260)" />
+  <ellipse cx="332" cy="260" rx="35" ry="80" fill="#daa520" transform="rotate(15 332 260)" />
+  
+  <!-- Owl ear tufts -->
+  <ellipse cx="210" cy="110" rx="15" ry="35" fill="#daa520" transform="rotate(-20 210 110)" />
+  <ellipse cx="302" cy="110" rx="15" ry="35" fill="#daa520" transform="rotate(20 302 110)" />
+  
+  <!-- Journal lines (representing writing) -->
+  <rect x="80" y="380" width="120" height="3" fill="rgba(255,255,255,0.8)" rx="1.5" />
+  <rect x="80" y="395" width="100" height="3" fill="rgba(255,255,255,0.6)" rx="1.5" />
+  <rect x="80" y="410" width="140" height="3" fill="rgba(255,255,255,0.8)" rx="1.5" />
+  
+  <rect x="312" y="380" width="120" height="3" fill="rgba(255,255,255,0.8)" rx="1.5" />
+  <rect x="312" y="395" width="100" height="3" fill="rgba(255,255,255,0.6)" rx="1.5" />
+  <rect x="312" y="410" width="140" height="3" fill="rgba(255,255,255,0.8)" rx="1.5" />
+</svg>

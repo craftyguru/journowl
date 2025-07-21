@@ -21,6 +21,7 @@ import { SupportChatBubble } from "@/components/SupportChatBubble";
 import { StarryBackground } from "@/components/starry-background";
 import { EmailConfirmation } from "@/pages/email-confirmation";
 import EmailVerified from "@/pages/email-verified";
+import { MobilePWABanner } from "@/components/PWAInstallButton";
 
 function App() {
   // Check if demo mode is requested from URL params
@@ -347,6 +348,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
       {/* Help and Support Bubbles */}
       <HelpBubble />
       <SupportChatBubble />
+      <MobilePWABanner />
     </div>
   );
 }
