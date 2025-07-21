@@ -1,0 +1,336 @@
+client/src/components/referral-page.tsx:47:30 - error TS2339: Property 'user' does not exist on type 'unknown'.
+
+47   const user = userResponse?.user;
+                                ~~~~
+
+client/src/components/referral-page.tsx:48:9 - error TS2322: Type 'Response | { totalReferrals: number; successfulReferrals: number; pendingReferrals: number; totalRewards: number; referralCode: string; recentReferrals: undefined[]; }' is not assignable to type 'ReferralStats'.
+  Type 'Response' is missing the following properties from type 'ReferralStats': totalReferrals, successfulReferrals, pendingReferrals, totalRewards, and 2 more.
+
+48   const stats: ReferralStats = referralData || {
+           ~~~~~
+
+client/src/components/smart-journal-editor.tsx:334:18 - error TS2304: Cannot find name 'Badge'.
+
+334                 <Badge className="bg-orange-500/20 text-orange-300 text-xs hidden sm:block">
+                     ~~~~~
+
+client/src/components/smart-journal-editor.tsx:336:19 - error TS2304: Cannot find name 'Badge'.
+
+336                 </Badge>
+                      ~~~~~
+
+client/src/components/smart-journal-editor.tsx:456:20 - error TS2304: Cannot find name 'Badge'.
+
+456                   <Badge variant="outline" className="border-purple-500/20 text-purple-300 text-xs sm:text-sm">
+                       ~~~~~
+
+client/src/components/smart-journal-editor.tsx:458:21 - error TS2304: Cannot find name 'Badge'.
+
+458                   </Badge>
+                        ~~~~~
+
+client/src/components/smart-journal-editor.tsx:460:22 - error TS2304: Cannot find name 'Badge'.
+
+460                     <Badge variant="outline" className="border-red-500/20 text-red-300 text-xs">
+                         ~~~~~
+
+client/src/components/smart-journal-editor.tsx:463:23 - error TS2304: Cannot find name 'Badge'.
+
+463                     </Badge>
+                          ~~~~~
+
+client/src/components/unified-journal.tsx:115:29 - error TS2339: Property 'username' does not exist on type 'unknown'.
+
+115       const userName = user.username || user.email?.split('@')[0] || 'there';
+                                ~~~~~~~~
+
+client/src/components/unified-journal.tsx:115:46 - error TS2339: Property 'email' does not exist on type 'unknown'.
+
+115       const userName = user.username || user.email?.split('@')[0] || 'there';
+                                                 ~~~~~
+
+client/src/components/unified-journal.tsx:1166:21 - error TS2322: Type '(e: React.MouseEvent<HTMLCanvasElement>) => void' is not assignable to type 'TouchEventHandler<HTMLCanvasElement>'.
+  Types of parameters 'e' and 'event' are incompatible.
+    Type 'TouchEvent<HTMLCanvasElement>' is missing the following properties from type 'MouseEvent<HTMLCanvasElement, MouseEvent>': button, buttons, clientX, clientY, and 7 more.
+
+1166                     onTouchStart={startDrawing}
+                         ~~~~~~~~~~~~
+
+  node_modules/@types/react/index.d.ts:2541:9
+    2541         onTouchStart?: TouchEventHandler<T> | undefined;
+                 ~~~~~~~~~~~~
+    The expected type comes from property 'onTouchStart' which is declared here on type 'DetailedHTMLProps<CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement>'
+
+client/src/components/unified-journal.tsx:1167:21 - error TS2322: Type '(e: React.MouseEvent<HTMLCanvasElement>) => void' is not assignable to type 'TouchEventHandler<HTMLCanvasElement>'.
+  Types of parameters 'e' and 'event' are incompatible.
+    Type 'TouchEvent<HTMLCanvasElement>' is missing the following properties from type 'MouseEvent<HTMLCanvasElement, MouseEvent>': button, buttons, clientX, clientY, and 7 more.
+
+1167                     onTouchMove={draw}
+                         ~~~~~~~~~~~
+
+  node_modules/@types/react/index.d.ts:2539:9
+    2539         onTouchMove?: TouchEventHandler<T> | undefined;
+                 ~~~~~~~~~~~
+    The expected type comes from property 'onTouchMove' which is declared here on type 'DetailedHTMLProps<CanvasHTMLAttributes<HTMLCanvasElement>, HTMLCanvasElement>'
+
+client/src/components/unified-journal.tsx:1676:42 - error TS2339: Property 'promptsRemaining' does not exist on type 'unknown'.
+
+1676                       ✨ {promptUsageData.promptsRemaining}/100
+                                              ~~~~~~~~~~~~~~~~
+
+client/src/lib/queryClient.ts:63:3 - error TS2353: Object literal may only specify known properties, and 'errorHandler' does not exist in type 'QueryClientConfig'.
+
+63   errorHandler: (error) => {
+     ~~~~~~~~~~~~
+
+client/src/pages/dashboard.tsx:275:13 - error TS2322: Type '(entry: import("/home/runner/workspace/client/src/lib/types").JournalEntry) => void' is not assignable to type '(entry: JournalEntry) => void'.
+  Types of parameters 'entry' and 'entry' are incompatible.
+    Type 'JournalEntry' is missing the following properties from type 'JournalEntry': userId, createdAt, updatedAt
+
+275             onEntryEdit={handleEntryEdit}
+                ~~~~~~~~~~~
+
+  client/src/components/interactive-calendar.tsx:33:3
+    33   onEntryEdit: (entry: JournalEntry) => void;
+         ~~~~~~~~~~~
+    The expected type comes from property 'onEntryEdit' which is declared here on type 'IntrinsicAttributes & InteractiveCalendarProps'
+
+client/src/pages/insights.tsx:68:28 - error TS2339: Property 'stats' does not exist on type 'unknown'.
+
+68   const stats = statsData?.stats || { totalEntries: 0, totalWords: 0, currentStreak: 0, longestStreak: 0 };
+                              ~~~~~
+
+client/src/pages/insights.tsx:71:28 - error TS2339: Property 'reduce' does not exist on type 'unknown'.
+
+71   const moodData = entries.reduce((acc, entry) => {
+                              ~~~~~~
+
+client/src/pages/insights.tsx:80:29 - error TS2362: The left-hand side of an arithmetic operation must be of type 'any', 'number', 'bigint' or an enum type.
+
+80     percentage: Math.round((count / entries.length) * 100)
+                               ~~~~~
+
+client/src/pages/insights.tsx:80:45 - error TS2339: Property 'length' does not exist on type 'unknown'.
+
+80     percentage: Math.round((count / entries.length) * 100)
+                                               ~~~~~~
+
+client/src/pages/insights.tsx:87:32 - error TS2339: Property 'filter' does not exist on type 'unknown'.
+
+87     const dayEntries = entries.filter(entry =>
+                                  ~~~~~~
+
+client/src/pages/insights.tsx:117:34 - error TS2339: Property 'filter' does not exist on type 'unknown'.
+
+117       const dayEntries = entries.filter(entry =>
+                                     ~~~~~~
+
+client/src/pages/insights.tsx:165:37 - error TS2339: Property 'filter' does not exist on type 'unknown'.
+
+165     const selectedEntries = entries.filter(entry =>
+                                        ~~~~~~
+
+client/src/pages/insights.tsx:189:37 - error TS2339: Property 'length' does not exist on type 'unknown'.
+
+189       totalEntries: selectedEntries.length,
+                                        ~~~~~~
+
+client/src/pages/insights.tsx:190:35 - error TS2339: Property 'reduce' does not exist on type 'unknown'.
+
+190       totalWords: selectedEntries.reduce((sum, entry) => sum + entry.wordCount, 0),
+                                      ~~~~~~
+
+client/src/pages/insights.tsx:211:31 - error TS2548: Type 'unknown' is not an array type or does not have a '[Symbol.iterator]()' method that returns an iterator.
+
+211     const sortedEntries = [...selectedEntries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                                  ~~~~~~~~~~~~~~~
+
+client/src/pages/insights.tsx:407:31 - error TS2548: Type 'unknown' is not an array type or does not have a '[Symbol.iterator]()' method that returns an iterator.
+
+407     const sortedEntries = [...selectedEntries].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                                  ~~~~~~~~~~~~~~~
+
+client/src/pages/insights.tsx:525:28 - error TS2339: Property 'slice' does not exist on type 'unknown'.
+
+525           entries: entries.slice(0, 10), // Send recent entries for context
+                               ~~~~~
+
+client/src/pages/insights.tsx:757:18 - error TS2746: This JSX tag's 'children' prop expects a single child of type 'ReactElement<any, string | JSXElementConstructor<any>>', but multiple children were provided.
+
+757                 <ResponsiveContainer width="100%" height={300}>
+                     ~~~~~~~~~~~~~~~~~~~
+
+client/src/pages/insights.tsx:881:86 - error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.
+
+881                           <span className="text-sm text-gray-600 dark:text-gray-400">{mood.count}</span>
+                                                                                         ~~~~~~~~~~~~
+
+  node_modules/@types/react/index.d.ts:2385:9
+    2385         children?: ReactNode | undefined;
+                 ~~~~~~~~
+    The expected type comes from property 'children' which is declared here on type 'DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement>'
+
+client/src/pages/insights.tsx:1360:67 - error TS2339: Property 'map' does not exist on type 'unknown'.
+
+1360                     onClick={() => setSelectedExportDates(entries.map(e => new Date(e.createdAt)))}
+                                                                       ~~~
+
+client/src/pages/insights.tsx:1377:54 - error TS2339: Property 'filter' does not exist on type 'unknown'.
+
+1377                       setSelectedExportDates(entries.filter(e => new Date(e.createdAt) >= lastWeek).map(e => new Date(e.createdAt)));
+                                                          ~~~~~~
+
+client/src/pages/insights.tsx:1388:54 - error TS2339: Property 'filter' does not exist on type 'unknown'.
+
+1388                       setSelectedExportDates(entries.filter(e => new Date(e.createdAt) >= lastMonth).map(e => new Date(e.createdAt)));
+                                                          ~~~~~~
+
+client/src/pages/insights.tsx:1447:30 - error TS2339: Property 'filter' does not exist on type 'unknown'.
+
+1447                     {entries.filter(entry =>
+                                  ~~~~~~
+
+server/routes.ts:219:11 - error TS2353: Object literal may only specify known properties, and 'emailVerified' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+219           emailVerified: true,
+              ~~~~~~~~~~~~~
+
+server/routes.ts:266:11 - error TS2353: Object literal may only specify known properties, and 'emailVerificationToken' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+266           emailVerificationToken: verificationToken,
+              ~~~~~~~~~~~~~~~~~~~~~~
+
+server/routes.ts:1014:9 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+1014         promptsRemaining: 100,
+             ~~~~~~~~~~~~~~~~
+
+server/routes.ts:1039:9 - error TS2353: Object literal may only specify known properties, and 'xp' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+1039         xp: 1000,
+             ~~
+
+server/routes.ts:1275:85 - error TS2345: Argument of type 'number' is not assignable to parameter of type '() => Promise<unknown>'.
+
+1275       const response = await trackableOpenAICall(req.session.userId, "kid_prompts", 300, async () => {
+                                                                                         ~~~
+
+server/routes.ts:1628:9 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+1628         promptsRemaining: 100,
+             ~~~~~~~~~~~~~~~~
+
+server/routes.ts:1650:9 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+1650         promptsRemaining: 100,
+             ~~~~~~~~~~~~~~~~
+
+server/services/achievement-tracker.ts:84:11 - error TS2353: Object literal may only specify known properties, and 'targetValue' does not exist in type '{ userId?: number; title?: string; achievementId?: string; description?: string; icon?: string; rarity?: string; type?: string; } & { userId: number; }'.
+
+84           targetValue: achievement.targetValue,
+             ~~~~~~~~~~~
+
+server/services/achievement-tracker.ts:104:11 - error TS2353: Object literal may only specify known properties, and 'currentValue' does not exist in type '{ userId?: number; title?: string; description?: string; type?: string; targetValue?: number; goalId?: string; difficulty?: string; deadline?: Date; } & { userId: number; }'.
+
+104           currentValue: 0,
+              ~~~~~~~~~~~~
+
+server/services/achievement-tracker.ts:122:9 - error TS2353: Object literal may only specify known properties, and 'targetValue' does not exist in type '{ userId?: number; title?: string; achievementId?: string; description?: string; icon?: string; rarity?: string; type?: string; } & { userId: number; }'.
+
+122         targetValue: 1,
+            ~~~~~~~~~~~
+
+server/storage.ts:268:48 - error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type '{ userId?: number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; }'.
+
+268     await db.update(userStats).set({ ...stats, updatedAt: new Date() }).where(eq(userStats.userId, userId));
+                                                   ~~~~~~~~~
+
+server/storage.ts:332:46 - error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+332     await db.update(users).set({ ...updates, updatedAt: new Date() }).where(eq(users.id, id));
+                                                 ~~~~~~~~~
+
+server/storage.ts:358:48 - error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { action: string | SQL<unknown> | Placeholder<string, any>; }): PgInsertBase<PgTableWithColumns<{ name: "user_activity_logs"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "user_activity_logs"; ... 12 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; createdAt: PgColumn<...>; }; dialect: "pg"; }>, ... 4 more ..., never>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type '{ action: string | SQL<unknown> | Placeholder<string, any>; }'.
+  Overload 2 of 2, '(values: { action: string | SQL<unknown> | Placeholder<string, any>; }[]): PgInsertBase<PgTableWithColumns<{ name: "user_activity_logs"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "user_activity_logs"; ... 12 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; createdAt: PgColumn<...>; }; dialect: "pg"; }>, ... 4 more ..., never>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type '{ action: string | SQL<unknown> | Placeholder<string, any>; }[]'.
+
+358     await db.insert(userActivityLogs).values({ userId, action, details, ipAddress, userAgent });
+                                                   ~~~~~~
+
+
+server/storage.ts:367:55 - error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type '{ title?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; content?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<...>, {}, {}>; subject?: string | ... 1 more ... | PgColumn<...>; createdBy?: number | ... 1 more ... | PgColumn<...>; }'.
+
+367     await db.update(emailCampaigns).set({ ...updates, updatedAt: new Date() }).where(eq(emailCampaigns.id, id));
+                                                          ~~~~~~~~~
+
+server/storage.ts:384:35 - error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { key: string | SQL<unknown> | Placeholder<string, any>; }): PgInsertBase<PgTableWithColumns<{ name: "site_settings"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "site_settings"; ... 12 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; updatedAt: PgColumn<...>; }; dialect: "pg"; }>, ... 4 more ..., never>', gave the following error.
+    Object literal may only specify known properties, and 'value' does not exist in type '{ key: string | SQL<unknown> | Placeholder<string, any>; }'.
+  Overload 2 of 2, '(values: { key: string | SQL<unknown> | Placeholder<string, any>; }[]): PgInsertBase<PgTableWithColumns<{ name: "site_settings"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "site_settings"; ... 12 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; updatedAt: PgColumn<...>; }; dialect: "pg"; }>, ... 4 more ..., never>', gave the following error.
+    Object literal may only specify known properties, but 'key' does not exist in type '{ key: string | SQL<unknown> | Placeholder<string, any>; }[]'. Did you mean to write 'keys'?
+
+384     await db.insert(siteSettings).values({ key, value, updatedBy }).onConflictDoUpdate({
+                                      ~~~~~~
+
+
+server/storage.ts:386:14 - error TS2353: Object literal may only specify known properties, and 'value' does not exist in type 'PgUpdateSetSource<PgTableWithColumns<{ name: "site_settings"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "site_settings"; dataType: "number"; columnType: "PgSerial"; data: number; driverParam: number; notNull: true; ... 7 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; updatedAt:...'.
+
+386       set: { value, updatedBy, updatedAt: new Date() }
+                 ~~~~~
+
+  node_modules/drizzle-orm/pg-core/query-builders/insert.d.ts:66:5
+    66     set: PgUpdateSetSource<T['_']['table']>;
+           ~~~
+    The expected type comes from property 'set' which is declared here on type 'PgInsertOnConflictDoUpdateConfig<PgInsertBase<PgTableWithColumns<{ name: "site_settings"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "site_settings"; dataType: "number"; columnType: "PgSerial"; data: number; driverParam: number; notNull: true; ... 7 more ...; generated: undefined; }, {}, {}>...'
+
+server/storage.ts:611:44 - error TS2353: Object literal may only specify known properties, and 'isRead' does not exist in type '{ userId?: number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; message?: string | SQL<unknown> | PgColumn<...>; sender?: string | ... 1 more ... | PgColumn<...>; }'.
+
+611     await db.update(supportMessages).set({ isRead: true }).where(eq(supportMessages.id, id));
+                                               ~~~~~~
+
+server/storage.ts:619:36 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+619       await db.update(users).set({ promptsRemaining: 100, promptsUsedThisMonth: 0 }).where(eq(users.id, userId));
+                                       ~~~~~~~~~~~~~~~~
+
+server/storage.ts:633:14 - error TS2353: Object literal may only specify known properties, and 'promptsUsedThisMonth' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+633       .set({ promptsUsedThisMonth: (user.promptsUsedThisMonth || 0) + 1, promptsRemaining: (user.promptsRemaining || 0) - 1 })
+                 ~~~~~~~~~~~~~~~~~~~~
+
+server/storage.ts:638:38 - error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { userId: number | SQL<unknown> | Placeholder<string, any>; stripePaymentId: string | SQL<unknown> | Placeholder<string, any>; amount: number | SQL<...> | Placeholder<...>; promptsAdded: number | ... 1 more ... | Placeholder<...>; }): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type '{ userId: number | SQL<unknown> | Placeholder<string, any>; stripePaymentId: string | SQL<unknown> | Placeholder<string, any>; amount: number | SQL<unknown> | Placeholder<...>; promptsAdded: number | ... 1 more ... | Placeholder<...>; }'.
+  Overload 2 of 2, '(values: { userId: number | SQL<unknown> | Placeholder<string, any>; stripePaymentId: string | SQL<unknown> | Placeholder<string, any>; amount: number | SQL<...> | Placeholder<...>; promptsAdded: number | ... 1 more ... | Placeholder<...>; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type '{ userId: number | SQL<unknown> | Placeholder<string, any>; stripePaymentId: string | SQL<unknown> | Placeholder<string, any>; amount: number | SQL<unknown> | Placeholder<...>; promptsAdded: number | ... 1 more ... | Placeholder<...>; }[]'.
+
+638     await db.insert(promptPurchases).values({ userId, stripePaymentId, amount, promptsAdded, status: "completed" });
+                                         ~~~~~~
+
+
+server/storage.ts:646:34 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+646     await db.update(users).set({ promptsRemaining: (user.promptsRemaining || 0) + promptsToAdd }).where(eq(users.id, userId));
+                                     ~~~~~~~~~~~~~~~~
+
+server/storage.ts:650:34 - error TS2353: Object literal may only specify known properties, and 'promptsUsedThisMonth' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+650     await db.update(users).set({ promptsUsedThisMonth: 0, lastUsageReset: new Date() });
+                                     ~~~~~~~~~~~~~~~~~~~~
+
+server/storage.ts:668:7 - error TS2353: Object literal may only specify known properties, and 'currentPlan' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+668       currentPlan: tier,
+          ~~~~~~~~~~~
+
+server/storage.ts:680:34 - error TS2353: Object literal may only specify known properties, and 'storageUsedMB' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+680     await db.update(users).set({ storageUsedMB: newUsage }).where(eq(users.id, userId));
+                                     ~~~~~~~~~~~~~
+
+server/storage.ts:694:34 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+694     await db.update(users).set({ promptsRemaining: newPrompts }).where(eq(users.id, userId));
+                                     ~~~~~~~~~~~~~~~~

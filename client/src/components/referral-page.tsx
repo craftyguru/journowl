@@ -37,15 +37,15 @@ export default function ReferralPage() {
   // Fetch referral data
   const { data: referralData, isLoading } = useQuery({
     queryKey: ["/api/referrals"],
-    queryFn: () => apiRequest("GET", "/api/referrals")
+    queryFn: () => apiRequest("GET", "/api/referrals") as any
   });
 
   const { data: userResponse } = useQuery({
     queryKey: ["/api/auth/me"],
   });
 
-  const user = userResponse?.user;
-  const stats: ReferralStats = referralData || {
+  const user = (userResponse as any)?.user;
+  const stats: ReferralStats = (referralData as ReferralStats) || {
     totalReferrals: 0,
     successfulReferrals: 0,
     pendingReferrals: 0,

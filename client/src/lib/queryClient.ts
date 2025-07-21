@@ -60,8 +60,5 @@ export const queryClient = new QueryClient({
       retry: false,
     },
   },
-  errorHandler: (error) => {
-    // Log errors but don't throw unhandled rejections
-    console.error('Query error:', error);
-  },
+  // Note: errorHandler removed as it's not a valid QueryClient config option
 });

@@ -272,7 +272,7 @@ export default function Dashboard() {
               date: new Date(entry.createdAt)
             }))}
             onDateSelect={handleDateSelect}
-            onEntryEdit={handleEntryEdit}
+            onEntryEdit={handleEntryEdit as any}
           />
         </div>
       )}

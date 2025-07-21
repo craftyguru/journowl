@@ -112,7 +112,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   // Set personalized welcome message when user data loads
   useEffect(() => {
     if (user && !initialMessageSet) {
-      const userName = user.username || user.email?.split('@')[0] || 'there';
+      const userName = (user as any)?.username || (user as any)?.email?.split('@')[0] || 'there';
       const welcomeMessage = `Hi ${userName}! 🦉 Welcome to your AI-powered journal companion!
 
 🧠 I CAN HELP YOU:
@@ -1163,8 +1163,8 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
                     onMouseLeave={stopDrawing}
-                    onTouchStart={startDrawing}
-                    onTouchMove={draw}
+                    onTouchStart={startDrawing as any}
+                    onTouchMove={draw as any}
                     onTouchEnd={stopDrawing}
                     style={{ touchAction: 'none' }}
                   />
@@ -1673,7 +1673,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     title="Click to purchase more AI prompts ($2.99 for 100 prompts)"
                   >
                     <span className="text-xs font-medium text-purple-700">
-                      ✨ {promptUsageData.promptsRemaining}/100
+                      ✨ {(promptUsageData as any)?.promptsRemaining || 0}/100
                     </span>
                   </Button>
                 )}

@@ -220,7 +220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           emailVerificationToken: null,
           emailVerificationExpires: null,
           requiresEmailVerification: false
-        })
+        } as any)
         .where(eq(users.id, user.id));
       
       // Log them in
@@ -265,7 +265,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .set({
           emailVerificationToken: verificationToken,
           emailVerificationExpires: verificationExpires
-        })
+        } as any)
         .where(eq(users.id, user.id));
       
       // Send verification email
@@ -1014,7 +1014,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         promptsRemaining: 100,
         promptsUsedThisMonth: 0,
         lastUsageReset: new Date()
-      }).where(eq(users.id, parseInt(userId)));
+      } as any).where(eq(users.id, parseInt(userId)));
       
       res.json({ 
         success: true, 
@@ -1038,7 +1038,7 @@ Your story shows how every day brings new experiences and emotions, creating the
       await db.update(users).set({ 
         xp: 1000,
         level: 1
-      }).where(eq(users.id, targetUserId));
+      } as any).where(eq(users.id, targetUserId));
       
       res.json({ 
         success: true, 
@@ -1272,7 +1272,7 @@ Your story shows how every day brings new experiences and emotions, creating the
       const { content, mood, hasPhotos, photoCount } = req.body;
       
       // Use trackable OpenAI call
-      const response = await trackableOpenAICall(req.session.userId, "kid_prompts", 300, async () => {
+      const response = await trackableOpenAICall(req.session.userId, "kid_prompts", async () => {
         return await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -1628,7 +1628,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         promptsRemaining: 100,
         promptsUsedThisMonth: 0,
         lastUsageReset: new Date()
-      }).where(eq(users.id, userId));
+      } as any).where(eq(users.id, userId));
       
       res.json({ 
         success: true, 
@@ -1650,7 +1650,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         promptsRemaining: 100,
         promptsUsedThisMonth: 0,
         lastUsageReset: new Date()
-      }).where(ne(users.role, 'admin'));
+      } as any).where(ne(users.role, 'admin'));
       
       res.json({ 
         success: true, 

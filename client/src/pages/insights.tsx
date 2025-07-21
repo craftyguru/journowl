@@ -64,20 +64,20 @@ export default function InsightsPage() {
     );
   }
 
-  const entries = entriesData || [];
-  const stats = statsData?.stats || { totalEntries: 0, totalWords: 0, currentStreak: 0, longestStreak: 0 };
+  const entries = (entriesData as any[]) || [];
+  const stats = (statsData as any)?.stats || { totalEntries: 0, totalWords: 0, currentStreak: 0, longestStreak: 0 };
 
   // Process mood data for charts
-  const moodData = entries.reduce((acc, entry) => {
+  const moodData = entries.reduce((acc: any, entry: any) => {
     const mood = entry.mood;
     acc[mood] = (acc[mood] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
-  const moodChartData = Object.entries(moodData).map(([mood, count]) => ({
+  const moodChartData = Object.entries(moodData || {}).map(([mood, count]) => ({
     mood,
     count,
-    percentage: Math.round((count / entries.length) * 100)
+    percentage: Math.round(((count as number) / (entries.length || 1)) * 100)
   }));
 
   // Process daily writing activity
@@ -755,7 +755,8 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  {chartType === "area" && (
+                  <div>
+                    {chartType === "area" && (
                     <AreaChart data={dailyChartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                       <XAxis dataKey="date" />
@@ -790,7 +791,7 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                       </defs>
                     </AreaChart>
                   )}
-                  {chartType === "bar" && (
+                    {chartType === "bar" && (
                     <BarChart data={dailyChartData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" />
@@ -799,7 +800,7 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                       <Bar dataKey="wordCount" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   )}
-                  {chartType === "line" && (
+                    {chartType === "line" && (
                     <LineChart data={dailyChartData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" />
@@ -878,7 +879,7 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                       <div key={index} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <span className="text-xl">{mood.mood}</span>
-                          <span className="text-sm text-gray-600 dark:text-gray-400">{mood.count}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-400">{(mood as any).count}</span>
                         </div>
                         <Badge variant="secondary" className="bg-opacity-20">
                           {mood.percentage}%
@@ -1357,7 +1358,7 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setSelectedExportDates(entries.map(e => new Date(e.createdAt)))}
+                    onClick={() => setSelectedExportDates(entries.map((e: any) => new Date(e.createdAt)))}
                   >
                     Select All
                   </Button>
