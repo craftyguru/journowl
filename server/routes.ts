@@ -233,14 +233,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.redirect('/email-verified?success=0');
       }
       
-      // Verify the user
+      // Verify the user and make Archimedes admin
+      const updateData: any = {
+        emailVerified: true,
+        emailVerificationToken: null,
+        emailVerificationExpires: null,
+        requiresEmailVerification: false
+      };
+      
+      // Make Archimedes an admin when verifying
+      if (user.email === 'archimedes@journowl.app') {
+        updateData.role = 'admin';
+        console.log('Upgrading Archimedes to admin status during email verification');
+      }
+      
       await db.update(users)
-        .set({
-          emailVerified: true,
-          emailVerificationToken: null,
-          emailVerificationExpires: null,
-          requiresEmailVerification: false
-        } as any)
+        .set(updateData)
         .where(eq(users.id, user.id));
       
       // Log them in
@@ -2371,6 +2379,28 @@ Your story shows how every day brings new experiences and emotions, creating the
     } catch (error: any) {
       console.error('Professional welcome test error:', error);
       res.status(500).json({ message: 'Failed to send professional welcome email', error: error.message });
+    }
+  });
+
+  // Admin endpoint to make user admin
+  app.post("/api/admin/make-user-admin", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Update user to admin role
+      await db.update(users)
+        .set({ role: 'admin' } as any)
+        .where(eq(users.email, email));
+      
+      console.log(`User ${email} upgraded to admin status`);
+      res.json({ message: `User ${email} is now an admin` });
+    } catch (error: any) {
+      console.error('Make admin error:', error);
+      res.status(500).json({ message: "Failed to make user admin" });
     }
   });
 
