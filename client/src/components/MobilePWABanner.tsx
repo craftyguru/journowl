@@ -116,18 +116,18 @@ export function MobilePWABanner() {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 500 }}
-        className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-sm"
+        className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-sm pointer-events-auto"
       >
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg shadow-2xl p-4 backdrop-blur-sm border border-white/20">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg shadow-2xl p-4 backdrop-blur-sm border border-white/20 pointer-events-auto">
           {/* Close button */}
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={handleDismiss}
-            className="absolute top-1 right-1 h-6 w-6 p-0 text-white/70 hover:text-white hover:bg-white/20"
+            onTouchEnd={handleDismiss}
+            className="absolute top-1 right-1 h-6 w-6 p-0 text-white/70 hover:text-white hover:bg-white/20 rounded touch-manipulation flex items-center justify-center"
+            style={{ touchAction: 'manipulation' }}
           >
             <X className="h-4 w-4" />
-          </Button>
+          </button>
 
           <div className="flex items-start space-x-3">
             <div className="flex-shrink-0">
@@ -148,22 +148,23 @@ export function MobilePWABanner() {
               </p>
               
               <div className="mt-3 flex space-x-2">
-                <Button
+                <button
                   onClick={handleInstallClick}
-                  size="sm"
-                  className="bg-white text-purple-600 hover:bg-white/90 flex-1 text-xs py-1 h-7"
+                  onTouchEnd={handleInstallClick}
+                  className="bg-white text-purple-600 hover:bg-white/90 flex-1 text-xs py-1 h-7 rounded px-2 font-medium flex items-center justify-center gap-1 touch-manipulation"
+                  style={{ touchAction: 'manipulation' }}
                 >
-                  <Download className="h-3 w-3 mr-1" />
+                  <Download className="h-3 w-3" />
                   {isIOS ? "Install Guide" : "Install App"}
-                </Button>
-                <Button
+                </button>
+                <button
                   onClick={handleDismiss}
-                  variant="ghost"
-                  size="sm"
-                  className="text-white/80 hover:text-white hover:bg-white/20 text-xs py-1 h-7"
+                  onTouchEnd={handleDismiss}
+                  className="text-white/80 hover:text-white hover:bg-white/20 text-xs py-1 h-7 rounded px-2 font-medium touch-manipulation"
+                  style={{ touchAction: 'manipulation' }}
                 >
                   Later
-                </Button>
+                </button>
               </div>
             </div>
           </div>
