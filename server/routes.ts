@@ -2211,11 +2211,10 @@ Your story shows how every day brings new experiences and emotions, creating the
   // Simple test email endpoint to debug SendGrid
   app.post('/api/test-simple-email', async (req, res) => {
     try {
-      const { MailService } = await import('@sendgrid/mail');
-      const mailService = new MailService();
-      mailService.setApiKey(process.env.SENDGRID_API_KEY!);
+      const sgMail = (await import('@sendgrid/mail')).default;
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 
-      const response = await mailService.send({
+      const response = await sgMail.send({
         to: 'CraftyGuru@1ofakindpiece.com',
         from: 'archimedes@journowl.app',
         subject: 'Simple Test Email',
@@ -2353,8 +2352,8 @@ Your story shows how every day brings new experiences and emotions, creating the
       }
 
       // Send the PROFESSIONAL welcome email with real verification link
-      const { createProfessionalWelcomeEmailTemplate, sendEmailWithSendGrid } = await import("./emailTemplates");
-      const emailTemplate = createProfessionalWelcomeEmailTemplate(email, 'Test User', verificationToken);
+      const { createWelcomeEmailTemplate, sendEmailWithSendGrid } = await import("./emailTemplates");
+      const emailTemplate = createWelcomeEmailTemplate(email, 'Test User', verificationToken);
       
       // Use sendEmailWithSendGrid to ensure proper tracking settings
       const success = await sendEmailWithSendGrid(emailTemplate);
