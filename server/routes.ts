@@ -386,11 +386,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             title: "Welcome to JournOwl!",
             description: "You've taken your first step on the journey to wise journaling",
             icon: "🦉",
-            type: "getting_started",
-            rarity: "common",
-            xpReward: 100,
-            unlockedAt: new Date()
-          });
+            type: "getting_started"
+          } as any);
         } catch (achievementError) {
           console.error('Failed to create welcome achievement:', achievementError);
         }
@@ -444,11 +441,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
             title: "Welcome to JournOwl!",
             description: "You've taken your first step on the journey to wise journaling",
             icon: "🦉",
-            type: "getting_started",
-            rarity: "common",
-            xpReward: 100,
-            unlockedAt: new Date()
-          });
+            type: "getting_started"
+          } as any);
         } catch (achievementError) {
           console.error('Failed to create welcome achievement:', achievementError);
         }
@@ -1870,7 +1864,10 @@ Your story shows how every day brings new experiences and emotions, creating the
         bannedBy: null,
       });
       
-      res.json({ message: "User unbanned successfully" });
+      // Log the unban action
+      console.log(`User ${userId} unbanned by admin ${adminId}. Reason: ${reason || 'No reason provided'}`);
+      
+      res.json({ message: "User unbanned successfully", unbannedBy: adminId });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -1892,7 +1889,10 @@ Your story shows how every day brings new experiences and emotions, creating the
         suspiciousActivityCount: 1,
       });
       
-      res.json({ message: "User flagged for review" });
+      // Log the flag action with severity
+      console.log(`User ${userId} flagged by admin ${adminId}. Severity: ${severity}, Reason: ${reason}`);
+      
+      res.json({ message: "User flagged for review", severity, flaggedBy: adminId });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
