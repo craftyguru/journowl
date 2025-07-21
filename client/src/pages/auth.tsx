@@ -144,8 +144,11 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
       return await apiRequest("POST", "/api/auth/register", submitData);
     },
     onSuccess: (data: any) => {
+      console.log('Registration success data:', data);
+      console.log('onRegistrationSuccess callback exists:', !!onRegistrationSuccess);
       if (data.emailSent && onRegistrationSuccess) {
         // Call the callback to redirect to email confirmation page
+        console.log('Calling onRegistrationSuccess with:', data.email, registerData.username);
         onRegistrationSuccess(data.email, registerData.username);
         return;
       } else if (data.emailSent) {
