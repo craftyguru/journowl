@@ -2119,6 +2119,56 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Simple welcome test email endpoint  
+  app.post('/api/test-simple-welcome', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!process.env.SENDGRID_API_KEY) {
+        return res.status(500).json({ message: 'SendGrid not configured' });
+      }
+
+      if (!sgMail) {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      }
+
+      const simpleWelcome = {
+        to: email,
+        from: 'craftyguru@1ofakindpiece.com',
+        subject: 'Welcome to JournOwl - Simple Test',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <h2>Welcome to JournOwl! 🦉</h2>
+            <p>Hi there!</p>
+            <p>This is a simplified version of our welcome email to test delivery.</p>
+            <p>If you receive this, our email system is working!</p>
+            <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <strong>Your Free Account Includes:</strong><br>
+              • 100 AI Prompts per month<br>
+              • 50MB Storage<br>
+              • Full feature access
+            </div>
+            <p>Ready to start journaling?</p>
+            <p>The JournOwl Team</p>
+          </div>
+        `,
+        text: `Welcome to JournOwl! This is a test of our email delivery system. Your account includes 100 AI prompts per month and 50MB storage. Ready to start journaling? - The JournOwl Team`
+      };
+
+      const response = await sgMail.send(simpleWelcome);
+      console.log('Simple welcome test sent:', response[0].statusCode);
+      
+      res.json({ 
+        message: 'Simple welcome email sent successfully',
+        statusCode: response[0].statusCode,
+        messageId: response[0].headers['x-message-id']
+      });
+    } catch (error: any) {
+      console.error('Simple welcome test error:', error);
+      res.status(500).json({ message: 'Failed to send simple welcome email', error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
