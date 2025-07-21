@@ -141,7 +141,9 @@ export class DatabaseStorage implements IStorage {
       storageUsedMB: user.storageUsedMB || 0,
       lastUsageReset: user.lastUsageReset || new Date(),
       emailVerified: user.emailVerified || false,
-      requiresEmailVerification: user.requiresEmailVerification !== false
+      requiresEmailVerification: user.requiresEmailVerification !== false,
+      emailVerificationToken: (user as any).emailVerificationToken || null,
+      emailVerificationExpires: (user as any).emailVerificationExpires || null
     };
     
     const result = await db.insert(users).values(userData).returning();
@@ -269,8 +271,17 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUserStats(userId: number): Promise<UserStats> {
-    const result = await db.insert(userStats).values({ userId }).returning();
-    return result[0];
+    try {
+      const result = await db.insert(userStats).values({ userId }).returning();
+      return result[0];
+    } catch (error: any) {
+      // If user stats already exist, just return them
+      if (error.code === '23505') {
+        const result = await db.select().from(userStats).where(eq(userStats.userId, userId)).limit(1);
+        return result[0];
+      }
+      throw error;
+    }
   }
 
   async recalculateUserStats(userId: number): Promise<void> {

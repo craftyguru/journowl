@@ -183,9 +183,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Send welcome email with verification
       try {
-        await sendWelcomeEmailTemplate(user.email, user.username || 'New User', verificationToken);
+        console.log('Attempting to send welcome email to:', user.email);
+        console.log('SendGrid API Key configured:', !!process.env.SENDGRID_API_KEY);
+        const emailSent = await sendWelcomeEmailTemplate(user.email, user.username || 'New User', verificationToken);
+        console.log('Email sent successfully:', emailSent);
       } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
+        if (emailError.response?.body?.errors) {
+          console.error('SendGrid error details:', emailError.response.body.errors);
+        }
         // Don't fail registration if email fails
       }
       
