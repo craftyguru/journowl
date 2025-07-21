@@ -9,23 +9,11 @@ export interface EmailTemplate {
   text: string;
 }
 
-// Get base URL for verification links
+// Get base URL for verification links - ALWAYS USE PRODUCTION DOMAIN
 function getBaseUrl(): string {
-  // Always use production domain for email verification links in deployment
-  if (process.env.BASE_URL) {
-    console.log('Using BASE_URL for verification links:', process.env.BASE_URL);
-    return process.env.BASE_URL;
-  }
-  
-  // Force production domain for any Replit deployment
-  if (process.env.REPLIT_DOMAINS) {
-    console.log('Using production domain for Replit deployment: https://journowl.app');
-    return 'https://journowl.app';
-  }
-  
-  // Only use localhost in true local development
-  console.log('Using localhost for local development');
-  return 'http://localhost:5000';
+  // FORCE PRODUCTION DOMAIN - NO MORE LOCALHOST IN EMAILS
+  console.log('FORCING PRODUCTION DOMAIN FOR EMAIL VERIFICATION');
+  return 'https://journowl.app';
 }
 
 export function createWelcomeEmailTemplate(
