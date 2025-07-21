@@ -14,7 +14,17 @@ export interface EmailTemplate {
 }
 
 export function createWelcomeEmailTemplate(userEmail: string, userName: string, verificationToken: string): EmailTemplate {
-  const verificationUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`;
+  // Use REPLIT_DOMAINS for Replit deployment or BASE_URL for custom domains
+  const baseUrl = process.env.REPLIT_DOMAINS 
+    ? `https://${process.env.REPLIT_DOMAINS}`
+    : process.env.BASE_URL || 'http://localhost:5000';
+  
+  console.log('Email template - REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
+  console.log('Email template - BASE_URL:', process.env.BASE_URL);
+  console.log('Email template - Final baseUrl:', baseUrl);
+  
+  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
+  console.log('Email template - Generated verification URL:', verificationUrl);
   
   const html = `
     <!DOCTYPE html>
@@ -301,7 +311,17 @@ export async function sendWelcomeEmail(userEmail: string, userName: string, veri
 }
 
 export function createEmailVerificationTemplate(userEmail: string, userName: string, verificationToken: string): EmailTemplate {
-  const verificationUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`;
+  // Use REPLIT_DOMAINS for Replit deployment or BASE_URL for custom domains
+  const baseUrl = process.env.REPLIT_DOMAINS 
+    ? `https://${process.env.REPLIT_DOMAINS}`
+    : process.env.BASE_URL || 'http://localhost:5000';
+    
+  console.log('Verification email - REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
+  console.log('Verification email - BASE_URL:', process.env.BASE_URL);
+  console.log('Verification email - Final baseUrl:', baseUrl);
+    
+  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
+  console.log('Verification email - Generated URL:', verificationUrl);
   
   const html = `
     <!DOCTYPE html>
