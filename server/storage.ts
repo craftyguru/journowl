@@ -32,11 +32,19 @@ import {
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
 // Use Supabase PostgreSQL database
-const dbUrl = process.env.DATABASE_URL || "postgresql://postgres.asjcxaiabjsbjbasssfe:KCqwTTy4bwqNrHti@aws-0-us-east-2.pooler.supabase.com:6543/postgres";
+let dbUrl = process.env.DATABASE_URL;
+if (!dbUrl || dbUrl.includes('DATABASE_URL=')) {
+  dbUrl = "postgresql://postgres.asjcxaiabjsbjbasssfe:KCqwTTy4bwqNrHti@aws-0-us-east-2.pooler.supabase.com:6543/postgres";
+}
+// Clean up any duplicate URL prefix
+dbUrl = dbUrl.replace(/^DATABASE_URL=/, '');
 console.log("Database connecting to:", dbUrl.split('@')[1]?.split('?')[0]);
 
 const client = postgres(dbUrl, {
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
+  max: 20,
+  idle_timeout: 20,
+  connect_timeout: 10
 });
 export const db = drizzle(client);
 
