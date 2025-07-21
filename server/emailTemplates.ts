@@ -164,10 +164,7 @@ export async function sendEmailWithSendGrid(template: EmailTemplate): Promise<bo
     const mailService = new MailService();
     mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
-    // Set global SendGrid settings to disable click tracking
-    mailService.setGlobalRequestHeaders({
-      'X-Entity-ID': 'disable-click-tracking'
-    });
+    // Click tracking is now disabled at account level
 
     const response = await mailService.send({
       to: template.to,
