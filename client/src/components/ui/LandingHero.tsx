@@ -9,7 +9,6 @@ import {
   ArrowRight, Play, CheckCircle, Globe, Lightbulb
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { StarryBackground } from "@/components/starry-background";
 
 interface LandingHeroProps {
   onGetStarted: () => void;
@@ -132,8 +131,6 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
       ref={heroRef}
       className="relative min-h-screen overflow-hidden bg-black"
     >
-      {/* Starry Background */}
-      <StarryBackground />
       
       {/* Subtle overlay for better text readability */}
       <div className="absolute inset-0 bg-black/20 z-0" />

@@ -18,6 +18,7 @@ import ReferralPage from "@/components/referral-page";
 import LandingHero from "@/components/ui/LandingHero";
 import { HelpBubble } from "@/components/HelpBubble";
 import { SupportChatBubble } from "@/components/SupportChatBubble";
+import { StarryBackground } from "@/components/starry-background";
 
 function App() {
   // Check if demo mode is requested from URL params
@@ -71,7 +72,7 @@ function App() {
         setCurrentView("dashboard"); // Always show dashboard for authenticated users
       })
       .catch((error) => {
-        console.log('Auth check failed:', error);
+        // Silent fail for unauthenticated users - this is expected behavior
         setIsAuthenticated(false);
       });
   }, []);
@@ -90,6 +91,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <TooltipProvider>
+            <StarryBackground />
             <Toaster />
             <LandingHero 
               onGetStarted={() => setCurrentView("auth")} 
@@ -106,8 +108,9 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <TooltipProvider>
+            <StarryBackground />
             <Toaster />
-            <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+            <div className="min-h-screen">
               <div className="fixed top-4 left-4 z-50">
                 <button
                   onClick={() => setCurrentView("landing")}
