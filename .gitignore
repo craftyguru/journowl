@@ -66,4 +66,9 @@ temp/
 # Test files with sensitive data
 test-email.js
 test-verification-email.js
+create-test-user-and-send-verification.js
+test_tracking.js
+test_cookies.txt
+test_session.txt
 *test*.js
+*test*.txt
