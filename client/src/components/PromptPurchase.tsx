@@ -107,8 +107,8 @@ export default function PromptPurchase() {
       return response;
     },
     onSuccess: (data) => {
-      setClientSecret(data.clientSecret);
-      setPaymentIntentId(data.paymentIntentId);
+      setClientSecret((data as any).clientSecret);
+      setPaymentIntentId((data as any).paymentIntentId);
       setShowCheckout(true);
     },
     onError: (error: any) => {
@@ -130,7 +130,7 @@ export default function PromptPurchase() {
     onSuccess: (data) => {
       toast({
         title: "Purchase Successful! 🎉",
-        description: data.message,
+        description: (data as any).message,
       });
       setShowCheckout(false);
       setClientSecret("");

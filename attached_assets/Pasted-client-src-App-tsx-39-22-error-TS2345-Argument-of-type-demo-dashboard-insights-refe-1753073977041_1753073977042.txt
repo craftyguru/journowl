@@ -1,0 +1,194 @@
+client/src/App.tsx:39:22 - error TS2345: Argument of type '"demo" | "dashboard" | "insights" | "referral" | "landing" | "auth"' is not assignable to parameter of type 'SetStateAction<"demo" | "dashboard" | "insights" | "landing" | "auth">'.
+  Type '"referral"' is not assignable to type 'SetStateAction<"demo" | "dashboard" | "insights" | "landing" | "auth">'.
+
+39       setCurrentView(view);
+                        ~~~~
+
+client/src/App.tsx:119:25 - error TS2322: Type '{ onAuthenticated: () => void; }' is not assignable to type 'IntrinsicAttributes & AuthPageProps'.
+  Property 'onAuthenticated' does not exist on type 'IntrinsicAttributes & AuthPageProps'.
+
+119               <AuthPage onAuthenticated={handleAuthenticated} />
+                            ~~~~~~~~~~~~~~~
+
+client/src/App.tsx:261:13 - error TS2339: Property 'user' does not exist on type 'unknown'.
+
+261   if (user?.user?.role === 'admin' || user?.role === 'admin') {
+                ~~~~
+
+client/src/App.tsx:261:45 - error TS2339: Property 'role' does not exist on type 'unknown'.
+
+261   if (user?.user?.role === 'admin' || user?.role === 'admin') {
+                                                ~~~~
+
+client/src/components/PromptPurchase.tsx:110:28 - error TS2339: Property 'clientSecret' does not exist on type 'Response'.
+
+110       setClientSecret(data.clientSecret);
+                               ~~~~~~~~~~~~
+
+client/src/components/PromptPurchase.tsx:111:31 - error TS2339: Property 'paymentIntentId' does not exist on type 'Response'.
+
+111       setPaymentIntentId(data.paymentIntentId);
+                                  ~~~~~~~~~~~~~~~
+
+client/src/components/PromptPurchase.tsx:133:27 - error TS2339: Property 'message' does not exist on type 'Response'.
+
+133         description: data.message,
+                              ~~~~~~~
+
+client/src/components/SubscriptionManager.tsx:190:28 - error TS2339: Property 'clientSecret' does not exist on type 'Response'.
+
+190       setClientSecret(data.clientSecret);
+                               ~~~~~~~~~~~~
+
+client/src/components/SubscriptionManager.tsx:212:27 - error TS2339: Property 'message' does not exist on type 'Response'.
+
+212         description: data.message,
+                              ~~~~~~~
+
+client/src/components/SubscriptionManager.tsx:304:47 - error TS2345: Argument of type '{ id: string; name: string; price: number; monthlyPrice: number; yearlyPrice: number; icon: string; color: string; features: string[]; limits: { prompts: number; storage: number; }; popular?: undefined; } | { ...; }' is not assignable to parameter of type 'string'.
+  Type '{ id: string; name: string; price: number; monthlyPrice: number; yearlyPrice: number; icon: string; color: string; features: string[]; limits: { prompts: number; storage: number; }; popular?: undefined; }' is not assignable to type 'string'.
+
+304               onClick={() => handleTierSelect(tier)}
+                                                  ~~~~
+
+client/src/components/SubscriptionManager.tsx:346:51 - error TS2345: Argument of type '{ id: string; name: string; price: number; monthlyPrice: number; yearlyPrice: number; icon: string; color: string; features: string[]; limits: { prompts: number; storage: number; }; popular?: undefined; } | { ...; }' is not assignable to parameter of type 'string'.
+  Type '{ id: string; name: string; price: number; monthlyPrice: number; yearlyPrice: number; icon: string; color: string; features: string[]; limits: { prompts: number; storage: number; }; popular?: undefined; }' is not assignable to type 'string'.
+
+346                   onClick={() => handleTierSelect(tier)}
+                                                      ~~~~
+
+client/src/components/SupportChatBubble.tsx:41:56 - error TS2345: Argument of type '{ method: string; body: { message: string; attachmentUrl?: string; attachmentType?: string; }; }' is not assignable to parameter of type 'string'.
+
+41       return await apiRequest('/api/support/messages', {
+                                                          ~
+42         method: 'POST',
+   ~~~~~~~~~~~~~~~~~~~~~~~
+43         body: messageData
+   ~~~~~~~~~~~~~~~~~~~~~~~~~
+44       });
+   ~~~~~~~
+
+client/src/components/SupportChatBubble.tsx:113:27 - error TS2339: Property 'some' does not exist on type 'unknown'.
+
+113         {(messages || []).some((msg: SupportMessage) => msg.sender === 'admin' && !msg.adminName) && (
+                              ~~~~
+
+client/src/components/SupportChatBubble.tsx:183:33 - error TS2339: Property 'length' does not exist on type 'unknown'.
+
+183                   ) : messages?.length === 0 ? (
+                                    ~~~~~~
+
+client/src/components/SupportChatBubble.tsx:193:38 - error TS2339: Property 'map' does not exist on type 'unknown'.
+
+193                     (messages || []).map((msg: SupportMessage) => (
+                                         ~~~
+
+client/src/components/UsageMeters.tsx:214:32 - error TS2322: Type '{ onClose: () => void; }' is not assignable to type 'IntrinsicAttributes'.
+  Property 'onClose' does not exist on type 'IntrinsicAttributes'.
+
+214           <SubscriptionManager onClose={() => setShowSubscriptionModal(false)} />
+                                   ~~~~~~~
+
+client/src/components/admin-dashboard.tsx:79:30 - error TS2339: Property 'user' does not exist on type 'unknown'.
+
+79   const user = userResponse?.user;
+                                ~~~~
+
+client/src/components/admin-dashboard.tsx:180:88 - error TS2345: Argument of type '{ method: string; }' is not assignable to parameter of type 'string'.
+
+180       const result = await apiRequest(`/api/admin/email-campaigns/${campaignId}/send`, {
+                                                                                           ~
+181         method: 'POST'
+    ~~~~~~~~~~~~~~~~~~~~~~
+182       });
+    ~~~~~~~
+
+client/src/components/admin-dashboard.tsx:184:18 - error TS2339: Property 'success' does not exist on type 'Response'.
+
+184       if (result.success) {
+                     ~~~~~~~
+
+client/src/components/admin-dashboard.tsx:187:55 - error TS2339: Property 'sent' does not exist on type 'Response'.
+
+187           description: `Successfully sent to ${result.sent} users`,
+                                                          ~~~~
+
+client/src/components/admin-dashboard.tsx:192:31 - error TS2339: Property 'error' does not exist on type 'Response'.
+
+192           description: result.error,
+                                  ~~~~~
+
+client/src/components/admin-dashboard.tsx:328:15 - error TS2719: Type 'User[]' is not assignable to type 'User[]'. Two different types with this name exist, but they are unrelated.
+  Property 'isActive' is missing in type 'User' but required in type 'User'.
+
+328               users={users}
+                  ~~~~~
+
+  client/src/components/enhanced-user-management.tsx:40:3
+    40   isActive: boolean;
+         ~~~~~~~~
+    'isActive' is declared here.
+  client/src/components/enhanced-user-management.tsx:51:3
+    51   users: User[];
+         ~~~~~
+    The expected type comes from property 'users' which is declared here on type 'IntrinsicAttributes & EnhancedUserManagementProps'
+
+client/src/components/admin-dashboard.tsx:1012:15 - error TS2322: Type 'Dispatch<SetStateAction<{ title: string; subject: string; content: string; htmlContent: string; targetAudience: string; }>>' is not assignable to type '(form: CampaignForm) => void'.
+  Types of parameters 'value' and 'form' are incompatible.
+    Type 'CampaignForm' is not assignable to type 'SetStateAction<{ title: string; subject: string; content: string; htmlContent: string; targetAudience: string; }>'.
+      Property 'htmlContent' is missing in type 'CampaignForm' but required in type '{ title: string; subject: string; content: string; htmlContent: string; targetAudience: string; }'.
+
+1012               setCampaignForm={setCampaignForm}
+                   ~~~~~~~~~~~~~~~
+
+  client/src/components/admin-dashboard.tsx:92:5
+    92     htmlContent: '',
+           ~~~~~~~~~~~~~~~
+    'htmlContent' is declared here.
+  client/src/components/enhanced-email-campaigns.tsx:31:3
+    31   setCampaignForm: (form: CampaignForm) => void;
+         ~~~~~~~~~~~~~~~
+    The expected type comes from property 'setCampaignForm' which is declared here on type 'IntrinsicAttributes & EnhancedEmailCampaignsProps'
+
+client/src/components/admin-dashboard.tsx:1021:15 - error TS2719: Type 'ActivityLog[]' is not assignable to type 'ActivityLog[]'. Two different types with this name exist, but they are unrelated.
+  Type 'ActivityLog' is missing the following properties from type 'ActivityLog': username, email, ipAddress, userAgent
+
+1021               activityLogs={activityLogs}
+                   ~~~~~~~~~~~~
+
+  client/src/components/advanced-activity-dashboard.tsx:40:3
+    40   activityLogs: ActivityLog[];
+         ~~~~~~~~~~~~
+    The expected type comes from property 'activityLogs' which is declared here on type 'IntrinsicAttributes & AdvancedActivityDashboardProps'
+
+client/src/components/journal-entry-modal.tsx:110:25 - error TS2339: Property 'prompt' does not exist on type 'unknown'.
+
+110     if (promptResponse?.prompt) {
+                            ~~~~~~
+
+client/src/components/journal-entry-modal.tsx:111:33 - error TS2339: Property 'prompt' does not exist on type 'unknown'.
+
+111       setContent(promptResponse.prompt + "\n\n");
+                                    ~~~~~~
+
+client/src/components/journal-entry-modal.tsx:172:38 - error TS2339: Property 'prompt' does not exist on type 'unknown'.
+
+172           {!entry && promptResponse?.prompt && (
+                                         ~~~~~~
+
+client/src/components/journal-entry-modal.tsx:180:35 - error TS2339: Property 'prompt' does not exist on type 'unknown'.
+
+180                   {promptResponse.prompt}
+                                      ~~~~~~
+
+client/src/components/kid-dashboard.tsx:446:57 - error TS2345: Argument of type '{ method: string; body: string; headers: { 'Content-Type': string; }; }' is not assignable to parameter of type 'string'.
+
+446       const response = await apiRequest("/api/ai/chat", {
+                                                            ~
+447         method: "POST",
+    ~~~~~~~~~~~~~~~~~~~~~~~
+... 
+452         headers: { 'Content-Type': 'application/json' }
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+453       });
+    ~~~~~~~

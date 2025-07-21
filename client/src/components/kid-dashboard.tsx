@@ -443,15 +443,11 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     setAiInput("");
     
     try {
-      const response = await apiRequest("/api/ai/chat", {
-        method: "POST",
-        body: JSON.stringify({
-          message: aiInput,
-          context: "kids_writing_help"
-        }),
-        headers: { 'Content-Type': 'application/json' }
+      const response = await apiRequest("POST", "/api/ai/chat", {
+        message: aiInput,
+        context: "kids_writing_help"
       });
-      const data = await response.json();
+      const data = response;
       const aiMessage = { sender: 'ai' as const, text: data.response || "I'm here to help you write amazing stories!" };
       setAiMessages(prev => [...prev, aiMessage]);
     } catch (error) {
@@ -608,7 +604,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
             openJournalEditor(undefined, `📸 My Photo Story - ${today}`);
           }
           setActiveTab("photos");
-          setTitle(`📸 My Photo Story - ${today}`);
+          setTitle(`📸 My Photo Story - ${new Date().toLocaleDateString()}`);
           setContent("Here's what I captured today! Let me tell you about this amazing moment...\n\n");
         }, 'image/jpeg', 0.8);
       };
@@ -1148,7 +1144,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
             <p className="text-amber-600">Super Writer</p>
             <div className="mt-3">
               <Progress value={levelProgress} className="bg-amber-100" />
-              <p className="text-xs text-amber-600 mt-1">{1000 - ((stats.xp || 0) % 1000)} XP to Level {currentLevel + 1}!</p>
+              <p className="text-xs text-amber-600 mt-1">{1000 - (((stats as any).xp || 0) % 1000)} XP to Level {currentLevel + 1}!</p>
             </div>
           </CardContent>
         </Card>
@@ -1291,7 +1287,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                       </motion.div>
                       <div className="flex items-center gap-3 mb-4">
                         <motion.div
-                          animate={{ bounce: [0, -5, 0] }}
+                          animate={{ y: [0, -5, 0] }}
                           transition={{ duration: 2, repeat: Infinity }}
                           className="text-3xl"
                         >
@@ -1620,7 +1616,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                     {goals.map((goal, index) => {
                       // Calculate REAL progress based on actual user stats
                       let actualCurrentValue = 0;
-                      let actualTargetValue = goal.targetValue || 100;
+                      let actualTargetValue = (goal as any).targetValue || 100;
 
                       // Map goals to real user stats
                       switch (goal.title) {
@@ -1858,7 +1854,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                           )}
                           {isToday && (
                             <motion.span 
-                              animate={{ bounce: [0, -2, 0] }}
+                              animate={{ y: [0, -2, 0] }}
                               transition={{ duration: 1.5, repeat: Infinity }}
                               className="text-xs"
                             >
@@ -2004,7 +2000,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                   </motion.div>
                   <div className="text-center">
                     <motion.div
-                      animate={{ bounce: [0, -10, 0] }}
+                      animate={{ y: [0, -10, 0] }}
                       transition={{ duration: 2, repeat: Infinity }}
                       className="text-6xl mb-4"
                     >
@@ -2201,7 +2197,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                 </motion.div>
                 <div className="flex items-center gap-3 mb-6">
                   <motion.div
-                    animate={{ bounce: [0, -5, 0] }}
+                    animate={{ y: [0, -5, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="text-4xl"
                   >
@@ -2332,7 +2328,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
               >
                 <div className="text-center mb-6">
                   <motion.div
-                    animate={{ bounce: [0, -10, 0] }}
+                    animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
                     className="text-4xl mb-2"
                   >
@@ -2452,7 +2448,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                       <span className="text-sm font-bold text-orange-800 flex items-center gap-1">
                         ⭐ Level {currentLevel}
                       </span>
-                      <span className="text-orange-700 font-bold">{stats.xp || 0} XP</span>
+                      <span className="text-orange-700 font-bold">{(stats as any).xp || 0} XP</span>
                     </div>
                     <div className="w-full bg-yellow-200 rounded-full h-4 border-2 border-yellow-400">
                       <div 
@@ -2462,7 +2458,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                         <div className="absolute inset-0 bg-white opacity-30 animate-ping"></div>
                       </div>
                     </div>
-                    <div className="text-xs text-orange-600 mt-1">Next level in {1000 - ((stats.xp || 0) % 1000)} XP! 🚀</div>
+                    <div className="text-xs text-orange-600 mt-1">Next level in {1000 - (((stats as any).xp || 0) % 1000)} XP! 🚀</div>
                   </div>
 
                   {/* Streak Progress */}
@@ -3136,7 +3132,7 @@ Make it sound like an adventure book for kids!`;
         entries: entrySummaries
       });
 
-      setGeneratedStory(response.story);
+      setGeneratedStory((response as any).story);
     } catch (error) {
       console.error('Error generating story:', error);
     } finally {

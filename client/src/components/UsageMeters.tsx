@@ -211,7 +211,7 @@ export default function UsageMeters() {
               Upgrade Your Subscription
             </DialogTitle>
           </DialogHeader>
-          <SubscriptionManager onClose={() => setShowSubscriptionModal(false)} />
+          <SubscriptionManager />
         </DialogContent>
       </Dialog>
     </>

@@ -38,10 +38,7 @@ export function SupportChatBubble() {
   // Send message mutation
   const sendMessageMutation = useMutation({
     mutationFn: async (messageData: { message: string; attachmentUrl?: string; attachmentType?: string }) => {
-      return await apiRequest('/api/support/messages', {
-        method: 'POST',
-        body: messageData
-      });
+      return await apiRequest('POST', '/api/support/messages', messageData);
     },
     onSuccess: () => {
       setMessage("");
@@ -110,7 +107,7 @@ export function SupportChatBubble() {
         <span className="relative z-10">💬</span>
         
         {/* Notification badge for new messages */}
-        {(messages || []).some((msg: SupportMessage) => msg.sender === 'admin' && !msg.adminName) && (
+        {((messages as any) || []).some((msg: SupportMessage) => msg.sender === 'admin' && !msg.adminName) && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -180,7 +177,7 @@ export function SupportChatBubble() {
                     <div className="flex items-center justify-center h-full">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                     </div>
-                  ) : messages?.length === 0 ? (
+                  ) : (messages as any)?.length === 0 ? (
                     <div className="text-center py-8">
                       <div className="text-4xl mb-4">🦉</div>
                       <h3 className="font-semibold text-gray-800 mb-2">Welcome to JournOwl Support!</h3>
@@ -190,7 +187,7 @@ export function SupportChatBubble() {
                       </p>
                     </div>
                   ) : (
-                    (messages || []).map((msg: SupportMessage) => (
+                    ((messages as any) || []).map((msg: SupportMessage) => (
                       <div
                         key={msg.id}
                         className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}

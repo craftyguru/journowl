@@ -187,7 +187,7 @@ export default function SubscriptionManager() {
       return response;
     },
     onSuccess: (data) => {
-      setClientSecret(data.clientSecret);
+      setClientSecret((data as any).clientSecret);
       setShowCheckout(true);
     },
     onError: (error: any) => {
@@ -209,7 +209,7 @@ export default function SubscriptionManager() {
     onSuccess: (data) => {
       toast({
         title: "Subscription Activated! 🎉",
-        description: data.message,
+        description: (data as any).message,
       });
       setShowCheckout(false);
       setShowTierModal(false);
@@ -225,7 +225,8 @@ export default function SubscriptionManager() {
     },
   });
 
-  const handleTierSelect = (tierId: string) => {
+  const handleTierSelect = (tier: any) => {
+    const tierId = tier.id;
     if (tierId === 'free') {
       toast({
         title: "Already on Free Plan",

@@ -76,7 +76,7 @@ export default function AdminDashboard() {
     queryKey: ["/api/auth/me"],
   });
   
-  const user = userResponse?.user;
+  const user = (userResponse as any)?.user;
   const [users, setUsers] = useState<User[]>([]);
   const [campaigns, setCampaigns] = useState<EmailCampaign[]>([]);
   const [analytics, setAnalytics] = useState<any>({});
@@ -177,19 +177,17 @@ export default function AdminDashboard() {
 
   const sendEmailCampaign = async (campaignId: number) => {
     try {
-      const result = await apiRequest(`/api/admin/email-campaigns/${campaignId}/send`, {
-        method: 'POST'
-      });
+      const result = await apiRequest('POST', `/api/admin/email-campaigns/${campaignId}/send`);
 
-      if (result.success) {
+      if ((result as any).success) {
         toast({
           title: "Campaign Sent",
-          description: `Successfully sent to ${result.sent} users`,
+          description: `Successfully sent to ${(result as any).sent} users`,
         });
       } else {
         toast({
           title: "Campaign Failed",
-          description: result.error,
+          description: (result as any).error,
           variant: "destructive",
         });
       }
@@ -325,7 +323,7 @@ export default function AdminDashboard() {
           {/* Users Tab */}
           <TabsContent value="users">
             <EnhancedUserManagement 
-              users={users}
+              users={users as any}
               refreshUsers={loadAdminData}
             />
           </TabsContent>
@@ -1009,7 +1007,7 @@ export default function AdminDashboard() {
           <TabsContent value="email">
             <EnhancedEmailCampaigns 
               campaignForm={campaignForm}
-              setCampaignForm={setCampaignForm}
+              setCampaignForm={setCampaignForm as any}
               sendEmailCampaign={createEmailCampaign}
               campaigns={campaigns}
             />
@@ -1018,7 +1016,7 @@ export default function AdminDashboard() {
           {/* Activity Tab */}
           <TabsContent value="activity">
             <AdvancedActivityDashboard 
-              activityLogs={activityLogs}
+              activityLogs={activityLogs as any}
               refreshActivity={loadAdminData}
             />
           </TabsContent>

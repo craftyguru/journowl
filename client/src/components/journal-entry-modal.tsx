@@ -107,8 +107,8 @@ export default function JournalEntryModal({ isOpen, onClose, entry }: JournalEnt
   };
 
   const useAiPrompt = () => {
-    if (promptResponse?.prompt) {
-      setContent(promptResponse.prompt + "\n\n");
+    if ((promptResponse as any)?.prompt) {
+      setContent((promptResponse as any).prompt + "\n\n");
     }
   };
 
@@ -169,7 +169,7 @@ export default function JournalEntryModal({ isOpen, onClose, entry }: JournalEnt
             </p>
           </div>
           
-          {!entry && promptResponse?.prompt && (
+          {!entry && (promptResponse as any)?.prompt && (
             <Card className="gradient-bg from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
               <CardContent className="p-4">
                 <div className="flex items-center space-x-2 mb-2">
@@ -177,7 +177,7 @@ export default function JournalEntryModal({ isOpen, onClose, entry }: JournalEnt
                   <span className="text-sm font-medium">AI Prompt</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">
-                  {promptResponse.prompt}
+                  {(promptResponse as any).prompt}
                 </p>
                 <Button 
                   type="button" 

@@ -21,7 +21,7 @@ import { SupportChatBubble } from "@/components/SupportChatBubble";
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "demo" | "landing" | "auth">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('demo') === 'true' ? 'demo' : 'landing';
   });
@@ -116,7 +116,7 @@ function App() {
                   ← Back to Home
                 </button>
               </div>
-              <AuthPage onAuthenticated={handleAuthenticated} />
+              <AuthPage setShowAuth={() => {}} />
             </div>
           </TooltipProvider>
         </ThemeProvider>
@@ -258,7 +258,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
   }
 
   // Admin Dashboard for admin users
-  if (user?.user?.role === 'admin' || user?.role === 'admin') {
+  if ((user as any)?.user?.role === 'admin' || (user as any)?.role === 'admin') {
     return (
       <div className="min-h-screen">
         <AdminDashboard />
