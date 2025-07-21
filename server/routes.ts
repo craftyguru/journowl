@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage, db } from "./storage";
 import { generateJournalPrompt, generatePersonalizedPrompt, generateInsight } from "./services/openai";
+import { trackableOpenAICall } from "./middleware/promptTracker";
 import { createUser, authenticateUser } from "./services/auth";
 import { 
   insertUserSchema, 
@@ -11,7 +12,7 @@ import {
   userActivityLogs,
   emailCampaigns 
 } from "@shared/schema";
-import { eq, desc, sql, gte } from "drizzle-orm";
+import { eq, desc, sql, gte, ne } from "drizzle-orm";
 import { EmailService } from "./email";
 import { sendWelcomeEmail as sendWelcomeEmailTemplate, createEmailVerificationTemplate } from "./emailTemplates";
 import sgMail from '@sendgrid/mail';
@@ -1447,12 +1448,12 @@ Your story shows how every day brings new experiences and emotions, creating the
       const promptUsage = await storage.getUserPromptUsage(userId);
       
       res.json({
-        tier: user.subscription_tier || 'free',
-        status: user.subscription_status || 'active',
-        expiresAt: user.subscription_expires_at,
+        tier: user.currentPlan || 'free',
+        status: 'active',
+        expiresAt: null,
         promptsRemaining: promptUsage.promptsRemaining,
-        storageUsed: user.storage_used_mb || 0,
-        storageLimit: user.storage_limit_mb || 100
+        storageUsed: user.storageUsedMB || 0,
+        storageLimit: 100
       });
     } catch (error: any) {
       console.error("Error fetching subscription:", error);

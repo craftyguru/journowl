@@ -249,7 +249,7 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(achievements.unlockedAt));
     
     // If user has no achievements except welcome, create default achievements  
-    const nonWelcomeAchievements = result.filter(a => a.category !== 'getting_started');
+    const nonWelcomeAchievements = result.filter(a => a.type !== 'getting_started');
     if (nonWelcomeAchievements.length === 0) {
       await this.createDefaultAchievements(userId);
       return await db.select().from(achievements)
@@ -299,7 +299,7 @@ export class DatabaseStorage implements IStorage {
       });
       
       // Remove duplicates and sort
-      const uniqueDates = [...new Set(entryDates)].sort((a, b) => 
+      const uniqueDates = Array.from(new Set(entryDates)).sort((a, b) => 
         new Date(b).getTime() - new Date(a).getTime()
       );
       
