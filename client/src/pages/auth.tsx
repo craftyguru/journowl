@@ -341,7 +341,7 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Card className="bg-black/20 backdrop-blur-xl border-white/10 shadow-2xl">
+          <Card className="bg-black border-white/10 shadow-2xl">
             <CardHeader className="text-center pb-2">
               <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 🦉 JournOwl
