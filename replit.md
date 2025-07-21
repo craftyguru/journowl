@@ -136,7 +136,7 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 - ✅ **Email Verification System**: Complete email verification flow with resend functionality and professional UI
 - ✅ **Subscription Information in Emails**: Welcome emails include detailed subscription information (100 AI prompts, 50MB storage)
 - ✅ **Upgrade Options Display**: Pro ($9.99/month) and Power ($19.99/month) plans prominently featured in emails
-- ✅ **Database Configuration**: Using Supabase PostgreSQL database (postgresql://postgres.asjcxaiabjsbjbasssfe:CraftyGuru7756@db.asjcxaiabjsbjbasssfe.supabase.co:5432/postgres)
+- ✅ **Database Configuration**: Using Railway PostgreSQL database (railway.internal network)
 - ✅ **All Database Tables Created**: Added missing tables (email_campaigns, user_activity_logs, site_settings, moderation_queue, announcements, support_messages, prompt_purchases)
 - ✅ **Real-Time Analytics Implementation**: Fixed admin analytics endpoint to show actual database counts instead of placeholder data
 - ✅ **Admin Dashboard Real-Time Data**: All dashboard tabs now display live data from Railway database
