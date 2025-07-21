@@ -300,12 +300,22 @@ export async function sendWelcomeEmail(userEmail: string, userName: string, veri
     }
 
     const emailTemplate = createWelcomeEmailTemplate(userEmail, userName, verificationToken);
-    await sgMail.send(emailTemplate);
+    console.log('SendGrid email template created:', {
+      to: emailTemplate.to,
+      from: emailTemplate.from,
+      subject: emailTemplate.subject
+    });
+    
+    const response = await sgMail.send(emailTemplate);
+    console.log('SendGrid response:', response[0].statusCode, response[0].headers);
     
     console.log(`Welcome email sent successfully to ${userEmail}`);
     return true;
   } catch (error) {
-    console.error('Failed to send welcome email:', error);
+    console.error('Failed to send welcome email - Full error:', error);
+    if (error.response) {
+      console.error('SendGrid error response:', error.response.body);
+    }
     return false;
   }
 }
