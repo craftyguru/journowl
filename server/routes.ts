@@ -22,6 +22,33 @@ import ConnectPgSimple from "connect-pg-simple";
 import { setupOAuth, passport } from "./oauth";
 import Stripe from "stripe";
 import path from "path";
+import multer from "multer";
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Allow text files, images, and JSON
+    const allowedMimes = [
+      'text/plain',
+      'text/markdown',
+      'application/json',
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif'
+    ];
+    
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('File type not supported'), false);
+    }
+  }
+});
 
 // Initialize Stripe (optional)
 let stripe: Stripe | null = null;

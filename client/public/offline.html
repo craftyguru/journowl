@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦉 JournOwl - Offline</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .owl {
+      font-size: 5rem;
+      margin-bottom: 1.5rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      font-weight: 700;
+    }
+    
+    .subtitle {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      opacity: 0.9;
+    }
+    
+    .description {
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-bottom: 2rem;
+      max-width: 500px;
+      line-height: 1.6;
+    }
+    
+    .retry-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid white;
+      color: white;
+      padding: 15px 30px;
+      font-size: 1.1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      margin: 10px;
+    }
+    
+    .retry-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .offline-features {
+      margin-top: 3rem;
+      max-width: 600px;
+    }
+    
+    .feature {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .feature h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .feature p {
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+    
+    .status {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      font-size: 0.9rem;
+    }
+    
+    @media (max-width: 768px) {
+      .owl { font-size: 4rem; }
+      h1 { font-size: 2rem; }
+      .subtitle { font-size: 1.1rem; }
+      .feature { padding: 1rem; margin: 0.5rem 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="owl">🦉</div>
+  <h1>JournOwl is Offline</h1>
+  <p class="subtitle">Your wise writing companion is waiting for reconnection</p>
+  <p class="description">
+    Don't worry! Your thoughts are safe with us. 
+    JournOwl works offline and will sync your entries when you're back online.
+  </p>
+  
+  <button class="retry-btn" onclick="window.location.reload()">
+    🔄 Try Again
+  </button>
+  
+  <a href="/" class="retry-btn">
+    🏠 Go Home
+  </a>
+  
+  <div class="offline-features">
+    <div class="feature">
+      <h3>📝 Write Offline</h3>
+      <p>Continue journaling even without internet. Your entries will be saved locally and synced when you reconnect.</p>
+    </div>
+    
+    <div class="feature">
+      <h3>🔄 Auto-Sync</h3>
+      <p>Once you're back online, all your offline entries will automatically sync to the cloud.</p>
+    </div>
+    
+    <div class="feature">
+      <h3>📱 Works Everywhere</h3>
+      <p>JournOwl works as a native app on your phone, tablet, and computer - online or offline.</p>
+    </div>
+  </div>
+  
+  <div class="status">
+    <p>📡 Connection Status: <span id="status">Checking...</span></p>
+  </div>
+
+  <script>
+    // Check online status
+    function updateStatus() {
+      const statusEl = document.getElementById('status');
+      if (navigator.onLine) {
+        statusEl.textContent = 'Online ✅';
+        statusEl.style.color = '#4ade80';
+      } else {
+        statusEl.textContent = 'Offline ❌';
+        statusEl.style.color = '#f87171';
+      }
+    }
+    
+    // Update status immediately and on change
+    updateStatus();
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    
+    // Auto-retry when back online
+    window.addEventListener('online', () => {
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

@@ -174,5 +174,8 @@
         }
       ]
     }
-  ]
+  ],
+  "offline_pages": ["/offline.html"],
+  "background_sync": ["journowl-background-sync"],
+  "permissions": ["background-sync", "notifications", "storage"]
 }

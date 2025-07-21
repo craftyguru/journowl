@@ -1,9 +1,15 @@
-const CACHE_NAME = 'journowl-v1.0.0';
+const CACHE_NAME = 'journowl-v1.1.0';
+const BACKGROUND_SYNC_TAG = 'journowl-background-sync';
+const PENDING_WRITES_STORE = 'journowl-pending-writes';
+
 const STATIC_CACHE_URLS = [
   '/',
   '/auth',
   '/dashboard',
+  '/import',
+  '/share',
   '/manifest.json',
+  '/offline.html',
   // Add core CSS and JS files that get built
   // Note: In production, you'd want to add the actual built asset paths
 ];
@@ -16,22 +22,50 @@ const API_CACHE_URLS = [
   '/api/goals'
 ];
 
-// Install event - cache core assets
+// IndexedDB setup for offline data storage
+const DB_NAME = 'JournOwlOfflineDB';
+const DB_VERSION = 1;
+
+async function initIndexedDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      
+      // Store for pending writes (journal entries, etc.)
+      if (!db.objectStoreNames.contains(PENDING_WRITES_STORE)) {
+        const store = db.createObjectStore(PENDING_WRITES_STORE, { keyPath: 'id', autoIncrement: true });
+        store.createIndex('timestamp', 'timestamp', { unique: false });
+        store.createIndex('type', 'type', { unique: false });
+      }
+    };
+  });
+}
+
+// Install event - cache core assets and initialize offline storage
 self.addEventListener('install', (event) => {
   console.log('JournOwl Service Worker installing...');
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('Caching core assets...');
-        return cache.addAll(STATIC_CACHE_URLS);
-      })
-      .then(() => {
-        console.log('JournOwl Service Worker installed successfully');
-        return self.skipWaiting();
-      })
-      .catch((error) => {
-        console.error('Service Worker installation failed:', error);
-      })
+    Promise.all([
+      caches.open(CACHE_NAME)
+        .then((cache) => {
+          console.log('Caching core assets...');
+          return cache.addAll(STATIC_CACHE_URLS);
+        }),
+      initIndexedDB()
+        .then(() => console.log('IndexedDB initialized for offline storage'))
+    ])
+    .then(() => {
+      console.log('JournOwl Service Worker installed successfully');
+      return self.skipWaiting();
+    })
+    .catch((error) => {
+      console.error('Service Worker installation failed:', error);
+    })
   );
 });
 
@@ -196,6 +230,61 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Handle POST requests (writes) with background sync for offline support
+  if (request.method === 'POST' && url.pathname.startsWith('/api/')) {
+    event.respondWith(
+      fetch(request.clone())
+        .then((response) => {
+          return response;
+        })
+        .catch(async () => {
+          // Network failed, store for background sync
+          console.log('Network failed for POST request, storing for background sync');
+          
+          try {
+            const requestData = {
+              url: request.url,
+              method: request.method,
+              headers: Object.fromEntries(request.headers.entries()),
+              body: request.method !== 'GET' ? await request.text() : null,
+              timestamp: Date.now(),
+              type: 'api_write'
+            };
+
+            const db = await initIndexedDB();
+            const transaction = db.transaction([PENDING_WRITES_STORE], 'readwrite');
+            const store = transaction.objectStore(PENDING_WRITES_STORE);
+            await store.add(requestData);
+
+            // Register for background sync
+            if (self.registration && self.registration.sync) {
+              await self.registration.sync.register(BACKGROUND_SYNC_TAG);
+            }
+
+            return new Response(JSON.stringify({
+              success: true,
+              message: 'Saved offline. Will sync when back online.',
+              offline: true
+            }), {
+              status: 202,
+              headers: { 'Content-Type': 'application/json' }
+            });
+          } catch (error) {
+            console.error('Failed to store offline request:', error);
+            return new Response(JSON.stringify({
+              success: false,
+              message: 'Failed to save offline. Please try again when online.',
+              error: error.message
+            }), {
+              status: 500,
+              headers: { 'Content-Type': 'application/json' }
+            });
+          }
+        })
+    );
+    return;
+  }
+
   // Default: network first, fallback to cache
   event.respondWith(
     fetch(request)
@@ -205,15 +294,65 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Background sync for offline journal entries (future enhancement)
+// Enhanced Background Sync - Retry failed requests when back online
 self.addEventListener('sync', (event) => {
-  if (event.tag === 'journal-sync') {
-    event.waitUntil(
-      // Future: sync offline journal entries when back online
-      console.log('Background sync: journal entries')
-    );
+  if (event.tag === BACKGROUND_SYNC_TAG) {
+    console.log('Background sync triggered, processing pending writes...');
+    event.waitUntil(processPendingWrites());
   }
 });
+
+async function processPendingWrites() {
+  try {
+    const db = await initIndexedDB();
+    const transaction = db.transaction([PENDING_WRITES_STORE], 'readwrite');
+    const store = transaction.objectStore(PENDING_WRITES_STORE);
+    const allRequests = await getAllFromStore(store);
+
+    console.log(`Processing ${allRequests.length} pending writes`);
+
+    for (const requestData of allRequests) {
+      try {
+        const response = await fetch(requestData.url, {
+          method: requestData.method,
+          headers: requestData.headers,
+          body: requestData.body
+        });
+
+        if (response.ok) {
+          // Success - remove from pending writes
+          await store.delete(requestData.id);
+          console.log('Successfully synced pending write:', requestData.url);
+          
+          // Notify user of successful sync
+          if (self.registration && self.registration.showNotification) {
+            self.registration.showNotification('🦉 JournOwl Sync Complete', {
+              body: 'Your offline changes have been synced successfully!',
+              icon: '/icons/icon-192x192.png',
+              badge: '/icons/icon-72x72.png',
+              tag: 'sync-success'
+            });
+          }
+        } else {
+          console.error('Failed to sync pending write:', response.status, requestData.url);
+        }
+      } catch (error) {
+        console.error('Error syncing pending write:', error, requestData.url);
+        // Keep the request for next sync attempt
+      }
+    }
+  } catch (error) {
+    console.error('Error processing pending writes:', error);
+  }
+}
+
+function getAllFromStore(store) {
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
 
 // Push notifications (future enhancement)
 self.addEventListener('push', (event) => {
@@ -244,11 +383,37 @@ self.addEventListener('push', (event) => {
   }
 });
 
-// Handle notification clicks
+// Message handling for manual sync triggers and service worker updates
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SYNC_NOW') {
+    console.log('Manual sync requested');
+    processPendingWrites();
+  }
+
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
+// Enhanced notification click handling
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
-
-  if (event.action === 'open' || !event.action) {
+  
+  if (event.notification.tag === 'sync-success') {
+    // Open JournOwl when sync notification is clicked
+    event.waitUntil(
+      clients.matchAll({ type: 'window' }).then((clientList) => {
+        for (const client of clientList) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        if (clients.openWindow) {
+          return clients.openWindow('/dashboard');
+        }
+      })
+    );
+  } else if (event.action === 'open' || !event.action) {
     event.waitUntil(
       clients.openWindow('/')
     );
