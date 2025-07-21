@@ -28,176 +28,371 @@ export function createWelcomeEmailTemplate(
   const html = `
   <!DOCTYPE html>
   <html lang="en">
-  <body style="margin:0;padding:0;background:#f6f8fb;">
-    <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:16px;box-shadow:0 8px 30px #0001;font-family:Arial,sans-serif;">
-      <div style="padding:40px 24px 24px 24px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:16px 16px 0 0;color:#fff;text-align:center;">
-        <div style="font-size:60px;margin-bottom:8px;">🦉</div>
-        <h1 style="margin:0 0 8px 0;font-size:30px;">Welcome to JournOwl!</h1>
-        <div style="font-size:18px;opacity:.94;">Your Wise Writing Companion</div>
+  <head>
+    <style>
+      @keyframes rainbow-bg {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+      @keyframes bounce-owl {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
+        40% { transform: translateY(-20px) scale(1.1); }
+        60% { transform: translateY(-10px) scale(1.05); }
+      }
+      @keyframes sparkle-dance {
+        0%, 100% { opacity: 0.4; transform: scale(0.7) rotate(0deg); }
+        25% { opacity: 1; transform: scale(1.3) rotate(90deg); }
+        50% { opacity: 0.6; transform: scale(1.1) rotate(180deg); }
+        75% { opacity: 1; transform: scale(1.5) rotate(270deg); }
+      }
+      @keyframes mega-glow {
+        0%, 100% { 
+          box-shadow: 0 0 25px #ff1744, 0 0 50px #ff1744, 0 0 75px #ff1744, 0 0 100px #ff1744;
+          transform: scale(1);
+        }
+        25% { 
+          box-shadow: 0 0 35px #00e5ff, 0 0 70px #00e5ff, 0 0 105px #00e5ff, 0 0 140px #00e5ff;
+          transform: scale(1.03);
+        }
+        50% { 
+          box-shadow: 0 0 30px #76ff03, 0 0 60px #76ff03, 0 0 90px #76ff03, 0 0 120px #76ff03;
+          transform: scale(1.06);
+        }
+        75% { 
+          box-shadow: 0 0 40px #ffea00, 0 0 80px #ffea00, 0 0 120px #ffea00, 0 0 160px #ffea00;
+          transform: scale(1.03);
+        }
+      }
+      @keyframes pulse-crazy {
+        0% { transform: scale(1) rotate(0deg); }
+        25% { transform: scale(1.15) rotate(5deg); }
+        50% { transform: scale(1.3) rotate(-5deg); }
+        75% { transform: scale(1.15) rotate(3deg); }
+        100% { transform: scale(1) rotate(0deg); }
+      }
+      @keyframes floating-stars {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        33% { transform: translateY(-15px) rotate(120deg); }
+        66% { transform: translateY(-10px) rotate(240deg); }
+      }
+      .rainbow-header { 
+        background: linear-gradient(-45deg, #ff0080, #ff8c00, #40e0d0, #ff1493, #00ff7f, #ff69b4, #1e90ff, #ffd700);
+        background-size: 800% 800%;
+        animation: rainbow-bg 2s ease infinite;
+      }
+      .bounce-owl { animation: bounce-owl 2.5s infinite; }
+      .sparkle-dance { animation: sparkle-dance 1.5s infinite; }
+      .mega-glow { animation: mega-glow 2s infinite; }
+      .pulse-crazy { animation: pulse-crazy 1.8s infinite; }
+      .floating-stars { animation: floating-stars 3s infinite; }
+    </style>
+  </head>
+  <body style="margin:0;padding:0;background:linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff1493, #00ff7f);font-family:Arial,sans-serif;">
+    
+    <!-- MEGA ANIMATED CONTAINER -->
+    <div style="max-width:650px;margin:15px auto;background:#fff;border-radius:30px;box-shadow:0 30px 80px rgba(0,0,0,0.5);overflow:hidden;border:5px solid #ff0080;">
+      
+      <!-- INSANE RAINBOW HEADER -->
+      <div class="rainbow-header" style="padding:60px 40px;text-align:center;color:#fff;position:relative;border-bottom:5px solid #ffd700;">
+        
+        <!-- FLOATING SPARKLES EVERYWHERE -->
+        <div style="position:absolute;top:15px;left:30px;font-size:35px;" class="sparkle-dance floating-stars">✨</div>
+        <div style="position:absolute;top:25px;right:40px;font-size:28px;" class="sparkle-dance floating-stars">⭐</div>
+        <div style="position:absolute;top:50px;left:100px;font-size:32px;" class="sparkle-dance floating-stars">💫</div>
+        <div style="position:absolute;bottom:20px;left:50px;font-size:30px;" class="sparkle-dance floating-stars">🌟</div>
+        <div style="position:absolute;bottom:30px;right:70px;font-size:26px;" class="sparkle-dance floating-stars">✨</div>
+        <div style="position:absolute;top:40px;right:120px;font-size:24px;" class="sparkle-dance floating-stars">💥</div>
+        <div style="position:absolute;bottom:50px;left:150px;font-size:28px;" class="sparkle-dance floating-stars">🎉</div>
+        
+        <!-- MEGA BOUNCING OWL -->
+        <div class="bounce-owl" style="font-size:100px;margin-bottom:20px;text-shadow:0 0 40px rgba(255,255,255,1);filter:drop-shadow(0 0 20px #ffd700);">🦉</div>
+        
+        <!-- ANIMATED TITLE -->
+        <h1 class="pulse-crazy" style="margin:0 0 15px 0;font-size:48px;text-shadow:3px 3px 6px rgba(0,0,0,0.5);background:linear-gradient(45deg, #fff, #ffd700, #ff69b4, #00ff7f);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:bold;">
+          WELCOME TO JOURNOWL!
+        </h1>
+        
+        <!-- MEGA EXCITED SUBTITLE -->
+        <div style="font-size:24px;font-weight:bold;text-shadow:2px 2px 4px rgba(0,0,0,0.4);margin-bottom:10px;">
+          🚀 YOUR EPIC AI WRITING ADVENTURE STARTS NOW! 🚀
+        </div>
+        <div style="font-size:18px;text-shadow:1px 1px 2px rgba(0,0,0,0.3);">
+          Get ready for the most AMAZING journaling experience ever! 🎯✨
+        </div>
       </div>
-      <div style="padding:32px 24px 16px 24px;">
-        <h2 style="color:#1e293b;font-size:21px;">Hi ${userName}!</h2>
-        <p style="color:#475569;font-size:16px;margin-bottom:18px;">
-          We're excited to have you join our mindful writing community! Let's get your account set up:
-        </p>
-        <div style="text-align:center;margin:32px 0;">
-          <a href="${verificationUrl}" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#667eea,#a855f7);color:#fff;border-radius:40px;font-weight:bold;font-size:17px;text-decoration:none;">
-            ✅ Verify Email & Start Journaling
+      
+      <!-- MIND-BLOWING MAIN CONTENT -->
+      <div style="padding:45px 35px;background:linear-gradient(135deg, #ffeaa7, #fab1a0, #fd79a8, #fdcb6e);">
+        
+        <!-- SUPER EXCITED GREETING -->
+        <h2 style="color:#2d3436;font-size:32px;text-align:center;margin-bottom:25px;text-shadow:2px 2px 4px rgba(0,0,0,0.1);">
+          🎊 HEY ${userName}! READY TO BLOW YOUR MIND?! 🎊
+        </h2>
+        
+        <!-- INSANE VERIFICATION BUTTON SECTION -->
+        <div class="mega-glow" style="background:linear-gradient(135deg, #ff7675, #fd79a8, #fdcb6e, #e17055);padding:35px;border-radius:25px;margin:30px 0;text-align:center;border:4px solid #d63031;position:relative;">
+          <div style="position:absolute;top:10px;left:20px;font-size:25px;" class="sparkle-dance">🔥</div>
+          <div style="position:absolute;top:10px;right:20px;font-size:25px;" class="sparkle-dance">💎</div>
+          <div style="position:absolute;bottom:10px;left:30px;font-size:25px;" class="sparkle-dance">⚡</div>
+          <div style="position:absolute;bottom:10px;right:30px;font-size:25px;" class="sparkle-dance">🎯</div>
+          
+          <h3 style="color:#fff;margin:0 0 20px 0;font-size:28px;text-shadow:2px 2px 4px rgba(0,0,0,0.5);">
+            🌟 CLICK NOW FOR INSTANT SUPERPOWERS! 🌟
+          </h3>
+          
+          <a href="${verificationUrl}" class="pulse-crazy" style="display:inline-block;padding:25px 50px;background:linear-gradient(135deg,#00b894,#00cec9,#0984e3,#6c5ce7);color:#fff;border-radius:60px;font-weight:bold;font-size:24px;text-decoration:none;text-shadow:2px 2px 4px rgba(0,0,0,0.4);border:4px solid #fff;box-shadow:0 15px 35px rgba(0,0,0,0.3);">
+            ⚡ VERIFY EMAIL & UNLEASH THE MAGIC! ⚡
           </a>
+          
+          <p style="margin:20px 0 0 0;color:#fff;font-weight:bold;font-size:18px;text-shadow:1px 1px 2px rgba(0,0,0,0.4);">
+            🦸‍♀️ Transform into a journaling superhero instantly! 🦸‍♂️
+          </p>
         </div>
-        <h3 style="color:#5b21b6;text-align:center;margin:32px 0 16px 0;">Why you'll love JournOwl:</h3>
-        <ul style="padding-left:18px;color:#3b3762;font-size:15px;line-height:1.6;">
-          <li>🎨 Smart Editor: Beautiful fonts & creative prompts</li>
-          <li>📸 Photo AI: Instant insights from your photos</li>
-          <li>🏆 Achievements: XP, streaks, badges & rewards</li>
-          <li>🧠 AI Insights: Discover writing patterns</li>
-        </ul>
-        <div style="background:#f3e8ff;padding:18px 20px;border-radius:12px;font-size:15px;margin:20px 0;">
-          <b>Your Free Account Includes:</b><br>
-          ✨ 100 AI Prompts/month &nbsp;|&nbsp; ☁️ 50MB Storage<br>
-          🎯 Access to all essential features<br>
-          <br>
-          <b>Need more?</b><br>
-          🚀 Pro: 1,000 prompts + 500MB ($9.99/mo)<br>
-          ⚡ Power: Unlimited everything ($19.99/mo)
+        
+        <!-- INCREDIBLE FEATURES SHOWCASE -->
+        <div style="background:linear-gradient(135deg, #a29bfe, #6c5ce7, #fd79a8, #fdcb6e);padding:40px;border-radius:25px;margin:35px 0;border:4px solid #6c5ce7;">
+          <h3 style="color:#fff;text-align:center;font-size:28px;margin-bottom:30px;text-shadow:2px 2px 4px rgba(0,0,0,0.4);">
+            🌈 PREPARE TO HAVE YOUR MIND BLOWN! 🌈
+          </h3>
+          
+          <!-- FEATURE GRID WITH ANIMATIONS -->
+          <table cellpadding="15" cellspacing="0" style="width:100%;">
+            <tr>
+              <td style="width:50%;background:rgba(255,255,255,0.95);padding:25px;border-radius:20px;text-align:center;border:3px solid #ff7675;">
+                <div class="bounce-owl" style="font-size:50px;margin-bottom:15px;">🎨</div>
+                <h4 style="color:#2d3436;margin:0;font-size:18px;font-weight:bold;">GENIUS AI EDITOR</h4>
+                <p style="color:#636e72;font-size:14px;margin:8px 0;">Mind-reading fonts, colors & prompts that know what you want before YOU do!</p>
+              </td>
+              <td style="width:50%;background:rgba(255,255,255,0.95);padding:25px;border-radius:20px;text-align:center;border:3px solid #00b894;">
+                <div class="bounce-owl" style="font-size:50px;margin-bottom:15px;">📸</div>
+                <h4 style="color:#2d3436;margin:0;font-size:18px;font-weight:bold;">PHOTO WIZARD AI</h4>
+                <p style="color:#636e72;font-size:14px;margin:8px 0;">Upload ANY photo and watch the AI create INSTANT story magic!</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:rgba(255,255,255,0.95);padding:25px;border-radius:20px;text-align:center;border:3px solid #fdcb6e;">
+                <div class="bounce-owl" style="font-size:50px;margin-bottom:15px;">🏆</div>
+                <h4 style="color:#2d3436;margin:0;font-size:18px;font-weight:bold;">LEGENDARY ACHIEVEMENTS</h4>
+                <p style="color:#636e72;font-size:14px;margin:8px 0;">XP explosions, streak fire, epic badges & rewards that'll make you famous!</p>
+              </td>
+              <td style="background:rgba(255,255,255,0.95);padding:25px;border-radius:20px;text-align:center;border:3px solid #e17055;">
+                <div class="bounce-owl" style="font-size:50px;margin-bottom:15px;">🧠</div>
+                <h4 style="color:#2d3436;margin:0;font-size:18px;font-weight:bold;">MIND-READER AI</h4>
+                <p style="color:#636e72;font-size:14px;margin:8px 0;">Discovers your secret writing DNA and unlocks hidden creative powers!</p>
+              </td>
+            </tr>
+          </table>
         </div>
-        <div style="background:#fef3c7;padding:14px 16px;border-radius:10px;color:#92400e;font-size:15px;margin-bottom:12px;">
-          <b>Quick Start Tips:</b>
-          <ul style="margin:8px 0 0 18px;">
-            <li>Start with a mood check-in</li>
-            <li>Upload a photo for AI magic</li>
-            <li>Set your first writing goal</li>
-            <li>Unlock your first achievement</li>
-          </ul>
+        
+        <!-- EXPLOSIVE FREE PACKAGE -->
+        <div style="background:linear-gradient(135deg, #ff9ff3, #f368e0, #ff3838, #ff9500);padding:30px;border-radius:25px;margin:30px 0;border:4px solid #ff3838;">
+          <h3 style="color:#fff;text-align:center;font-size:26px;margin-bottom:25px;text-shadow:2px 2px 4px rgba(0,0,0,0.4);">
+            🎁 YOUR INSANE FREE TREASURE CHEST! 🎁
+          </h3>
+          
+          <table cellpadding="12" cellspacing="0" style="width:100%;">
+            <tr>
+              <td style="width:33%;background:rgba(255,255,255,0.95);padding:20px;border-radius:15px;text-align:center;border:2px solid #ff3838;">
+                <div class="pulse-crazy" style="font-size:40px;margin-bottom:10px;">✨</div>
+                <strong style="color:#2d3436;font-size:16px;">100 AI PROMPTS</strong>
+                <div style="color:#636e72;font-size:12px;font-weight:bold;">EVERY SINGLE MONTH!</div>
+              </td>
+              <td style="width:33%;background:rgba(255,255,255,0.95);padding:20px;border-radius:15px;text-align:center;border:2px solid #00b894;">
+                <div class="pulse-crazy" style="font-size:40px;margin-bottom:10px;">☁️</div>
+                <strong style="color:#2d3436;font-size:16px;">50MB STORAGE</strong>
+                <div style="color:#636e72;font-size:12px;font-weight:bold;">FOR ALL YOUR PHOTOS!</div>
+              </td>
+              <td style="width:33%;background:rgba(255,255,255,0.95);padding:20px;border-radius:15px;text-align:center;border:2px solid #fdcb6e;">
+                <div class="pulse-crazy" style="font-size:40px;margin-bottom:10px;">🎯</div>
+                <strong style="color:#2d3436;font-size:16px;">ALL FEATURES</strong>
+                <div style="color:#636e72;font-size:12px;font-weight:bold;">COMPLETE ACCESS!</div>
+              </td>
+            </tr>
+          </table>
+          
+          <div style="margin-top:25px;text-align:center;">
+            <p style="color:#fff;font-weight:bold;margin:0 0 15px 0;font-size:18px;text-shadow:1px 1px 2px rgba(0,0,0,0.4);">
+              🔥 WANT TO GO TOTALLY INSANE?! 🔥
+            </p>
+            <div style="text-align:center;">
+              <span style="background:rgba(255,255,255,0.95);padding:12px 20px;border-radius:15px;font-size:16px;margin:8px;display:inline-block;border:2px solid #6c5ce7;">
+                🚀 <strong>PRO:</strong> 1,000 prompts + POWER! ($9.99/mo)
+              </span>
+              <span style="background:rgba(255,255,255,0.95);padding:12px 20px;border-radius:15px;font-size:16px;margin:8px;display:inline-block;border:2px solid #e17055;">
+                ⚡ <strong>POWER:</strong> UNLIMITED EVERYTHING! ($19.99/mo)
+              </span>
+            </div>
+          </div>
         </div>
-        <p style="color:#475569;font-size:15px;margin:24px 0 0 0;">
-          Any questions? Just reply to this email — our team is here to help!
-        </p>
+        
+        <!-- LIGHTNING QUICK START -->
+        <div style="background:linear-gradient(135deg, #74b9ff, #0984e3, #00b894, #00cec9);padding:30px;border-radius:25px;margin:30px 0;border:4px solid #0984e3;">
+          <h3 style="color:#fff;text-align:center;font-size:24px;margin-bottom:20px;text-shadow:2px 2px 4px rgba(0,0,0,0.4);">
+            ⚡ BECOME A LEGEND IN 30 SECONDS! ⚡
+          </h3>
+          
+          <table cellpadding="10" cellspacing="0" style="width:100%;">
+            <tr>
+              <td style="width:50%;background:rgba(255,255,255,0.9);padding:18px;border-radius:15px;border:2px solid #74b9ff;">
+                <div style="color:#2d3436;font-weight:bold;font-size:16px;">1️⃣ Check your epic mood! 😊</div>
+              </td>
+              <td style="width:50%;background:rgba(255,255,255,0.9);padding:18px;border-radius:15px;border:2px solid #00b894;">
+                <div style="color:#2d3436;font-weight:bold;font-size:16px;">2️⃣ Upload magical photos! 📱</div>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:rgba(255,255,255,0.9);padding:18px;border-radius:15px;border:2px solid #fdcb6e;">
+                <div style="color:#2d3436;font-weight:bold;font-size:16px;">3️⃣ Set impossible goals! 🎯</div>
+              </td>
+              <td style="background:rgba(255,255,255,0.9);padding:18px;border-radius:15px;border:2px solid #e17055;">
+                <div style="color:#2d3436;font-weight:bold;font-size:16px;">4️⃣ Unlock legendary achievements! 🏆</div>
+              </td>
+            </tr>
+          </table>
+        </div>
+        
+        <!-- CALL TO ACTION -->
+        <div style="background:linear-gradient(135deg, #ff7675, #fd79a8, #fdcb6e, #00b894);padding:25px;border-radius:20px;text-align:center;margin:25px 0;border:3px solid #d63031;">
+          <p style="color:#fff;font-size:18px;margin:0;font-weight:bold;text-shadow:1px 1px 2px rgba(0,0,0,0.4);">
+            🌟 Questions? Reply now - our team is READY to make you a journaling SUPERSTAR! 🌟
+          </p>
+        </div>
       </div>
-      <div style="background:#f8fafc;padding:20px 16px;border-radius:0 0 16px 16px;text-align:center;font-size:12px;color:#64748b;">
-        Happy journaling! 🦉✨<br>
-        The JournOwl Team<br>
-        <span style="color:#a78bfa;">You’re receiving this because you signed up for JournOwl.</span>
-        <div style="margin-top:8px;"><a href="#" style="color:#64748b;text-decoration:none;">Unsubscribe</a> | <a href="#" style="color:#64748b;text-decoration:none;">Privacy Policy</a></div>
+      
+      <!-- AMAZING RAINBOW FOOTER -->
+      <div class="rainbow-header" style="padding:35px 25px;text-align:center;color:#fff;">
+        <div style="font-size:22px;font-weight:bold;margin-bottom:12px;text-shadow:2px 2px 4px rgba(0,0,0,0.4);">
+          Happy Epic Journaling! 🦉✨🚀
+        </div>
+        <div style="font-size:18px;margin-bottom:15px;text-shadow:1px 1px 2px rgba(0,0,0,0.3);">
+          The AMAZING JournOwl Team
+        </div>
+        <div style="font-size:12px;opacity:0.9;">
+          You're getting this because you're about to become LEGENDARY!
+        </div>
+        <div style="margin-top:12px;font-size:12px;">
+          <a href="#" style="color:#fff;text-decoration:none;margin:0 12px;text-shadow:1px 1px 1px rgba(0,0,0,0.3);">Unsubscribe</a> | 
+          <a href="#" style="color:#fff;text-decoration:none;margin:0 12px;text-shadow:1px 1px 1px rgba(0,0,0,0.3);">Privacy Policy</a>
+        </div>
       </div>
     </div>
+    
+    <!-- FLOATING BACKGROUND ELEMENTS -->
+    <div style="position:fixed;top:10%;left:5%;font-size:30px;z-index:-1;" class="sparkle-dance floating-stars">🌟</div>
+    <div style="position:fixed;top:20%;right:8%;font-size:25px;z-index:-1;" class="sparkle-dance floating-stars">✨</div>
+    <div style="position:fixed;bottom:15%;left:10%;font-size:28px;z-index:-1;" class="sparkle-dance floating-stars">💫</div>
+    <div style="position:fixed;bottom:25%;right:5%;font-size:32px;z-index:-1;" class="sparkle-dance floating-stars">🎉</div>
+    
   </body>
   </html>
   `;
 
   const text = `
-Welcome to JournOwl! 🦉
+🦉 WELCOME TO JOURNOWL! 🦉
 
-Hi ${userName}!
+HEY ${userName}! READY TO BLOW YOUR MIND?!
 
-We're excited to have you join our mindful writing community!
+We're SO EXCITED you joined our AMAZING writing community!
 
-Please verify your email to activate your account:
+🔥 VERIFY YOUR EMAIL NOW FOR INSTANT SUPERPOWERS: 🔥
 ${verificationUrl}
 
-Why you'll love JournOwl:
-- Smart Editor: Beautiful fonts & creative prompts
-- Photo AI: Instant insights from your photos
-- Achievements: XP, streaks, badges & rewards
-- AI Insights: Discover writing patterns
+🌟 WHY JOURNOWL WILL BLOW YOUR MIND:
+🎨 GENIUS AI EDITOR - Mind-reading fonts & prompts!
+📸 PHOTO WIZARD AI - Upload photos for instant story magic!
+🏆 LEGENDARY ACHIEVEMENTS - XP, streaks, epic rewards!
+🧠 MIND-READER AI - Discovers your secret writing powers!
 
-Your Free Account Includes:
-✨ 100 AI Prompts/month | ☁️ 50MB Storage | 🎯 All features
+🎁 YOUR INSANE FREE TREASURE CHEST:
+✨ 100 AI Prompts EVERY MONTH!
+☁️ 50MB Storage for all your photos!
+🎯 ALL FEATURES with complete access!
 
-Need more? Upgrade anytime:
-🚀 Pro: 1,000 prompts + 500MB ($9.99/mo)
-⚡ Power: Unlimited everything ($19.99/mo)
+🔥 WANT MORE POWER?
+🚀 PRO: 1,000 prompts + extras ($9.99/mo)
+⚡ POWER: UNLIMITED EVERYTHING! ($19.99/mo)
 
-Quick Start Tips:
-- Start with a mood check-in
-- Upload a photo for AI magic
-- Set your first writing goal
-- Unlock your first achievement
+⚡ BECOME A LEGEND IN 30 SECONDS:
+1️⃣ Check your epic mood!
+2️⃣ Upload magical photos!
+3️⃣ Set impossible goals!
+4️⃣ Unlock legendary achievements!
 
-Questions? Reply to this email — we're here to help!
+Questions? Reply now - we're ready to make you a SUPERSTAR!
 
-Happy journaling! 🦉✨
-The JournOwl Team
+Happy Epic Journaling! 🦉✨🚀
+The AMAZING JournOwl Team
   `;
 
   return {
     to: userEmail,
-    from: 'craftyguru@1ofakindpiece.com', // Verified sender
-    subject: 'Welcome to JournOwl – Verify Your Email!',
+    from: 'craftyguru@1ofakindpiece.com',
+    subject: '🦉 WELCOME TO JOURNOWL! Your Epic Writing Adventure Starts NOW! 🚀✨',
     html,
     text
   };
 }
 
 export async function sendWelcomeEmail(userEmail: string, userName: string, verificationToken: string): Promise<boolean> {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.error('SendGrid API key not configured');
+    return false;
+  }
+
   try {
-    if (!process.env.SENDGRID_API_KEY) {
-      console.error('SendGrid API key not configured!');
-      return false;
-    }
     const emailTemplate = createWelcomeEmailTemplate(userEmail, userName, verificationToken);
-    const [response] = await sgMail.send(emailTemplate);
-    console.log('Welcome email sent:', { status: response.statusCode, messageId: response.headers['x-message-id'] });
+    await sgMail.send(emailTemplate);
+    console.log(`Welcome email sent successfully to ${userEmail}`);
     return true;
-  } catch (error: any) {
-    console.error('Failed to send welcome email:', error?.response?.body || error);
+  } catch (error) {
+    console.error('Failed to send welcome email:', error);
     return false;
   }
 }
 
-export function createEmailVerificationTemplate(
+export function createSimpleTestEmailTemplate(
   userEmail: string,
-  userName: string,
-  verificationToken: string
+  userName: string
 ): EmailTemplate {
-  const baseUrl = getBaseUrl();
-  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
-  const html = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <body style="margin:0;padding:0;background:#f6f8fb;">
-    <div style="max-width:500px;margin:40px auto;background:#fff;border-radius:16px;box-shadow:0 8px 30px #0001;font-family:Arial,sans-serif;">
-      <div style="padding:36px 24px 18px 24px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:16px 16px 0 0;color:#fff;text-align:center;">
-        <div style="font-size:48px;margin-bottom:8px;">🦉</div>
-        <h2 style="margin:0 0 6px 0;font-size:24px;">Verify Your Email</h2>
-      </div>
-      <div style="padding:32px 24px 16px 24px;">
-        <p style="color:#1e293b;font-size:16px;">Hi ${userName},</p>
-        <p style="color:#475569;font-size:16px;">
-          Please verify your email address to complete your JournOwl registration:
-        </p>
-        <div style="text-align:center;margin:32px 0;">
-          <a href="${verificationUrl}" style="display:inline-block;padding:13px 30px;background:linear-gradient(135deg,#667eea,#a855f7);color:#fff;border-radius:40px;font-weight:bold;font-size:16px;text-decoration:none;">
-            ✅ Verify Email Address
-          </a>
-        </div>
-        <p style="color:#64748b;font-size:13px;">This link will expire in 24 hours.</p>
-      </div>
-      <div style="background:#f8fafc;padding:16px 14px;border-radius:0 0 16px 16px;text-align:center;font-size:11px;color:#64748b;">
-        You’re receiving this because you signed up for JournOwl.
-      </div>
-    </div>
-  </body>
-  </html>
-  `;
-
-  const text = `
-Hi ${userName},
-
-Please verify your email address to complete your JournOwl registration:
-
-${verificationUrl}
-
-This link will expire in 24 hours.
-
-You’re receiving this because you signed up for JournOwl.
-  `;
-
   return {
     to: userEmail,
     from: 'craftyguru@1ofakindpiece.com',
-    subject: '🦉 Verify Your JournOwl Email Address',
-    html,
-    text
+    subject: 'JournOwl Test Email - Simple Version',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h1 style="color: #333;">Hello ${userName}!</h1>
+        <p>This is a simple test email to verify our SendGrid configuration is working.</p>
+        <p>If you received this email, SendGrid is working correctly!</p>
+        <p>Best regards,<br>The JournOwl Team</p>
+      </div>
+    `,
+    text: `
+Hello ${userName}!
+
+This is a simple test email to verify our SendGrid configuration is working.
+
+If you received this email, SendGrid is working correctly!
+
+Best regards,
+The JournOwl Team
+    `
   };
+}
+
+export async function sendSimpleTestEmail(userEmail: string, userName: string): Promise<boolean> {
+  if (!process.env.SENDGRID_API_KEY) {
+    console.error('SendGrid API key not configured');
+    return false;
+  }
+
+  try {
+    const emailTemplate = createSimpleTestEmailTemplate(userEmail, userName);
+    await sgMail.send(emailTemplate);
+    console.log(`Simple test email sent successfully to ${userEmail}`);
+    return true;
+  } catch (error) {
+    console.error('Failed to send simple test email:', error);
+    return false;
+  }
 }
