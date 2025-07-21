@@ -51,13 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.use(session({
     store: new PgSession({
-      conObject: {
-        connectionString: sessionDbUrl,
-        ssl: { 
-          rejectUnauthorized: false,
-          require: true
-        }
-      },
+      conString: sessionDbUrl.replace('?sslmode=require', ''),
       tableName: 'session',
       createTableIfMissing: true,
       pruneSessionInterval: false // Disable automatic pruning to avoid SSL errors
