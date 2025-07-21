@@ -25,7 +25,7 @@ import Stripe from "stripe";
 let stripe: Stripe | null = null;
 if (process.env.STRIPE_SECRET_KEY) {
   stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2024-06-20",
+    apiVersion: "2024-06-20" as any,
   });
   console.log('Stripe initialized successfully');
 } else {
@@ -52,8 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     store: new PgSession({
       conString: sessionDbUrl,
       tableName: 'session',
-      createTableIfMissing: true,
-      ssl: { rejectUnauthorized: false }
+      createTableIfMissing: true
     }),
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
     resave: false,
