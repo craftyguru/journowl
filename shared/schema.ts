@@ -270,40 +270,48 @@ export const planLimits = {
   }
 };
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  email: true,
-  username: true,
-  password: true,
+// Simple Zod schemas for form validation
+export const insertUserSchema = z.object({
+  email: z.string().email(),
+  username: z.string().min(1),
+  password: z.string().min(6).optional(),
 });
 
-export const insertJournalEntrySchema = createInsertSchema(journalEntries).pick({
-  title: true,
-  content: true,
-  mood: true,
+export const insertJournalEntrySchema = z.object({
+  title: z.string().min(1),
+  content: z.string().min(1),
+  mood: z.string().min(1),
+  userId: z.number(),
 });
 
-export const insertAchievementSchema = createInsertSchema(achievements).pick({
-  type: true,
-  title: true,
-  description: true,
-  icon: true,
+export const insertAchievementSchema = z.object({
+  userId: z.number(),
+  achievementId: z.string(),
+  type: z.string().min(1),
+  title: z.string().min(1),
+  description: z.string().min(1),
+  icon: z.string().min(1),
+  rarity: z.string(),
 });
 
-export const insertGoalSchema = createInsertSchema(goals).pick({
-  title: true,
-  description: true,
-  targetValue: true,
-  type: true,
-  deadline: true,
+export const insertGoalSchema = z.object({
+  userId: z.number(),
+  goalId: z.string(),
+  title: z.string().min(1),
+  description: z.string().optional(),
+  type: z.string().min(1),
+  difficulty: z.string(),
+  targetValue: z.number().min(1),
+  deadline: z.date().optional(),
 });
 
-export const insertJournalPromptSchema = createInsertSchema(journalPrompts).pick({
-  title: true,
-  content: true,
-  category: true,
-  difficulty: true,
-  tags: true,
-  isKidFriendly: true,
+export const insertJournalPromptSchema = z.object({
+  title: z.string().min(1),
+  content: z.string().min(1),
+  category: z.string().min(1),
+  difficulty: z.string().min(1),
+  tags: z.array(z.string()).optional(),
+  isKidFriendly: z.boolean().optional(),
 });
 
 export type User = typeof users.$inferSelect;

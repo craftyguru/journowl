@@ -1,0 +1,305 @@
+
+server/services/achievement-tracker.ts:78:11 - error TS2353: Object literal may only specify known properties, and 'achievementId' does not exist in type '{} & { userId: number; }'.
+
+78           achievementId: achievement.id,
+             ~~~~~~~~~~~~~
+
+server/services/achievement-tracker.ts:98:11 - error TS2353: Object literal may only specify known properties, and 'goalId' does not exist in type '{} & { userId: number; }'.
+
+98           goalId: goal.id,
+             ~~~~~~
+
+server/services/achievement-tracker.ts:116:9 - error TS2353: Object literal may only specify known properties, and 'achievementId' does not exist in type '{} & { userId: number; }'.
+
+116         achievementId: "welcome_owl",
+            ~~~~~~~~~~~~~
+
+server/services/auth.ts:14:62 - error TS2339: Property 'email' does not exist on type '{}'.
+
+14   const existingUser = await storage.getUserByEmail(userData.email);
+                                                                ~~~~~
+
+server/services/auth.ts:19:54 - error TS2339: Property 'password' does not exist on type '{}'.
+
+19   const hashedPassword = await hashPassword(userData.password);
+                                                        ~~~~~~~~
+
+server/storage.ts:161:34 - error TS2353: Object literal may only specify known properties, and 'xp' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+161     await db.update(users).set({ xp: newXP, level: newLevel }).where(eq(users.id, userId));
+                                     ~~
+
+server/storage.ts:165:29 - error TS2339: Property 'content' does not exist on type '{} & { userId: number; }'.
+
+165     const wordCount = entry.content.trim().split(/\s+/).filter(word => word.length > 0).length;
+                                ~~~~~~~
+
+server/storage.ts:167:71 - error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { title: string | SQL<unknown> | Placeholder<string, any>; content: string | SQL<unknown> | Placeholder<string, any>; mood: string | SQL<unknown> | Placeholder<...>; userId: number | ... 1 more ... | Placeholder<...>; }): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'wordCount' does not exist in type '{ title: string | SQL<unknown> | Placeholder<string, any>; content: string | SQL<unknown> | Placeholder<string, any>; mood: string | SQL<unknown> | Placeholder<string, any>; userId: number | ... 1 more ... | Placeholder<...>; }'.
+  Overload 2 of 2, '(values: { title: string | SQL<unknown> | Placeholder<string, any>; content: string | SQL<unknown> | Placeholder<string, any>; mood: string | SQL<unknown> | Placeholder<...>; userId: number | ... 1 more ... | Placeholder<...>; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'wordCount' does not exist in type '{ title: string | SQL<unknown> | Placeholder<string, any>; content: string | SQL<unknown> | Placeholder<string, any>; mood: string | SQL<unknown> | Placeholder<string, any>; userId: number | ... 1 more ... | Placeholder<...>; }[]'.
+
+167     const result = await db.insert(journalEntries).values({ ...entry, wordCount }).returning();
+                                                                          ~~~~~~~~~
+
+
+server/storage.ts:215:15 - error TS2339: Property 'content' does not exist on type 'Partial<{}>'.
+
+215     if (entry.content) {
+                  ~~~~~~~
+
+server/storage.ts:216:36 - error TS2339: Property 'content' does not exist on type 'Partial<{}>'.
+
+216       updateData.wordCount = entry.content.trim().split(/\s+/).filter(word => word.length > 0).length;
+                                       ~~~~~~~
+
+server/storage.ts:219:41 - error TS2559: Type 'Partial<{}> & { updatedAt: Date; wordCount?: number; }' has no properties in common with type '{ title?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; content?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<...>, {}, {}>; mood?: string | ... 1 more ... | PgColumn<...>; userId?: number | ... 1 more ... | PgColumn<...>; }'.
+
+219     await db.update(journalEntries).set(updateData).where(and(eq(journalEntries.id, id), eq(journalEntries.userId, userId)));
+                                            ~~~~~~~~~~
+
+server/storage.ts:231:26 - error TS2339: Property 'title' does not exist on type '{} & { userId: number; }'.
+
+231       title: achievement.title,
+                             ~~~~~
+
+server/storage.ts:232:32 - error TS2339: Property 'description' does not exist on type '{} & { userId: number; }'.
+
+232       description: achievement.description,
+                                   ~~~~~~~~~~~
+
+server/storage.ts:233:25 - error TS2339: Property 'icon' does not exist on type '{} & { userId: number; }'.
+
+233       icon: achievement.icon || "🏆",
+                            ~~~~
+
+server/storage.ts:235:25 - error TS2339: Property 'type' does not exist on type '{} & { userId: number; }'.
+
+235       type: achievement.type,
+                            ~~~~
+
+server/storage.ts:268:48 - error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type '{ userId?: number | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; }'.
+
+268     await db.update(userStats).set({ ...stats, updatedAt: new Date() }).where(eq(userStats.userId, userId));
+                                                   ~~~~~~~~~
+
+server/storage.ts:332:46 - error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+332     await db.update(users).set({ ...updates, updatedAt: new Date() }).where(eq(users.id, id));
+                                                 ~~~~~~~~~
+
+server/storage.ts:358:48 - error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { action: string | SQL<unknown> | Placeholder<string, any>; }): PgInsertBase<PgTableWithColumns<{ name: "user_activity_logs"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "user_activity_logs"; ... 12 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; createdAt: PgColumn<...>; }; dialect: "pg"; }>, ... 4 more ..., never>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type '{ action: string | SQL<unknown> | Placeholder<string, any>; }'.
+  Overload 2 of 2, '(values: { action: string | SQL<unknown> | Placeholder<string, any>; }[]): PgInsertBase<PgTableWithColumns<{ name: "user_activity_logs"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "user_activity_logs"; ... 12 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; createdAt: PgColumn<...>; }; dialect: "pg"; }>, ... 4 more ..., never>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type '{ action: string | SQL<unknown> | Placeholder<string, any>; }[]'.
+
+358     await db.insert(userActivityLogs).values({ userId, action, details, ipAddress, userAgent });
+                                                   ~~~~~~
+
+
+server/storage.ts:367:55 - error TS2353: Object literal may only specify known properties, and 'updatedAt' does not exist in type '{ title?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; content?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<...>, {}, {}>; subject?: string | ... 1 more ... | PgColumn<...>; createdBy?: number | ... 1 more ... | PgColumn<...>; }'.
+
+367     await db.update(emailCampaigns).set({ ...updates, updatedAt: new Date() }).where(eq(emailCampaigns.id, id));
+                                                          ~~~~~~~~~
+
+server/storage.ts:384:35 - error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { key: string | SQL<unknown> | Placeholder<string, any>; }): PgInsertBase<PgTableWithColumns<{ name: "site_settings"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "site_settings"; ... 12 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; updatedAt: PgColumn<...>; }; dialect: "pg"; }>, ... 4 more ..., never>', gave the following error.
+    Object literal may only specify known properties, and 'value' does not exist in type '{ key: string | SQL<unknown> | Placeholder<string, any>; }'.
+  Overload 2 of 2, '(values: { key: string | SQL<unknown> | Placeholder<string, any>; }[]): PgInsertBase<PgTableWithColumns<{ name: "site_settings"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "site_settings"; ... 12 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; updatedAt: PgColumn<...>; }; dialect: "pg"; }>, ... 4 more ..., never>', gave the following error.
+    Object literal may only specify known properties, but 'key' does not exist in type '{ key: string | SQL<unknown> | Placeholder<string, any>; }[]'. Did you mean to write 'keys'?
+
+384     await db.insert(siteSettings).values({ key, value, updatedBy }).onConflictDoUpdate({
+                                      ~~~~~~
+
+
+server/storage.ts:386:14 - error TS2353: Object literal may only specify known properties, and 'value' does not exist in type 'PgUpdateSetSource<PgTableWithColumns<{ name: "site_settings"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "site_settings"; dataType: "number"; columnType: "PgSerial"; data: number; driverParam: number; notNull: true; ... 7 more ...; generated: undefined; }, {}, {}>; ... 5 more ...; updatedAt:...'.
+
+386       set: { value, updatedBy, updatedAt: new Date() }
+                 ~~~~~
+
+  node_modules/drizzle-orm/pg-core/query-builders/insert.d.ts:66:5
+    66     set: PgUpdateSetSource<T['_']['table']>;
+           ~~~
+    The expected type comes from property 'set' which is declared here on type 'PgInsertOnConflictDoUpdateConfig<PgInsertBase<PgTableWithColumns<{ name: "site_settings"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "site_settings"; dataType: "number"; columnType: "PgSerial"; data: number; driverParam: number; notNull: true; ... 7 more ...; generated: undefined; }, {}, {}>...'
+
+server/storage.ts:433:19 - error TS2339: Property 'title' does not exist on type '{} & { userId: number; }'.
+
+433       title: goal.title,
+                      ~~~~~
+
+server/storage.ts:434:25 - error TS2339: Property 'description' does not exist on type '{} & { userId: number; }'.
+
+434       description: goal.description || null,
+                            ~~~~~~~~~~~
+
+server/storage.ts:435:18 - error TS2339: Property 'type' does not exist on type '{} & { userId: number; }'.
+
+435       type: goal.type,
+                     ~~~~
+
+server/storage.ts:437:25 - error TS2339: Property 'targetValue' does not exist on type '{} & { userId: number; }'.
+
+437       targetValue: goal.targetValue,
+                            ~~~~~~~~~~~
+
+server/storage.ts:440:22 - error TS2339: Property 'deadline' does not exist on type '{} & { userId: number; }'.
+
+440       deadline: goal.deadline || null,
+                         ~~~~~~~~
+
+server/storage.ts:611:44 - error TS2353: Object literal may only specify known properties, and 'isRead' does not exist in type '{ message?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; userId?: number | SQL<unknown> | PgColumn<...>; sender?: string | ... 1 more ... | PgColumn<...>; }'.
+
+611     await db.update(supportMessages).set({ isRead: true }).where(eq(supportMessages.id, id));
+                                               ~~~~~~
+
+server/storage.ts:619:36 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+619       await db.update(users).set({ promptsRemaining: 100, promptsUsedThisMonth: 0 }).where(eq(users.id, userId));
+                                       ~~~~~~~~~~~~~~~~
+
+server/storage.ts:633:14 - error TS2353: Object literal may only specify known properties, and 'promptsUsedThisMonth' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+633       .set({ promptsUsedThisMonth: (user.promptsUsedThisMonth || 0) + 1, promptsRemaining: (user.promptsRemaining || 0) - 1 })
+                 ~~~~~~~~~~~~~~~~~~~~
+
+server/storage.ts:638:38 - error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { amount: number | SQL<unknown> | Placeholder<string, any>; userId: number | SQL<unknown> | Placeholder<string, any>; stripePaymentId: string | SQL<...> | Placeholder<...>; promptsAdded: number | ... 1 more ... | Placeholder<...>; }): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'status' does not exist in type '{ amount: number | SQL<unknown> | Placeholder<string, any>; userId: number | SQL<unknown> | Placeholder<string, any>; stripePaymentId: string | SQL<unknown> | Placeholder<...>; promptsAdded: number | ... 1 more ... | Placeholder<...>; }'.
+  Overload 2 of 2, '(values: { amount: number | SQL<unknown> | Placeholder<string, any>; userId: number | SQL<unknown> | Placeholder<string, any>; stripePaymentId: string | SQL<...> | Placeholder<...>; promptsAdded: number | ... 1 more ... | Placeholder<...>; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type '{ amount: number | SQL<unknown> | Placeholder<string, any>; userId: number | SQL<unknown> | Placeholder<string, any>; stripePaymentId: string | SQL<unknown> | Placeholder<...>; promptsAdded: number | ... 1 more ... | Placeholder<...>; }[]'.
+
+638     await db.insert(promptPurchases).values({ userId, stripePaymentId, amount, promptsAdded, status: "completed" });
+                                         ~~~~~~
+
+
+server/storage.ts:646:34 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+646     await db.update(users).set({ promptsRemaining: (user.promptsRemaining || 0) + promptsToAdd }).where(eq(users.id, userId));
+                                     ~~~~~~~~~~~~~~~~
+
+server/storage.ts:650:34 - error TS2353: Object literal may only specify known properties, and 'promptsUsedThisMonth' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+650     await db.update(users).set({ promptsUsedThisMonth: 0, lastUsageReset: new Date() });
+                                     ~~~~~~~~~~~~~~~~~~~~
+
+server/storage.ts:668:7 - error TS2353: Object literal may only specify known properties, and 'currentPlan' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+668       currentPlan: tier,
+          ~~~~~~~~~~~
+
+server/storage.ts:680:34 - error TS2353: Object literal may only specify known properties, and 'storageUsedMB' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+680     await db.update(users).set({ storageUsedMB: newUsage }).where(eq(users.id, userId));
+                                     ~~~~~~~~~~~~~
+
+server/storage.ts:694:34 - error TS2353: Object literal may only specify known properties, and 'promptsRemaining' does not exist in type '{ email?: string | SQL<unknown> | PgColumn<ColumnBaseConfig<ColumnDataType, string>, {}, {}>; username?: string | SQL<unknown> | PgColumn<...>; }'.
+
+694     await db.update(users).set({ promptsRemaining: newPrompts }).where(eq(users.id, userId));
+                                     ~~~~~~~~~~~~~~~~
+
+shared/schema.ts:274:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+274   email: true,
+      ~~~~~
+
+shared/schema.ts:275:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+275   username: true,
+      ~~~~~~~~
+
+shared/schema.ts:276:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+276   password: true,
+      ~~~~~~~~
+
+shared/schema.ts:280:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+280   title: true,
+      ~~~~~
+
+shared/schema.ts:281:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+281   content: true,
+      ~~~~~~~
+
+shared/schema.ts:282:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+282   mood: true,
+      ~~~~
+
+shared/schema.ts:286:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+286   type: true,
+      ~~~~
+
+shared/schema.ts:287:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+287   title: true,
+      ~~~~~
+
+shared/schema.ts:288:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+288   description: true,
+      ~~~~~~~~~~~
+
+shared/schema.ts:289:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+289   icon: true,
+      ~~~~
+
+shared/schema.ts:293:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+293   title: true,
+      ~~~~~
+
+shared/schema.ts:294:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+294   description: true,
+      ~~~~~~~~~~~
+
+shared/schema.ts:295:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+295   targetValue: true,
+      ~~~~~~~~~~~
+
+shared/schema.ts:296:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+296   type: true,
+      ~~~~
+
+shared/schema.ts:297:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+297   deadline: true,
+      ~~~~~~~~
+
+shared/schema.ts:301:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+301   title: true,
+      ~~~~~
+
+shared/schema.ts:302:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+302   content: true,
+      ~~~~~~~
+
+shared/schema.ts:303:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+303   category: true,
+      ~~~~~~~~
+
+shared/schema.ts:304:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+304   difficulty: true,
+      ~~~~~~~~~~
+
+shared/schema.ts:305:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+305   tags: true,
+      ~~~~
+
+shared/schema.ts:306:3 - error TS2322: Type 'boolean' is not assignable to type 'never'.
+
+306   isKidFriendly: true,
+      ~~~~~~~~~~~~~

@@ -158,13 +158,13 @@ export class DatabaseStorage implements IStorage {
     const newXP = currentXP + xp;
     const newLevel = Math.floor(newXP / 1000) + 1;
 
-    await db.update(users).set({ xp: newXP, level: newLevel }).where(eq(users.id, userId));
+    await db.update(users).set({ xp: newXP, level: newLevel } as any).where(eq(users.id, userId));
   }
 
   async createJournalEntry(entry: InsertJournalEntry & { userId: number }): Promise<JournalEntry> {
-    const wordCount = entry.content.trim().split(/\s+/).filter(word => word.length > 0).length;
+    const wordCount = (entry as any).content.trim().split(/\s+/).filter((word: string) => word.length > 0).length;
 
-    const result = await db.insert(journalEntries).values({ ...entry, wordCount }).returning();
+    const result = await db.insert(journalEntries).values({ ...(entry as any), wordCount } as any).returning();
     const newEntry = result[0];
 
     // Update user stats

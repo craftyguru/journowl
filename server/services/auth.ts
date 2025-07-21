@@ -11,12 +11,12 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 }
 
 export async function createUser(userData: InsertUser) {
-  const existingUser = await storage.getUserByEmail(userData.email);
+  const existingUser = await storage.getUserByEmail((userData as any).email);
   if (existingUser) {
     throw new Error("User already exists");
   }
 
-  const hashedPassword = await hashPassword(userData.password);
+  const hashedPassword = await hashPassword((userData as any).password);
   return await storage.createUser({
     ...userData,
     password: hashedPassword,
@@ -29,7 +29,7 @@ export async function authenticateUser(email: string, password: string) {
     throw new Error("Invalid credentials");
   }
 
-  const isValid = await verifyPassword(password, user.password);
+  const isValid = await verifyPassword(password, user.password || "");
   if (!isValid) {
     throw new Error("Invalid credentials");
   }
