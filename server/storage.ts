@@ -123,7 +123,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(user: Partial<User>): Promise<User> {
-    const result = await db.insert(users).values(user).returning();
+    // Ensure required fields are present
+    const userData = {
+      email: user.email!,
+      username: user.username!,
+      password: user.password || null,
+      role: user.role || 'user',
+      level: user.level || 1,
+      xp: user.xp || 0,
+      avatar: user.avatar || null,
+      theme: user.theme || 'dark',
+      bio: user.bio || null,
+      favoriteQuote: user.favoriteQuote || null,
+      currentPlan: user.currentPlan || 'free',
+      promptsUsedThisMonth: user.promptsUsedThisMonth || 0,
+      promptsRemaining: user.promptsRemaining || 100,
+      storageUsedMB: user.storageUsedMB || 0,
+      lastUsageReset: user.lastUsageReset || new Date(),
+      emailVerified: user.emailVerified || false,
+      requiresEmailVerification: user.requiresEmailVerification !== false
+    };
+    
+    const result = await db.insert(users).values(userData).returning();
     const newUser = result[0];
     await this.createUserStats(newUser.id);
     return newUser;
@@ -203,7 +224,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createAchievement(achievement: InsertAchievement & { userId: number }): Promise<Achievement> {
-    const result = await db.insert(achievements).values(achievement).returning();
+    // Ensure required fields are present for achievement schema
+    const achievementData = {
+      userId: achievement.userId,
+      achievementId: (achievement as any).achievementId || `achievement_${Date.now()}`,
+      title: achievement.title,
+      description: achievement.description,
+      icon: achievement.icon || "🏆",
+      rarity: (achievement as any).rarity || "common",
+      type: achievement.type,
+      targetValue: (achievement as any).requirement || 0,
+      currentValue: (achievement as any).currentValue || 0,
+      unlockedAt: (achievement as any).unlockedAt || null
+    };
+    
+    const result = await db.insert(achievements).values(achievementData).returning();
     return result[0];
   }
 
@@ -249,7 +284,10 @@ export class DatabaseStorage implements IStorage {
 
     if (entries.length > 0) {
       const today = new Date();
-      const entryDates = entries.map(entry => new Date(entry.createdAt).toDateString());
+      const entryDates = entries.map(entry => {
+        const date = entry.createdAt ? new Date(entry.createdAt) : new Date();
+        return date.toDateString();
+      });
 
       const uniqueDates = Array.from(new Set(entryDates)).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
 
@@ -286,7 +324,7 @@ export class DatabaseStorage implements IStorage {
       totalWords,
       currentStreak,
       longestStreak,
-      lastEntryDate: entries.length > 0 ? new Date(entries[0].createdAt) : null,
+      lastEntryDate: entries.length > 0 && entries[0].createdAt ? new Date(entries[0].createdAt) : null,
     });
   }
 
@@ -388,12 +426,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createGoal(goal: InsertGoal & { userId: number }): Promise<Goal> {
-    const result = await db.insert(goals).values(goal).returning();
+    // Ensure required fields are present for goal schema
+    const goalData = {
+      userId: goal.userId,
+      goalId: (goal as any).goalId || `goal_${Date.now()}`,
+      title: goal.title,
+      description: goal.description || null,
+      type: goal.type,
+      difficulty: (goal as any).difficulty || 'beginner',
+      targetValue: goal.targetValue,
+      currentValue: (goal as any).currentValue || 0,
+      isCompleted: (goal as any).isCompleted || false,
+      deadline: goal.deadline || null,
+      completedAt: (goal as any).completedAt || null
+    };
+    
+    const result = await db.insert(goals).values(goalData).returning();
     return result[0];
   }
 
   async updateGoal(id: number, userId: number, updates: Partial<Goal>): Promise<void> {
-    await db.update(goals).set({ ...updates, updatedAt: new Date() }).where(and(eq(goals.id, id), eq(goals.userId, userId)));
+    await db.update(goals).set(updates).where(and(eq(goals.id, id), eq(goals.userId, userId)));
   }
 
   async getGoalByGoalId(userId: number, goalId: string): Promise<Goal | undefined> {
@@ -407,37 +460,142 @@ export class DatabaseStorage implements IStorage {
   }
 
   private async createDefaultGoals(userId: number): Promise<void> {
-    const defaultGoals = [
-      // beginner, intermediate, advanced, expert, legendary goals (omitted for brevity)
+    const defaultGoals: Array<{
+      title: string;
+      description: string;
+      type: string;
+      targetValue: number;
+      difficulty: string;
+    }> = [
+      // Beginner Goals (Easy)
+      { title: "First Steps", description: "Write your very first journal entry", type: "entries", targetValue: 1, difficulty: "beginner" },
+      { title: "Early Bird", description: "Complete 3 journal entries", type: "entries", targetValue: 3, difficulty: "beginner" },
+      { title: "Getting Started", description: "Write 100 words total", type: "words", targetValue: 100, difficulty: "beginner" },
+      { title: "Consistency", description: "Write for 2 days in a row", type: "streak", targetValue: 2, difficulty: "beginner" },
+      { title: "Week Warrior", description: "Complete 7 journal entries", type: "entries", targetValue: 7, difficulty: "beginner" },
+      { title: "Word Explorer", description: "Write 500 words total", type: "words", targetValue: 500, difficulty: "beginner" },
+      
+      // Intermediate Goals (Medium)
+      { title: "Monthly Milestone", description: "Complete 30 journal entries", type: "entries", targetValue: 30, difficulty: "intermediate" },
+      { title: "Wordsmith", description: "Write 5,000 words total", type: "words", targetValue: 5000, difficulty: "intermediate" },
+      { title: "Streak Master", description: "Write for 30 days in a row", type: "streak", targetValue: 30, difficulty: "intermediate" },
+      { title: "Reflection Champion", description: "Write in 5 different moods", type: "moods", targetValue: 5, difficulty: "intermediate" },
+      { title: "Memory Keeper", description: "Upload 20 photos to your entries", type: "photos", targetValue: 20, difficulty: "intermediate" },
+      { title: "Creative Writer", description: "Use 3 different writing styles", type: "styles", targetValue: 3, difficulty: "intermediate" },
+      
+      // Advanced Goals (Hard)
+      { title: "Century Club", description: "Complete 100 journal entries", type: "entries", targetValue: 100, difficulty: "advanced" },
+      { title: "Novelist", description: "Write 50,000 words total", type: "words", targetValue: 50000, difficulty: "advanced" },
+      { title: "Dedication Master", description: "Write for 100 days in a row", type: "streak", targetValue: 100, difficulty: "advanced" },
+      { title: "Mood Explorer", description: "Experience all available moods", type: "moods", targetValue: 12, difficulty: "advanced" },
+      { title: "Visual Storyteller", description: "Upload 100 photos to your entries", type: "photos", targetValue: 100, difficulty: "advanced" },
+      { title: "Mindfulness Guru", description: "Complete 50 reflection prompts", type: "prompts", targetValue: 50, difficulty: "advanced" },
+      
+      // Expert Goals (Very Hard)
+      { title: "Grand Storyteller", description: "Complete 365 journal entries", type: "entries", targetValue: 365, difficulty: "expert" },
+      { title: "Epic Novelist", description: "Write 100,000 words total", type: "words", targetValue: 100000, difficulty: "expert" },
+      { title: "Year-Long Journey", description: "Write for 365 days in a row", type: "streak", targetValue: 365, difficulty: "expert" },
+      { title: "Master Chronicler", description: "Upload 500 photos to your entries", type: "photos", targetValue: 500, difficulty: "expert" },
+      
+      // Legendary Goals (Extreme)
+      { title: "Legendary Keeper", description: "Complete 1,000 journal entries", type: "entries", targetValue: 1000, difficulty: "legendary" },
+      { title: "Master Wordsmith", description: "Write 500,000 words total", type: "words", targetValue: 500000, difficulty: "legendary" },
+      { title: "Eternal Chronicler", description: "Write for 1,000 days in a row", type: "streak", targetValue: 1000, difficulty: "legendary" },
+      { title: "Visual Master", description: "Upload 1,000 photos to your entries", type: "photos", targetValue: 1000, difficulty: "legendary" }
     ];
 
     const goalsToInsert = defaultGoals.map(goal => ({
-      ...goal,
       userId,
+      goalId: `${goal.type}_${goal.targetValue}_${userId}`,
+      title: goal.title,
+      description: goal.description,
+      type: goal.type,
+      difficulty: goal.difficulty,
+      targetValue: goal.targetValue,
       currentValue: 0,
       isCompleted: false,
-      deadline: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year from now
+      deadline: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
     }));
 
     await db.insert(goals).values(goalsToInsert);
   }
 
   private async createDefaultAchievements(userId: number): Promise<void> {
-    const defaultAchievements = [
-      // beginner, intermediate, advanced, expert, legendary, mythical achievements (omitted for brevity)
+    const defaultAchievements: Array<{
+      achievementId: string;
+      title: string;
+      description: string;
+      type: string;
+      requirement: number;
+      rarity: string;
+      icon: string;
+    }> = [
+      // Getting Started (Common)
+      { achievementId: "welcome", title: "Welcome to JournOwl! 🦉", description: "You've taken your first step into the world of journaling", type: "getting_started", requirement: 1, rarity: "common", icon: "🌟" },
+      { achievementId: "first_entry", title: "First Entry", description: "Write your very first journal entry", type: "entries", requirement: 1, rarity: "common", icon: "✍️" },
+      { achievementId: "early_bird", title: "Early Bird", description: "Complete 3 journal entries", type: "entries", requirement: 3, rarity: "common", icon: "🐦" },
+      { achievementId: "word_starter", title: "Word Starter", description: "Write 100 words total", type: "words", requirement: 100, rarity: "common", icon: "📝" },
+      
+      // Consistency (Rare)
+      { achievementId: "two_day_streak", title: "Consistency", description: "Write for 2 days in a row", type: "streak", requirement: 2, rarity: "rare", icon: "🔥" },
+      { achievementId: "week_warrior", title: "Week Warrior", description: "Complete 7 journal entries", type: "entries", requirement: 7, rarity: "rare", icon: "⚔️" },
+      { achievementId: "word_explorer", title: "Word Explorer", description: "Write 500 words total", type: "words", requirement: 500, rarity: "rare", icon: "🗺️" },
+      { achievementId: "seven_day_streak", title: "Week Streak", description: "Write for 7 days in a row", type: "streak", requirement: 7, rarity: "rare", icon: "📅" },
+      
+      // Intermediate (Epic)
+      { achievementId: "month_milestone", title: "Monthly Milestone", description: "Complete 30 journal entries", type: "entries", requirement: 30, rarity: "epic", icon: "🏆" },
+      { achievementId: "wordsmith", title: "Wordsmith", description: "Write 5,000 words total", type: "words", requirement: 5000, rarity: "epic", icon: "✒️" },
+      { achievementId: "streak_master", title: "Streak Master", description: "Write for 30 days in a row", type: "streak", requirement: 30, rarity: "epic", icon: "🔥" },
+      { achievementId: "photo_memories", title: "Memory Keeper", description: "Upload 20 photos to your entries", type: "photos", requirement: 20, rarity: "epic", icon: "📸" },
+      
+      // Advanced (Legendary)
+      { achievementId: "century_club", title: "Century Club", description: "Complete 100 journal entries", type: "entries", requirement: 100, rarity: "legendary", icon: "💯" },
+      { achievementId: "novelist", title: "Novelist", description: "Write 50,000 words total", type: "words", requirement: 50000, rarity: "legendary", icon: "📚" },
+      { achievementId: "dedication_master", title: "Dedication Master", description: "Write for 100 days in a row", type: "streak", requirement: 100, rarity: "legendary", icon: "👑" },
+      { achievementId: "visual_storyteller", title: "Visual Storyteller", description: "Upload 100 photos to your entries", type: "photos", requirement: 100, rarity: "legendary", icon: "🎨" },
+      
+      // Expert (Mythical)
+      { achievementId: "grand_storyteller", title: "Grand Storyteller", description: "Complete 365 journal entries", type: "entries", requirement: 365, rarity: "mythical", icon: "📖" },
+      { achievementId: "epic_novelist", title: "Epic Novelist", description: "Write 100,000 words total", type: "words", requirement: 100000, rarity: "mythical", icon: "🏛️" },
+      { achievementId: "year_journey", title: "Year-Long Journey", description: "Write for 365 days in a row", type: "streak", requirement: 365, rarity: "mythical", icon: "🌟" },
+      { achievementId: "master_chronicler", title: "Master Chronicler", description: "Upload 500 photos to your entries", type: "photos", requirement: 500, rarity: "mythical", icon: "📜" },
+      
+      // Ultimate (Divine)
+      { achievementId: "legendary_keeper", title: "Legendary Keeper", description: "Complete 1,000 journal entries", type: "entries", requirement: 1000, rarity: "divine", icon: "👑" },
+      { achievementId: "master_wordsmith", title: "Master Wordsmith", description: "Write 500,000 words total", type: "words", requirement: 500000, rarity: "divine", icon: "⚡" },
+      { achievementId: "eternal_chronicler", title: "Eternal Chronicler", description: "Write for 1,000 days in a row", type: "streak", requirement: 1000, rarity: "divine", icon: "🌌" },
+      { achievementId: "visual_master", title: "Visual Master", description: "Upload 1,000 photos to your entries", type: "photos", requirement: 1000, rarity: "divine", icon: "🎭" }
     ];
 
     const achievementsToInsert = defaultAchievements.map(achievement => ({
-      ...achievement,
       userId,
-      unlockedAt: null,
+      achievementId: achievement.achievementId,
+      title: achievement.title,
+      description: achievement.description,
+      icon: achievement.icon,
+      rarity: achievement.rarity,
+      type: achievement.type,
+      targetValue: achievement.requirement,
+      currentValue: 0,
+      unlockedAt: null
     }));
 
     await db.insert(achievements).values(achievementsToInsert);
   }
 
   async createSupportMessage(message: Partial<SupportMessage>): Promise<SupportMessage> {
-    const [newMessage] = await db.insert(supportMessages).values(message).returning();
+    // Ensure required fields are present
+    const messageData = {
+      userId: message.userId!,
+      message: message.message!,
+      sender: message.sender!,
+      attachmentUrl: message.attachmentUrl || null,
+      attachmentType: message.attachmentType || null,
+      adminName: message.adminName || null,
+      isRead: message.isRead || false
+    };
+    
+    const [newMessage] = await db.insert(supportMessages).values(messageData).returning();
     return newMessage;
   }
 
@@ -507,12 +665,10 @@ export class DatabaseStorage implements IStorage {
     }
 
     await db.update(users).set({
-      subscription_tier: tier,
-      subscription_status: status,
-      subscription_expires_at: expiresAt,
-      storage_limit_mb: storageLimit,
-      prompts_remaining: promptsRemaining,
-      stripe_subscription_id: stripeSubscriptionId,
+      currentPlan: tier,
+      promptsRemaining: promptsRemaining,
+      storageUsedMB: 0, // Reset storage when changing plans
+      updatedAt: new Date()
     }).where(eq(users.id, userId));
   }
 
@@ -525,7 +681,8 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByReferralCode(referralCode: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.referralCode, referralCode)).limit(1);
+    // Note: referralCode column doesn't exist in current schema, using username as fallback
+    const result = await db.select().from(users).where(eq(users.username, referralCode)).limit(1);
     return result[0];
   }
 
