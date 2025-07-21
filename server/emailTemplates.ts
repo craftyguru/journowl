@@ -19,12 +19,7 @@ export function createWelcomeEmailTemplate(userEmail: string, userName: string, 
     ? `https://${process.env.REPLIT_DOMAINS}`
     : process.env.BASE_URL || 'http://localhost:5000';
   
-  console.log('Email template - REPLIT_DOMAINS:', process.env.REPLIT_DOMAINS);
-  console.log('Email template - BASE_URL:', process.env.BASE_URL);
-  console.log('Email template - Final baseUrl:', baseUrl);
-  
   const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
-  console.log('Email template - Generated verification URL:', verificationUrl);
   
   const html = `
     <!DOCTYPE html>
@@ -307,7 +302,9 @@ export async function sendWelcomeEmail(userEmail: string, userName: string, veri
     });
     
     const response = await sgMail.send(emailTemplate);
-    console.log('SendGrid response:', response[0].statusCode, response[0].headers);
+    console.log('SendGrid response:', response[0].statusCode);
+    console.log('SendGrid Message ID:', response[0].headers['x-message-id']);
+    console.log('Full response headers:', JSON.stringify(response[0].headers, null, 2));
     
     console.log(`Welcome email sent successfully to ${userEmail}`);
     return true;
