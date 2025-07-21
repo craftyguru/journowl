@@ -129,7 +129,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
   return (
     <div 
       ref={heroRef}
-      className="relative min-h-screen overflow-hidden bg-black"
+      className="relative min-h-screen overflow-hidden"
     >
       
       {/* Subtle overlay for better text readability */}

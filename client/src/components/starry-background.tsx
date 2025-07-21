@@ -69,7 +69,7 @@ export const StarryBackground = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-0 bg-black overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 -z-10 bg-black overflow-hidden pointer-events-none">
       {/* Subtle gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-transparent to-gray-900/40" />
       
@@ -84,7 +84,7 @@ export const StarryBackground = () => {
             width: `${star.size}px`,
             height: `${star.size}px`,
             backgroundColor: `rgba(255, 255, 255, ${star.brightness})`,
-            boxShadow: `0 0 ${star.size * 2}px rgba(255, 255, 255, ${star.brightness * 0.5})`,
+            boxShadow: `0 0 ${star.size * 3}px rgba(255, 255, 255, ${star.brightness * 0.8})`,
           }}
           animate={{
             opacity: [star.brightness * 0.4, star.brightness, star.brightness * 0.4],
