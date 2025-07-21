@@ -21,7 +21,7 @@ import { SupportChatBubble } from "@/components/SupportChatBubble";
 import { StarryBackground } from "@/components/starry-background";
 import { EmailConfirmation } from "@/pages/email-confirmation";
 import EmailVerified from "@/pages/email-verified";
-import { MobilePWABanner } from "@/components/PWAInstallButton";
+import { MobilePWABanner } from "@/components/MobilePWABanner";
 
 function App() {
   // Check if demo mode is requested from URL params
@@ -112,6 +112,7 @@ function App() {
             <LandingHero 
               onGetStarted={() => setCurrentView("auth")} 
             />
+            <MobilePWABanner />
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
@@ -179,6 +180,7 @@ function App() {
                 setCurrentView("email-confirmation");
               }} />
             </div>
+            <MobilePWABanner />
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
