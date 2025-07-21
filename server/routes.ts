@@ -2252,9 +2252,12 @@ Your story shows how every day brings new experiences and emotions, creating the
       }
 
       // Send the MEGA ANIMATED welcome email with real verification link
+      const { sendEmailWithSendGrid } = await import("./emailTemplates");
       const emailTemplate = createWelcomeEmailTemplate(email, 'Test User', verificationToken);
       
-      const response = await sgMail.send(emailTemplate);
+      // Use sendEmailWithSendGrid to ensure proper tracking settings
+      const success = await sendEmailWithSendGrid(emailTemplate);
+      const response = [{ statusCode: success ? 202 : 500, headers: { 'x-message-id': 'test-message-id' } }];
       console.log('MEGA ANIMATED welcome with verification sent:', response[0].statusCode);
       
       res.json({ 
@@ -2316,10 +2319,12 @@ Your story shows how every day brings new experiences and emotions, creating the
       }
 
       // Send the PROFESSIONAL welcome email with real verification link
-      const { createProfessionalWelcomeEmailTemplate } = await import("./emailTemplates");
+      const { createProfessionalWelcomeEmailTemplate, sendEmailWithSendGrid } = await import("./emailTemplates");
       const emailTemplate = createProfessionalWelcomeEmailTemplate(email, 'Test User', verificationToken);
       
-      const response = await sgMail.send(emailTemplate);
+      // Use sendEmailWithSendGrid to ensure proper tracking settings
+      const success = await sendEmailWithSendGrid(emailTemplate);
+      const response = [{ statusCode: success ? 202 : 500, headers: { 'x-message-id': 'test-message-id' } }];
       console.log('Professional welcome with verification sent:', response[0].statusCode);
       
       res.json({ 

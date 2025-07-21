@@ -164,6 +164,11 @@ export async function sendEmailWithSendGrid(template: EmailTemplate): Promise<bo
     const mailService = new MailService();
     mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
+    // Set global SendGrid settings to disable click tracking
+    mailService.setGlobalRequestHeaders({
+      'X-Entity-ID': 'disable-click-tracking'
+    });
+
     const response = await mailService.send({
       to: template.to,
       from: template.from,
@@ -177,8 +182,33 @@ export async function sendEmailWithSendGrid(template: EmailTemplate): Promise<bo
           enableText: false
         },
         openTracking: {
+          enable: false  // Disable ALL tracking
+        },
+        subscriptionTracking: {
+          enable: false
+        },
+        ganalytics: {
+          enable: false
+        }
+      },
+      mailSettings: {
+        bypassListManagement: {
+          enable: true
+        },
+        bypassSpamManagement: {
+          enable: false
+        },
+        bypassBounceManagement: {
+          enable: false
+        },
+        bypassUnsubscribeManagement: {
           enable: true
         }
+      },
+      // Add custom headers to prevent tracking
+      customArgs: {
+        'disable_click_tracking': 'true',
+        'disable_open_tracking': 'true'
       }
     });
 

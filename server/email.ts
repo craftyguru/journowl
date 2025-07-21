@@ -353,7 +353,15 @@ Questions? We're here to help!`,
     };
 
     try {
-      await sgMail.send(msg);
+      await sgMail.send({
+        ...msg,
+        trackingSettings: {
+          clickTracking: { enable: false, enableText: false },
+          openTracking: { enable: true },
+          subscriptionTracking: { enable: false },
+          ganalytics: { enable: false }
+        }
+      });
       console.log(`✨ Welcome email sent to ${user.email}`);
     } catch (error) {
       console.error('Error sending welcome email:', error);
@@ -496,7 +504,15 @@ Questions? We're here to help!`,
     };
 
     try {
-      await sgMail.send(msg);
+      await sgMail.send({
+        ...msg,
+        trackingSettings: {
+          clickTracking: { enable: false, enableText: false },
+          openTracking: { enable: true },
+          subscriptionTracking: { enable: false },
+          ganalytics: { enable: false }
+        }
+      });
       console.log(`Password reset email sent to ${user.email}`);
     } catch (error) {
       console.error('Error sending password reset email:', error);
@@ -527,7 +543,15 @@ Questions? We're here to help!`,
     };
 
     try {
-      await sgMail.send(msg);
+      await sgMail.send({
+        ...msg,
+        trackingSettings: {
+          clickTracking: { enable: false, enableText: false },
+          openTracking: { enable: true },
+          subscriptionTracking: { enable: false },
+          ganalytics: { enable: false }
+        }
+      });
     } catch (error) {
       console.error('Error sending achievement email:', error);
     }
