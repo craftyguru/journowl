@@ -37,42 +37,66 @@ export function createWelcomeEmailTemplate(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to JournOwl - Verify Your Account</title>
+  <!--[if mso]>
+  <style type="text/css">
+    table { border-collapse: collapse; }
+    .fallback-bg { background-color: #667eea !important; }
+  </style>
+  <![endif]-->
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; line-height: 1.6;">
-  <div style="max-width: 600px; margin: 0 auto; background: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-    
-    <!-- Professional Header -->
-    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 20px; text-align: center; color: white;">
-      <div style="font-size: 48px; margin-bottom: 10px;">🦉</div>
-      <h1 style="font-size: 28px; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Welcome to JournOwl</h1>
-      <p style="font-size: 16px; margin: 8px 0 0 0; opacity: 0.9;">Your intelligent writing companion awaits</p>
-    </div>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f8fafc; line-height: 1.6;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f8fafc; padding: 20px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+          
+          <!-- Professional Header with Outlook-compatible background -->
+          <tr>
+            <td style="background-color: #667eea; padding: 40px 20px; text-align: center; color: #ffffff;" class="fallback-bg">
+              <div style="font-size: 48px; margin-bottom: 10px; line-height: 1;">🦉</div>
+              <h1 style="font-size: 28px; font-weight: bold; margin: 0; color: #ffffff; font-family: Arial, sans-serif;">Welcome to JournOwl</h1>
+              <p style="font-size: 16px; margin: 8px 0 0 0; color: #ffffff; font-family: Arial, sans-serif;">Your intelligent writing companion awaits</p>
+            </td>
+          </tr>
 
-    <!-- Main Content -->
-    <div style="padding: 40px 30px;">
-      <h2 style="font-size: 24px; color: #1a202c; margin: 0 0 20px 0; font-weight: 600;">Hello ${userName}! 🎉</h2>
-      
-      <p style="font-size: 16px; color: #4a5568; line-height: 1.6; margin-bottom: 30px;">
-        Welcome to <span style="color: #667eea; font-weight: 600;">JournOwl</span> - the most advanced AI-powered journaling platform. 
-        We're excited to help you capture your thoughts, analyze your emotions, and unlock powerful insights from your daily experiences.
-      </p>
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 40px 30px; background-color: #ffffff;">
+              <h2 style="font-size: 24px; color: #1a202c; margin: 0 0 20px 0; font-weight: 600; font-family: Arial, sans-serif;">Hello ${userName}! 🎉</h2>
+              
+              <p style="font-size: 16px; color: #4a5568; line-height: 1.6; margin-bottom: 30px; font-family: Arial, sans-serif;">
+                Welcome to <span style="color: #667eea; font-weight: 600;">JournOwl</span> - the most advanced AI-powered journaling platform. 
+                We're excited to help you capture your thoughts, analyze your emotions, and unlock powerful insights from your daily experiences.
+              </p>
 
-      <!-- Call to Action -->
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="${verificationUrl}" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 15px rgba(102,126,234,0.4); margin: 20px 0;">
-          ✅ Verify Your Account
-        </a>
-        <p style="font-size: 14px; color: #718096; margin: 15px 0 0 0;">
-          Please verify your email to access all features
-        </p>
-      </div>
+              <!-- Call to Action Button -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 30px 0;">
+                <tr>
+                  <td align="center">
+                    <table cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td style="background-color: #667eea; padding: 16px 32px; border-radius: 8px;">
+                          <a href="${verificationUrl}" style="color: #ffffff; text-decoration: none; font-weight: 600; font-size: 16px; font-family: Arial, sans-serif; display: block;">
+                            ✅ Verify Your Account
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                    <p style="font-size: 14px; color: #718096; margin: 15px 0 0 0; font-family: Arial, sans-serif;">
+                      Please verify your email to access all features
+                    </p>
+                  </td>
+                </tr>
+              </table>
 
-      <!-- Features Highlight -->
-      <div style="background: #f7fafc; padding: 25px; border-radius: 12px; margin: 30px 0;">
-        <h3 style="color: #2d3748; font-size: 18px; margin: 0 0 15px 0;">🚀 What's included with your account:</h3>
-        <ul style="margin: 0; padding-left: 20px; color: #4a5568; line-height: 1.8;">
-          <li style="margin-bottom: 8px;"><strong>100 AI Writing Prompts</strong> - Never run out of inspiration</li>
-          <li style="margin-bottom: 8px;"><strong>50MB Photo Storage</strong> - Upload and analyze your memories</li>
+              <!-- Features Highlight -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 30px 0;">
+                <tr>
+                  <td style="background-color: #f7fafc; padding: 25px; border-radius: 12px;">
+                    <h3 style="color: #2d3748; font-size: 18px; margin: 0 0 15px 0; font-family: Arial, sans-serif;">🚀 What's included with your account:</h3>
+                    <ul style="margin: 0; padding-left: 20px; color: #4a5568; line-height: 1.8; font-family: Arial, sans-serif;">
+                      <li style="margin-bottom: 8px;"><strong>100 AI Writing Prompts</strong> - Never run out of inspiration</li>
+                      <li style="margin-bottom: 8px;"><strong>50MB Photo Storage</strong> - Upload and analyze your memories</li>
           <li style="margin-bottom: 8px;"><strong>Smart Analytics</strong> - Track mood patterns and writing trends</li>
           <li style="margin-bottom: 8px;"><strong>Achievement System</strong> - Unlock badges as you journal</li>
           <li style="margin-bottom: 8px;"><strong>Cross-Platform Sync</strong> - Access anywhere, anytime</li>
