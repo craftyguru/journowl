@@ -151,18 +151,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes
   app.post("/api/auth/register", async (req, res) => {
     try {
+      console.log('Registration request body:', req.body);
       const userData = insertUserSchema.parse(req.body);
+      console.log('Parsed user data:', userData);
       
       // Generate email verification token
       const verificationToken = crypto.randomBytes(32).toString('hex');
       const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+      console.log('Generated verification token:', verificationToken);
       
       // Create user with email verification required
+      console.log('Creating user with verification data...');
       const user = await createUser({
         ...userData,
         emailVerificationToken: verificationToken,
         emailVerificationExpires: verificationExpires
       } as any); // Storage layer handles additional email verification fields
+      console.log('User created successfully:', user.id, user.email);
       
       // Don't log in user until email is verified
       // req.session.userId = user.id;
