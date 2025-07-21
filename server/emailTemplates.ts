@@ -275,7 +275,7 @@ The JournOwl Team
 
   return {
     to: userEmail,
-    from: 'djfluent@live.com', // Using verified sender email
+    from: 'craftyguru@live.com', // Using verified sender email
     subject: '🦉 Welcome to JournOwl - Verify Your Email & Start Your Journey!',
     html,
     text
