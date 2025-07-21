@@ -22,11 +22,15 @@ export function MobilePWABanner() {
     // Check if device is iOS
     const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     setIsIOS(iOS);
+    console.log('PWA Debug: Device is iOS:', iOS);
+    console.log('PWA Debug: User Agent:', navigator.userAgent);
 
     // Check if already in standalone mode (already installed)
     const standalone = window.matchMedia('(display-mode: standalone)').matches || 
                      (window.navigator as any)?.standalone === true;
     setIsInStandaloneMode(standalone);
+    console.log('PWA Debug: Is in standalone mode:', standalone);
+    console.log('PWA Debug: Current hostname:', window.location.hostname);
 
     // Listen for beforeinstallprompt event (Android)
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -52,18 +56,24 @@ export function MobilePWABanner() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('pwa-installable', handlePWAInstallable as EventListener);
 
-    // For iOS or when testing locally, show banner after user interaction
-    if ((iOS || window.location.hostname === 'localhost') && !standalone) {
-      const showIOSBanner = () => {
+    // For iOS or production testing, show banner after user interaction
+    if ((iOS || window.location.hostname.includes('journowl') || window.location.hostname === 'localhost') && !standalone) {
+      const showBanner = () => {
         setTimeout(() => {
+          console.log('PWA: Showing banner for iOS/production testing');
+          console.log('PWA: Device is iOS:', iOS);
+          console.log('PWA: Is standalone:', standalone);
+          console.log('PWA: Current hostname:', window.location.hostname);
           setShowBanner(true);
-          console.log('PWA: Showing iOS/localhost banner after user interaction');
-        }, 2000); // 2 second delay for iOS/localhost
+        }, 1000); // 1 second delay for testing
       };
       
-      // Show after user interaction
-      document.addEventListener('click', showIOSBanner, { once: true });
-      document.addEventListener('touchstart', showIOSBanner, { once: true });
+      // Show after user interaction OR automatically after delay for testing
+      document.addEventListener('click', showBanner, { once: true });
+      document.addEventListener('touchstart', showBanner, { once: true });
+      
+      // Also show automatically after 3 seconds for testing purposes
+      setTimeout(showBanner, 3000);
     }
 
     return () => {
