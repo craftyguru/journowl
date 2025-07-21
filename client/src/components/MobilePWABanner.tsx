@@ -116,57 +116,64 @@ export function MobilePWABanner() {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 500 }}
-        className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-sm pointer-events-auto"
+        className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-md pointer-events-auto"
       >
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg shadow-2xl p-4 backdrop-blur-sm border border-white/20 pointer-events-auto">
+        <div className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white rounded-xl shadow-2xl p-6 backdrop-blur-sm border-4 border-white/40 pointer-events-auto animate-pulse">
           {/* Close button */}
           <button
             onClick={handleDismiss}
             onTouchEnd={handleDismiss}
-            className="absolute top-1 right-1 h-6 w-6 p-0 text-white/70 hover:text-white hover:bg-white/20 rounded touch-manipulation flex items-center justify-center"
+            className="absolute top-2 right-2 h-8 w-8 bg-black/20 hover:bg-black/40 rounded-full touch-manipulation flex items-center justify-center"
             style={{ touchAction: 'manipulation' }}
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4 text-white" />
           </button>
 
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-                <Smartphone className="h-6 w-6 text-white" />
+          <div className="text-center space-y-4">
+            {/* Eye-catching icon and title */}
+            <div className="flex items-center justify-center space-x-2">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center animate-bounce">
+                <Smartphone className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white drop-shadow-lg">
+                  🦉 Install JournOwl App!
+                </h3>
+                <p className="text-sm text-white/90 font-medium">
+                  Get the full mobile experience
+                </p>
               </div>
             </div>
             
-            <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-semibold text-white">
-                🦉 Install JournOwl
-              </h3>
-              <p className="text-xs text-white/90 mt-1">
-                {isIOS 
-                  ? "Add JournOwl to your home screen for the best experience!"
-                  : "Install JournOwl as an app for faster access and offline use!"
-                }
-              </p>
-              
-              <div className="mt-3 flex space-x-2">
-                <button
-                  onClick={handleInstallClick}
-                  onTouchEnd={handleInstallClick}
-                  className="bg-white text-purple-600 hover:bg-white/90 flex-1 text-xs py-1 h-7 rounded px-2 font-medium flex items-center justify-center gap-1 touch-manipulation"
-                  style={{ touchAction: 'manipulation' }}
-                >
-                  <Download className="h-3 w-3" />
-                  {isIOS ? "Install Guide" : "Install App"}
-                </button>
-                <button
-                  onClick={handleDismiss}
-                  onTouchEnd={handleDismiss}
-                  className="text-white/80 hover:text-white hover:bg-white/20 text-xs py-1 h-7 rounded px-2 font-medium touch-manipulation"
-                  style={{ touchAction: 'manipulation' }}
-                >
-                  Later
-                </button>
-              </div>
-            </div>
+            {/* Prominent install button */}
+            <button
+              onClick={handleInstallClick}
+              onTouchEnd={handleInstallClick}
+              className="w-full bg-white text-orange-600 hover:bg-yellow-50 py-4 px-6 rounded-xl font-bold text-base flex items-center justify-center gap-3 shadow-xl border-2 border-white/50 touch-manipulation transform hover:scale-105 transition-all duration-200"
+              style={{ touchAction: 'manipulation' }}
+            >
+              <Download className="h-6 w-6" />
+              <span className="text-lg">
+                {isIOS ? "📱 Get Install Guide" : "🚀 Install App Now"}
+              </span>
+            </button>
+            
+            <p className="text-xs text-white/80 px-2">
+              {isIOS 
+                ? "Tap for step-by-step installation instructions"
+                : "Install for faster access and offline journaling"
+              }
+            </p>
+            
+            {/* Smaller dismiss button */}
+            <button
+              onClick={handleDismiss}
+              onTouchEnd={handleDismiss}
+              className="text-white/60 hover:text-white/80 text-xs underline touch-manipulation"
+              style={{ touchAction: 'manipulation' }}
+            >
+              Maybe later
+            </button>
           </div>
         </div>
       </motion.div>
