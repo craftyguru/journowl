@@ -25,7 +25,9 @@ function App() {
   // Check if demo mode is requested from URL params
   const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation">(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('demo') === 'true' ? 'demo' : 'landing';
+    if (urlParams.get('demo') === 'true') return 'demo';
+    if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
+    return 'landing';
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   const [activeTab, setActiveTab] = useState("journal");
