@@ -14,7 +14,7 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, gte, ne } from "drizzle-orm";
 import { EmailService } from "./email";
-import { sendWelcomeEmail as sendWelcomeEmailTemplate, createWelcomeEmailTemplate } from "./emailTemplates";
+import { createWelcomeEmailTemplate, sendEmailWithSendGrid } from "./emailTemplates";
 import sgMail from '@sendgrid/mail';
 import crypto from 'crypto';
 import session from "express-session";
@@ -185,7 +185,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         console.log('Attempting to send welcome email to:', user.email);
         console.log('SendGrid API Key configured:', !!process.env.SENDGRID_API_KEY);
-        const emailSent = await sendWelcomeEmailTemplate(user.email, user.username || 'New User', verificationToken);
+        const emailTemplate = createWelcomeEmailTemplate(user.email, user.username || 'New User', verificationToken);
+        const emailSent = await sendEmailWithSendGrid(emailTemplate);
         console.log('Email sent successfully:', emailSent);
       } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
@@ -291,7 +292,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const emailTemplate = createWelcomeEmailTemplate(user.email, user.username || 'User', verificationToken);
         if (process.env.SENDGRID_API_KEY) {
-          await sgMail.send(emailTemplate);
+          await sendEmailWithSendGrid(emailTemplate);
         }
       } catch (emailError) {
         console.error('Failed to send verification email:', emailError);
@@ -408,7 +409,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error('Failed to create welcome achievement:', achievementError);
         }
         
-        await EmailService.sendWelcomeEmail(req.user);
+        const emailTemplate = createWelcomeEmailTemplate(req.user.email, req.user.username || 'User', 'oauth_welcome');
+        if (process.env.SENDGRID_API_KEY) {
+          await sendEmailWithSendGrid(emailTemplate);
+        }
       }
       
       // Save session before redirect
@@ -463,7 +467,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error('Failed to create welcome achievement:', achievementError);
         }
         
-        await EmailService.sendWelcomeEmail(req.user);
+        const emailTemplate = createWelcomeEmailTemplate(req.user.email, req.user.username || 'User', 'oauth_welcome');
+        if (process.env.SENDGRID_API_KEY) {
+          await sendEmailWithSendGrid(emailTemplate);
+        }
       }
       
       // Save session before redirect
