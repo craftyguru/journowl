@@ -265,7 +265,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUserStats(userId: number, stats: Partial<UserStats>): Promise<void> {
-    await db.update(userStats).set({ ...stats, updatedAt: new Date() }).where(eq(userStats.userId, userId));
+    await db.update(userStats).set({ ...stats as any, updatedAt: new Date() as any }).where(eq(userStats.userId, userId));
   }
 
   async createUserStats(userId: number): Promise<UserStats> {
@@ -329,7 +329,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateUser(id: number, updates: Partial<User>): Promise<void> {
-    await db.update(users).set({ ...updates, updatedAt: new Date() }).where(eq(users.id, id));
+    await db.update(users).set({ ...updates as any, updatedAt: new Date() as any }).where(eq(users.id, id));
   }
 
   async getAllUsers(): Promise<User[]> {
@@ -355,7 +355,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async logUserActivity(userId: number, action: string, details?: any, ipAddress?: string, userAgent?: string): Promise<void> {
-    await db.insert(userActivityLogs).values({ userId, action, details, ipAddress, userAgent });
+    await db.insert(userActivityLogs).values({ userId, action, details, ipAddress, userAgent } as any);
   }
 
   async getEmailCampaign(id: number): Promise<EmailCampaign | undefined> {
@@ -364,7 +364,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateEmailCampaign(id: number, updates: Partial<EmailCampaign>): Promise<void> {
-    await db.update(emailCampaigns).set({ ...updates, updatedAt: new Date() }).where(eq(emailCampaigns.id, id));
+    await db.update(emailCampaigns).set({ ...updates as any, updatedAt: new Date() as any }).where(eq(emailCampaigns.id, id));
   }
 
   async createEmailCampaign(campaign: Partial<EmailCampaign>): Promise<EmailCampaign> {
@@ -381,9 +381,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateSiteSetting(key: string, value: string, updatedBy: number): Promise<void> {
-    await db.insert(siteSettings).values({ key, value, updatedBy }).onConflictDoUpdate({
+    await db.insert(siteSettings).values({ key, value, updatedBy } as any).onConflictDoUpdate({
       target: siteSettings.key,
-      set: { value, updatedBy, updatedAt: new Date() }
+      set: { value, updatedBy, updatedAt: new Date() } as any
     });
   }
 
@@ -608,7 +608,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async markSupportMessageAsRead(id: number): Promise<void> {
-    await db.update(supportMessages).set({ isRead: true }).where(eq(supportMessages.id, id));
+    await db.update(supportMessages).set({ isRead: true } as any).where(eq(supportMessages.id, id));
   }
 
   async getUserPromptUsage(userId: number): Promise<{ promptsRemaining: number; promptsUsedThisMonth: number; currentPlan: string }> {
@@ -616,7 +616,7 @@ export class DatabaseStorage implements IStorage {
     if (!user) throw new Error("User not found");
 
     if (user.promptsRemaining == null) {
-      await db.update(users).set({ promptsRemaining: 100, promptsUsedThisMonth: 0 }).where(eq(users.id, userId));
+      await db.update(users).set({ promptsRemaining: 100, promptsUsedThisMonth: 0 } as any).where(eq(users.id, userId));
       return { promptsRemaining: 100, promptsUsedThisMonth: 0, currentPlan: user.currentPlan || "free" };
     }
 
@@ -630,12 +630,12 @@ export class DatabaseStorage implements IStorage {
     if ((user.promptsRemaining || 0) <= 0) throw new Error("No prompts remaining");
 
     await db.update(users)
-      .set({ promptsUsedThisMonth: (user.promptsUsedThisMonth || 0) + 1, promptsRemaining: (user.promptsRemaining || 0) - 1 })
+      .set({ promptsUsedThisMonth: (user.promptsUsedThisMonth || 0) + 1, promptsRemaining: (user.promptsRemaining || 0) - 1 } as any)
       .where(eq(users.id, userId));
   }
 
   async addPromptPurchase(userId: number, stripePaymentId: string, amount: number, promptsAdded: number): Promise<void> {
-    await db.insert(promptPurchases).values({ userId, stripePaymentId, amount, promptsAdded, status: "completed" });
+    await db.insert(promptPurchases).values({ userId, stripePaymentId, amount, promptsAdded, status: "completed" } as any);
     await this.updateUserPrompts(userId, promptsAdded);
   }
 
@@ -643,11 +643,11 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (!user) throw new Error("User not found");
 
-    await db.update(users).set({ promptsRemaining: (user.promptsRemaining || 0) + promptsToAdd }).where(eq(users.id, userId));
+    await db.update(users).set({ promptsRemaining: (user.promptsRemaining || 0) + promptsToAdd } as any).where(eq(users.id, userId));
   }
 
   async resetMonthlyUsage(): Promise<void> {
-    await db.update(users).set({ promptsUsedThisMonth: 0, lastUsageReset: new Date() });
+    await db.update(users).set({ promptsUsedThisMonth: 0, lastUsageReset: new Date() } as any);
   }
 
   async updateUserSubscription(userId: number, subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }): Promise<void> {
@@ -669,7 +669,7 @@ export class DatabaseStorage implements IStorage {
       promptsRemaining: promptsRemaining,
       storageUsedMB: 0, // Reset storage when changing plans
       updatedAt: new Date()
-    }).where(eq(users.id, userId));
+    } as any).where(eq(users.id, userId));
   }
 
   async updateStorageUsage(userId: number, additionalMB: number): Promise<void> {
@@ -677,7 +677,7 @@ export class DatabaseStorage implements IStorage {
     if (!user) throw new Error("User not found");
 
     const newUsage = (user.storageUsedMB || 0) + additionalMB;
-    await db.update(users).set({ storageUsedMB: newUsage }).where(eq(users.id, userId));
+    await db.update(users).set({ storageUsedMB: newUsage } as any).where(eq(users.id, userId));
   }
 
   async getUserByReferralCode(referralCode: string): Promise<User | undefined> {
@@ -691,7 +691,7 @@ export class DatabaseStorage implements IStorage {
     if (!user) throw new Error("User not found");
 
     const newPrompts = (user.promptsRemaining || 0) + promptsToAdd;
-    await db.update(users).set({ promptsRemaining: newPrompts }).where(eq(users.id, userId));
+    await db.update(users).set({ promptsRemaining: newPrompts } as any).where(eq(users.id, userId));
   }
 }
 

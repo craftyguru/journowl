@@ -80,11 +80,8 @@ export class AchievementTracker {
           description: achievement.description,
           icon: achievement.icon,
           rarity: achievement.rarity,
-          type: achievement.type,
-          targetValue: achievement.targetValue,
-          currentValue: 0,
-          unlockedAt: null
-        });
+          type: achievement.type
+        } as any);
       } catch (error) {
         // Ignore if already exists
       }
@@ -100,10 +97,8 @@ export class AchievementTracker {
           description: goal.description || '',
           type: goal.type,
           difficulty: goal.difficulty,
-          targetValue: goal.targetValue,
-          currentValue: 0,
-          isCompleted: false
-        });
+          targetValue: goal.targetValue
+        } as any);
       } catch (error) {
         // Ignore if already exists
       }
@@ -118,11 +113,8 @@ export class AchievementTracker {
         description: "You've taken your first step on the journey to wise journaling",
         icon: "🦉",
         rarity: "common",
-        type: "milestone",
-        targetValue: 1,
-        currentValue: 1,
-        unlockedAt: new Date()
-      });
+        type: "milestone"
+      } as any);
     } catch (error) {
       // Ignore if already exists
     }

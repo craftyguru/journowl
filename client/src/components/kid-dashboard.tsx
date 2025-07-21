@@ -448,7 +448,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         context: "kids_writing_help"
       });
       const data = response;
-      const aiMessage = { sender: 'ai' as const, text: data.response || "I'm here to help you write amazing stories!" };
+      const aiMessage = { sender: 'ai' as const, text: (data as any).response || "I'm here to help you write amazing stories!" };
       setAiMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error("AI chat failed:", error);

@@ -755,7 +755,7 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  {chartType === "area" && (
+                  {chartType === "area" ? (
                     <AreaChart data={dailyChartData}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                       <XAxis dataKey="date" />
@@ -789,8 +789,7 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                         </linearGradient>
                       </defs>
                     </AreaChart>
-                  )}
-                  {chartType === "bar" && (
+                  ) : chartType === "bar" ? (
                     <BarChart data={dailyChartData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" />
@@ -798,8 +797,7 @@ ${entry.tags && entry.tags.length > 0 ? `Tags: ${entry.tags.join(', ')}` : ''}
                       <Tooltip />
                       <Bar dataKey="wordCount" fill="#8B5CF6" radius={[4, 4, 0, 0]} />
                     </BarChart>
-                  )}
-                  {chartType === "line" && (
+                  ) : (
                     <LineChart data={dailyChartData}>
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="date" />
