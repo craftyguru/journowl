@@ -116,7 +116,8 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
 
   const loginMutation = useMutation({
     mutationFn: async (data: typeof loginData) => {
-      return await apiRequest("POST", "/api/auth/login", data);
+      const response = await apiRequest("POST", "/api/auth/login", data);
+      return await response.json();
     },
     onSuccess: () => {
       toast({
@@ -141,17 +142,22 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
   const registerMutation = useMutation({
     mutationFn: async (data: typeof registerData) => {
       const { confirmPassword, ...submitData } = data;
-      return await apiRequest("POST", "/api/auth/register", submitData);
+      const response = await apiRequest("POST", "/api/auth/register", submitData);
+      return await response.json();
     },
     onSuccess: (data: any) => {
       console.log('Registration success data:', data);
       console.log('onRegistrationSuccess callback exists:', !!onRegistrationSuccess);
-      if (data.emailSent && onRegistrationSuccess) {
+      console.log('data.emailSent:', data.emailSent);
+      console.log('data.email:', data.email);
+      console.log('registerData.username:', registerData.username);
+      
+      if (data && data.emailSent && onRegistrationSuccess) {
         // Call the callback to redirect to email confirmation page
         console.log('Calling onRegistrationSuccess with:', data.email, registerData.username);
         onRegistrationSuccess(data.email, registerData.username);
         return;
-      } else if (data.emailSent) {
+      } else if (data && data.emailSent) {
         setVerificationEmail(data.email);
         setShowEmailVerification(true);
         toast({
@@ -177,7 +183,8 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
 
   const resendVerificationMutation = useMutation({
     mutationFn: async (email: string) => {
-      return await apiRequest("POST", "/api/auth/resend-verification", { email });
+      const response = await apiRequest("POST", "/api/auth/resend-verification", { email });
+      return await response.json();
     },
     onSuccess: () => {
       toast({
