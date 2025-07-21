@@ -14,7 +14,7 @@ export interface EmailTemplate {
 }
 
 export function createWelcomeEmailTemplate(userEmail: string, userName: string, verificationToken: string): EmailTemplate {
-  const verificationUrl = `${process.env.BASE_URL || 'https://7ba85678f8f4b618.id.repl.co'}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`;
   
   const html = `
     <!DOCTYPE html>
@@ -301,7 +301,7 @@ export async function sendWelcomeEmail(userEmail: string, userName: string, veri
 }
 
 export function createEmailVerificationTemplate(userEmail: string, userName: string, verificationToken: string): EmailTemplate {
-  const verificationUrl = `${process.env.BASE_URL || 'https://7ba85678f8f4b618.id.repl.co'}/api/auth/verify-email?token=${verificationToken}`;
+  const verificationUrl = `${process.env.BASE_URL || 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`;
   
   const html = `
     <!DOCTYPE html>
@@ -332,7 +332,7 @@ export function createEmailVerificationTemplate(userEmail: string, userName: str
 
   return {
     to: userEmail,
-    from: process.env.FROM_EMAIL || 'verify@journowl.com',
+    from: 'craftyguru@1ofakindpiece.com', // Using verified sender email
     subject: '🦉 Verify Your JournOwl Email Address',
     html,
     text: `Hi ${userName}, please verify your email: ${verificationUrl}`
