@@ -14,7 +14,7 @@ import { WelcomeTutorial } from "@/components/welcome-tutorial";
 // Animated background component
 const AnimatedBackground = () => {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="fixed inset-0 -z-10 overflow-hidden bg-black">
       {/* Smoke particles */}
       <div className="absolute inset-0">
         {[...Array(50)].map((_, i) => (
