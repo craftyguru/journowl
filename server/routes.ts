@@ -190,8 +190,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (emailError) {
         console.error('Failed to send welcome email:', emailError);
         if (emailError.response?.body?.errors) {
-          console.error('SendGrid error details:', emailError.response.body.errors);
+          console.error('SendGrid error details:', JSON.stringify(emailError.response.body.errors, null, 2));
         }
+        console.error('Full error response:', JSON.stringify(emailError.response?.body, null, 2));
         // Don't fail registration if email fails
       }
       
