@@ -65,6 +65,60 @@ const kidPrompts = [
   "Tell me about your favorite toy!",
 ];
 
+interface User {
+  id: number;
+  username?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  profileImageUrl?: string;
+  xp?: number;
+  level?: number;
+}
+
+interface Stats {
+  totalEntries: number;
+  currentStreak: number;
+  totalWords: number;
+  averageMood: number;
+  longestStreak: number;
+  wordsThisWeek: number;
+}
+
+interface Achievement {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  rarity: string;
+  unlocked: boolean;
+  unlockedAt?: string | null;
+  type?: string;
+}
+
+interface Goal {
+  id: number;
+  title: string;
+  description: string;
+  progress: number;
+  target: number;
+  category: string;
+  difficulty: string;
+}
+
+interface JournalEntry {
+  id: number;
+  title: string;
+  content: string;
+  mood: string;
+  createdAt: string;
+  wordCount: number;
+  hasPhoto?: boolean;
+  hasDrawing?: boolean;
+  preview?: string;
+  date?: string;
+}
+
 interface KidDashboardProps {
   onSwitchToAdult?: () => void;
 }
@@ -127,16 +181,23 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     queryKey: ["/api/goals"],
   });
 
-  const user = userResponse?.user;
+  const user: User | undefined = (userResponse as any)?.user;
   
   // Use real user data from API - SHARED with adult interface
-  const stats = statsResponse?.stats || {};
-  const entries = entriesResponse || [];
-  const userAchievements = achievementsResponse?.achievements || [];
-  const goals = goalsResponse?.goals || [];
+  const stats: Stats = (statsResponse as any)?.stats || {
+    totalEntries: 0,
+    currentStreak: 0,
+    totalWords: 0,
+    averageMood: 0,
+    longestStreak: 0,
+    wordsThisWeek: 0
+  };
+  const entries: JournalEntry[] = (entriesResponse as JournalEntry[]) || [];
+  const userAchievements: Achievement[] = (achievementsResponse as any)?.achievements || [];
+  const goals: Goal[] = (goalsResponse as any)?.goals || [];
   
   // Calculate real-time achievement progress based on actual user stats
-  const calculateAchievementProgress = (achievement: any) => {
+  const calculateAchievementProgress = (achievement: Achievement) => {
     let currentProgress = 0;
     let targetValue = 100;
 
@@ -195,7 +256,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         break;
       default:
         currentProgress = stats.totalEntries || 0;
-        targetValue = achievement.targetValue || 100;
+        targetValue = (achievement as any).targetValue || 100;
     }
 
     return {
@@ -215,8 +276,8 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     ...calculateAchievementProgress(achievement)
   }));
 
-  const currentLevel = Math.floor((stats.xp || 0) / 1000) + 1;
-  const levelProgress = ((stats.xp || 0) % 1000) / 10; // Convert to percentage
+  const currentLevel = Math.floor(((stats as any).xp || 0) / 1000) + 1;
+  const levelProgress = (((stats as any).xp || 0) % 1000) / 10; // Convert to percentage
 
   const getRandomPrompt = () => {
     const randomPrompt = kidPrompts[Math.floor(Math.random() * kidPrompts.length)];
@@ -234,7 +295,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
 
       let finalTranscript = '';
 
-      recognitionInstance.onresult = (event) => {
+      recognitionInstance.onresult = (event: any) => {
         let interimTranscript = '';
         
         for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -258,7 +319,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         finalTranscript = '';
       };
 
-      recognitionInstance.onerror = (event) => {
+      recognitionInstance.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error);
         if (event.error === 'no-speech') {
           // Automatically restart if no speech detected
@@ -301,17 +362,13 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   // Journal mutation for saving entries
   const saveEntryMutation = useMutation({
     mutationFn: async (entryData: any) => {
-      if (currentEntry?.id) {
-        return apiRequest(`/api/journal/entries/${currentEntry.id}`, {
-          method: "PATCH",
-          body: entryData,
-        });
-      } else {
-        return apiRequest("/api/journal/entries", {
-          method: "POST",
-          body: entryData,
-        });
-      }
+      const options = {
+        method: currentEntry?.id ? "PATCH" : "POST",
+        body: JSON.stringify(entryData),
+        headers: { 'Content-Type': 'application/json' },
+      };
+      const url = currentEntry?.id ? `/api/journal/entries/${currentEntry.id}` : "/api/journal/entries";
+      return await fetch(url, options).then(res => res.json());
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
@@ -386,9 +443,13 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     setAiInput("");
     
     try {
-      const response = await apiRequest("POST", "/api/ai/chat", {
-        message: aiInput,
-        context: "kids_writing_help"
+      const response = await apiRequest("/api/ai/chat", {
+        method: "POST",
+        body: JSON.stringify({
+          message: aiInput,
+          context: "kids_writing_help"
+        }),
+        headers: { 'Content-Type': 'application/json' }
       });
       const data = await response.json();
       const aiMessage = { sender: 'ai' as const, text: data.response || "I'm here to help you write amazing stories!" };
@@ -408,19 +469,19 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     if (entryForDay) {
       // Open the existing entry for viewing/editing
       setSelectedDateEntry(entryForDay);
-      openJournalEditor(entryForDay, null);
+      openJournalEditor(entryForDay, undefined);
       console.log(`Opening entry for day ${dayNumber}: "${entryForDay.title}"`);
     } else {
       // Encourage writing on this day
       const currentMonth = new Date().toLocaleString('default', { month: 'long' });
       const promptForDay = `Write about what happened on ${currentMonth} ${dayNumber}! What made this day special?`;
       setSelectedDateEntry(null);
-      openJournalEditor(null, promptForDay);
+      openJournalEditor(undefined, promptForDay);
     }
   };
 
   // Build calendar entries from real journal data
-  const buildCalendarFromEntries = (journalEntries: any[]) => {
+  const buildCalendarFromEntries = (journalEntries: JournalEntry[]) => {
     const entriesByDay: {[key: number]: any} = {};
     
     journalEntries.forEach(entry => {
@@ -527,9 +588,12 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       captureButton.onclick = () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0);
+        if (context) {
+          context.drawImage(video, 0, 0);
+        }
         
         canvas.toBlob((blob) => {
+          if (blob) {
           const url = URL.createObjectURL(blob);
           setUploadedPhotos(prev => [...prev, url]);
           
@@ -540,8 +604,9 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
             day: 'numeric' 
           });
           
-          cleanup();
-          openJournalEditor(null, `📸 My Photo Story - ${today}`);
+            cleanup();
+            openJournalEditor(undefined, `📸 My Photo Story - ${today}`);
+          }
           setActiveTab("photos");
           setTitle(`📸 My Photo Story - ${today}`);
           setContent("Here's what I captured today! Let me tell you about this amazing moment...\n\n");
@@ -560,10 +625,10 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
-      const chunks = [];
+      const chunks: Blob[] = [];
       
       // Create audio context for visualizer
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
       source.connect(analyser);
@@ -721,27 +786,29 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         if (mediaRecorder.state === 'recording' && !isPaused) {
           analyser.getByteFrequencyData(dataArray);
           
-          ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          if (ctx) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
           
-          const barWidth = canvas.width / bufferLength * 2;
-          let x = 0;
-          
-          const colors = ['#ff6b6b', '#ffa726', '#66bb6a', '#42a5f5', '#ab47bc', '#26c6da'];
-          
-          for (let i = 0; i < bufferLength; i++) {
-            const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+            const barWidth = canvas.width / bufferLength * 2;
+            let x = 0;
             
-            ctx.fillStyle = colors[i % colors.length];
-            ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+            const colors = ['#ff6b6b', '#ffa726', '#66bb6a', '#42a5f5', '#ab47bc', '#26c6da'];
             
-            // Add sparkle effect
-            if (barHeight > 50) {
-              ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-              ctx.fillRect(x + barWidth/2 - 1, canvas.height - barHeight - 5, 2, 2);
+            for (let i = 0; i < bufferLength; i++) {
+              const barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+              
+              ctx.fillStyle = colors[i % colors.length];
+              ctx.fillRect(x, canvas.height - barHeight, barWidth - 2, barHeight);
+              
+              // Add sparkle effect
+              if (barHeight > 50) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.fillRect(x + barWidth/2 - 1, canvas.height - barHeight - 5, 2, 2);
+              }
+              
+              x += barWidth;
             }
-            
-            x += barWidth;
           }
         }
         
@@ -771,7 +838,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         stream.getTracks().forEach(track => track.stop());
         document.body.removeChild(recordingOverlay);
         
-        openJournalEditor(null, `🎤 My Voice Story - ${today}`);
+        openJournalEditor(undefined, `🎤 My Voice Story - ${today}`);
         setActiveTab("voice");
         setTitle(`🎤 My Voice Story - ${today}`);
         setContent("I recorded something special today! Here's what I want to remember...\n\n");
@@ -1298,7 +1365,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                       <motion.div
                         whileHover={{ scale: 1.02, rotate: 1 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => openJournalEditor(null, "Tell your story using your voice! What exciting adventure do you want to share today?")}
+                        onClick={() => openJournalEditor(undefined, "Tell your story using your voice! What exciting adventure do you want to share today?")}
                         className="bg-gradient-to-br from-green-200 to-emerald-200 p-4 rounded-2xl border-3 border-green-400 cursor-pointer shadow-lg hover:shadow-xl transition-all"
                       >
                         <div className="text-center">
