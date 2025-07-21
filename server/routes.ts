@@ -2200,6 +2200,70 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Welcome email with REAL verification test endpoint
+  app.post('/api/test-welcome-verification', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!process.env.SENDGRID_API_KEY) {
+        return res.status(500).json({ message: 'SendGrid not configured' });
+      }
+
+      if (!sgMail) {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      }
+
+      // Generate a real verification token
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      console.log('Generated verification token for test:', verificationToken);
+      
+      // Create a temporary test user entry for verification
+      try {
+        const testUser = {
+          email: email,
+          username: 'TestUser',
+          passwordHash: 'test-hash',
+          emailVerificationToken: verificationToken,
+          emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+          requiresEmailVerification: true,
+          emailVerified: false
+        };
+        
+        await db.insert(users).values(testUser as any).onConflictDoUpdate({
+          target: users.email,
+          set: {
+            emailVerificationToken: verificationToken,
+            emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            requiresEmailVerification: true,
+            emailVerified: false
+          }
+        });
+        
+        console.log('Test user created/updated for verification test');
+      } catch (dbError) {
+        console.error('Database error during test user creation:', dbError);
+      }
+
+      // Send the MEGA ANIMATED welcome email with real verification link
+      const emailTemplate = createWelcomeEmailTemplate(email, 'Test User', verificationToken);
+      
+      const response = await sgMail.send(emailTemplate);
+      console.log('MEGA ANIMATED welcome with verification sent:', response[0].statusCode);
+      
+      res.json({ 
+        message: 'MEGA ANIMATED welcome email with REAL verification sent successfully!',
+        statusCode: response[0].statusCode,
+        messageId: response[0].headers['x-message-id'],
+        subject: emailTemplate.subject,
+        verificationToken: verificationToken,
+        verificationUrl: `${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS}` : 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`
+      });
+    } catch (error: any) {
+      console.error('MEGA ANIMATED welcome with verification test error:', error);
+      res.status(500).json({ message: 'Failed to send MEGA ANIMATED welcome email with verification', error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
