@@ -2134,7 +2134,7 @@ Your story shows how every day brings new experiences and emotions, creating the
 
       const simpleWelcome = {
         to: email,
-        from: 'craftyguru@1ofakindpiece.com',
+        from: 'archimedes@journowl.app',
         subject: 'Welcome to JournOwl - Simple Test',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

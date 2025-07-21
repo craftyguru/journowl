@@ -327,7 +327,7 @@ The AMAZING JournOwl Team
 
   return {
     to: userEmail,
-    from: 'craftyguru@1ofakindpiece.com',
+    from: 'archimedes@journowl.app',
     subject: '🦉 WELCOME TO JOURNOWL! Your Epic Writing Adventure Starts NOW! 🚀✨',
     html,
     text
@@ -357,7 +357,7 @@ export function createSimpleTestEmailTemplate(
 ): EmailTemplate {
   return {
     to: userEmail,
-    from: 'craftyguru@1ofakindpiece.com',
+    from: 'archimedes@journowl.app',
     subject: 'JournOwl Test Email - Simple Version',
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">

@@ -15,7 +15,7 @@ const sendVerificationEmail = async () => {
 
   const msg = {
     to: 'CraftyGuru@1ofakindpiece.com',
-    from: 'craftyguru@1ofakindpiece.com',
+    from: 'archimedes@journowl.app',
     subject: '🦉 WELCOME TO JOURNOWL! Your Epic Writing Adventure Starts NOW! 🚀✨',
     html: `
     <!DOCTYPE html>
