@@ -193,7 +193,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error('SendGrid error details:', JSON.stringify(emailError.response.body.errors, null, 2));
         }
         console.error('Full error response:', JSON.stringify(emailError.response?.body, null, 2));
-        console.error('SendGrid API Key being used:', process.env.SENDGRID_API_KEY?.substring(0, 10) + '...');
+        console.error('SendGrid API Key being used:', process.env.SENDGRID_API_KEY?.substring(0, 20) + '...');
+        console.error('API Key format valid:', process.env.SENDGRID_API_KEY?.startsWith('SG.'));
         // Don't fail registration if email fails
       }
       
