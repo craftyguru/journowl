@@ -169,7 +169,7 @@ function App() {
                   ← Back to Home
                 </button>
               </div>
-              <AuthPage setShowAuth={() => {}} onRegistrationSuccess={(email, username) => {
+              <AuthPage setShowAuth={() => setCurrentView("landing")} onRegistrationSuccess={(email, username) => {
                 // Redirect to email confirmation page
                 const params = new URLSearchParams();
                 if (email) params.set('email', email);
