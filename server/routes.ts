@@ -149,6 +149,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
 
   // Auth routes
+  // Special admin upgrade endpoint
+  app.post("/api/auth/upgrade-archimedes", async (req, res) => {
+    try {
+      await db.update(users).set({ 
+        role: 'admin' 
+      } as any).where(eq(users.email, 'archimedes@journowl.app'));
+      
+      res.json({ 
+        success: true, 
+        message: "Archimedes successfully upgraded to admin",
+        email: 'archimedes@journowl.app',
+        role: 'admin'
+      });
+    } catch (error: any) {
+      console.error("Error upgrading Archimedes:", error);
+      res.status(500).json({ message: "Failed to upgrade Archimedes" });
+    }
+  });
+
   app.post("/api/auth/register", async (req, res) => {
     try {
       console.log('Registration request body:', req.body);
@@ -1059,6 +1078,32 @@ Your story shows how every day brings new experiences and emotions, creating the
     } catch (error: any) {
       console.error("Error resetting prompts:", error);
       res.status(500).json({ message: "Failed to reset prompts" });
+    }
+  });
+
+  // Upgrade user to admin role
+  app.post("/api/admin/upgrade-user", async (req: any, res) => {
+    try {
+      const { email, role } = req.body;
+      
+      if (!email || !role) {
+        return res.status(400).json({ message: "Email and role are required" });
+      }
+      
+      // Update user role
+      await db.update(users).set({ 
+        role: role 
+      } as any).where(eq(users.email, email));
+      
+      res.json({ 
+        success: true, 
+        message: `User ${email} successfully upgraded to ${role}`,
+        email,
+        role
+      });
+    } catch (error: any) {
+      console.error("Error upgrading user:", error);
+      res.status(500).json({ message: "Failed to upgrade user" });
     }
   });
 

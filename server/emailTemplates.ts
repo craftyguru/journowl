@@ -133,34 +133,33 @@ const html = `<!DOCTYPE html>
   </table>
 </body>
 </html>`;
-
   const text = `Welcome to JournOwl, ${userName}!
 
-Your intelligent writing companion awaits. We're excited to help you capture your thoughts, analyze your emotions, and unlock powerful insights from your daily experiences.
+  Your intelligent writing companion awaits.
 
-VERIFY YOUR ACCOUNT: ${verificationUrl}
+  Please verify your email: ${verificationUrl}
 
-What's included with your account:
-- 100 AI Writing Prompts - Never run out of inspiration
-- 50MB Photo Storage - Upload and analyze your memories
-- Smart Analytics - Track mood patterns and writing trends
-- Achievement System - Unlock badges as you journal
-- Cross-Platform Sync - Access anywhere, anytime
-- Privacy First - Your thoughts remain completely private
+  What's included with your account:
+  - 100 AI Writing Prompts – Always inspired
+  - 50MB Photo Storage – Save your memories
+  - Smart Analytics – Track your mood & trends
+  - Achievement Badges – Level up as you journal
+  - Cross-Platform Sync – Access anywhere
+  - Privacy First – Your data is always safe
 
-Quick Start Guide:
-1. Verify your email (click link above)
-2. Complete your profile setup
-3. Write your first journal entry
-4. Explore AI-powered insights
+  Quick Start Guide:
+  1. Verify your email
+  2. Set up your profile
+  3. Write your first journal
+  4. Explore AI-powered insights!
 
-Ready for more? Upgrade anytime:
-- PRO: $9.99/month
-- POWER: $19.99/month
+  Ready for more? Upgrade anytime:
+  PRO – $9.99/month
+  POWER – $19.99/month
 
-Need help? Contact us at support@journowl.app
+  Need help? Email support@journowl.app
 
-© 2025 JournOwl. All rights reserved.`;
+  © 2025 JournOwl. All rights reserved.`;
 
   return {
     to: userEmail,
