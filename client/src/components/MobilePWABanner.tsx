@@ -72,8 +72,8 @@ export function MobilePWABanner() {
       document.addEventListener('click', showBanner, { once: true });
       document.addEventListener('touchstart', showBanner, { once: true });
       
-      // Also show automatically after 3 seconds for testing purposes
-      setTimeout(showBanner, 3000);
+      // Also show automatically after 2 seconds for testing purposes
+      setTimeout(showBanner, 2000);
     }
 
     return () => {
@@ -118,7 +118,7 @@ export function MobilePWABanner() {
         transition={{ type: "spring", damping: 25, stiffness: 500 }}
         className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-md pointer-events-auto"
       >
-        <div className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white rounded-xl shadow-2xl p-6 backdrop-blur-sm border-4 border-white/40 pointer-events-auto animate-pulse">
+        <div className="bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white rounded-xl shadow-2xl p-6 backdrop-blur-sm border-4 border-yellow-400 pointer-events-auto animate-bounce">
           {/* Close button */}
           <button
             onClick={handleDismiss}
@@ -149,7 +149,7 @@ export function MobilePWABanner() {
             <button
               onClick={handleInstallClick}
               onTouchEnd={handleInstallClick}
-              className="w-full bg-white text-orange-600 hover:bg-yellow-50 py-4 px-6 rounded-xl font-bold text-base flex items-center justify-center gap-3 shadow-xl border-2 border-white/50 touch-manipulation transform hover:scale-105 transition-all duration-200"
+              className="w-full bg-yellow-300 text-black hover:bg-yellow-200 py-4 px-6 rounded-xl font-black text-lg flex items-center justify-center gap-3 shadow-xl border-4 border-red-500 touch-manipulation transform hover:scale-110 transition-all duration-200 animate-pulse"
               style={{ touchAction: 'manipulation' }}
             >
               <Download className="h-6 w-6" />
