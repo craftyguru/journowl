@@ -53,10 +53,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     store: new PgSession({
       conObject: {
         connectionString: sessionDbUrl,
-        ssl: { rejectUnauthorized: false }
+        ssl: { 
+          rejectUnauthorized: false,
+          require: true
+        }
       },
       tableName: 'session',
-      createTableIfMissing: true
+      createTableIfMissing: true,
+      pruneSessionInterval: false // Disable automatic pruning to avoid SSL errors
     }),
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
     resave: false,
