@@ -164,44 +164,22 @@ export async function sendEmailWithSendGrid(template: EmailTemplate): Promise<bo
     const mailService = new MailService();
     mailService.setApiKey(process.env.SENDGRID_API_KEY);
 
-    // Click tracking is now disabled at account level
-
     const response = await mailService.send({
       to: template.to,
       from: template.from,
       replyTo: template.replyTo,
       subject: template.subject,
       html: template.html,
-      text: template.text,
-      trackingSettings: {
-        clickTracking: {
-          enable: false,
-          enableText: false
-        },
-        openTracking: {
-          enable: true
-        },
-        subscriptionTracking: {
-          enable: false
-        },
-        ganalytics: {
-          enable: false
-        }
-      },
-      mailSettings: {
-        bypassListManagement: {
-          enable: false
-        },
-        bypassSpamManagement: {
-          enable: false
-        }
-      }
+      text: template.text
     });
 
     console.log('SendGrid response status:', response[0]?.statusCode);
     return response[0]?.statusCode === 202;
-  } catch (error) {
+  } catch (error: any) {
     console.error('SendGrid email error:', error);
+    if (error.response?.body?.errors) {
+      console.error('SendGrid error details:', JSON.stringify(error.response.body.errors, null, 2));
+    }
     return false;
   }
 }

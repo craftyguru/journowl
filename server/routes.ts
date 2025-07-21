@@ -2208,6 +2208,40 @@ Your story shows how every day brings new experiences and emotions, creating the
   });
 
   // Welcome email with REAL verification test endpoint
+  // Simple test email endpoint to debug SendGrid
+  app.post('/api/test-simple-email', async (req, res) => {
+    try {
+      const { MailService } = await import('@sendgrid/mail');
+      const mailService = new MailService();
+      mailService.setApiKey(process.env.SENDGRID_API_KEY!);
+
+      const response = await mailService.send({
+        to: 'CraftyGuru@1ofakindpiece.com',
+        from: 'archimedes@journowl.app',
+        subject: 'Simple Test Email',
+        text: 'This is a simple test email from JournOwl.',
+        html: '<p>This is a simple test email from JournOwl.</p>'
+      });
+
+      console.log('Simple email response:', response[0]?.statusCode);
+      res.json({ 
+        success: true, 
+        statusCode: response[0]?.statusCode,
+        messageId: response[0]?.headers?.['x-message-id']
+      });
+    } catch (error: any) {
+      console.error('Simple email error:', error);
+      if (error.response?.body?.errors) {
+        console.error('SendGrid error details:', JSON.stringify(error.response.body.errors, null, 2));
+      }
+      res.json({ 
+        success: false, 
+        error: error.message,
+        details: error.response?.body?.errors
+      });
+    }
+  });
+
   app.post('/api/test-welcome-verification', async (req, res) => {
     try {
       const { email } = req.body;
