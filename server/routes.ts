@@ -14,7 +14,7 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, gte, ne } from "drizzle-orm";
 import { EmailService } from "./email";
-import { sendWelcomeEmail as sendWelcomeEmailTemplate, createEmailVerificationTemplate } from "./emailTemplates";
+import { sendWelcomeEmail as sendWelcomeEmailTemplate, createWelcomeEmailTemplate } from "./emailTemplates";
 import sgMail from '@sendgrid/mail';
 import crypto from 'crypto';
 import session from "express-session";
@@ -2166,6 +2166,37 @@ Your story shows how every day brings new experiences and emotions, creating the
     } catch (error: any) {
       console.error('Simple welcome test error:', error);
       res.status(500).json({ message: 'Failed to send simple welcome email', error: error.message });
+    }
+  });
+
+  // MEGA ANIMATED welcome test email endpoint  
+  app.post('/api/test-mega-welcome', async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!process.env.SENDGRID_API_KEY) {
+        return res.status(500).json({ message: 'SendGrid not configured' });
+      }
+
+      if (!sgMail) {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      }
+
+      // Use the same MEGA ANIMATED template from our emailTemplates.ts
+      const emailTemplate = createWelcomeEmailTemplate(email, 'Test User', 'test-token-123');
+      
+      const response = await sgMail.send(emailTemplate);
+      console.log('MEGA ANIMATED welcome test sent:', response[0].statusCode);
+      
+      res.json({ 
+        message: 'MEGA ANIMATED welcome email sent successfully!',
+        statusCode: response[0].statusCode,
+        messageId: response[0].headers['x-message-id'],
+        subject: emailTemplate.subject
+      });
+    } catch (error: any) {
+      console.error('MEGA ANIMATED welcome test error:', error);
+      res.status(500).json({ message: 'Failed to send MEGA ANIMATED welcome email', error: error.message });
     }
   });
 
