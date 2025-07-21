@@ -286,7 +286,7 @@ The JournOwl Team
   return {
     to: userEmail,
     from: 'craftyguru@1ofakindpiece.com', // Using verified sender email
-    subject: '🦉 Welcome to JournOwl - Verify Your Email & Start Your Journey!',
+    subject: 'Welcome to JournOwl - Please Verify Your Email',
     html,
     text
   };
