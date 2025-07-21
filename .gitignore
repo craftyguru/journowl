@@ -62,3 +62,8 @@ jspm_packages/
 # Temporary folders
 tmp/
 temp/
+
+# Test files with sensitive data
+test-email.js
+test-verification-email.js
+*test*.js
