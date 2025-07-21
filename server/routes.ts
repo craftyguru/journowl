@@ -51,7 +51,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.use(session({
     store: new PgSession({
-      conString: sessionDbUrl.replace('?sslmode=require', ''),
+      conObject: {
+        connectionString: sessionDbUrl,
+        ssl: { 
+          rejectUnauthorized: false
+        }
+      },
       tableName: 'session',
       createTableIfMissing: true,
       pruneSessionInterval: false // Disable automatic pruning to avoid SSL errors
@@ -153,7 +158,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...userData,
         // Email verification fields are handled by storage layer
         requiresEmailVerification: true,
-        emailVerified: false
+        emailVerified: false,
+        emailVerificationToken: verificationToken,
+        emailVerificationExpires: verificationExpires
       });
       
       // Don't log in user until email is verified
@@ -570,9 +577,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           insights.push("You're developing a consistent journaling habit. This self-reflection practice is valuable for personal growth.");
         }
         
-        if (stats?.averageMood && stats.averageMood > 4) {
-          insights.push("Your average mood is quite positive! Journaling might be helping you maintain a good outlook.");
-        }
+        // Note: averageMood calculation would need to be implemented in getUserStats
+        // For now, we'll skip this insight until the mood tracking is fully implemented
       }
       
       // Add wisdom prompts
@@ -982,7 +988,7 @@ Your story shows how every day brings new experiences and emotions, creating the
             promptsUsedThisMonth: promptUsage.promptsUsedThisMonth,
             currentPlan: promptUsage.currentPlan,
             storageUsedMB: user.storageUsedMB || 0,
-            storageLimit: user.storageLimit || 100
+            storageLimit: 100 // Free tier default
           };
         } catch (error) {
           console.error(`Error getting user ${user.id} stats:`, error);
@@ -1275,7 +1281,7 @@ Your story shows how every day brings new experiences and emotions, creating the
       const { content, mood, hasPhotos, photoCount } = req.body;
       
       // Use trackable OpenAI call
-      const response = await trackableOpenAICall(req.session.userId, async () => {
+      const response = await trackableOpenAICall(req.session.userId, "kid_prompts", 300, async () => {
         return await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -1310,11 +1316,11 @@ Your story shows how every day brings new experiences and emotions, creating the
         });
       });
 
-      if (!response.ok) {
+      if (!(response as Response).ok) {
         throw new Error('OpenAI API error');
       }
 
-      const data = await response.json();
+      const data = await (response as Response).json();
       const result = JSON.parse(data.choices[0].message.content);
       
       res.json({ 
@@ -1675,8 +1681,8 @@ Your story shows how every day brings new experiences and emotions, creating the
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Generate referral code if not exists
-      const referralCode = user.referralCode || `JOURNOWL${user.username.toUpperCase()}`;
+      // Generate referral code
+      const referralCode = `JOURNOWL${user.username.toUpperCase()}`;
       
       // Get referral stats (mock data for now, would need referrals table)
       const referralStats = {
@@ -1706,12 +1712,13 @@ Your story shows how every day brings new experiences and emotions, creating the
       }
 
       // Generate referral code if not exists
-      const referralCode = user.referralCode || `JOURNOWL${user.username.toUpperCase()}`;
+      const referralCode = `JOURNOWL${user.username.toUpperCase()}`;
       const referralLink = `${req.protocol}://${req.get('host')}/register?ref=${referralCode}`;
       
       // Send invitation emails (mock for now)
       for (const email of emails) {
         console.log(`Sending referral invitation to ${email} from ${user.username}`);
+        console.log(`Referral link: ${referralLink}`);
         // Here you would integrate with SendGrid or similar service
         // await sendReferralInvitation(email, user.username, referralLink, message);
       }
@@ -1952,6 +1959,147 @@ Your story shows how every day brings new experiences and emotions, creating the
       res.json({ message: "User AI prompts reset successfully" });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Database setup endpoint - creates all required tables
+  app.post("/api/admin/setup-database", async (req, res) => {
+    try {
+      console.log('Creating database tables...');
+      
+      // Use the working storage connection to create tables
+      const { pool } = await import('./db');
+      const client = await pool.connect();
+      
+      // Create tables using raw SQL since our regular db connection works
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS users (
+          id SERIAL PRIMARY KEY,
+          email TEXT NOT NULL UNIQUE,
+          username TEXT NOT NULL UNIQUE,
+          password TEXT,
+          level INTEGER DEFAULT 1,
+          xp INTEGER DEFAULT 0,
+          role TEXT DEFAULT 'user',
+          avatar TEXT,
+          theme TEXT DEFAULT 'purple',
+          bio TEXT,
+          favorite_quote TEXT,
+          preferences JSONB,
+          ai_personality TEXT DEFAULT 'friendly',
+          provider TEXT DEFAULT 'local',
+          provider_id TEXT,
+          profile_image_url TEXT,
+          first_name TEXT,
+          last_name TEXT,
+          is_active BOOLEAN DEFAULT TRUE,
+          is_banned BOOLEAN DEFAULT FALSE,
+          ban_reason TEXT,
+          banned_at TIMESTAMP,
+          banned_by INTEGER,
+          is_flagged BOOLEAN DEFAULT FALSE,
+          flag_reason TEXT,
+          flagged_at TIMESTAMP,
+          flagged_by INTEGER,
+          suspicious_activity_count INTEGER DEFAULT 0,
+          last_suspicious_activity TIMESTAMP,
+          last_login_at TIMESTAMP,
+          email_verified BOOLEAN DEFAULT FALSE,
+          email_verification_token TEXT,
+          email_verification_expires TIMESTAMP,
+          requires_email_verification BOOLEAN DEFAULT TRUE,
+          current_plan TEXT DEFAULT 'free',
+          prompts_used_this_month INTEGER DEFAULT 0,
+          prompts_remaining INTEGER DEFAULT 100,
+          storage_used_mb INTEGER DEFAULT 0,
+          last_usage_reset TIMESTAMP DEFAULT NOW(),
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        );
+      `);
+
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS journal_entries (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id),
+          title TEXT NOT NULL,
+          content TEXT NOT NULL,
+          mood TEXT NOT NULL,
+          word_count INTEGER DEFAULT 0,
+          font_family TEXT DEFAULT 'Inter',
+          font_size INTEGER DEFAULT 16,
+          text_color TEXT DEFAULT '#ffffff',
+          background_color TEXT DEFAULT '#1e293b',
+          drawings JSONB,
+          photos JSONB,
+          tags JSONB,
+          ai_insights JSONB,
+          is_private BOOLEAN DEFAULT FALSE,
+          location TEXT,
+          weather TEXT,
+          created_at TIMESTAMP DEFAULT NOW(),
+          updated_at TIMESTAMP DEFAULT NOW()
+        );
+      `);
+
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS user_stats (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id) UNIQUE,
+          total_entries INTEGER DEFAULT 0,
+          total_words INTEGER DEFAULT 0,
+          current_streak INTEGER DEFAULT 0,
+          longest_streak INTEGER DEFAULT 0,
+          last_entry_date TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT NOW()
+        );
+      `);
+
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS achievements (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id),
+          achievement_id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
+          icon TEXT DEFAULT '🏆',
+          rarity TEXT DEFAULT 'common',
+          type TEXT NOT NULL,
+          target_value INTEGER DEFAULT 0,
+          current_value INTEGER DEFAULT 0,
+          unlocked_at TIMESTAMP,
+          created_at TIMESTAMP DEFAULT NOW()
+        );
+      `);
+
+      await client.query(`
+        CREATE TABLE IF NOT EXISTS goals (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER REFERENCES users(id),
+          goal_id TEXT NOT NULL,
+          title TEXT NOT NULL,
+          description TEXT,
+          type TEXT NOT NULL,
+          difficulty TEXT DEFAULT 'beginner',
+          target_value INTEGER NOT NULL,
+          current_value INTEGER DEFAULT 0,
+          is_completed BOOLEAN DEFAULT FALSE,
+          deadline TIMESTAMP,
+          completed_at TIMESTAMP,
+          created_at TIMESTAMP DEFAULT NOW()
+        );
+      `);
+
+      client.release();
+      
+      console.log('All database tables created successfully!');
+      res.json({ 
+        message: "Database setup completed successfully!", 
+        tables: ["users", "journal_entries", "user_stats", "achievements", "goals", "session"]
+      });
+    } catch (error: any) {
+      console.error('Database setup error:', error);
+      res.status(500).json({ message: `Database setup failed: ${error.message}` });
     }
   });
 
