@@ -111,6 +111,9 @@ export function setupOAuth() {
           emailVerified: true
         });
         user = await storage.getUser(user.id);
+        if (!user) {
+          return done(new Error('Failed to update user'), null);
+        }
       } else {
         user = await storage.createUser({
           email,
@@ -127,6 +130,10 @@ export function setupOAuth() {
         await storage.createUserStats(user.id);
       }
 
+      if (!user) {
+        return done(new Error('User creation/retrieval failed'), null);
+      }
+
       await storage.logUserActivity(user.id, 'oauth_login', { provider: 'facebook' });
       
       return done(null, user);
@@ -135,8 +142,5 @@ export function setupOAuth() {
     }
   }));
   }
-
-
-}
 
 export { passport };
