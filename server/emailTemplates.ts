@@ -7,9 +7,15 @@ if (process.env.SENDGRID_API_KEY) {
 export interface EmailTemplate {
   to: string;
   from: string;
+  replyTo?: string;
   subject: string;
   html: string;
   text: string;
+  headers?: { [key: string]: string };
+  mailSettings?: {
+    sandboxMode?: { enable: boolean };
+    bypassListManagement?: { enable: boolean };
+  };
 }
 
 function getBaseUrl() {
@@ -328,9 +334,20 @@ The AMAZING JournOwl Team
   return {
     to: userEmail,
     from: 'archimedes@journowl.app',
+    replyTo: 'support@journowl.app',
     subject: '🦉 WELCOME TO JOURNOWL! Your Epic Writing Adventure Starts NOW! 🚀✨',
     html,
-    text
+    text,
+    headers: {
+      'X-Priority': '3',
+      'X-Mailer': 'JournOwl Platform',
+      'List-Unsubscribe': '<mailto:unsubscribe@journowl.app>',
+      'Content-Type': 'text/html; charset=utf-8'
+    },
+    mailSettings: {
+      sandboxMode: { enable: false },
+      bypassListManagement: { enable: false }
+    }
   };
 }
 
@@ -349,6 +366,153 @@ export async function sendWelcomeEmail(userEmail: string, userName: string, veri
     console.error('Failed to send welcome email:', error);
     return false;
   }
+}
+
+export function createProfessionalWelcomeEmailTemplate(
+  userEmail: string,
+  userName: string,
+  verificationToken: string
+): EmailTemplate {
+  const baseUrl = getBaseUrl();
+  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
+
+  const html = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Welcome to JournOwl</title>
+    </head>
+    <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e2e8f0;">
+        
+        <!-- Header -->
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px 30px; text-align: center;">
+          <div style="color: #ffffff; font-size: 32px; font-weight: bold; margin-bottom: 10px;">
+            🦉 JournOwl
+          </div>
+          <div style="color: #e2e8f0; font-size: 16px;">
+            Your Intelligent Writing Companion
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div style="padding: 40px 30px;">
+          <h1 style="color: #1a202c; font-size: 24px; margin-bottom: 20px; font-weight: 600;">
+            Welcome to JournOwl, ${userName}!
+          </h1>
+          
+          <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
+            Thank you for joining our community of writers and thinkers. JournOwl combines the power of AI with beautiful design to make journaling an inspiring daily habit.
+          </p>
+          
+          <!-- Verification Button -->
+          <div style="text-align: center; margin: 35px 0;">
+            <a href="${verificationUrl}" 
+               style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                      color: #ffffff; text-decoration: none; padding: 16px 32px; 
+                      border-radius: 8px; font-weight: 600; font-size: 16px; 
+                      box-shadow: 0 4px 6px rgba(102, 126, 234, 0.25);">
+              Verify Your Email Address
+            </a>
+          </div>
+          
+          <!-- Features -->
+          <div style="background-color: #f7fafc; padding: 25px; border-radius: 8px; margin: 30px 0;">
+            <h3 style="color: #2d3748; font-size: 18px; margin-bottom: 15px;">What you get with JournOwl:</h3>
+            <ul style="color: #4a5568; line-height: 1.8; margin: 0; padding-left: 20px;">
+              <li>AI-powered writing prompts and insights</li>
+              <li>Photo analysis and memory extraction</li>
+              <li>Progress tracking and achievements</li>
+              <li>Beautiful, customizable writing interface</li>
+              <li>100 AI prompts monthly (Free plan)</li>
+              <li>50MB storage for photos and attachments</li>
+            </ul>
+          </div>
+          
+          <!-- Upgrade Options -->
+          <div style="text-align: center; margin: 30px 0;">
+            <p style="color: #718096; font-size: 14px; margin-bottom: 15px;">
+              Ready for more? Check out our premium plans:
+            </p>
+            <div style="display: inline-block; margin: 0 10px;">
+              <span style="background-color: #e6fffa; color: #234e52; padding: 6px 12px; border-radius: 4px; font-size: 14px; font-weight: 500;">
+                Pro: $9.99/month
+              </span>
+            </div>
+            <div style="display: inline-block; margin: 0 10px;">
+              <span style="background-color: #fef5e7; color: #744210; padding: 6px 12px; border-radius: 4px; font-size: 14px; font-weight: 500;">
+                Power: $19.99/month
+              </span>
+            </div>
+          </div>
+          
+          <p style="color: #718096; font-size: 14px; line-height: 1.6; margin-top: 30px;">
+            If you have any questions, simply reply to this email. We're here to help make your writing journey amazing.
+          </p>
+        </div>
+        
+        <!-- Footer -->
+        <div style="background-color: #edf2f7; padding: 25px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
+          <p style="color: #718096; font-size: 14px; margin: 0;">
+            Best regards,<br>
+            The JournOwl Team
+          </p>
+          <div style="margin-top: 15px;">
+            <a href="mailto:support@journowl.app" style="color: #667eea; text-decoration: none; font-size: 12px; margin: 0 10px;">Support</a>
+            <a href="#" style="color: #667eea; text-decoration: none; font-size: 12px; margin: 0 10px;">Unsubscribe</a>
+            <a href="#" style="color: #667eea; text-decoration: none; font-size: 12px; margin: 0 10px;">Privacy</a>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  const text = `
+Welcome to JournOwl, ${userName}!
+
+Thank you for joining our community of writers and thinkers. JournOwl combines the power of AI with beautiful design to make journaling an inspiring daily habit.
+
+Verify your email address: ${verificationUrl}
+
+What you get with JournOwl:
+- AI-powered writing prompts and insights
+- Photo analysis and memory extraction  
+- Progress tracking and achievements
+- Beautiful, customizable writing interface
+- 100 AI prompts monthly (Free plan)
+- 50MB storage for photos and attachments
+
+Ready for more? Check out our premium plans:
+- Pro: $9.99/month
+- Power: $19.99/month
+
+If you have any questions, simply reply to this email. We're here to help make your writing journey amazing.
+
+Best regards,
+The JournOwl Team
+  `;
+
+  return {
+    to: userEmail,
+    from: 'archimedes@journowl.app',
+    replyTo: 'support@journowl.app', 
+    subject: 'Welcome to JournOwl - Verify Your Account',
+    html,
+    text,
+    headers: {
+      'X-Priority': '3',
+      'X-Mailer': 'JournOwl Platform',
+      'List-Unsubscribe': '<mailto:unsubscribe@journowl.app>',
+      'Content-Type': 'text/html; charset=utf-8'
+    },
+    mailSettings: {
+      sandboxMode: { enable: false },
+      bypassListManagement: { enable: false }
+    }
+  };
 }
 
 export function createSimpleTestEmailTemplate(

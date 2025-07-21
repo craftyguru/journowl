@@ -289,7 +289,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Send verification email
       try {
-        const emailTemplate = createEmailVerificationTemplate(user.email, user.username || 'User', verificationToken);
+        const emailTemplate = createWelcomeEmailTemplate(user.email, user.username || 'User', verificationToken);
         if (process.env.SENDGRID_API_KEY) {
           await sgMail.send(emailTemplate);
         }
@@ -2236,7 +2236,7 @@ Your story shows how every day brings new experiences and emotions, creating the
             emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
             requiresEmailVerification: true,
             emailVerified: false
-          }
+          } as any
         });
         
         console.log('Test user created/updated for verification test');
