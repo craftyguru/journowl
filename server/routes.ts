@@ -51,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.use(session({
     store: new PgSession({
-      conString: sessionDbUrl,
+      conString: sessionDbUrl + '?sslmode=require',
       tableName: 'session',
       createTableIfMissing: true
     }),
@@ -150,8 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create user with email verification required
       const user = await createUser({
         ...userData,
-        emailVerificationToken: verificationToken,
-        emailVerificationExpires: verificationExpires,
+        // Email verification fields are handled by storage layer
         requiresEmailVerification: true,
         emailVerified: false
       });
