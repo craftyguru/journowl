@@ -116,9 +116,9 @@ export function MobilePWABanner() {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
         transition={{ type: "spring", damping: 25, stiffness: 500 }}
-        className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-md pointer-events-auto"
+        className="fixed bottom-4 left-4 right-4 z-[9999] mx-auto max-w-sm pointer-events-auto"
       >
-        <div className="bg-gradient-to-r from-green-400 via-blue-500 to-purple-600 text-white rounded-xl shadow-2xl p-6 backdrop-blur-sm border-4 border-yellow-400 pointer-events-auto animate-bounce">
+        <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg shadow-2xl p-4 backdrop-blur-sm border border-white/20 pointer-events-auto">
           {/* Close button */}
           <button
             onClick={handleDismiss}
@@ -149,7 +149,7 @@ export function MobilePWABanner() {
             <button
               onClick={handleInstallClick}
               onTouchEnd={handleInstallClick}
-              className="w-full bg-yellow-300 text-black hover:bg-yellow-200 py-4 px-6 rounded-xl font-black text-lg flex items-center justify-center gap-3 shadow-xl border-4 border-red-500 touch-manipulation transform hover:scale-110 transition-all duration-200 animate-pulse"
+              className="w-full bg-white text-purple-600 hover:bg-white/90 py-3 px-4 rounded-lg font-bold text-sm flex items-center justify-center gap-2 shadow-lg border border-white/50 touch-manipulation transform hover:scale-105 transition-all duration-200"
               style={{ touchAction: 'manipulation' }}
             >
               <Download className="h-6 w-6" />

@@ -274,42 +274,82 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             </div>
           </motion.div>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons - DRAMATICALLY ENHANCED */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 lg:mb-20"
+            className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-8 sm:mb-12 lg:mb-20"
           >
+            {/* PRIMARY BUTTON - SUPER PROMINENT */}
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.08, y: -3 }}
               whileTap={{ scale: 0.95 }}
+              animate={{ 
+                boxShadow: ["0 0 20px rgba(139, 69, 19, 0.3)", "0 0 40px rgba(139, 69, 19, 0.6)", "0 0 20px rgba(139, 69, 19, 0.3)"]
+              }}
+              transition={{ 
+                boxShadow: { duration: 2, repeat: Infinity },
+                hover: { duration: 0.2 }
+              }}
+              className="relative"
             >
+              {/* Glowing background effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 rounded-2xl blur-xl opacity-75 animate-pulse"></div>
+              
               <Button
                 onClick={onGetStarted}
                 size="lg"
-                className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-0 rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 w-full sm:w-auto"
-                style={{ fontFamily: '"Rock Salt", cursive' }}
+                className="relative px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-black bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-300 hover:via-orange-400 hover:to-red-400 text-white border-4 border-white/40 rounded-2xl shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 w-full sm:w-auto transform hover:rotate-1"
+                style={{ fontFamily: '"Rock Salt", cursive', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
               >
-                <BookOpen className="w-5 h-5 mr-2" />
-                Start Your Wise Journey
-                <ArrowRight className="w-5 h-5 ml-2" />
+                <motion.div 
+                  className="flex items-center gap-3"
+                  animate={{ x: [0, 2, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 animate-bounce" />
+                  <span className="text-lg sm:text-xl font-black tracking-wide">
+                    🚀 START YOUR WISE JOURNEY! 🦉
+                  </span>
+                  <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8 animate-pulse" />
+                </motion.div>
               </Button>
             </motion.div>
 
+            {/* SECONDARY BUTTON - ALSO PROMINENT */}
             <motion.div
-              whileHover={{ scale: 1.05 }}
+              whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.95 }}
+              animate={{ 
+                borderColor: ["rgba(147, 51, 234, 0.5)", "rgba(59, 130, 246, 0.8)", "rgba(147, 51, 234, 0.5)"]
+              }}
+              transition={{ 
+                borderColor: { duration: 2, repeat: Infinity },
+                hover: { duration: 0.2 }
+              }}
+              className="relative"
             >
+              {/* Subtle glow for secondary */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-blue-500 rounded-2xl blur-lg opacity-30 animate-pulse"></div>
+              
               <Button
                 variant="outline"
                 size="lg"
                 onClick={handleDemo}
-                className="px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold border-2 border-purple-400/50 text-purple-200 hover:bg-purple-500/10 rounded-xl backdrop-blur-sm transition-all duration-300 w-full sm:w-auto"
-                style={{ fontFamily: '"Rock Salt", cursive' }}
+                className="relative px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-bold border-4 border-purple-400 bg-gradient-to-r from-purple-900/50 to-blue-900/50 text-white hover:bg-gradient-to-r hover:from-purple-800/70 hover:to-blue-800/70 rounded-2xl backdrop-blur-md transition-all duration-300 w-full sm:w-auto shadow-xl hover:shadow-purple-500/30"
+                style={{ fontFamily: '"Rock Salt", cursive', textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}
               >
-                <Play className="w-5 h-5 mr-2" />
-                View Live Demo
+                <motion.div 
+                  className="flex items-center gap-3"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <Play className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 animate-bounce" />
+                  <span className="text-lg sm:text-xl font-bold tracking-wide">
+                    ✨ VIEW LIVE DEMO 🎬
+                  </span>
+                </motion.div>
               </Button>
             </motion.div>
           </motion.div>
