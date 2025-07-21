@@ -179,7 +179,7 @@ async function createTestUserAndSendVerification() {
     // Send the verification email
     const msg = {
       to: 'CraftyGuru@1ofakindpiece.com',
-      from: 'craftyguru@1ofakindpiece.com',
+      from: 'archimedes@journowl.app',
       subject: '🔥 VERIFY YOUR EMAIL FOR JOURNOWL SUPERPOWERS! 🦉✨',
       html: emailHtml,
       text: `🦉 VERIFY YOUR EMAIL FOR JOURNOWL! 🦉
