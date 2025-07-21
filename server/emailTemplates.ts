@@ -11,11 +11,6 @@ export interface EmailTemplate {
   subject: string;
   html: string;
   text: string;
-  headers?: { [key: string]: string };
-  mailSettings?: {
-    sandboxMode?: { enable: boolean };
-    bypassListManagement?: { enable: boolean };
-  };
 }
 
 function getBaseUrl() {
@@ -335,19 +330,9 @@ The AMAZING JournOwl Team
     to: userEmail,
     from: 'archimedes@journowl.app',
     replyTo: 'support@journowl.app',
-    subject: '🦉 WELCOME TO JOURNOWL! Your Epic Writing Adventure Starts NOW! 🚀✨',
+    subject: 'Welcome to JournOwl - Verify Your Account',
     html,
-    text,
-    headers: {
-      'X-Priority': '3',
-      'X-Mailer': 'JournOwl Platform',
-      'List-Unsubscribe': '<mailto:unsubscribe@journowl.app>',
-      'Content-Type': 'text/html; charset=utf-8'
-    },
-    mailSettings: {
-      sandboxMode: { enable: false },
-      bypassListManagement: { enable: false }
-    }
+    text
   };
 }
 
@@ -501,17 +486,7 @@ The JournOwl Team
     replyTo: 'support@journowl.app', 
     subject: 'Welcome to JournOwl - Verify Your Account',
     html,
-    text,
-    headers: {
-      'X-Priority': '3',
-      'X-Mailer': 'JournOwl Platform',
-      'List-Unsubscribe': '<mailto:unsubscribe@journowl.app>',
-      'Content-Type': 'text/html; charset=utf-8'
-    },
-    mailSettings: {
-      sandboxMode: { enable: false },
-      bypassListManagement: { enable: false }
-    }
+    text
   };
 }
 

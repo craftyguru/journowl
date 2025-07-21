@@ -2264,6 +2264,71 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Professional welcome email endpoint (for better deliverability)
+  app.post("/api/test-professional-welcome", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!process.env.SENDGRID_API_KEY) {
+        return res.status(500).json({ message: 'SendGrid not configured' });
+      }
+
+      if (!sgMail) {
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      }
+
+      // Generate a real verification token
+      const verificationToken = crypto.randomBytes(32).toString('hex');
+      console.log('Generated verification token for professional test:', verificationToken);
+      
+      // Create a temporary test user entry for verification
+      try {
+        const testUser = {
+          email: email,
+          username: 'TestUser',
+          passwordHash: 'test-hash',
+          emailVerificationToken: verificationToken,
+          emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+          requiresEmailVerification: true,
+          emailVerified: false
+        };
+        
+        await db.insert(users).values(testUser as any).onConflictDoUpdate({
+          target: users.email,
+          set: {
+            emailVerificationToken: verificationToken,
+            emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+            requiresEmailVerification: true,
+            emailVerified: false
+          } as any
+        });
+        
+        console.log('Professional test user created/updated for verification test');
+      } catch (dbError) {
+        console.error('Database error during professional test user creation:', dbError);
+      }
+
+      // Send the PROFESSIONAL welcome email with real verification link
+      const { createProfessionalWelcomeEmailTemplate } = await import("./emailTemplates");
+      const emailTemplate = createProfessionalWelcomeEmailTemplate(email, 'Test User', verificationToken);
+      
+      const response = await sgMail.send(emailTemplate);
+      console.log('Professional welcome with verification sent:', response[0].statusCode);
+      
+      res.json({ 
+        message: 'Professional welcome email sent! (Better for inbox delivery)',
+        statusCode: response[0].statusCode,
+        messageId: response[0].headers['x-message-id'],
+        subject: emailTemplate.subject,
+        verificationToken: verificationToken,
+        verificationUrl: `${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS}` : 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`
+      });
+    } catch (error: any) {
+      console.error('Professional welcome test error:', error);
+      res.status(500).json({ message: 'Failed to send professional welcome email', error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
