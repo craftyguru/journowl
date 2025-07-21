@@ -50,9 +50,10 @@ const AnimatedBackground = () => {
 
 interface AuthPageProps {
   setShowAuth: (show: boolean) => void;
+  onRegistrationSuccess?: (email: string, username: string) => void;
 }
 
-export default function AuthPage({ setShowAuth }: AuthPageProps) {
+export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPageProps) {
   const { toast } = useToast();
   const [showWelcomeTutorial, setShowWelcomeTutorial] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
@@ -143,7 +144,11 @@ export default function AuthPage({ setShowAuth }: AuthPageProps) {
       return await apiRequest("POST", "/api/auth/register", submitData);
     },
     onSuccess: (data: any) => {
-      if (data.emailSent) {
+      if (data.emailSent && onRegistrationSuccess) {
+        // Call the callback to redirect to email confirmation page
+        onRegistrationSuccess(data.email, registerData.username);
+        return;
+      } else if (data.emailSent) {
         setVerificationEmail(data.email);
         setShowEmailVerification(true);
         toast({

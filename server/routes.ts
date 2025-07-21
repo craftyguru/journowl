@@ -187,7 +187,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         message: "Account created! Please check your email to verify your account before signing in.",
         emailSent: true,
-        email: user.email
+        email: user.email,
+        username: user.username
       });
     } catch (error: any) {
       res.status(400).json({ message: error.message });

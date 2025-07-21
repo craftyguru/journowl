@@ -19,10 +19,11 @@ import LandingHero from "@/components/ui/LandingHero";
 import { HelpBubble } from "@/components/HelpBubble";
 import { SupportChatBubble } from "@/components/SupportChatBubble";
 import { StarryBackground } from "@/components/starry-background";
+import { EmailConfirmation } from "@/pages/email-confirmation";
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('demo') === 'true' ? 'demo' : 'landing';
   });
@@ -102,6 +103,25 @@ function App() {
     );
   }
 
+  // Email confirmation page
+  if (!isAuthenticated && currentView === "email-confirmation") {
+    const urlParams = new URLSearchParams(window.location.search);
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <StarryBackground />
+            <Toaster />
+            <EmailConfirmation 
+              email={urlParams.get('email') || undefined}
+              username={urlParams.get('username') || undefined}
+            />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
   // Authentication page
   if (!isAuthenticated && currentView === "auth") {
     return (
@@ -119,7 +139,14 @@ function App() {
                   ← Back to Home
                 </button>
               </div>
-              <AuthPage setShowAuth={() => {}} />
+              <AuthPage setShowAuth={() => {}} onRegistrationSuccess={(email, username) => {
+                // Redirect to email confirmation page
+                const params = new URLSearchParams();
+                if (email) params.set('email', email);
+                if (username) params.set('username', username);
+                window.history.pushState({}, '', `/?${params.toString()}`);
+                setCurrentView("email-confirmation");
+              }} />
             </div>
           </TooltipProvider>
         </ThemeProvider>
