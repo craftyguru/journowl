@@ -1,6 +1,7 @@
 {
   "name": "JournOwl - Your Wise Writing Companion",
   "short_name": "JournOwl",
+  "id": "journowl-pwa-app",
   "description": "AI-powered journaling platform for capturing thoughts, analyzing emotions, and unlocking insights from your daily experiences",
   "start_url": "/",
   "display": "standalone",
@@ -69,7 +70,8 @@
       "icons": [
         {
           "src": "/icons/icon-192x192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     },
@@ -81,9 +83,32 @@
       "icons": [
         {
           "src": "/icons/icon-192x192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
       ]
     }
-  ]
+  ],
+  "launch_handler": {
+    "client_mode": "navigate-existing",
+    "route_to": "/"
+  },
+  "screenshots": [
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "JournOwl Desktop Dashboard"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512", 
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "JournOwl Mobile Interface"
+    }
+  ],
+  "display_override": ["window-controls-overlay", "standalone"],
+  "protocol_handlers": []
 }
