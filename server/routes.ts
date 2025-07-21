@@ -2263,7 +2263,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         messageId: response[0].headers['x-message-id'],
         subject: emailTemplate.subject,
         verificationToken: verificationToken,
-        verificationUrl: `${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS}` : 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`
+        verificationUrl: `${process.env.BASE_URL || (process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` : 'http://localhost:5000')}/api/auth/verify-email?token=${verificationToken}`
       });
     } catch (error: any) {
       console.error('MEGA ANIMATED welcome with verification test error:', error);
@@ -2328,7 +2328,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         messageId: response[0].headers['x-message-id'],
         subject: emailTemplate.subject,
         verificationToken: verificationToken,
-        verificationUrl: `${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS}` : 'http://localhost:5000'}/api/auth/verify-email?token=${verificationToken}`
+        verificationUrl: `${process.env.BASE_URL || (process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}` : 'http://localhost:5000')}/api/auth/verify-email?token=${verificationToken}`
       });
     } catch (error: any) {
       console.error('Professional welcome test error:', error);

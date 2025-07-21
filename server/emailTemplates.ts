@@ -11,12 +11,15 @@ export interface EmailTemplate {
 
 // Get base URL for verification links
 function getBaseUrl(): string {
+  // Use production domain first for proper verification links
+  if (process.env.BASE_URL) return process.env.BASE_URL;
+  
   // Use REPLIT_DOMAINS for production deployment compatibility
   if (process.env.REPLIT_DOMAINS) {
     const domains = process.env.REPLIT_DOMAINS.split(',');
     return `https://${domains[0]}`;
   }
-  if (process.env.BASE_URL) return process.env.BASE_URL;
+  
   return 'http://localhost:5000';
 }
 
