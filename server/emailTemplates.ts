@@ -26,11 +26,10 @@ export function createWelcomeEmailTemplate(
 ): EmailTemplate {
   const baseUrl = getBaseUrl();
   const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
-  const html = `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <style>
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+<style>
       @keyframes rainbow-bg {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
@@ -87,9 +86,9 @@ export function createWelcomeEmailTemplate(
       .mega-glow { animation: mega-glow 2s infinite; }
       .pulse-crazy { animation: pulse-crazy 1.8s infinite; }
       .floating-stars { animation: floating-stars 3s infinite; }
-    </style>
-  </head>
-  <body style="margin:0;padding:0;background:linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff1493, #00ff7f);font-family:Arial,sans-serif;">
+</style>
+</head>
+<body style="margin:0;padding:0;background:linear-gradient(45deg, #ff0080, #ff8c00, #40e0d0, #ff1493, #00ff7f);font-family:Arial,sans-serif;">
     
     <!-- MEGA ANIMATED CONTAINER -->
     <div style="max-width:650px;margin:15px auto;background:#fff;border-radius:30px;box-shadow:0 30px 80px rgba(0,0,0,0.5);overflow:hidden;border:5px solid #ff0080;">
