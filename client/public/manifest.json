@@ -110,5 +110,69 @@
     }
   ],
   "display_override": ["window-controls-overlay", "standalone"],
-  "protocol_handlers": []
+  "protocol_handlers": [],
+  "scope_extensions": [
+    {
+      "origin": "https://journowl.app"
+    }
+  ],
+  "dir": "ltr",
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "file_handlers": [
+    {
+      "action": "/import",
+      "accept": {
+        "text/plain": [".txt", ".md"],
+        "image/*": [".jpg", ".jpeg", ".png", ".gif"],
+        "application/json": [".json"]
+      },
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "handle_links": "preferred",
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["image/*", "text/*"]
+        }
+      ]
+    }
+  },
+  "widgets": [
+    {
+      "name": "Quick Journal Entry",
+      "description": "Write a quick journal entry from your home screen",
+      "tag": "quick-entry",
+      "template": "quick-entry-widget",
+      "ms_ac_template": "adaptive-card.json",
+      "data": "/api/widget/quick-entry",
+      "type": "application/json",
+      "screenshot": "/icons/icon-384x384.png",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
 }
