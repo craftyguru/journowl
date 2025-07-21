@@ -20,13 +20,15 @@ import { HelpBubble } from "@/components/HelpBubble";
 import { SupportChatBubble } from "@/components/SupportChatBubble";
 import { StarryBackground } from "@/components/starry-background";
 import { EmailConfirmation } from "@/pages/email-confirmation";
+import EmailVerified from "@/pages/email-verified";
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
     if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
+    if (window.location.pathname === '/email-verified' || urlParams.get('success') !== null || urlParams.get('verified') === 'true') return 'email-verified';
     return 'landing';
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
@@ -118,6 +120,21 @@ function App() {
               email={urlParams.get('email') || undefined}
               username={urlParams.get('username') || undefined}
             />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  // Email verified page
+  if (currentView === "email-verified") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <StarryBackground />
+            <Toaster />
+            <EmailVerified />
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>

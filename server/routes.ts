@@ -224,12 +224,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .where(eq(users.emailVerificationToken, token));
       
       if (!user) {
-        return res.status(400).json({ message: "Invalid verification token" });
+        return res.redirect('/email-verified?success=0');
       }
       
       // Check if token is expired
       if (user.emailVerificationExpires && new Date() > user.emailVerificationExpires) {
-        return res.status(400).json({ message: "Verification token has expired" });
+        return res.redirect('/email-verified?success=0');
       }
       
       // Verify the user
@@ -245,11 +245,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Log them in
       req.session.userId = user.id;
       
-      // Redirect to app with success message
-      res.redirect('/?verified=true&welcome=true');
+      // Redirect to dedicated email verified page
+      res.redirect('/email-verified?success=1');
     } catch (error: any) {
       console.error('Email verification error:', error);
-      res.status(500).json({ message: "Failed to verify email" });
+      res.redirect('/email-verified?success=0');
     }
   });
 
