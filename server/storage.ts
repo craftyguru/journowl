@@ -31,8 +31,8 @@ import {
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
-// Use Supabase PostgreSQL database
-const dbUrl = process.env.DATABASE_URL || "postgresql://postgres.asjcxaiabjsbjbasssfe:CraftyGuru7756@aws-0-us-west-1.pooler.supabase.com:6543/postgres";
+// Use Replit Neon PostgreSQL database
+const dbUrl = process.env.DATABASE_URL || `postgresql://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}?sslmode=require`;
 console.log("Database connecting to:", dbUrl.split('@')[1]?.split('?')[0]);
 
 const client = postgres(dbUrl, {
