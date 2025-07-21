@@ -336,8 +336,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const { email, password } = req.body;
-      const user = await authenticateUser(email, password);
+      const { identifier, email, password } = req.body;
+      // Support both old 'email' field and new 'identifier' field for backwards compatibility
+      const loginIdentifier = identifier || email;
+      
+      if (!loginIdentifier || !password) {
+        return res.status(400).json({ message: "Email/username and password are required" });
+      }
+      
+      const user = await authenticateUser(loginIdentifier, password);
       
       // Check if email verification is required
       if (user.requiresEmailVerification && !user.emailVerified) {

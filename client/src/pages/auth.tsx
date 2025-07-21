@@ -103,7 +103,7 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
   }, [toast]);
   
   const [loginData, setLoginData] = useState({
-    email: "",
+    identifier: "", // Changed from email to identifier to support both email and username
     password: ""
   });
   
@@ -128,7 +128,7 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
     },
     onError: (error: any) => {
       if (error.message?.includes("verify your email")) {
-        setVerificationEmail(loginData.email);
+        setVerificationEmail(loginData.identifier);
         setShowEmailVerification(true);
       }
       toast({
@@ -203,10 +203,10 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!loginData.email || !loginData.password) {
+    if (!loginData.identifier || !loginData.password) {
       toast({
         title: "Missing information",
-        description: "Please enter both email and password.",
+        description: "Please enter both email/username and password.",
         variant: "destructive",
       });
       return;
@@ -372,15 +372,15 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3, duration: 0.5 }}
                     >
-                      <Label htmlFor="login-email" className="text-gray-300 font-medium">Email</Label>
+                      <Label htmlFor="login-identifier" className="text-gray-300 font-medium">Email or Username</Label>
                       <Input
-                        id="login-email"
-                        type="email"
-                        value={loginData.email}
-                        onChange={(e) => setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                        placeholder="Enter your email"
+                        id="login-identifier"
+                        type="text"
+                        value={loginData.identifier}
+                        onChange={(e) => setLoginData(prev => ({ ...prev, identifier: e.target.value }))}
+                        placeholder="Enter your email or username"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
-                        autoComplete="email"
+                        autoComplete="username"
                       />
                     </motion.div>
                     <motion.div

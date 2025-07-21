@@ -23,8 +23,15 @@ export async function createUser(userData: InsertUser) {
   });
 }
 
-export async function authenticateUser(email: string, password: string) {
-  const user = await storage.getUserByEmail(email);
+export async function authenticateUser(identifier: string, password: string) {
+  // Try to find user by email first, then by username
+  let user = await storage.getUserByEmail(identifier);
+  
+  if (!user) {
+    // If not found by email, try by username
+    user = await storage.getUserByUsername(identifier);
+  }
+  
   if (!user) {
     throw new Error("Invalid credentials");
   }
