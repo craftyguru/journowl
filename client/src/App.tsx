@@ -26,9 +26,13 @@ function App() {
   // Check if demo mode is requested from URL params
   const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified">(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    console.log('App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
     if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
-    if (window.location.pathname === '/email-verified' || urlParams.get('success') === '1' || urlParams.get('success') === '0' || urlParams.get('verified') === 'true') return 'email-verified';
+    if (window.location.pathname === '/email-verified' || urlParams.get('success') === '1' || urlParams.get('success') === '0' || urlParams.get('verified') === 'true') {
+      console.log('Email verified view detected');
+      return 'email-verified';
+    }
     return 'landing';
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
@@ -71,6 +75,12 @@ function App() {
 
   // Check authentication status on app load
   useEffect(() => {
+    // Don't override email-verified view with auth check
+    if (currentView === "email-verified") {
+      setIsAuthenticated(false); // Allow page to display regardless of auth status
+      return;
+    }
+    
     getCurrentUser()
       .then(() => {
         setIsAuthenticated(true);
@@ -80,7 +90,7 @@ function App() {
         // Silent fail for unauthenticated users - this is expected behavior
         setIsAuthenticated(false);
       });
-  }, []);
+  }, [currentView]);
 
   if (isAuthenticated === null) {
     return (
@@ -126,8 +136,9 @@ function App() {
     );
   }
 
-  // Email verified page
+  // Email verified page - Show regardless of auth status
   if (currentView === "email-verified") {
+    console.log('Rendering EmailVerified component');
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>

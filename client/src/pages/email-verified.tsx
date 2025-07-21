@@ -15,6 +15,8 @@ export default function EmailVerified() {
     const successParam = urlParams.get('success');
     const verifiedParam = urlParams.get('verified');
     
+    console.log('EmailVerified page - URL params:', window.location.search, 'success:', successParam, 'verified:', verifiedParam);
+    
     // Check if verification was successful
     if (successParam === '1' || verifiedParam === 'true') {
       setSuccess(true);
