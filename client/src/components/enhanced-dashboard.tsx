@@ -24,6 +24,66 @@ import { AIStoryMaker } from "./kid-dashboard";
 
 // All data now fetched from API endpoints instead of hardcoded values
 
+// Type definitions for API responses
+interface User {
+  id: number;
+  username?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  profileImageUrl?: string;
+  xp?: number;
+  level?: number;
+}
+
+interface Stats {
+  totalEntries: number;
+  currentStreak: number;
+  totalWords: number;
+  averageMood: number;
+  longestStreak: number;
+  wordsThisWeek: number;
+}
+
+interface JournalEntry {
+  id: number;
+  title: string;
+  content: string;
+  mood: string;
+  createdAt: string;
+  photos?: Array<string> | Array<{ url: string; timestamp: string }>;
+  drawings?: Array<any>;
+  tags?: string[];
+  date?: string;
+  wordCount?: number;
+  photoAnalysis?: any;
+}
+
+interface Achievement {
+  id: number;
+  title: string;
+  description: string;
+  icon: string;
+  rarity: string;
+  unlockedAt: string | Date | null;
+  type: string;
+}
+
+interface Goal {
+  id: number;
+  title: string;
+  description: string;
+  type: string;
+  targetValue: number;
+  currentValue: number;
+  difficulty: string;
+  isCompleted: boolean;
+}
+
+interface APIResponse<T> {
+  [key: string]: T;
+}
+
 interface EnhancedDashboardProps {
   onSwitchToKid?: () => void;
   initialTab?: string;
@@ -64,38 +124,38 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
   }, [activeTab]);
   
   // Fetch real user data instead of hardcoded demo data
-  const { data: userResponse } = useQuery({
+  const { data: userResponse } = useQuery<APIResponse<User>>({
     queryKey: ["/api/auth/me"],
   });
   
-  const { data: statsResponse } = useQuery({
+  const { data: statsResponse } = useQuery<APIResponse<Stats>>({
     queryKey: ["/api/stats"],
   });
   
-  const { data: entriesResponse } = useQuery({
+  const { data: entriesResponse } = useQuery<JournalEntry[]>({
     queryKey: ["/api/journal/entries"],
   });
   
-  const { data: achievementsResponse } = useQuery({
+  const { data: achievementsResponse } = useQuery<APIResponse<Achievement[]>>({
     queryKey: ["/api/achievements"],
   });
 
-  const { data: goalsResponse } = useQuery({
+  const { data: goalsResponse } = useQuery<APIResponse<Goal[]>>({
     queryKey: ["/api/goals"],
   });
 
-  const { data: insightsResponse } = useQuery({
+  const { data: insightsResponse } = useQuery<APIResponse<any>>({
     queryKey: ["/api/insights"],
   });
 
-  const { data: promptUsage } = useQuery({
+  const { data: promptUsage } = useQuery<APIResponse<any>>({
     queryKey: ["/api/prompts/usage"],
   });
   
   const user = userResponse?.user;
   
   // Use real user data from API
-  const stats = statsResponse?.stats || {
+  const stats: Stats = statsResponse?.stats || {
     totalEntries: 0,
     currentStreak: 0,
     totalWords: 0,
@@ -104,7 +164,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
     wordsThisWeek: 0
   };
 
-  const entries = entriesResponse || [];
+  const entries: JournalEntry[] = entriesResponse || [];
   // Fresh achievements - all locked until earned
   const defaultAchievements = [
     // Common achievements (easy to get) - ALL START LOCKED
@@ -139,7 +199,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
   ];
 
   // Process achievements with real-time unlock checking
-  const processedAchievements = (achievementsResponse?.achievements || defaultAchievements).map(achievement => {
+  const processedAchievements = (achievementsResponse?.achievements || defaultAchievements).map((achievement: Achievement) => {
     // Check if achievement should be unlocked based on current stats
     const shouldUnlock = 
       (achievement.title === "First Steps" && (stats?.totalEntries || 0) >= 1) ||
@@ -154,11 +214,11 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
       
     return {
       ...achievement,
-      unlockedAt: shouldUnlock && !achievement.unlockedAt ? new Date() : achievement.unlockedAt
+      unlockedAt: shouldUnlock && !achievement.unlockedAt ? new Date().toISOString() : achievement.unlockedAt
     };
   });
 
-  const achievements = processedAchievements;
+  const achievements: Achievement[] = processedAchievements;
   // Fresh goals - all start at zero progress  
   const defaultGoals = [
     // Beginner goals (daily habits) - ALL START AT 0 PROGRESS
@@ -298,10 +358,13 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
       captureButton.onclick = () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0);
+        if (context) {
+          context.drawImage(video, 0, 0);
+        }
         
         canvas.toBlob((blob) => {
-          const url = URL.createObjectURL(blob);
+          if (blob) {
+            const url = URL.createObjectURL(blob);
           const today = new Date().toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
@@ -327,6 +390,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
             isPrivate: false
           };
           openUnifiedJournal(entryWithPhoto);
+          }
         }, 'image/jpeg', 0.8);
       };
       
@@ -342,10 +406,10 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
-      const chunks = [];
+      const chunks: Blob[] = [];
       
       // Create audio context for visualizer
-      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       const analyser = audioContext.createAnalyser();
       const source = audioContext.createMediaStreamSource(stream);
       source.connect(analyser);
@@ -491,7 +555,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
       
       // Audio visualizer animation
       const animate = () => {
-        if (mediaRecorder.state === 'recording' && !isPaused) {
+        if (mediaRecorder.state === 'recording' && !isPaused && ctx) {
           analyser.getByteFrequencyData(dataArray);
           
           ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
@@ -600,14 +664,16 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
   };
 
   // Convert entries to calendar format with varied dates
-  const calendarEntries = entries.map((entry, index) => {
+  const calendarEntries = entries.map((entry: JournalEntry, index: number) => {
     const date = new Date();
     date.setDate(date.getDate() - index); // Spread entries across recent days
     return {
       ...entry,
       date: date,
       createdAt: date.toISOString(),
-      photos: entry.photos || [],
+      photos: Array.isArray(entry.photos) ? entry.photos.map((photo: any) => 
+        typeof photo === 'string' ? photo : (photo.url || photo)
+      ) : [],
       isPinned: index === 0, // Pin the first entry
       isPrivate: index === 3, // Make one entry private
       tags: entry.tags || []
@@ -922,7 +988,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {entries.length > 0 ? entries.map((entry, index) => (
+                  {entries.length > 0 ? entries.map((entry: JournalEntry, index: number) => (
                     <motion.div
                       key={entry.id}
                       initial={{ opacity: 0, y: 10 }}
@@ -946,7 +1012,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                           </div>
                         </div>
                         <div className="flex gap-1">
-                          {entry.tags.map((tag, i) => (
+                          {(entry.tags || []).map((tag: string, i: number) => (
                             <Badge key={i} variant="outline" className="text-xs border-purple-400/20 text-purple-300 bg-purple-500/10">
                               {tag}
                             </Badge>
@@ -1027,7 +1093,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {entries.length > 0 ? entries.slice(0, 5).map((entry, index) => (
+                {entries.length > 0 ? entries.slice(0, 5).map((entry: JournalEntry, index: number) => (
                   <motion.div
                     key={entry.id}
                     initial={{ opacity: 0, y: 10 }}
@@ -1049,7 +1115,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                         </div>
                       </div>
                       <div className="flex gap-1">
-                        {(entry.tags || []).map((tag, i) => (
+                        {(entry.tags || []).map((tag: string, i: number) => (
                           <Badge key={i} variant="outline" className="text-xs border-purple-400/20 text-purple-300 bg-purple-500/10">
                             {tag}
                           </Badge>
@@ -1537,8 +1603,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                               }
                               
                               // Calculate dominant mood
-                              const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
-                              entries?.forEach(entry => {
+                              const moodCounts: { [key: string]: number } = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
+                              entries?.forEach((entry: JournalEntry) => {
                                 const mood = entry.mood?.toLowerCase();
                                 if (mood === 'happy' || mood === '😊') moodCounts.happy++;
                                 else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
@@ -1548,7 +1614,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                               });
                               
                               const dominantMood = Object.entries(moodCounts).reduce((a, b) => moodCounts[a[0]] > moodCounts[b[0]] ? a : b);
-                              const moodEmojis = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
+                              const moodEmojis: { [key: string]: string } = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
                               
                               if (totalEntries < 3) {
                                 return `Great start! You've written ${totalEntries} ${totalEntries === 1 ? 'entry' : 'entries'}. Keep journaling to unlock deeper mood insights and patterns.`;
@@ -1645,7 +1711,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                         const isCurrentMonth = calendarDay.isCurrentMonth;
                         
                         // Find entries for this day
-                        const dayEntries = entries?.filter(entry => {
+                        const dayEntries = entries?.filter((entry: JournalEntry) => {
                           const entryDate = new Date(entry.createdAt);
                           return entryDate.toDateString() === calendarDay.date.toDateString();
                         }) || [];
@@ -1654,7 +1720,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                         const primaryEntry = dayEntries[0];
                         const mood = primaryEntry?.mood || '';
                         
-                        const moodColors = {
+                        const moodColors: { [key: string]: string } = {
                           '😔': 'bg-red-100 border-red-300 hover:bg-red-200',
                           'sad': 'bg-red-100 border-red-300 hover:bg-red-200',
                           '😐': 'bg-orange-100 border-orange-300 hover:bg-orange-200',
@@ -1667,7 +1733,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                           'excited': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300'
                         };
                         
-                        const moodEmojis = {
+                        const moodEmojis: { [key: string]: string } = {
                           'sad': '😔',
                           'neutral': '😐', 
                           'good': '🙂',
@@ -1731,8 +1797,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                           <div className="text-2xl font-bold text-green-600">
                             {(() => {
                               // Calculate most common mood from real user data
-                              const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
-                              entries?.forEach(entry => {
+                              const moodCounts: { [key: string]: number } = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
+                              entries?.forEach((entry: JournalEntry) => {
                                 const mood = entry.mood?.toLowerCase();
                                 if (mood === 'happy' || mood === '😊') moodCounts.happy++;
                                 else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
@@ -1744,7 +1810,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                               if (entries?.length === 0) return '✨';
                               
                               const mostCommon = Object.entries(moodCounts).reduce((a, b) => moodCounts[a[0]] > moodCounts[b[0]] ? a : b);
-                              const moodEmojis = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
+                              const moodEmojis: { [key: string]: string } = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
                               return moodEmojis[mostCommon[0]] || '😊';
                             })()}
                           </div>
