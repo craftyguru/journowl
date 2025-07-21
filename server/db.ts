@@ -11,10 +11,12 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-// Create a new Pool with the DATABASE_URL
+// Add ssl: { rejectUnauthorized: false } to Pool config
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 });
 
-// Initialize Drizzle ORM with the pool and schema
 export const db = drizzle(pool, { schema });
