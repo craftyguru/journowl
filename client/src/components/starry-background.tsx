@@ -69,7 +69,7 @@ export const StarryBackground = () => {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-0 bg-black overflow-hidden">
+    <div className="fixed inset-0 z-0 bg-black overflow-hidden pointer-events-none">
       {/* Subtle gradient overlay for depth */}
       <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 via-transparent to-gray-900/40" />
       
@@ -77,16 +77,18 @@ export const StarryBackground = () => {
       {stars.map((star) => (
         <motion.div
           key={star.id}
-          className="absolute rounded-full bg-white"
+          className="absolute rounded-full"
           style={{
             left: `${star.x}%`,
             top: `${star.y}%`,
             width: `${star.size}px`,
             height: `${star.size}px`,
+            backgroundColor: `rgba(255, 255, 255, ${star.brightness})`,
+            boxShadow: `0 0 ${star.size * 2}px rgba(255, 255, 255, ${star.brightness * 0.5})`,
           }}
           animate={{
-            opacity: [star.brightness * 0.3, star.brightness, star.brightness * 0.3],
-            scale: [0.8, 1.2, 0.8],
+            opacity: [star.brightness * 0.4, star.brightness, star.brightness * 0.4],
+            scale: [0.8, 1.3, 0.8],
           }}
           transition={{
             duration: star.flickerSpeed,
