@@ -156,12 +156,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create user with email verification required
       const user = await createUser({
         ...userData,
-        // Email verification fields are handled by storage layer
-        requiresEmailVerification: true,
-        emailVerified: false,
         emailVerificationToken: verificationToken,
         emailVerificationExpires: verificationExpires
-      });
+      } as any); // Storage layer handles additional email verification fields
       
       // Don't log in user until email is verified
       // req.session.userId = user.id;
