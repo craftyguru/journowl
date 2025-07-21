@@ -168,6 +168,15 @@ export async function sendEmailWithSendGrid(template: EmailTemplate): Promise<bo
       subject: template.subject,
       html: template.html,
       text: template.text,
+      trackingSettings: {
+        clickTracking: {
+          enable: false,
+          enableText: false
+        },
+        openTracking: {
+          enable: true
+        }
+      }
     });
 
     console.log('SendGrid response status:', response[0]?.statusCode);
