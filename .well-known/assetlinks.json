@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.journowl.app",
+      "sha256_cert_fingerprints": [
+        "83:C9:43:64:10:AB:F0:BF:1C:55:9F:0C:C4:BA:0A:B0:F1:F5:5F:E8:42:D9:2F:63:66:56:26:6F:70:DE:E0"
+      ]
+    }
+  }
+]
