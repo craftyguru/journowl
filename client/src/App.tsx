@@ -24,6 +24,7 @@ import EmailVerified from "@/pages/email-verified";
 import ImportPage from "@/pages/ImportPage";
 import SharePage from "@/pages/SharePage";
 import { MobilePWABanner } from "@/components/MobilePWABanner";
+import { MobileInstallHelper } from "@/components/MobileInstallHelper";
 
 function App() {
   // Check if demo mode is requested from URL params
@@ -117,6 +118,7 @@ function App() {
               onGetStarted={() => setCurrentView("auth")} 
             />
             <MobilePWABanner />
+            <MobileInstallHelper />
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>

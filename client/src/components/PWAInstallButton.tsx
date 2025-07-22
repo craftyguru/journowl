@@ -84,13 +84,20 @@ export function MobilePWABanner() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
-    // Only show on mobile devices
+    // Only show on mobile devices and check PWA requirements
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    const isHTTPS = window.location.protocol === 'https:';
     
-    if (!isMobile || isInstalled) return;
+    console.log('PWA Mobile Check:', { isMobile, isInstalled, isHTTPS, origin: window.location.origin });
+    
+    if (!isMobile || isInstalled || !isHTTPS) {
+      if (!isHTTPS) console.log('PWA requires HTTPS for mobile installation');
+      return;
+    }
 
     const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('Mobile beforeinstallprompt event triggered');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setShowBanner(true);
@@ -109,6 +116,30 @@ export function MobilePWABanner() {
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
   }, []);
+
+  // Show iOS install instructions
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  
+  if (isIOS && !showBanner) {
+    return (
+      <div className="fixed bottom-4 left-4 right-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white p-4 rounded-lg shadow-lg z-50 md:hidden">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h3 className="font-semibold text-sm">📱 Install JournOwl App</h3>
+            <p className="text-xs opacity-90 mt-1">
+              Tap the share button <span className="text-lg">⬆️</span> then "Add to Home Screen"
+            </p>
+          </div>
+          <button
+            onClick={() => setShowBanner(false)}
+            className="ml-3 text-white/80 hover:text-white text-xl"
+          >
+            ×
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
