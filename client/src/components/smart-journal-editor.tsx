@@ -327,11 +327,11 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
       <div className="w-full max-w-7xl h-[95vh] sm:h-[90vh] bg-gradient-to-br from-slate-900 to-slate-800 rounded-xl sm:rounded-2xl border border-purple-500/20 shadow-2xl overflow-hidden">
         <div className="flex flex-col sm:flex-row h-full">
           {/* Mobile-First Sidebar */}
-          <div className="w-full sm:w-80 bg-slate-800/50 border-b sm:border-r sm:border-b-0 border-purple-500/20 p-3 sm:p-6 overflow-y-auto max-h-64 sm:max-h-none">
-            {/* Mobile Header */}
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                📝 Smart Journal
+          <div className="w-full sm:w-80 bg-slate-800/50 border-b sm:border-r sm:border-b-0 border-purple-500/20 p-2 sm:p-6 overflow-y-auto max-h-48 sm:max-h-none">
+            {/* Mobile Header - Compact */}
+            <div className="flex items-center justify-between mb-2 sm:mb-4">
+              <h3 className="text-sm sm:text-lg font-semibold text-white flex items-center gap-1 sm:gap-2">
+                📝 Journal
                 <Badge className="bg-orange-500/20 text-orange-300 text-xs hidden sm:block">
                   AI-powered
                 </Badge>
@@ -340,30 +340,30 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                 variant="ghost" 
                 size="sm" 
                 onClick={onClose}
-                className="text-gray-400 hover:text-white"
+                className="text-gray-400 hover:text-white h-8 w-8 sm:h-10 sm:w-10"
               >
                 ✕
               </Button>
             </div>
 
-            {/* Essential Controls */}
-            <div className="space-y-4">
+            {/* Essential Controls - Compact */}
+            <div className="space-y-2 sm:space-y-4">
               {/* Title Input */}
               <div>
                 <Input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="📝 What's on your mind today?"
-                  className="bg-slate-700/80 border-slate-600 text-white text-base sm:text-sm h-12 sm:h-10 rounded-lg"
+                  placeholder="📝 Entry title..."
+                  className="bg-slate-700/80 border-slate-600 text-white text-sm h-8 sm:h-10 rounded-lg"
                 />
               </div>
 
               {/* Mood Dropdown Selector */}
               <div>
-                <label className="text-sm font-medium text-gray-300 mb-2 block">How are you feeling?</label>
+                <label className="text-xs sm:text-sm font-medium text-gray-300 mb-1 block">Mood</label>
                 <Select value={mood} onValueChange={setMood}>
-                  <SelectTrigger className="w-full bg-slate-700/80 border-slate-600 text-white h-12 rounded-lg">
-                    <SelectValue placeholder="Select your mood..." />
+                  <SelectTrigger className="w-full bg-slate-700/80 border-slate-600 text-white h-8 sm:h-12 rounded-lg text-sm">
+                    <SelectValue placeholder="Select mood..." />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-800 border-slate-600">
                     {moodOptions.map((option) => (
@@ -383,25 +383,25 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
               </div>
 
               {/* Privacy Toggle */}
-              <div className="flex items-center justify-between bg-slate-700/30 p-3 rounded-lg">
-                <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-                  <EyeOff className="w-4 h-4" />
-                  Private Entry
+              <div className="flex items-center justify-between bg-slate-700/30 p-2 rounded-lg">
+                <label className="text-xs sm:text-sm font-medium text-gray-300 flex items-center gap-1">
+                  <EyeOff className="w-3 h-3 sm:w-4 sm:h-4" />
+                  Private
                 </label>
                 <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
               </div>
 
-              {/* Quick Tools */}
-              <div className="space-y-3">
+              {/* Quick Tools - Hidden on Mobile */}
+              <div className="space-y-2 hidden sm:block">
                 <h4 className="font-medium text-white flex items-center gap-2">
                   🎨 Quick Tools
                 </h4>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant="outline"
                     onClick={() => fileInputRef.current?.click()}
-                    className="h-12 sm:h-10 border-slate-600 text-white hover:bg-slate-700 flex items-center gap-2 text-sm"
+                    className="h-8 sm:h-10 border-slate-600 text-white hover:bg-slate-700 flex items-center gap-1 text-xs sm:text-sm"
                   >
                     <Upload className="w-5 h-5" />
                     Add Photo

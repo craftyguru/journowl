@@ -18,7 +18,7 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    const scrollThreshold = scrollHeight - clientHeight - 20; // Simplified since content is shorter
+    const scrollThreshold = scrollHeight - clientHeight - 10; // Very strict scroll requirement
     if (scrollTop >= scrollThreshold) {
       setHasScrolledToBottom(true);
     }
@@ -375,6 +375,21 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                     📅 Last updated: July 22, 2025
                   </p>
                 </motion.section>
+
+                {/* Clear "End of Document" indicator */}
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 1.7 }}
+                  className="bg-green-50 dark:bg-green-900/20 border-2 border-green-300 dark:border-green-700 rounded-lg p-4 text-center"
+                >
+                  <h3 className="text-lg font-bold text-green-700 dark:text-green-300 mb-2">
+                    🎉 You've reached the end!
+                  </h3>
+                  <p className="text-green-600 dark:text-green-400 text-sm">
+                    ✅ You can now scroll up to check the agreement boxes and create your account.
+                  </p>
+                </motion.div>
               </div>
             </div>
 
@@ -384,6 +399,18 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.5 }}
             >
+              {!hasScrolledToBottom && (
+                <motion.div 
+                  className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg p-3 mb-3"
+                  animate={{ scale: [1, 1.02, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300 flex items-center gap-2">
+                    📜 <strong>Please scroll to the bottom</strong> to read all terms before you can agree to them.
+                  </p>
+                </motion.div>
+              )}
+
               <div className="space-y-3">
                 <motion.div 
                   className="flex items-center space-x-3"
@@ -393,12 +420,12 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                     id="terms-agreement"
                     checked={agreedToTerms}
                     onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
-                    disabled={false}
-                    className="border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 cursor-pointer"
+                    disabled={!hasScrolledToBottom}
+                    className={`border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 ${hasScrolledToBottom ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                   />
                   <label 
                     htmlFor="terms-agreement" 
-                    className="text-sm cursor-pointer text-gray-700 dark:text-gray-300"
+                    className={`text-sm text-gray-700 dark:text-gray-300 ${hasScrolledToBottom ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                   >
                     ✅ I have read and agree to the Terms of Service
                   </label>
@@ -412,12 +439,12 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                     id="privacy-agreement"
                     checked={agreedToPrivacy}
                     onCheckedChange={(checked) => setAgreedToPrivacy(checked === true)}
-                    disabled={false}
-                    className="border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 cursor-pointer"
+                    disabled={!hasScrolledToBottom}
+                    className={`border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 ${hasScrolledToBottom ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                   />
                   <label 
                     htmlFor="privacy-agreement" 
-                    className="text-sm cursor-pointer text-gray-700 dark:text-gray-300"
+                    className={`text-sm text-gray-700 dark:text-gray-300 ${hasScrolledToBottom ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                   >
                     🛡️ I acknowledge the Privacy Policy and data processing practices
                   </label>
