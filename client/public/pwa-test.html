@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Installation Test</title>
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .status { margin: 10px 0; padding: 10px; border-radius: 5px; }
+    .pass { background: #d4edda; color: #155724; }
+    .fail { background: #f8d7da; color: #721c24; }
+    button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>JournOwl PWA Installation Test</h1>
+  
+  <div id="status"></div>
+  <button id="installBtn" style="display:none;">Install PWA</button>
+  <button id="testBtn">Run Tests</button>
+
+  <script>
+    let deferredPrompt;
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installBtn').style.display = 'block';
+      addStatus('beforeinstallprompt event fired!', true);
+    });
+
+    window.addEventListener('appinstalled', () => {
+      addStatus('App installed successfully!', true);
+    });
+
+    function addStatus(message, isPass) {
+      const div = document.createElement('div');
+      div.className = 'status ' + (isPass ? 'pass' : 'fail');
+      div.textContent = (isPass ? '✅ ' : '❌ ') + message;
+      document.getElementById('status').appendChild(div);
+    }
+
+    async function runTests() {
+      document.getElementById('status').innerHTML = '';
+      
+      // Basic checks
+      addStatus('HTTPS: ' + (location.protocol === 'https:'), location.protocol === 'https:');
+      addStatus('Service Worker supported: ' + ('serviceWorker' in navigator), 'serviceWorker' in navigator);
+      addStatus('Manifest linked: ' + !!document.querySelector('link[rel="manifest"]'), !!document.querySelector('link[rel="manifest"]'));
+      addStatus('Standalone mode: ' + matchMedia('(display-mode: standalone)').matches, matchMedia('(display-mode: standalone)').matches);
+      
+      // Check manifest
+      try {
+        const response = await fetch('/manifest.json');
+        const manifest = await response.json();
+        addStatus('Manifest loads: ' + response.ok, response.ok);
+        addStatus('Has name: ' + !!manifest.name, !!manifest.name);
+        addStatus('Has start_url: ' + !!manifest.start_url, !!manifest.start_url);
+        addStatus('Has icons: ' + (manifest.icons && manifest.icons.length > 0), manifest.icons && manifest.icons.length > 0);
+        addStatus('Display mode: ' + manifest.display, manifest.display === 'standalone');
+      } catch (e) {
+        addStatus('Manifest error: ' + e.message, false);
+      }
+
+      // Check service worker
+      if ('serviceWorker' in navigator) {
+        try {
+          const registration = await navigator.serviceWorker.getRegistration();
+          addStatus('Service Worker registered: ' + !!registration, !!registration);
+          if (registration) {
+            addStatus('SW state: ' + (registration.active ? registration.active.state : 'none'), registration.active && registration.active.state === 'activated');
+          }
+        } catch (e) {
+          addStatus('Service Worker error: ' + e.message, false);
+        }
+      }
+
+      // Check beforeinstallprompt
+      setTimeout(() => {
+        addStatus('beforeinstallprompt fired: ' + !!deferredPrompt, !!deferredPrompt);
+        if (!deferredPrompt) {
+          addStatus('Possible reasons: User engagement too low, already installed, or browser restrictions', false);
+        }
+      }, 1000);
+    }
+
+    document.getElementById('testBtn').onclick = runTests;
+    document.getElementById('installBtn').onclick = async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        addStatus('Install result: ' + outcome, outcome === 'accepted');
+        deferredPrompt = null;
+        document.getElementById('installBtn').style.display = 'none';
+      }
+    };
+
+    // Auto-run on load
+    window.onload = () => {
+      setTimeout(runTests, 500);
+    };
+  </script>
+</body>
+</html>
