@@ -107,18 +107,23 @@ Current environment: Development Mode`);
 
 🦉 JournOwl can be installed as an app!
 
-Why the install button isn't working:
-• Browser needs more user interaction (30-60 seconds)
-• Some browsers require multiple visits over time
-• Chrome/Edge: Look for install icon in address bar
-• Mobile: Use browser menu → "Add to Home Screen"
+Current Status:
+• Production site: ✅ journowl.app  
+• HTTPS: ✅ Secure connection
+• Service Worker: ✅ Active
+• beforeinstallprompt: ❌ Not fired yet
 
-Manual Installation:
-📱 Android: Chrome menu → "Add to Home Screen"
-📱 iPhone: Safari Share → "Add to Home Screen"
-💻 Desktop: Look for install icon in address bar
+Why browsers don't show install prompts immediately:
+• Need 30+ seconds of site interaction
+• Require multiple visits over several days  
+• Must show "user engagement" signals
 
-Try interacting with the site more, then the install prompt should appear!`);
+WORKING SOLUTIONS:
+💻 Desktop Chrome/Edge: Look for install icon ⬇️ in address bar (right side)
+📱 Android: Chrome menu (⋮) → "Add to Home screen"  
+📱 iPhone: Safari Share (⬆️) → "Add to Home Screen"
+
+The install prompt will appear automatically after you use the site regularly for a few days!`);
       return;
     }
 
