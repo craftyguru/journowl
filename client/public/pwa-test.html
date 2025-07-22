@@ -48,7 +48,8 @@
       addStatus('HTTPS: ' + (location.protocol === 'https:'), location.protocol === 'https:');
       addStatus('Service Worker supported: ' + ('serviceWorker' in navigator), 'serviceWorker' in navigator);
       addStatus('Manifest linked: ' + !!document.querySelector('link[rel="manifest"]'), !!document.querySelector('link[rel="manifest"]'));
-      addStatus('Standalone mode: ' + matchMedia('(display-mode: standalone)').matches, matchMedia('(display-mode: standalone)').matches);
+      const isStandalone = matchMedia('(display-mode: standalone)').matches;
+      addStatus('Currently in standalone mode: ' + isStandalone + ' (Only true when app is installed & launched)', isStandalone);
       
       // Check manifest
       try {
@@ -87,6 +88,7 @@
           guidance.innerHTML = `
             <h3 style="margin-top: 0; color: #856404;">📱 PWA Installation Requirements Met!</h3>
             <p><strong>Technical Status:</strong> ✅ ALL PWA requirements are satisfied!</p>
+            <p><strong>Note:</strong> "Standalone mode: false" is NORMAL when viewing in browser - it only shows "true" when the PWA is installed and launched as an app.</p>
             <p><strong>Why no install prompt?</strong> Browsers require user engagement:</p>
             <ul style="margin: 10px 0; padding-left: 20px;">
               <li><strong>Time on site:</strong> Spend 30-60+ seconds actively using the app</li>
