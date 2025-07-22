@@ -18,7 +18,7 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    const scrollThreshold = scrollHeight - clientHeight - 50; // More generous threshold
+    const scrollThreshold = scrollHeight - clientHeight - 20; // Simplified since content is shorter
     if (scrollTop >= scrollThreshold) {
       setHasScrolledToBottom(true);
     }
@@ -140,8 +140,8 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                   </h3>
                   <p className="text-purple-700 dark:text-purple-300 leading-relaxed">
                     🌈 You're about to join thousands of amazing journalers! By creating your account, you're agreeing to our 
-                    friendly Terms of Service and Privacy Policy. We've made them as clear and fun as possible! 
-                    📖 Please take a moment to read through them - we promise it won't take long! ⏰
+                    friendly <a href="/terms" target="_blank" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline font-semibold">Terms of Service</a> and <a href="/privacy-policy" target="_blank" className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 underline font-semibold">Privacy Policy</a>. 
+                    📖 Please read them carefully before accepting! ⏰
                   </p>
                 </motion.div>
 
@@ -149,32 +149,70 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.4 }}
+                  className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"
                 >
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-blue-700 dark:text-blue-300">
                     <Shield className="w-5 h-5" />
-                    1. Acceptance of Terms 📋
+                    📖 Read Our Full Legal Documents
                   </h3>
-                  <p className="mb-2 text-gray-700 dark:text-gray-300">
-                    By using JournOwl ("the Service"), you agree to be bound by these Terms of Service and our Privacy Policy. 
-                    If you do not agree to these terms, please do not use our service.
-                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <a 
+                        href="/terms" 
+                        target="_blank" 
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
+                      >
+                        📋 Terms of Service
+                        <span className="text-xs opacity-75">(opens new tab)</span>
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <a 
+                        href="/privacy-policy" 
+                        target="_blank" 
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
+                      >
+                        🔒 Privacy Policy
+                        <span className="text-xs opacity-75">(opens new tab)</span>
+                      </a>
+                    </div>
+                    <p className="text-blue-700 dark:text-blue-300 text-sm mt-2">
+                      ✨ Please review both documents before creating your account. By checking the boxes below, you confirm you've read and accept our terms.
+                    </p>
+                  </div>
                 </motion.section>
 
                 <motion.section
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.5 }}
+                  className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4"
                 >
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-purple-700 dark:text-purple-300">
-                    <Lock className="w-5 h-5" />
-                    2. Account Registration 👤
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-green-700 dark:text-green-300">
+                    <Heart className="w-5 h-5" />
+                    ✨ Key Points Summary
                   </h3>
-                  <ul className="space-y-2 ml-4 text-gray-700 dark:text-gray-300">
-                    <li>🔸 You must register with accurate and complete information</li>
-                    <li>🔸 Only one account per user is permitted</li>
-                    <li>🔸 You are responsible for all activity on your account</li>
-                    <li>🔸 You must keep your login credentials secure and confidential</li>
-                    <li>🔸 You must be at least 13 years old to create an account</li>
+                  <ul className="space-y-2 text-green-700 dark:text-green-300">
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 mt-1">🔸</span>
+                      <span>JournOwl is for personal journaling and self-reflection</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 mt-1">🔸</span>
+                      <span>Your journal entries are private and encrypted</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 mt-1">🔸</span>
+                      <span>AI features help with insights and writing prompts</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 mt-1">🔸</span>
+                      <span>We never sell or share your personal data</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="text-green-500 mt-1">🔸</span>
+                      <span>Must be 13+ years old to create an account</span>
+                    </li>
                   </ul>
                 </motion.section>
 

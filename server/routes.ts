@@ -2895,6 +2895,15 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Legal pages routes
+  app.get('/privacy-policy', (req, res) => {
+    res.sendFile(path.join(path.dirname(new URL(import.meta.url).pathname), '../dist/public/index.html'));
+  });
+  
+  app.get('/terms', (req, res) => {
+    res.sendFile(path.join(path.dirname(new URL(import.meta.url).pathname), '../dist/public/index.html'));
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

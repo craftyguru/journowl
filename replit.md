@@ -130,6 +130,28 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 
 ## Recent Changes
 
+### July 22, 2025 - STANDALONE PRIVACY POLICY & TERMS OF SERVICE PAGES COMPLETE ✅
+- ✅ **STANDALONE PRIVACY POLICY PAGE**: Created comprehensive privacy policy at `/privacy-policy` with full legal compliance details
+- ✅ **STANDALONE TERMS OF SERVICE PAGE**: Created detailed terms of service at `/terms` with complete terms and conditions
+- ✅ **BEAUTIFUL ANIMATED DESIGN**: Both pages feature owl mascot branding, gradient backgrounds, and engaging animations
+- ✅ **COMPREHENSIVE LEGAL CONTENT**: Privacy policy covers data collection, security, third-party services (SendGrid, Stripe, Supabase), user rights, and contact information
+- ✅ **DETAILED TERMS COVERAGE**: Terms of service includes account registration, permitted/prohibited use, platform restrictions, AI services, intellectual property, billing, and liability
+- ✅ **FRONTEND ROUTING INTEGRATION**: Added routes to App.tsx for `/privacy-policy` and `/terms` with proper component rendering
+- ✅ **SERVER-SIDE ROUTE SUPPORT**: Added Express routes to serve privacy policy and terms pages properly
+- ✅ **ENHANCED USER AGREEMENT MODAL**: Updated signup modal to include prominent links to standalone legal documents
+- ✅ **IMPROVED USER EXPERIENCE**: Simplified agreement modal with clear buttons to access full legal documents in new tabs
+- ✅ **DIRECT URL ACCESS**: Privacy policy and terms now accessible at `https://journowl.app/privacy-policy` and `https://journowl.app/terms`
+
+**Privacy Policy Address Confirmed:**
+- **URL**: https://journowl.app/privacy-policy
+- **Content**: Complete privacy policy covering all data practices, security measures, and user rights
+- **Legal Compliance**: Suitable for app store requirements and regulatory compliance
+
+**Terms of Service Address Confirmed:**  
+- **URL**: https://journowl.app/terms
+- **Content**: Comprehensive terms covering service usage, restrictions, billing, and liability
+- **Platform Protection**: Includes intellectual property and platform restriction clauses
+
 ### July 22, 2025 - OWL.PNG MASCOT INTEGRATION & PWA COMPLETE ✅
 - ✅ **CUSTOM OWL.PNG MASCOT INTEGRATED**: Successfully integrated user's beautiful owl.png mascot design across entire platform
 - ✅ **ICON PLACEHOLDER REPLACEMENT**: Replaced all 327-byte placeholder icons with proper owl-themed PWA icons

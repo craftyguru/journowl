@@ -23,17 +23,21 @@ import { EmailConfirmation } from "@/pages/email-confirmation";
 import EmailVerified from "@/pages/email-verified";
 import ImportPage from "@/pages/ImportPage";
 import SharePage from "@/pages/SharePage";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsOfService from "@/pages/terms";
 // Only keeping the main PWA install button
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
     if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
     if (window.location.pathname === '/import') return 'import';
     if (window.location.pathname === '/share') return 'share';
+    if (window.location.pathname === '/privacy-policy') return 'privacy-policy';
+    if (window.location.pathname === '/terms') return 'terms';
     if (window.location.pathname === '/email-verified' || urlParams.get('success') === '1' || urlParams.get('success') === '0' || urlParams.get('verified') === 'true') {
       console.log('Email verified view detected');
       return 'email-verified';
@@ -50,7 +54,7 @@ function App() {
     if (tabOptions.includes(view)) {
       setActiveTab(view);
       setCurrentView("dashboard");
-    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share") {
+    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms") {
       setCurrentView(view);
       if (view === "dashboard") setActiveTab("journal");
     }
@@ -102,6 +106,34 @@ function App() {
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
       </div>
+    );
+  }
+
+  // Privacy Policy page (no auth required)
+  if (currentView === "privacy-policy") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <PrivacyPolicy />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  // Terms of Service page (no auth required)
+  if (currentView === "terms") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <TermsOfService />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     );
   }
 
