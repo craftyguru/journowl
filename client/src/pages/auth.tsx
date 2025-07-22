@@ -10,6 +10,8 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Eye, EyeOff, Mail, RefreshCw, CheckCircle } from "lucide-react";
 import { WelcomeTutorial } from "@/components/welcome-tutorial";
+import { UserAgreement } from "@/components/UserAgreement";
+import { CaptchaChallenge } from "@/components/CaptchaChallenge";
 
 // Animated background component
 const AnimatedBackground = () => {
@@ -114,6 +116,12 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
     confirmPassword: ""
   });
 
+  // Security features state
+  const [showUserAgreement, setShowUserAgreement] = useState(false);
+  const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState("");
+  const [showCaptcha, setShowCaptcha] = useState(false);
+
   const loginMutation = useMutation({
     mutationFn: async (data: typeof loginData) => {
       const response = await apiRequest("POST", "/api/auth/login", data);
@@ -140,7 +148,7 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
   });
 
   const registerMutation = useMutation({
-    mutationFn: async (data: typeof registerData) => {
+    mutationFn: async (data: typeof registerData & { captchaToken: string }) => {
       const { confirmPassword, ...submitData } = data;
       const response = await apiRequest("POST", "/api/auth/register", submitData);
       return await response.json();
@@ -216,6 +224,24 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
 
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if user has agreed to terms
+    if (!hasAgreedToTerms) {
+      setShowUserAgreement(true);
+      return;
+    }
+
+    // Check if CAPTCHA is completed
+    if (!captchaToken) {
+      setShowCaptcha(true);
+      toast({
+        title: "Security verification required",
+        description: "Please complete the security verification to continue.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (!registerData.email || !registerData.username || !registerData.password || !registerData.confirmPassword) {
       toast({
         title: "Missing information",
@@ -224,6 +250,7 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
       });
       return;
     }
+    
     if (registerData.password !== registerData.confirmPassword) {
       toast({
         title: "Password mismatch",
@@ -232,7 +259,46 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
       });
       return;
     }
-    registerMutation.mutate(registerData);
+    
+    // Enhanced password validation
+    if (registerData.password.length < 8) {
+      toast({
+        title: "Password too weak",
+        description: "Password must be at least 8 characters long and contain letters and numbers.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check password strength
+    const hasLetter = /[a-zA-Z]/.test(registerData.password);
+    const hasNumber = /\d/.test(registerData.password);
+    
+    if (!hasLetter || !hasNumber) {
+      toast({
+        title: "Password too weak",
+        description: "Password must contain both letters and numbers for security.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    registerMutation.mutate({ ...registerData, captchaToken });
+  };
+
+  const handleUserAgreementAccept = () => {
+    setHasAgreedToTerms(true);
+    setShowUserAgreement(false);
+    setShowCaptcha(true);
+  };
+
+  const handleCaptchaSuccess = (token: string) => {
+    setCaptchaToken(token);
+    setShowCaptcha(false);
+    toast({
+      title: "Security verification complete",
+      description: "You can now create your account.",
+    });
   };
 
   // Welcome Tutorial Component
@@ -563,6 +629,24 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
                         "Create Account & Begin"
                       )}
                     </Button>
+
+                    {/* Security indicators */}
+                    {hasAgreedToTerms && (
+                      <div className="flex items-center gap-2 text-green-400 text-sm">
+                        <CheckCircle className="w-4 h-4" />
+                        Terms of Service accepted
+                      </div>
+                    )}
+                    {captchaToken && (
+                      <div className="flex items-center gap-2 text-green-400 text-sm">
+                        <CheckCircle className="w-4 h-4" />
+                        Security verification complete
+                      </div>
+                    )}
+                    
+                    <p className="text-xs text-gray-400 text-center mt-2">
+                      Password must be at least 8 characters with letters and numbers
+                    </p>
                   </motion.form>
 
                   {/* Social Login Divider */}
@@ -639,6 +723,45 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
           </Card>
         </motion.div>
       </div>
+
+      {/* User Agreement Modal */}
+      <UserAgreement
+        isOpen={showUserAgreement}
+        onAccept={handleUserAgreementAccept}
+        onDecline={() => setShowUserAgreement(false)}
+      />
+
+      {/* CAPTCHA Modal */}
+      {showCaptcha && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white dark:bg-gray-900 rounded-lg max-w-md w-full shadow-xl">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Security Verification</h3>
+                <Button
+                  onClick={() => setShowCaptcha(false)}
+                  variant="ghost"
+                  size="sm"
+                  className="text-gray-500"
+                >
+                  ×
+                </Button>
+              </div>
+              
+              <CaptchaChallenge 
+                onSuccess={handleCaptchaSuccess}
+                onError={() => {
+                  toast({
+                    title: "Verification failed",
+                    description: "Please try again with the correct answer.",
+                    variant: "destructive",
+                  });
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
