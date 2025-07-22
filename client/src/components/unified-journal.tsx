@@ -33,8 +33,11 @@ import PromptPurchase from "@/components/PromptPurchase";
 
 const moodEmojis = ["😊", "😐", "😔", "🤔", "😄", "🎉", "😠", "😴", "💪", "🥰"];
 const fontFamilies = [
-  "Inter", "Georgia", "Times New Roman", "Arial", "Helvetica", 
-  "Comic Sans MS", "Courier New", "Palatino", "Garamond", "Crimson Text"
+  'Arial', 'Helvetica', 'Times New Roman', 'Georgia', 'Verdana',
+  'Courier New', 'Trebuchet MS', 'Arial Black', 'Impact', 'Comic Sans MS',
+  'Palatino', 'Garamond', 'Bookman', 'Avant Garde', 'Century Gothic',
+  'Franklin Gothic Medium', 'Lucida Console', 'Lucida Sans Unicode', 'Tahoma', 'Geneva',
+  'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy'
 ];
 
 interface UnifiedJournalProps {
@@ -837,9 +840,17 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                         <SelectTrigger className="h-8">
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
-                          {['serif', 'sans-serif', 'monospace'].map(font => (
-                            <SelectItem key={font} value={font}>{font}</SelectItem>
+                        <SelectContent className="max-h-48 overflow-y-auto">
+                          {[
+                            'Arial', 'Helvetica', 'Times New Roman', 'Georgia', 'Verdana',
+                            'Courier New', 'Trebuchet MS', 'Arial Black', 'Impact', 'Comic Sans MS',
+                            'Palatino', 'Garamond', 'Bookman', 'Avant Garde', 'Century Gothic',
+                            'Franklin Gothic Medium', 'Lucida Console', 'Lucida Sans Unicode', 'Tahoma', 'Geneva',
+                            'serif', 'sans-serif', 'monospace', 'cursive', 'fantasy'
+                          ].map(font => (
+                            <SelectItem key={font} value={font} style={{ fontFamily: font }}>
+                              {font}
+                            </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
