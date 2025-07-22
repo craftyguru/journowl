@@ -18,12 +18,13 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
-    if (scrollTop + clientHeight >= scrollHeight - 10) {
+    const scrollThreshold = scrollHeight - clientHeight - 50; // More generous threshold
+    if (scrollTop >= scrollThreshold) {
       setHasScrolledToBottom(true);
     }
   };
 
-  const canAccept = hasScrolledToBottom && agreedToTerms && agreedToPrivacy;
+  const canAccept = agreedToTerms && agreedToPrivacy;
 
   return (
     <AnimatePresence>
@@ -105,7 +106,7 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
               </div>
             </div>
         
-            <ScrollArea className="flex-1 p-6" onScrollCapture={handleScroll}>
+            <ScrollArea className="flex-1 p-6" onScroll={handleScroll}>
               <div className="space-y-6 text-sm">
                 <motion.div 
                   className="bg-gradient-to-r from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/20 dark:to-pink-900/30 p-6 rounded-xl border-2 border-dashed border-purple-300 dark:border-purple-600 relative overflow-hidden"
@@ -354,12 +355,12 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                     id="terms-agreement"
                     checked={agreedToTerms}
                     onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
-                    disabled={!hasScrolledToBottom}
-                    className="border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500"
+                    disabled={false}
+                    className="border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 cursor-pointer"
                   />
                   <label 
                     htmlFor="terms-agreement" 
-                    className={`text-sm cursor-pointer ${!hasScrolledToBottom ? 'text-gray-400' : 'text-gray-700 dark:text-gray-300'}`}
+                    className="text-sm cursor-pointer text-gray-700 dark:text-gray-300"
                   >
                     ✅ I have read and agree to the Terms of Service
                   </label>
@@ -373,27 +374,27 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                     id="privacy-agreement"
                     checked={agreedToPrivacy}
                     onCheckedChange={(checked) => setAgreedToPrivacy(checked === true)}
-                    disabled={!hasScrolledToBottom}
-                    className="border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500"
+                    disabled={false}
+                    className="border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 cursor-pointer"
                   />
                   <label 
                     htmlFor="privacy-agreement" 
-                    className={`text-sm cursor-pointer ${!hasScrolledToBottom ? 'text-gray-400' : 'text-gray-700 dark:text-gray-300'}`}
+                    className="text-sm cursor-pointer text-gray-700 dark:text-gray-300"
                   >
                     🛡️ I acknowledge the Privacy Policy and data processing practices
                   </label>
                 </motion.div>
               </div>
 
-              {!hasScrolledToBottom && (
+              {!agreedToTerms || !agreedToPrivacy ? (
                 <motion.p 
-                  className="text-xs text-amber-600 dark:text-amber-400 italic bg-amber-50 dark:bg-amber-900/20 p-2 rounded border border-amber-200 dark:border-amber-700"
+                  className="text-xs text-purple-600 dark:text-purple-400 italic bg-purple-50 dark:bg-purple-900/20 p-2 rounded border border-purple-200 dark:border-purple-700"
                   animate={{ scale: [1, 1.02, 1] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 >
-                  📜 Please scroll to the bottom to enable the agreement checkboxes
+                  ✅ Please check both agreement boxes above to continue
                 </motion.p>
-              )}
+              ) : null}
 
               <div className="flex gap-3">
                 <motion.div
