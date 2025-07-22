@@ -902,23 +902,24 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
 
         <TabsContent value="journal" data-tabs-content>
           <div className="space-y-6">
-            {/* Mobile-Optimized Smart Journal Header */}
+            {/* Mobile-Optimized Smart Journal Header - Ultra Compact */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-6 shadow-2xl border border-purple-500/20"
+              className="bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-lg sm:rounded-2xl p-2 sm:p-4 lg:p-6 shadow-2xl border border-purple-500/20"
             >
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
                 <div className="flex-1">
-                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-white mb-1 sm:mb-2">Smart Journal</h2>
-                  <p className="text-gray-300 text-sm sm:text-base leading-tight">Your AI-powered writing companion with photo analysis and intelligent prompts</p>
+                  <h2 className="text-sm sm:text-xl lg:text-2xl font-bold text-white mb-0 sm:mb-2">📝 Smart Journal</h2>
+                  <p className="text-gray-300 text-xs sm:text-base leading-tight hidden sm:block">Your AI-powered writing companion with photo analysis and intelligent prompts</p>
                 </div>
                 <Button 
                   onClick={() => openUnifiedJournal()}
-                  className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-4 sm:px-6 lg:px-8 py-2 sm:py-3 text-sm sm:text-base lg:text-lg"
+                  className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-3 sm:px-6 lg:px-8 py-1 sm:py-3 text-xs sm:text-base lg:text-lg h-7 sm:h-auto"
                 >
-                  <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Open Journal Book
+                  <BookOpen className="w-3 h-3 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+                  <span className="hidden sm:inline">Open Journal Book</span>
+                  <span className="sm:hidden">Write</span>
                 </Button>
               </div>
             </motion.div>
