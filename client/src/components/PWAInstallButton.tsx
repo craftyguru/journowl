@@ -66,6 +66,11 @@ export function PWAInstallButton() {
   }, []);
 
   const handleInstallClick = async () => {
+    console.log('PWA Debug: Install button clicked!');
+    console.log('PWA Debug: deferredPrompt exists:', !!deferredPrompt);
+    console.log('PWA Debug: isInstallable:', isInstallable);
+    console.log('PWA Debug: hostname:', window.location.hostname);
+    
     if (!deferredPrompt) {
       // In development mode, show helper modal instead
       const isDev = window.location.hostname.includes('replit.dev') || window.location.hostname === 'localhost';
@@ -110,8 +115,10 @@ Try interacting with the site more, then the install prompt should appear!`);
 
     console.log('PWA Debug: Triggering install prompt');
     try {
-      deferredPrompt.prompt();
+      await deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+      
+      console.log('PWA Debug: User choice outcome:', outcome);
       
       if (outcome === 'accepted') {
         console.log('PWA Debug: User accepted the install prompt');
@@ -123,6 +130,7 @@ Try interacting with the site more, then the install prompt should appear!`);
       setIsInstallable(false);
     } catch (error) {
       console.error('PWA Debug: Error during install prompt:', error);
+      alert('PWA installation failed. Please try using your browser menu to add to home screen.');
     }
   };
 
@@ -144,11 +152,12 @@ Try interacting with the site more, then the install prompt should appear!`);
       onClick={handleInstallClick}
       variant="outline"
       size="sm"
-      className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white border-0 hover:from-purple-600 hover:to-blue-600"
+      className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white border-0 hover:from-purple-600 hover:to-blue-600 cursor-pointer"
+      style={{ pointerEvents: 'auto' }}
     >
       <Smartphone className="w-4 h-4" />
       <Download className="w-4 h-4" />
-      Install App
+      {isInstallable ? 'Install App' : 'Install Help'}
     </Button>
   );
 }
