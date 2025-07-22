@@ -12,6 +12,7 @@ export function PWAInstallButton() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [isInstallable, setIsInstallable] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [showDevHelper, setShowDevHelper] = useState(false);
 
   useEffect(() => {
     // Check if already installed
@@ -20,8 +21,20 @@ export function PWAInstallButton() {
       return;
     }
 
+    // Check if we're in development mode
+    const isProduction = window.location.hostname === 'journowl.app';
+    const isDev = window.location.hostname.includes('replit.dev') || window.location.hostname === 'localhost';
+    
+    console.log('PWA Debug: Environment check', {
+      hostname: window.location.hostname,
+      isProduction,
+      isDev,
+      protocol: window.location.protocol
+    });
+
     // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('PWA Debug: beforeinstallprompt event fired');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setIsInstallable(true);
@@ -29,6 +42,7 @@ export function PWAInstallButton() {
 
     // Listen for app installed event
     const handleAppInstalled = () => {
+      console.log('PWA Debug: app installed event');
       setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
@@ -37,6 +51,14 @@ export function PWAInstallButton() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
+    // In development, always show the helper button after a delay
+    if (isDev && !isInstalled) {
+      setTimeout(() => {
+        console.log('PWA Debug: Showing dev helper button');
+        setShowDevHelper(true);
+      }, 2000);
+    }
+
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
@@ -44,23 +66,53 @@ export function PWAInstallButton() {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      // In development mode, show helper modal instead
+      const isDev = window.location.hostname.includes('replit.dev') || window.location.hostname === 'localhost';
+      if (isDev) {
+        alert(`PWA Installation Info:
 
+🚀 For full PWA installation, visit: https://journowl.app
+
+Why it doesn't work here:
+• Development domains don't trigger install prompts
+• Browsers require trusted production domains
+• Full PWA features need HTTPS production environment
+
+On production (journowl.app):
+• Install button will work automatically
+• Mobile users get native install prompts
+• Full offline capabilities available
+
+Current environment: Development Mode`);
+        return;
+      }
+      return;
+    }
+
+    console.log('PWA Debug: Triggering install prompt');
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
     
     if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
+      console.log('PWA Debug: User accepted the install prompt');
     } else {
-      console.log('User dismissed the install prompt');
+      console.log('PWA Debug: User dismissed the install prompt');
     }
     
     setDeferredPrompt(null);
     setIsInstallable(false);
   };
 
-  // Don't show button if already installed or not installable
-  if (isInstalled || !isInstallable) {
+  // Show button if installable OR in development mode
+  if (isInstalled) {
+    return null;
+  }
+
+  const isDev = window.location.hostname.includes('replit.dev') || window.location.hostname === 'localhost';
+  
+  // Hide button if not installable and not in dev mode
+  if (!isInstallable && !isDev) {
     return null;
   }
 
