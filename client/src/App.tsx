@@ -28,6 +28,9 @@ import { MobileInstallHelper } from "@/components/MobileInstallHelper";
 import { MobilePWAPrompt } from "@/components/MobilePWAPrompt";
 import { MobilePWAInstaller } from "@/components/MobilePWAInstaller";
 import { FloatingInstallButton } from "@/components/FloatingInstallButton";
+import { ActualPWAInstaller } from "@/components/ActualPWAInstaller";
+import { SuperForceInstaller } from "@/components/SuperForceInstaller";
+import { DirectDOMInstaller } from "@/components/DirectDOMInstaller";
 
 import { PWAEngagementTracker } from "@/components/PWAEngagementTracker";
 
@@ -364,6 +367,9 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
       <PWAEngagementTracker />
       <MobilePWAInstaller />
       <FloatingInstallButton />
+      <ActualPWAInstaller />
+      <SuperForceInstaller />
+      <DirectDOMInstaller />
     </div>
   );
 }
