@@ -103,6 +103,33 @@ export function PWAInstallButton() {
         console.error('PWA Debug: Error during install prompt:', error);
       }
     }
+
+    // CRITICAL EXPLANATION: Why the install button "does nothing"
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      alert(`🔍 PWA Install Button Analysis:
+
+WHY THE BUTTON SEEMS TO "DO NOTHING":
+❌ The beforeinstallprompt event hasn't fired yet
+❌ Chrome requires 30-60+ seconds of active browsing
+❌ Must visit the site multiple times over several days
+❌ Cannot be in private/incognito mode
+❌ Must show "user engagement signals"
+
+CURRENT STATUS:
+• beforeinstallprompt event: ${deferredPrompt ? '✅ FIRED' : '❌ NOT FIRED'}
+• Browser: ${navigator.userAgent.includes('Chrome') ? 'Chrome ✅' : 'Other browser'}
+• Domain: ${window.location.hostname === 'journowl.app' ? 'Production ✅' : 'Development'}
+
+MANUAL INSTALLATION (WORKS NOW):
+1. Tap browser menu (⋮) 
+2. Look for "Add to Home screen" or "Install app"
+3. Tap it to install JournOwl
+
+The install button will work automatically once browser engagement requirements are met!`);
+      return;
+    }
     
     // SECOND - For mobile devices, try to open browser menu programmatically or show instructions
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);

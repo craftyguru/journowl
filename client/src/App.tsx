@@ -28,6 +28,7 @@ import { MobileInstallHelper } from "@/components/MobileInstallHelper";
 import { MobilePWAPrompt } from "@/components/MobilePWAPrompt";
 import { MobilePWAInstaller } from "@/components/MobilePWAInstaller";
 import { FloatingInstallButton } from "@/components/FloatingInstallButton";
+import { PWAEngagementTracker } from "@/components/PWAEngagementTracker";
 
 function App() {
   // Check if demo mode is requested from URL params
