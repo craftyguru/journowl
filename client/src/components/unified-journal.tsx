@@ -822,7 +822,111 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     </div>
                   </div>
               
-              {/* Unified Font & Color Controls - Hidden on Mobile */}
+              {/* Mobile Basic Formatting Controls */}
+              <div className="sm:hidden flex flex-wrap gap-2 p-2 bg-purple-50 rounded-lg">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button size="sm" className="h-8 px-2 bg-purple-500 hover:bg-purple-600 text-white">
+                      <Type className="w-3 h-3 mr-1" />
+                      Font
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-56 p-3">
+                    <div className="space-y-2">
+                      <Select value={selectedFont} onValueChange={setSelectedFont}>
+                        <SelectTrigger className="h-8">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {['serif', 'sans-serif', 'monospace'].map(font => (
+                            <SelectItem key={font} value={font}>{font}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <div>
+                        <label className="text-xs">Size: {fontSize}px</label>
+                        <Slider
+                          value={[fontSize]}
+                          onValueChange={(value) => setFontSize(value[0])}
+                          min={14}
+                          max={20}
+                          step={1}
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button size="sm" className="h-8 px-2 bg-gray-700 hover:bg-gray-800 text-white">
+                      <Palette className="w-3 h-3 mr-1" />
+                      Color
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-3">
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-4 gap-2">
+                        {['#000000', '#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'].map(color => (
+                          <button
+                            key={color}
+                            onClick={() => setTextColor(color)}
+                            className="w-8 h-8 rounded border-2"
+                            style={{ backgroundColor: color, borderColor: textColor === color ? '#000' : '#ccc' }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                
+                <Button 
+                  size="sm" 
+                  className="h-8 px-2 bg-blue-500 hover:bg-blue-600 text-white"
+                  onClick={() => {
+                    const textarea = document.querySelector('.w-md-editor-text-textarea') as HTMLTextAreaElement;
+                    if (textarea) {
+                      const start = textarea.selectionStart;
+                      const end = textarea.selectionEnd;
+                      const selectedText = content.substring(start, end);
+                      const newContent = content.substring(0, start) + `**${selectedText}**` + content.substring(end);
+                      setContent(newContent);
+                    }
+                  }}
+                >
+                  <Bold className="w-3 h-3" />
+                </Button>
+                
+                <Button 
+                  size="sm" 
+                  className="h-8 px-2 bg-green-500 hover:bg-green-600 text-white"
+                  onClick={() => {
+                    const textarea = document.querySelector('.w-md-editor-text-textarea') as HTMLTextAreaElement;
+                    if (textarea) {
+                      const start = textarea.selectionStart;
+                      const end = textarea.selectionEnd;
+                      const selectedText = content.substring(start, end);
+                      const newContent = content.substring(0, start) + `*${selectedText}*` + content.substring(end);
+                      setContent(newContent);
+                    }
+                  }}
+                >
+                  <Italic className="w-3 h-3" />
+                </Button>
+                
+                <Button 
+                  size="sm" 
+                  className="h-8 px-2 bg-orange-500 hover:bg-orange-600 text-white"
+                  onClick={() => {
+                    setContent(prev => prev + '\n\n- ');
+                  }}
+                >
+                  <List className="w-3 h-3" />
+                </Button>
+              </div>
+
+              {/* Desktop Advanced Controls */}
               <div className="space-y-2 hidden sm:block">
                 {/* Target Selector */}
                 <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg backdrop-blur-sm">

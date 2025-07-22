@@ -133,7 +133,7 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 ### July 22, 2025 - MOBILE UI OPTIMIZATION & USER AGREEMENT SCROLL ENFORCEMENT COMPLETE ✅
 - ✅ **ORANGE SMART JOURNAL HEADER ULTRA-COMPACT**: Dramatically reduced the large orange header from taking 25% of mobile screen to minimal 5% footprint  
 - ✅ **JOURNAL EDITOR HEADER OPTIMIZED**: Fixed the large orange header in the journal editor popup - reduced padding from p-4 to p-1, text from xl to sm, hidden description on mobile
-- ✅ **TEXT FORMATTING SIMPLIFIED**: Hidden overwhelming font/color controls and MDEditor toolbar on mobile for clean, distraction-free writing experience
+- ✅ **TEXT FORMATTING OPTIMIZED**: Added mobile-friendly basic formatting controls (font, color, bold, italic, lists) while hiding overwhelming advanced toolbar for balanced mobile experience
 - ✅ **MOBILE-FIRST HEADER DESIGN**: Header text reduced from lg to sm on mobile, description hidden on mobile, button height from auto to h-7
 - ✅ **SPACE-SAVING MOBILE LAYOUT**: Padding reduced from p-3 to p-2 on mobile, gap reduced from gap-3 to gap-2, compact rounded corners
 - ✅ **MOBILE BUTTON OPTIMIZATION**: "Open Journal Book" becomes "Write" on mobile, icon size reduced, ultra-compact design
