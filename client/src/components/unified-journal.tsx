@@ -822,8 +822,8 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                     </div>
                   </div>
               
-              {/* Unified Font & Color Controls */}
-              <div className="space-y-2">
+              {/* Unified Font & Color Controls - Hidden on Mobile */}
+              <div className="space-y-2 hidden sm:block">
                 {/* Target Selector */}
                 <div className="flex items-center gap-2 p-3 bg-gradient-to-r from-purple-100 to-purple-200 rounded-lg backdrop-blur-sm">
                   <div className="flex items-center gap-2">
@@ -999,13 +999,13 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
               )}
             </div>
 
-                {/* Rich Text Editor */}
+                {/* Rich Text Editor - Simplified on Mobile */}
                 <div className="flex-1 min-h-0">
                   <MDEditor
                     value={content}
                     onChange={(val) => setContent(val || "")}
                     preview="edit"
-                    hideToolbar={false}
+                    hideToolbar={true}
                     data-color-mode="light"
                     height="100%"
                     style={{
