@@ -9,6 +9,26 @@ const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// PWA MIME type middleware - CRITICAL for PWABuilder compatibility
+app.use((req, res, next) => {
+  // Set correct MIME types for PWA files
+  if (req.path === '/manifest.json' || req.path.startsWith('/manifest.json')) {
+    res.setHeader('Content-Type', 'application/manifest+json');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); // Force refresh for PWABuilder
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  } else if (req.path.endsWith('.png') && req.path.includes('/icons/')) {
+    res.setHeader('Content-Type', 'image/png');
+  } else if (req.path === '/service-worker.js') {
+    res.setHeader('Content-Type', 'application/javascript');
+  } else if (req.path === '/adaptive-card.json' || req.path === '/stats-card.json') {
+    res.setHeader('Content-Type', 'application/json');
+  } else if (req.path === '/offline.html') {
+    res.setHeader('Content-Type', 'text/html');
+  }
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;

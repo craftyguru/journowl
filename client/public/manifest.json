@@ -210,5 +210,6 @@
   "sync_registration": {
     "tags": ["journowl-background-sync"],
     "min_period": 12000
-  }
+  },
+  "version": "1.3.1"
 }
