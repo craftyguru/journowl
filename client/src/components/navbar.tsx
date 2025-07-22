@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { useState } from "react";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
 
+
 interface NavbarProps {
   currentView: string;
   activeTab?: string;
@@ -64,6 +65,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             </Button>
             
             <PWAInstallButton />
+            <UltimatePWAInstaller />
             
             <Button
               variant="ghost"

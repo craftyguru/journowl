@@ -28,6 +28,7 @@ import { MobileInstallHelper } from "@/components/MobileInstallHelper";
 import { MobilePWAPrompt } from "@/components/MobilePWAPrompt";
 import { MobilePWAInstaller } from "@/components/MobilePWAInstaller";
 import { FloatingInstallButton } from "@/components/FloatingInstallButton";
+
 import { PWAEngagementTracker } from "@/components/PWAEngagementTracker";
 
 function App() {
@@ -360,7 +361,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
       {/* Help and Support Bubbles */}
       <HelpBubble />
       <SupportChatBubble />
-      <MobilePWABanner />
+      <PWAEngagementTracker />
       <MobilePWAInstaller />
       <FloatingInstallButton />
     </div>
