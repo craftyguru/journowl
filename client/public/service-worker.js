@@ -1,6 +1,7 @@
-const CACHE_NAME = 'journowl-v1.2.0';
+const CACHE_NAME = 'journowl-v1.3.0';
 const BACKGROUND_SYNC_TAG = 'journowl-background-sync';
 const PENDING_WRITES_STORE = 'journowl-pending-writes';
+const WIDGET_CACHE = 'journowl-widgets';
 
 const STATIC_CACHE_URLS = [
   '/',
@@ -75,27 +76,195 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches and enable background sync
 self.addEventListener('activate', (event) => {
   console.log('JournOwl Service Worker activating...');
   event.waitUntil(
-    caches.keys()
-      .then((cacheNames) => {
+    Promise.all([
+      // Clean up old caches
+      caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames.map((cacheName) => {
-            if (cacheName !== CACHE_NAME) {
+            if (cacheName !== CACHE_NAME && cacheName !== WIDGET_CACHE) {
               console.log('Deleting old cache:', cacheName);
               return caches.delete(cacheName);
             }
           })
         );
-      })
-      .then(() => {
-        console.log('JournOwl Service Worker activated');
-        return self.clients.claim();
-      })
+      }),
+      // Initialize widget cache
+      caches.open(WIDGET_CACHE),
+      // Take control immediately
+      self.clients.claim()
+    ])
+    .then(() => {
+      console.log('JournOwl Service Worker activated with enhanced offline support');
+      // Notify all clients about enhanced capabilities
+      return self.clients.matchAll()
+        .then(clients => {
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'SW_ACTIVATED',
+              message: 'JournOwl now supports full offline mode with background sync!'
+            });
+          });
+        });
+    })
+    .catch((error) => {
+      console.error('Service Worker activation failed:', error);
+    })
   );
 });
+
+// Enhanced Background Sync Event Handler
+self.addEventListener('sync', (event) => {
+  console.log('Background sync triggered:', event.tag);
+  
+  if (event.tag === BACKGROUND_SYNC_TAG) {
+    event.waitUntil(syncPendingData());
+  }
+});
+
+// Enhanced sync function for all pending data
+async function syncPendingData() {
+  try {
+    const db = await initIndexedDB();
+    const transaction = db.transaction([PENDING_WRITES_STORE], 'readonly');
+    const store = transaction.objectStore(PENDING_WRITES_STORE);
+    const pendingWrites = await getAllFromStore(store);
+    
+    console.log(`Syncing ${pendingWrites.length} pending writes...`);
+    
+    for (const write of pendingWrites) {
+      try {
+        const response = await fetch(write.url, {
+          method: write.method,
+          headers: write.headers,
+          body: write.body,
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          await removeFromIndexedDB(write.id);
+          console.log('Successfully synced:', write.type);
+          
+          // Show notification for successful sync
+          if (self.registration.showNotification) {
+            self.registration.showNotification('JournOwl Sync Complete', {
+              body: `Your ${write.type} has been synchronized`,
+              icon: '/icons/icon-192x192.png',
+              badge: '/icons/icon-72x72.png',
+              tag: 'sync-success'
+            });
+          }
+          
+          // Notify client about successful sync
+          const clients = await self.clients.matchAll();
+          clients.forEach(client => {
+            client.postMessage({
+              type: 'SYNC_SUCCESS',
+              data: { type: write.type, id: write.id }
+            });
+          });
+        }
+      } catch (error) {
+        console.warn('Failed to sync write:', write.type, error);
+      }
+    }
+  } catch (error) {
+    console.error('Background sync failed:', error);
+  }
+}
+
+// Widget support for increased reach
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'WIDGET_REQUEST') {
+    handleWidgetRequest(event);
+  }
+});
+
+async function handleWidgetRequest(event) {
+  try {
+    const widgetData = {
+      quickEntry: {
+        template: 'quick-entry',
+        data: {
+          placeholder: "What's on your mind today? 🦉",
+          prompts: [
+            "How are you feeling right now?",
+            "What made you smile today?",
+            "What are you grateful for?",
+            "Describe your current mood in three words"
+          ]
+        }
+      }
+    };
+    
+    event.ports[0].postMessage({
+      type: 'WIDGET_RESPONSE',
+      data: widgetData
+    });
+  } catch (error) {
+    console.error('Widget request failed:', error);
+  }
+}
+
+// Helper functions for IndexedDB operations
+function getAllFromStore(store) {
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function removeFromIndexedDB(id) {
+  const db = await initIndexedDB();
+  const transaction = db.transaction([PENDING_WRITES_STORE], 'readwrite');
+  const store = transaction.objectStore(PENDING_WRITES_STORE);
+  return new Promise((resolve, reject) => {
+    const request = store.delete(id);
+    request.onsuccess = () => resolve();
+    request.onerror = () => reject(request.error);
+  });
+}
+
+// Store failed requests for background sync
+async function storeForSync(url, method, headers, body, type) {
+  try {
+    const db = await initIndexedDB();
+    const transaction = db.transaction([PENDING_WRITES_STORE], 'readwrite');
+    const store = transaction.objectStore(PENDING_WRITES_STORE);
+    
+    const writeData = {
+      url,
+      method,
+      headers,
+      body,
+      type,
+      timestamp: Date.now()
+    };
+    
+    return new Promise((resolve, reject) => {
+      const request = store.add(writeData);
+      request.onsuccess = () => {
+        console.log('Stored for background sync:', type);
+        resolve();
+      };
+      request.onerror = () => reject(request.error);
+    });
+  } catch (error) {
+    console.error('Failed to store for sync:', error);
+  }
+}
+
+// Helper function to determine request type
+function getRequestType(url) {
+  if (url.includes('/api/journal/entries')) return 'journal_entry';
+  if (url.includes('/api/auth/')) return 'auth';
+  if (url.includes('/api/')) return 'api_request';
+  return 'unknown';
+}
 
 // Fetch event - serve from cache when offline
 self.addEventListener('fetch', (event) => {
@@ -212,6 +381,49 @@ self.addEventListener('fetch', (event) => {
       );
       return;
     }
+
+    // Handle POST/PUT/DELETE requests with background sync
+    if (request.method !== 'GET') {
+      event.respondWith(
+        fetch(request)
+          .then((response) => response)
+          .catch(async (error) => {
+            // Store failed write for background sync
+            const headers = {};
+            for (const [key, value] of request.headers.entries()) {
+              headers[key] = value;
+            }
+            
+            const body = request.method !== 'GET' ? await request.clone().text() : null;
+            
+            await storeForSync(
+              request.url,
+              request.method,
+              headers,
+              body,
+              getRequestType(request.url)
+            );
+            
+            // Register background sync
+            if (self.registration.sync) {
+              await self.registration.sync.register(BACKGROUND_SYNC_TAG);
+            }
+            
+            // Return an offline response
+            return new Response(
+              JSON.stringify({
+                error: 'offline',
+                message: 'Request stored for background sync'
+              }),
+              {
+                status: 202,
+                headers: { 'Content-Type': 'application/json' }
+              }
+            );
+          })
+      );
+      return;
+    }
   }
 
   // Handle static assets (images, fonts, etc.)
@@ -236,60 +448,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Handle POST requests (writes) with background sync for offline support
-  if (request.method === 'POST' && url.pathname.startsWith('/api/')) {
-    event.respondWith(
-      fetch(request.clone())
-        .then((response) => {
-          return response;
-        })
-        .catch(async () => {
-          // Network failed, store for background sync
-          console.log('Network failed for POST request, storing for background sync');
-          
-          try {
-            const requestData = {
-              url: request.url,
-              method: request.method,
-              headers: Object.fromEntries(request.headers.entries()),
-              body: request.method !== 'GET' ? await request.text() : null,
-              timestamp: Date.now(),
-              type: 'api_write'
-            };
 
-            const db = await initIndexedDB();
-            const transaction = db.transaction([PENDING_WRITES_STORE], 'readwrite');
-            const store = transaction.objectStore(PENDING_WRITES_STORE);
-            await store.add(requestData);
-
-            // Register for background sync
-            if (self.registration && self.registration.sync) {
-              await self.registration.sync.register(BACKGROUND_SYNC_TAG);
-            }
-
-            return new Response(JSON.stringify({
-              success: true,
-              message: 'Saved offline. Will sync when back online.',
-              offline: true
-            }), {
-              status: 202,
-              headers: { 'Content-Type': 'application/json' }
-            });
-          } catch (error) {
-            console.error('Failed to store offline request:', error);
-            return new Response(JSON.stringify({
-              success: false,
-              message: 'Failed to save offline. Please try again when online.',
-              error: error.message
-            }), {
-              status: 500,
-              headers: { 'Content-Type': 'application/json' }
-            });
-          }
-        })
-    );
-    return;
-  }
 
   // Default: network first, fallback to cache
   event.respondWith(
@@ -300,65 +459,7 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Enhanced Background Sync - Retry failed requests when back online
-self.addEventListener('sync', (event) => {
-  if (event.tag === BACKGROUND_SYNC_TAG) {
-    console.log('Background sync triggered, processing pending writes...');
-    event.waitUntil(processPendingWrites());
-  }
-});
 
-async function processPendingWrites() {
-  try {
-    const db = await initIndexedDB();
-    const transaction = db.transaction([PENDING_WRITES_STORE], 'readwrite');
-    const store = transaction.objectStore(PENDING_WRITES_STORE);
-    const allRequests = await getAllFromStore(store);
-
-    console.log(`Processing ${allRequests.length} pending writes`);
-
-    for (const requestData of allRequests) {
-      try {
-        const response = await fetch(requestData.url, {
-          method: requestData.method,
-          headers: requestData.headers,
-          body: requestData.body
-        });
-
-        if (response.ok) {
-          // Success - remove from pending writes
-          await store.delete(requestData.id);
-          console.log('Successfully synced pending write:', requestData.url);
-          
-          // Notify user of successful sync
-          if (self.registration && self.registration.showNotification) {
-            self.registration.showNotification('🦉 JournOwl Sync Complete', {
-              body: 'Your offline changes have been synced successfully!',
-              icon: '/icons/icon-192x192.png',
-              badge: '/icons/icon-72x72.png',
-              tag: 'sync-success'
-            });
-          }
-        } else {
-          console.error('Failed to sync pending write:', response.status, requestData.url);
-        }
-      } catch (error) {
-        console.error('Error syncing pending write:', error, requestData.url);
-        // Keep the request for next sync attempt
-      }
-    }
-  } catch (error) {
-    console.error('Error processing pending writes:', error);
-  }
-}
-
-function getAllFromStore(store) {
-  return new Promise((resolve, reject) => {
-    const request = store.getAll();
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
 
 // Push notifications (future enhancement)
 self.addEventListener('push', (event) => {

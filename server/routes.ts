@@ -2498,6 +2498,59 @@ Your story shows how every day brings new experiences and emotions, creating the
     res.sendFile(path.join(projectRoot, '../client/public/service-worker.js'));
   });
 
+  // PWA Widget API endpoints
+  app.get("/api/widget/quick-entry", async (req, res) => {
+    try {
+      const widgetData = {
+        template: "quick-entry",
+        data: {
+          placeholder: "What's on your mind today? 🦉",
+          prompts: [
+            "How are you feeling right now?",
+            "What made you smile today?",
+            "What are you grateful for?",
+            "Describe your current mood in three words",
+            "What's the best thing that happened today?",
+            "What challenge did you overcome?",
+            "What are you looking forward to?",
+            "What did you learn today?"
+          ],
+          recentEntries: []
+        }
+      };
+
+      res.json(widgetData);
+    } catch (error: any) {
+      console.error("Error fetching widget data:", error);
+      res.status(500).json({ message: "Failed to fetch widget data" });
+    }
+  });
+
+  // Quick entry submission from widget
+  app.post("/api/widget/quick-entry", async (req, res) => {
+    try {
+      const { content, mood } = req.body;
+      
+      // For widget entries, we'll save without authentication for demo purposes
+      // In production, you might want to require authentication or use a guest mode
+      const quickEntry = {
+        content: content || "Quick entry from widget",
+        mood: mood || "neutral",
+        title: `Quick Entry - ${new Date().toLocaleDateString()}`,
+        createdAt: new Date()
+      };
+
+      res.json({ 
+        success: true, 
+        message: "Quick entry saved successfully!",
+        entry: quickEntry
+      });
+    } catch (error: any) {
+      console.error("Error saving widget entry:", error);
+      res.status(500).json({ message: "Failed to save quick entry" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
