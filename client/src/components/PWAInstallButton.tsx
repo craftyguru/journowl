@@ -80,6 +80,108 @@ export function PWAInstallButton() {
     console.log('PWA Debug: isInstallable:', isInstallable);
     console.log('PWA Debug: hostname:', window.location.hostname);
     
+    // FIRST - Try to trigger the browser's install prompt if available
+    if (deferredPrompt) {
+      console.log('PWA Debug: Triggering install prompt');
+      try {
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        
+        console.log('PWA Debug: User choice outcome:', outcome);
+        
+        if (outcome === 'accepted') {
+          console.log('PWA Debug: User accepted the install prompt');
+          setIsInstalled(true);
+        } else {
+          console.log('PWA Debug: User dismissed the install prompt');
+        }
+        
+        setDeferredPrompt(null);
+        setIsInstallable(false);
+        return;
+      } catch (error) {
+        console.error('PWA Debug: Error during install prompt:', error);
+      }
+    }
+    
+    // SECOND - For mobile devices, try to open browser menu programmatically or show instructions
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    if (isMobile) {
+      // Try to trigger mobile browser's Add to Home Screen
+      try {
+        // For Android Chrome, try to access the browser menu
+        if ('getInstalledRelatedApps' in navigator) {
+          const relatedApps = await (navigator as any).getInstalledRelatedApps();
+          if (relatedApps.length === 0) {
+            // App not installed, continue with manual instructions
+          }
+        }
+        
+        // Show platform-specific mobile instructions
+        const isAndroid = /Android/i.test(navigator.userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        if (isIOS) {
+          // For iOS, we must use manual instructions
+          const confirmInstall = confirm(`📱 Install JournOwl on iPhone/iPad:
+
+1. Tap the Share button (⬆️) at the bottom of Safari
+2. Scroll down and tap "Add to Home Screen"
+3. Tap "Add" to install JournOwl as an app
+
+Ready to try this now?`);
+          
+          if (confirmInstall) {
+            // Try to show share sheet (Safari only)
+            if ((navigator as any).share) {
+              try {
+                await (navigator as any).share({
+                  title: 'JournOwl - Install App',
+                  text: 'Install JournOwl as an app on your device',
+                  url: window.location.href
+                });
+              } catch (err) {
+                console.log('Share failed, user cancelled or not supported');
+              }
+            }
+          }
+        } else if (isAndroid) {
+          const confirmInstall = confirm(`📱 Install JournOwl on Android:
+
+OPTION 1: Browser Menu
+• Tap menu (⋮) → "Add to Home screen"
+
+OPTION 2: Address Bar  
+• Look for install icon in address bar
+
+Should I open the browser menu for you?`);
+          
+          if (confirmInstall) {
+            // Try to show native menu on Android
+            try {
+              // Attempt to trigger context menu (limited browser support)
+              document.body.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+              }, { once: true });
+              
+              // Fallback: Focus address bar to highlight install option
+              if (window.location.hash !== '#install') {
+                window.location.hash = '#install';
+                setTimeout(() => {
+                  window.location.hash = '';
+                }, 100);
+              }
+            } catch (err) {
+              console.log('Could not programmatically open menu');
+            }
+          }
+        }
+        return;
+      } catch (error) {
+        console.error('Mobile install attempt failed:', error);
+      }
+    }
+    
     if (!deferredPrompt) {
       // In development mode, show helper modal instead
       const isDev = window.location.hostname.includes('replit.dev') || window.location.hostname === 'localhost';
@@ -102,28 +204,49 @@ Current environment: Development Mode`);
         return;
       }
       
-      // On production, show helpful info if install prompt not available
-      alert(`PWA Installation Help:
+      // Mobile-specific installation guidance
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      
+      if (isIOS) {
+        alert(`📱 Install JournOwl on iPhone/iPad:
 
-🦉 JournOwl can be installed as an app!
+1. Tap the Share button (⬆️) at the bottom of Safari
+2. Scroll down and tap "Add to Home Screen"  
+3. Tap "Add" to install JournOwl as an app
 
-Current Status:
-• Production site: ✅ journowl.app  
-• HTTPS: ✅ Secure connection
-• Service Worker: ✅ Active
-• beforeinstallprompt: ❌ Not fired yet
+Note: iOS Safari doesn't support automatic install prompts. Manual installation is the only way on iPhone/iPad.`);
+      } else if (isAndroid) {
+        alert(`📱 Install JournOwl on Android:
 
-Why browsers don't show install prompts immediately:
-• Need 30+ seconds of site interaction
-• Require multiple visits over several days  
-• Must show "user engagement" signals
+OPTION 1 - Browser Menu:
+1. Tap the menu (⋮) in your browser
+2. Look for "Add to Home screen" or "Install app"
+3. Tap it to install
 
-WORKING SOLUTIONS:
-💻 Desktop Chrome/Edge: Look for install icon ⬇️ in address bar (right side)
-📱 Android: Chrome menu (⋮) → "Add to Home screen"  
-📱 iPhone: Safari Share (⬆️) → "Add to Home Screen"
+OPTION 2 - Address Bar:
+1. Look for a download/install icon in the address bar
+2. Tap it to install
 
-The install prompt will appear automatically after you use the site regularly for a few days!`);
+If you don't see these options, try:
+• Use the app for 1-2 minutes first
+• Visit the site multiple times
+• Make sure you're using Chrome or Edge browser
+
+Why no auto-prompt? Browsers require user engagement before showing install prompts.`);
+      } else {
+        alert(`💻 Install JournOwl on Desktop:
+
+1. Look for install icon (⬇️) in address bar (Chrome/Edge)
+2. Click it to install as desktop app
+
+OR use browser menu:
+• Chrome: Menu → More tools → Create shortcut
+• Edge: Menu → Apps → Install this site as an app
+
+Mobile users should visit journowl.app on their phone for app installation.`);
+      }
       return;
     }
 

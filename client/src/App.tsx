@@ -25,6 +25,9 @@ import ImportPage from "@/pages/ImportPage";
 import SharePage from "@/pages/SharePage";
 import { MobilePWABanner } from "@/components/MobilePWABanner";
 import { MobileInstallHelper } from "@/components/MobileInstallHelper";
+import { MobilePWAPrompt } from "@/components/MobilePWAPrompt";
+import { MobilePWAInstaller } from "@/components/MobilePWAInstaller";
+import { FloatingInstallButton } from "@/components/FloatingInstallButton";
 
 function App() {
   // Check if demo mode is requested from URL params
@@ -357,6 +360,8 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
       <HelpBubble />
       <SupportChatBubble />
       <MobilePWABanner />
+      <MobilePWAInstaller />
+      <FloatingInstallButton />
     </div>
   );
 }
