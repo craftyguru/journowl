@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
 import { useState } from "react";
 import { PWAInstallButton } from "@/components/PWAInstallButton";
+import { UltimatePWAInstaller } from "@/components/UltimatePWAInstaller";
 
 
 interface NavbarProps {
