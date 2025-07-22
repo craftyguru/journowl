@@ -189,6 +189,16 @@
     }
   ],
   "handle_links": "preferred",
+  "protocol_handlers": [
+    {
+      "protocol": "web+journowl",
+      "url": "/entry?data=%s"
+    },
+    {
+      "protocol": "web+journal",
+      "url": "/write?content=%s"
+    }
+  ],
   "share_target": {
     "action": "/share",
     "method": "POST",
