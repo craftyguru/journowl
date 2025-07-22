@@ -23,16 +23,7 @@ import { EmailConfirmation } from "@/pages/email-confirmation";
 import EmailVerified from "@/pages/email-verified";
 import ImportPage from "@/pages/ImportPage";
 import SharePage from "@/pages/SharePage";
-import { MobilePWABanner } from "@/components/MobilePWABanner";
-import { MobileInstallHelper } from "@/components/MobileInstallHelper";
-import { MobilePWAPrompt } from "@/components/MobilePWAPrompt";
-import { MobilePWAInstaller } from "@/components/MobilePWAInstaller";
-import { FloatingInstallButton } from "@/components/FloatingInstallButton";
-import { ActualPWAInstaller } from "@/components/ActualPWAInstaller";
-import { SuperForceInstaller } from "@/components/SuperForceInstaller";
-import { DirectDOMInstaller } from "@/components/DirectDOMInstaller";
-
-import { PWAEngagementTracker } from "@/components/PWAEngagementTracker";
+// Only keeping the main PWA install button
 
 function App() {
   // Check if demo mode is requested from URL params
@@ -125,8 +116,7 @@ function App() {
             <LandingHero 
               onGetStarted={() => setCurrentView("auth")} 
             />
-            <MobilePWABanner />
-            <MobileInstallHelper />
+
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
@@ -194,7 +184,7 @@ function App() {
                 setCurrentView("email-confirmation");
               }} />
             </div>
-            <MobilePWABanner />
+
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
@@ -364,12 +354,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
       {/* Help and Support Bubbles */}
       <HelpBubble />
       <SupportChatBubble />
-      <PWAEngagementTracker />
-      <MobilePWAInstaller />
-      <FloatingInstallButton />
-      <ActualPWAInstaller />
-      <SuperForceInstaller />
-      <DirectDOMInstaller />
+      {/* PWA install functionality is now handled by PWAInstallButton in navbar */}
     </div>
   );
 }
