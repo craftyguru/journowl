@@ -106,7 +106,7 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
               </div>
             </div>
         
-            <ScrollArea className="flex-1 p-6" onScroll={handleScroll}>
+            <div className="flex-1 overflow-y-auto p-6 max-h-[60vh]" onScroll={handleScroll}>
               <div className="space-y-6 text-sm">
                 <motion.div 
                   className="bg-gradient-to-r from-blue-100 via-purple-50 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/20 dark:to-pink-900/30 p-6 rounded-xl border-2 border-dashed border-purple-300 dark:border-purple-600 relative overflow-hidden"
@@ -338,7 +338,7 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                   </p>
                 </motion.section>
               </div>
-            </ScrollArea>
+            </div>
 
             <motion.div 
               className="p-6 border-t border-purple-200 dark:border-purple-700 space-y-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/30 dark:to-blue-900/30"
