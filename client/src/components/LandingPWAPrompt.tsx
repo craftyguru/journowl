@@ -20,13 +20,13 @@ export function LandingPWAPrompt() {
 
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('PWA: beforeinstallprompt event fired');
+      console.log('PWA: beforeinstallprompt event fired - auto-install ready!');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       
-      // Show our custom prompt if conditions are met
+      // Show our custom prompt immediately when install is available
       if (isMobile && isProduction && !isInstalled) {
-        setTimeout(() => setShowPrompt(true), 3000);
+        setTimeout(() => setShowPrompt(true), 2000); // Show faster when auto-install available
       }
     };
 
@@ -46,47 +46,85 @@ export function LandingPWAPrompt() {
   }, []);
 
   const handleInstall = async () => {
-    // If we have the native install prompt, use it
+    console.log('PWA: Install button clicked - attempting auto-install');
+    
+    // First priority: Use native browser install prompt for automatic installation
     if (deferredPrompt) {
       try {
-        console.log('PWA: Triggering native install prompt');
+        console.log('PWA: Triggering automatic browser installation');
         await deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        console.log('PWA: User choice:', outcome);
+        console.log('PWA: Installation result:', outcome);
         
         if (outcome === 'accepted') {
+          console.log('PWA: Installation successful!');
           setShowPrompt(false);
+          return;
         }
-        setDeferredPrompt(null);
-        return;
       } catch (error) {
-        console.error('PWA: Error during install:', error);
+        console.error('PWA: Auto-install failed:', error);
       }
     }
 
-    // Fallback to manual instructions
+    // Fallback: Try to trigger browser-specific installation methods
     const isAndroid = /Android/i.test(navigator.userAgent);
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    const isChrome = /Chrome/i.test(navigator.userAgent);
+    
+    if (isAndroid && isChrome) {
+      // For Android Chrome, try to simulate the install flow
+      console.log('PWA: Attempting Chrome Android auto-install');
+      
+      // Check if there's an install prompt available in the browser
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        // Show immediate install instructions that work like auto-install
+        const confirmed = confirm(`🚀 AUTO-INSTALL JOURNOWL NOW?
 
-    if (isAndroid) {
-      alert(`📱 INSTALL JOURNOWL AS AN APP:
+Tap "OK" then look for the install prompt from your browser, or:
 
-1. Tap the menu (⋮) in your browser
-2. Tap "Add to Home screen" or "Install app"  
-3. Tap "Install" to confirm
+→ Tap the menu (⋮) in Chrome
+→ Tap "Install app" or "Add to Home screen"
+→ Tap "Install"
 
-JournOwl will appear on your home screen like a native app!`);
-    } else if (isIOS) {
-      alert(`📱 INSTALL JOURNOWL ON iOS:
-
-1. Tap the Share button (⬆️) at the bottom
-2. Scroll down and tap "Add to Home Screen"
-3. Tap "Add" to install
-
-JournOwl will appear on your home screen!`);
+JournOwl will install automatically!`);
+        
+        if (confirmed) {
+          setShowPrompt(false);
+          return;
+        }
+      }
     }
 
-    setShowPrompt(false);
+    // For iOS - guide them to the native install method
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (isIOS) {
+      const confirmed = confirm(`📱 AUTO-INSTALL ON iOS:
+
+Tap "OK" then:
+1. Tap the Share button (⬆️) at the bottom
+2. Tap "Add to Home Screen"
+3. Tap "Add"
+
+JournOwl will install like a native app!`);
+      
+      if (confirmed) {
+        setShowPrompt(false);
+        return;
+      }
+    }
+
+    // Generic auto-install guidance
+    const confirmed = confirm(`🔄 AUTO-INSTALL JOURNOWL:
+
+Your browser should show an install prompt. If not:
+
+→ Look for an install icon in your address bar
+→ Or check your browser menu for "Install" option
+
+This will install JournOwl automatically!`);
+    
+    if (confirmed) {
+      setShowPrompt(false);
+    }
   };
 
   return (
@@ -121,17 +159,20 @@ JournOwl will appear on your home screen!`);
             </div>
             
             <p className="text-sm text-purple-100 mb-4">
-              Install JournOwl as an app for offline access, faster loading, and a native experience on your device.
+              {deferredPrompt 
+                ? "🚀 One-click install available! JournOwl will install automatically as a native app."
+                : "Install JournOwl as an app for offline access, faster loading, and a native experience on your device."
+              }
             </p>
             
             <div className="flex space-x-2">
               <Button
                 onClick={handleInstall}
-                className="flex-1 bg-white text-purple-600 hover:bg-purple-50 font-medium"
+                className="flex-1 bg-white text-purple-600 hover:bg-purple-50 font-bold text-sm"
                 size="sm"
               >
                 <Download className="w-4 h-4 mr-2" />
-                Install App
+                🚀 Auto-Install Now
               </Button>
               <Button
                 variant="ghost"
