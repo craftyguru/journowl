@@ -2526,6 +2526,43 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // PWA Manifest validation endpoint with guaranteed correct MIME type
+  app.get("/api/pwa/manifest", async (req, res) => {
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      
+      // Get the actual file path in both dev and production
+      let manifestPath;
+      try {
+        manifestPath = path.resolve(process.cwd(), 'client/public/manifest.json');
+        if (!fs.existsSync(manifestPath)) {
+          manifestPath = path.resolve(process.cwd(), 'dist/public/manifest.json');
+        }
+      } catch {
+        manifestPath = path.resolve(process.cwd(), 'dist/public/manifest.json');
+      }
+      
+      const manifestContent = fs.readFileSync(manifestPath, 'utf-8');
+      const manifestJson = JSON.parse(manifestContent);
+      
+      // Validate manifest has required fields
+      if (!manifestJson.name || !manifestJson.start_url || !manifestJson.display || !manifestJson.icons) {
+        return res.status(400).json({ error: "Invalid manifest: missing required fields" });
+      }
+      
+      res.setHeader('Content-Type', 'application/manifest+json');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.send(manifestContent);
+    } catch (error: any) {
+      console.error("Error serving manifest:", error);
+      res.status(500).json({ message: "Failed to serve manifest", error: error.message });
+    }
+  });
+
   // Stats widget data endpoint
   app.get("/api/widget/stats", async (req, res) => {
     try {
