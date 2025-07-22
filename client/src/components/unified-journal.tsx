@@ -762,30 +762,31 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='paper' x='0' y='0' width='100' height='100' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0,0 L100,100 M100,0 L0,100' stroke='%23f59e0b' stroke-width='0.2' opacity='0.1'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23paper)'/%3E%3C/svg%3E")`,
         }}
       >
-        {/* Journal Header */}
-        <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white p-4 flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center gap-3">
-            <BookOpen className="w-6 h-6" />
+        {/* Journal Header - Ultra Compact on Mobile */}
+        <div className="bg-gradient-to-r from-amber-600 to-orange-600 text-white p-1 sm:p-4 flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-3">
+            <BookOpen className="w-4 h-4 sm:w-6 sm:h-6" />
             <div>
-              <h1 className="text-xl font-bold">Smart Journal</h1>
-              <p className="text-amber-100 text-sm">Your AI-powered writing companion</p>
+              <h1 className="text-sm sm:text-xl font-semibold sm:font-bold">📝 Journal</h1>
+              <p className="text-amber-100 text-xs sm:text-sm hidden sm:block">Your AI-powered writing companion</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1 sm:gap-4">
             <Button 
               onClick={handleSave}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white h-6 sm:h-auto px-2 sm:px-4 text-xs sm:text-sm"
             >
-              <Save className="w-4 h-4 mr-2" />
-              Save Entry
+              <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Save Entry</span>
+              <span className="sm:hidden">Save</span>
             </Button>
             <Button 
               onClick={onClose}
               variant="outline"
-              className="border-white/20 text-white hover:bg-white/10"
+              className="border-white/20 text-white hover:bg-white/10 h-6 sm:h-auto px-1 sm:px-4"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3 h-3 sm:w-4 sm:h-4" />
             </Button>
           </div>
         </div>
