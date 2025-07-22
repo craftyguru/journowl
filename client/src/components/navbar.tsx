@@ -182,6 +182,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             >
               📅 Memory Calendar
             </Button>
+            
             <Button
               variant="ghost"
               className={`w-full justify-start ${activeTab === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
@@ -202,13 +203,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             >
               🎁 Referral
             </Button>
+            
+            {/* Mobile Logout Button */}
             {user && (
               <Button
-                variant="ghost"
-                className="w-full justify-start text-muted-foreground hover:text-primary sm:hidden"
+                variant="outline"
+                className="w-full justify-start border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 sm:hidden"
                 onClick={() => {
                   fetch('/api/auth/logout', { method: 'POST' })
-                    .then(() => window.location.href = '/');
+                    .then(() => {
+                      setMobileMenuOpen(false);
+                      window.location.href = '/';
+                    });
                 }}
               >
                 🚪 Logout
