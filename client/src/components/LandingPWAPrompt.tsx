@@ -24,8 +24,11 @@ export function LandingPWAPrompt() {
     if ((window as any).deferredPrompt) {
       console.log('PWA: Using existing global deferredPrompt');
       setDeferredPrompt((window as any).deferredPrompt);
-      if (isMobile && isProduction && !isInstalled) {
-        setTimeout(() => setShowPrompt(true), 2000);
+      if (isMobile && isProduction && !isInstalled && !sessionStorage.getItem('pwa-prompt-shown')) {
+        setTimeout(() => {
+          setShowPrompt(true);
+          sessionStorage.setItem('pwa-prompt-shown', 'true');
+        }, 2000);
       }
     }
 
@@ -37,8 +40,11 @@ export function LandingPWAPrompt() {
       (window as any).deferredPrompt = e;
       
       // Show our custom prompt immediately when install is available
-      if (isMobile && isProduction && !isInstalled) {
-        setTimeout(() => setShowPrompt(true), 2000); // Show faster when auto-install available
+      if (isMobile && isProduction && !isInstalled && !sessionStorage.getItem('pwa-prompt-shown')) {
+        setTimeout(() => {
+          setShowPrompt(true);
+          sessionStorage.setItem('pwa-prompt-shown', 'true');
+        }, 2000); // Show faster when auto-install available
       }
     };
 
@@ -46,18 +52,22 @@ export function LandingPWAPrompt() {
     const handlePWAInstallable = (e: CustomEvent) => {
       console.log('PWA: Custom installable event received');
       setDeferredPrompt(e.detail);
-      if (isMobile && isProduction && !isInstalled) {
-        setTimeout(() => setShowPrompt(true), 2000);
+      if (isMobile && isProduction && !isInstalled && !sessionStorage.getItem('pwa-prompt-shown')) {
+        setTimeout(() => {
+          setShowPrompt(true);
+          sessionStorage.setItem('pwa-prompt-shown', 'true');
+        }, 2000);
       }
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
     window.addEventListener('pwa-installable', handlePWAInstallable as EventListener);
 
-    // Even if no beforeinstallprompt, show manual instructions on mobile
-    if (isMobile && isProduction && !isInstalled) {
+    // Only show manual instructions if we haven't shown them already
+    if (isMobile && isProduction && !isInstalled && !sessionStorage.getItem('pwa-prompt-shown')) {
       const timer = setTimeout(() => {
         setShowPrompt(true);
+        sessionStorage.setItem('pwa-prompt-shown', 'true');
       }, 4000); // Show after 4 seconds if no install prompt
       return () => clearTimeout(timer);
     }
@@ -72,6 +82,9 @@ export function LandingPWAPrompt() {
     console.log('PWA: Install button clicked - attempting auto-install');
     console.log('PWA: deferredPrompt available:', !!deferredPrompt);
     console.log('PWA: Global deferredPrompt available:', !!(window as any).deferredPrompt);
+    
+    // Mark that user has interacted with install
+    sessionStorage.setItem('pwa-install-attempted', 'true');
     
     // Try global deferredPrompt first
     const promptToUse = deferredPrompt || (window as any).deferredPrompt;
@@ -88,7 +101,10 @@ export function LandingPWAPrompt() {
           setShowPrompt(false);
           setDeferredPrompt(null);
           (window as any).deferredPrompt = null;
+          sessionStorage.setItem('pwa-installed', 'true');
           return;
+        } else {
+          console.log('PWA: User dismissed install prompt');
         }
       } catch (error) {
         console.error('PWA: Auto-install failed:', error);
@@ -137,9 +153,10 @@ export function LandingPWAPrompt() {
             gradient: 'from-green-500 via-emerald-500 to-teal-500',
             icon: '🤖',
             steps: [
-              { icon: '⋮', text: 'Tap the menu (3 dots) in your browser', highlight: true },
-              { icon: '📲', text: 'Look for "Install app" or "Add to Home screen"' },
-              { icon: '🚀', text: 'Tap "Install" and JournOwl appears on your home screen!' }
+              { icon: '🔍', text: 'Look for install icon (⬇️) in address bar first!', highlight: true },
+              { icon: '⋮', text: 'If no icon, tap menu (3 dots) → "Add to Home screen"' },
+              { icon: '🎯', text: 'Or try different browser (Chrome works best!)' },
+              { icon: '✨', text: 'Visit site multiple times to enable install options' }
             ]
           };
         default:

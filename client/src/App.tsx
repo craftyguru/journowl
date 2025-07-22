@@ -19,6 +19,7 @@ import LandingHero from "@/components/ui/LandingHero";
 import { HelpBubble } from "@/components/HelpBubble";
 import { SupportChatBubble } from "@/components/SupportChatBubble";
 import { StarryBackground } from "@/components/starry-background";
+import { PWADebugHelper } from "@/components/PWADebugHelper";
 import { EmailConfirmation } from "@/pages/email-confirmation";
 import EmailVerified from "@/pages/email-verified";
 import ImportPage from "@/pages/ImportPage";
@@ -285,6 +286,7 @@ function App() {
           <AuthenticatedApp currentView={currentView} activeTab={activeTab} onNavigate={handleNavigate} />
         </TooltipProvider>
       </ThemeProvider>
+      <PWADebugHelper />
     </QueryClientProvider>
   );
 }
