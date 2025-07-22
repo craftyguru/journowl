@@ -2,7 +2,7 @@ import { MailService } from '@sendgrid/mail';
 
 export interface EmailTemplate {
   to: string;
-  from: string;
+  from: string | { email: string; name: string };
   replyTo: string;
   subject: string;
   html: string;
@@ -156,9 +156,12 @@ const html = `<!DOCTYPE html>
 
   return {
     to: userEmail,
-    from: 'archimedes@journowl.app',
+    from: {
+      email: 'archimedes@journowl.app',
+      name: 'JournOwl Team'
+    },
     replyTo: 'support@journowl.app',
-    subject: 'Welcome to JournOwl - Verify Your Account',
+    subject: '🦉 Welcome to JournOwl - Verify Your Account',
     html,
     text
   };
