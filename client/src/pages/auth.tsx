@@ -409,9 +409,16 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
         >
           <Card className="bg-black border-white/10 shadow-2xl">
             <CardHeader className="text-center pb-2">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-                🦉 JournOwl
-              </CardTitle>
+              <div className="flex items-center justify-center gap-3 mb-2">
+                <img 
+                  src="/icons/owl.jpeg" 
+                  alt="JournOwl Wise Owl Mascot" 
+                  className="w-12 h-12 rounded-full object-cover border-2 border-purple-400 shadow-lg animate-pulse"
+                />
+                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+                  JournOwl
+                </CardTitle>
+              </div>
               <p className="text-gray-300 mt-2">Your Wise Writing Companion</p>
             </CardHeader>
             <CardContent>

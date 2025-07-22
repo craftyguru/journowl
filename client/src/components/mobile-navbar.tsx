@@ -29,9 +29,16 @@ export default function MobileNavbar({ onNavigate, currentView = "dashboard" }: 
       <div className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm lg:hidden">
         <div className="mobile-container flex h-14 items-center justify-between">
           <div className="flex items-center gap-2">
-            <h1 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              🦉 JournOwl
-            </h1>
+            <div className="flex items-center gap-2">
+              <img 
+                src="/icons/owl.jpeg" 
+                alt="JournOwl Mascot" 
+                className="w-6 h-6 rounded-full object-cover border border-purple-400"
+              />
+              <h1 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                JournOwl
+              </h1>
+            </div>
           </div>
           
           <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -44,7 +51,14 @@ export default function MobileNavbar({ onNavigate, currentView = "dashboard" }: 
             <SheetContent side="right" className="w-64 p-0">
               <div className="flex flex-col h-full">
                 <div className="p-4 border-b">
-                  <h2 className="text-lg font-semibold">🦉 JournOwl Menu</h2>
+                  <div className="flex items-center gap-2 mb-2">
+                    <img 
+                      src="/icons/owl.jpeg" 
+                      alt="JournOwl Mascot" 
+                      className="w-6 h-6 rounded-full object-cover border border-purple-400"
+                    />
+                    <h2 className="text-lg font-semibold">JournOwl Menu</h2>
+                  </div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Navigate your journal</p>
                 </div>
                 
@@ -95,9 +109,16 @@ export default function MobileNavbar({ onNavigate, currentView = "dashboard" }: 
       <div className="hidden lg:block sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
         <div className="mobile-container flex h-16 items-center justify-between">
           <div className="flex items-center gap-6">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              🦉 JournOwl
-            </h1>
+            <div className="flex items-center gap-3">
+              <img 
+                src="/icons/owl.jpeg" 
+                alt="JournOwl Mascot" 
+                className="w-8 h-8 rounded-full object-cover border-2 border-purple-400 animate-pulse"
+              />
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                JournOwl
+              </h1>
+            </div>
             
             <nav className="flex items-center gap-4">
               {navItems.map((item) => {
