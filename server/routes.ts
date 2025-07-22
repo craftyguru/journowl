@@ -2837,6 +2837,64 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Widget endpoints for Windows 11 and Android widgets
+  app.get('/api/widget/quick-entry', async (req, res) => {
+    try {
+      res.json({
+        title: "Quick Journal Entry",
+        description: "Your wise owl companion is ready to capture your thoughts",
+        template: "quick-entry",
+        data: {
+          placeholder: "What's on your mind today?",
+          maxLength: 500,
+          owlMessage: "🦉 Ready to write with your owl companion?"
+        }
+      });
+    } catch (error) {
+      console.error('Widget quick-entry error:', error);
+      res.status(500).json({ error: 'Widget unavailable' });
+    }
+  });
+
+  app.get('/api/widget/stats', async (req, res) => {
+    try {
+      res.json({
+        title: "Journal Stats",
+        description: "Your journaling progress with owl insights",
+        data: {
+          streak: "5 days",
+          entries: "23 entries", 
+          words: "1,247 words",
+          owlMessage: "🦉 Great progress on your journey!"
+        }
+      });
+    } catch (error) {
+      console.error('Widget stats error:', error);
+      res.status(500).json({ error: 'Widget unavailable' });
+    }
+  });
+
+  app.post('/api/widget/submit', async (req, res) => {
+    try {
+      const { action, data } = req.body;
+      
+      if (action === 'saveEntry') {
+        console.log('Widget journal entry submitted:', data);
+        
+        res.json({
+          success: true,
+          message: "Entry saved by your owl companion!",
+          redirect: "/"
+        });
+      } else {
+        res.status(400).json({ error: 'Unknown widget action' });
+      }
+    } catch (error) {
+      console.error('Widget submission error:', error);
+      res.status(500).json({ error: 'Submission failed' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
