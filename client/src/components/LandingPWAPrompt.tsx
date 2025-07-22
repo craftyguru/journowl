@@ -3,8 +3,14 @@ import { Button } from '@/components/ui/button';
 import { X, Download, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
+  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+}
+
 export function LandingPWAPrompt() {
   const [showPrompt, setShowPrompt] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     // Only show on mobile devices on production domain
@@ -12,17 +18,53 @@ export function LandingPWAPrompt() {
     const isProduction = window.location.hostname === 'journowl.app';
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
 
-    if (isMobile && isProduction && !isInstalled) {
-      // Show prompt after 3 seconds
+    // Listen for the beforeinstallprompt event
+    const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('PWA: beforeinstallprompt event fired');
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      
+      // Show our custom prompt if conditions are met
+      if (isMobile && isProduction && !isInstalled) {
+        setTimeout(() => setShowPrompt(true), 3000);
+      }
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
+
+    // Even if no beforeinstallprompt, show manual instructions on mobile
+    if (isMobile && isProduction && !isInstalled && !deferredPrompt) {
       const timer = setTimeout(() => {
         setShowPrompt(true);
       }, 3000);
-
       return () => clearTimeout(timer);
     }
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
+    };
   }, []);
 
-  const handleInstall = () => {
+  const handleInstall = async () => {
+    // If we have the native install prompt, use it
+    if (deferredPrompt) {
+      try {
+        console.log('PWA: Triggering native install prompt');
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('PWA: User choice:', outcome);
+        
+        if (outcome === 'accepted') {
+          setShowPrompt(false);
+        }
+        setDeferredPrompt(null);
+        return;
+      } catch (error) {
+        console.error('PWA: Error during install:', error);
+      }
+    }
+
+    // Fallback to manual instructions
     const isAndroid = /Android/i.test(navigator.userAgent);
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
