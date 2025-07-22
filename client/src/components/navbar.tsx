@@ -32,13 +32,9 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-3">
             <div className="gradient-bg p-2 rounded-lg">
-              <img 
-                src="/icons/owl.jpeg" 
-                alt="JournOwl Mascot" 
-                className="w-8 h-8 rounded-full object-cover animate-pulse"
-              />
+              <span className="text-2xl animate-pulse">🦉</span>
             </div>
-            <h1 className="text-xl font-bold text-primary">JournOwl</h1>
+            <h1 className="text-xl font-bold text-primary">🦉 JournOwl</h1>
           </div>
           
           <div className="hidden md:flex items-center space-x-6">
