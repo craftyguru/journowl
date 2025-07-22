@@ -166,7 +166,7 @@ The install prompt will appear automatically after you use the site regularly fo
       onClick={handleInstallClick}
       variant="outline"
       size="sm"
-      className="hidden sm:flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white border-0 hover:from-purple-600 hover:to-blue-600 cursor-pointer"
+      className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white border-0 hover:from-purple-600 hover:to-blue-600 cursor-pointer"
       style={{ pointerEvents: 'auto' }}
     >
       <Smartphone className="w-4 h-4" />
