@@ -2526,6 +2526,52 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Corrected manifest with separate icons for PWABuilder validation
+  app.get("/api/pwa/manifest-icons-fixed", async (req, res) => {
+    try {
+      // Read the local manifest and ensure separate icon purposes
+      const fs = await import('fs');
+      const path = await import('path');
+      const manifestPath = path.join(process.cwd(), 'client/public/manifest.json');
+      const manifestContent = fs.readFileSync(manifestPath, 'utf8');
+      const manifest = JSON.parse(manifestContent);
+      
+      // Force separate icon entries for PWABuilder validation
+      const originalIcons = manifest.icons || [];
+      const separateIcons = [];
+      
+      // Create separate "any" and "maskable" entries for each icon
+      for (const icon of originalIcons) {
+        // Add "any" purpose version
+        separateIcons.push({
+          src: icon.src,
+          sizes: icon.sizes,
+          type: icon.type,
+          purpose: "any"
+        });
+        
+        // Add "maskable" purpose version
+        separateIcons.push({
+          src: icon.src,
+          sizes: icon.sizes,
+          type: icon.type,
+          purpose: "maskable"
+        });
+      }
+      
+      manifest.icons = separateIcons;
+      
+      res.setHeader('Content-Type', 'application/manifest+json');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.json(manifest);
+    } catch (error: any) {
+      console.error("Error serving corrected icons manifest:", error);
+      res.status(500).json({ message: "Failed to serve corrected manifest" });
+    }
+  });
+
   // Fixed PWA Manifest endpoint with all validation issues resolved
   app.get("/api/pwa/manifest-fixed", async (req, res) => {
     try {
