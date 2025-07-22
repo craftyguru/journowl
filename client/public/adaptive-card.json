@@ -1,0 +1,64 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "Container",
+      "style": "emphasis",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "Image",
+                  "url": "/icons/icon-96x96.png",
+                  "size": "small",
+                  "style": "person"
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🦉 Quick Journal Entry",
+                  "weight": "bolder",
+                  "size": "medium"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "Your wise owl companion is ready to capture your thoughts",
+                  "wrap": true,
+                  "size": "small"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Input.Text",
+      "id": "journalEntry",
+      "placeholder": "What's on your mind today?",
+      "isMultiline": true,
+      "maxLength": 500
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Save Entry",
+      "data": {
+        "action": "saveEntry"
+      }
+    }
+  ]
+}

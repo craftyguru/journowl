@@ -67,6 +67,14 @@ app.use((req, res, next) => {
     res.json({ status: "OK", message: "JournOwl server is running!", timestamp: new Date().toISOString() });
   });
 
+  // Serve PWA static files in development mode
+  app.use('/manifest.json', express.static('client/public/manifest.json'));
+  app.use('/service-worker.js', express.static('client/public/service-worker.js'));
+  app.use('/offline.html', express.static('client/public/offline.html'));
+  app.use('/icons', express.static('client/public/icons'));
+  app.use('/adaptive-card.json', express.static('client/public/adaptive-card.json'));
+  app.use('/stats-card.json', express.static('client/public/stats-card.json'));
+  
   // Remove the root route override - let Vite handle everything in development
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

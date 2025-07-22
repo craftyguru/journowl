@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head><title>Icon Generator</title></head>
+<body>
+<canvas id="canvas" width="512" height="512" style="border:1px solid #000;"></canvas>
+<script>
+// This would be run in browser to generate icons from your owl image
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+
+// Purple gradient background
+const gradient = ctx.createLinearGradient(0, 0, 512, 512);
+gradient.addColorStop(0, '#667eea');
+gradient.addColorStop(1, '#764ba2');
+
+ctx.fillStyle = gradient;
+ctx.beginPath();
+ctx.arc(256, 256, 240, 0, 2 * Math.PI);
+ctx.fill();
+
+// White border
+ctx.strokeStyle = '#ffffff';
+ctx.lineWidth = 8;
+ctx.stroke();
+
+// Load and draw your owl image would go here
+// For now, create simple placeholder that will be replaced
+ctx.fillStyle = '#333';
+ctx.font = 'bold 48px Arial';
+ctx.textAlign = 'center';
+ctx.fillText('🦉', 256, 280);
+
+console.log('Icon template created - replace with actual owl image processing');
+</script>
+</body>
+</html>

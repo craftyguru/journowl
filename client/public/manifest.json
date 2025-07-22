@@ -1,0 +1,283 @@
+{
+  "name": "JournOwl - Your Wise Writing Companion",
+  "short_name": "JournOwl",
+  "id": "/",
+  "description": "AI-powered journaling platform featuring your wise owl mascot for capturing thoughts, analyzing emotions, and unlocking insights from your daily experiences.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "window-controls-overlay"],
+  "background_color": "#667eea",
+  "theme_color": "#764ba2",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "lifestyle", "health"],
+  "lang": "en",
+  "dir": "ltr",
+  "version": "1.4.0",
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "platform": "wide",
+      "label": "JournOwl Dashboard"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Entry",
+      "short_name": "Write",
+      "description": "Start writing a new journal entry",
+      "url": "/write",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "short_name": "Stats",
+      "description": "View your journaling analytics",
+      "url": "/analytics",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/import",
+      "accept": {
+        "text/plain": [".txt", ".md"],
+        "image/*": [".jpg", ".jpeg", ".png", ".gif"],
+        "application/json": [".json"]
+      },
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  "handle_links": "preferred",
+  "protocol_handlers": [
+    {
+      "protocol": "web+journowl",
+      "url": "/entry?data=%s"
+    },
+    {
+      "protocol": "web+journal",
+      "url": "/write?content=%s"
+    }
+  ],
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": ["image/*", "text/*"]
+        }
+      ]
+    }
+  },
+  "widgets": [
+    {
+      "name": "Quick Journal Entry",
+      "short_name": "Quick Entry",
+      "description": "Write a quick journal entry from your home screen with your owl companion",
+      "tag": "quick-entry",
+      "template": "quick-entry-widget",
+      "ms_ac_template": "/adaptive-card.json",
+      "data": "/api/widget/quick-entry",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/icons/icon-384x384.png",
+          "sizes": "384x384",
+          "platform": "windows"
+        }
+      ],
+      "icons": [
+        {
+          "src": "/icons/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        },
+        {
+          "src": "/icons/icon-256x256.png",
+          "sizes": "256x256",
+          "type": "image/png"
+        }
+      ],
+      "auth": false,
+      "update": 900,
+      "multiple": true
+    },
+    {
+      "name": "Journal Stats",
+      "short_name": "Stats",
+      "description": "View your journaling statistics and streaks with owl insights",
+      "tag": "journal-stats",
+      "template": "stats-widget",
+      "ms_ac_template": "/stats-card.json",
+      "data": "/api/widget/stats",
+      "type": "application/json",
+      "screenshots": [
+        {
+          "src": "/icons/icon-384x384.png",
+          "sizes": "384x384",
+          "platform": "windows"
+        }
+      ],
+      "icons": [
+        {
+          "src": "/icons/icon-96x96.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ],
+      "auth": false,
+      "update": 3600,
+      "multiple": false
+    }
+  ],
+  "scope_extensions": [
+    {
+      "origin": "https://*.journowl.app"
+    },
+    {
+      "origin": "https://journowl.app"
+    }
+  ],
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "ms_widget_host": "ms-widget-provider",
+  "ms_widget_size": {
+    "small": {
+      "width": 1,
+      "height": 1
+    },
+    "medium": {
+      "width": 2,
+      "height": 2
+    }
+  }
+}
