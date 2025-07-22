@@ -2526,6 +2526,183 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Fixed PWA Manifest endpoint with all validation issues resolved
+  app.get("/api/pwa/manifest-fixed", async (req, res) => {
+    try {
+      // Serve a corrected manifest with all validation issues fixed
+      const fixedManifest = {
+        "name": "JournOwl - Your Wise Writing Companion",
+        "short_name": "JournOwl",
+        "id": "journowl-pwa-app",
+        "description": "AI-powered journaling platform for capturing thoughts, analyzing emotions, and unlocking insights from your daily experiences",
+        "start_url": "/",
+        "display": "standalone",
+        "background_color": "#667eea",
+        "theme_color": "#764ba2",
+        "orientation": "portrait-primary",
+        "categories": ["productivity", "lifestyle", "health"],
+        "lang": "en",
+        "scope": "/",
+        "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+        "scope_extensions": [
+          {
+            "origin": "https://journowl.app"
+          }
+        ],
+        "icons": [
+          {
+            "src": "/icons/icon-72x72.png",
+            "sizes": "72x72",
+            "type": "image/png"
+          },
+          {
+            "src": "/icons/icon-96x96.png",
+            "sizes": "96x96",
+            "type": "image/png"
+          },
+          {
+            "src": "/icons/icon-128x128.png",
+            "sizes": "128x128",
+            "type": "image/png"
+          },
+          {
+            "src": "/icons/icon-144x144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+          },
+          {
+            "src": "/icons/icon-152x152.png",
+            "sizes": "152x152",
+            "type": "image/png"
+          },
+          {
+            "src": "/icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+          },
+          {
+            "src": "/icons/icon-384x384.png",
+            "sizes": "384x384",
+            "type": "image/png"
+          },
+          {
+            "src": "/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+          }
+        ],
+        "shortcuts": [
+          {
+            "name": "New Entry",
+            "short_name": "Write",
+            "description": "Start writing a new journal entry",
+            "url": "/?action=new-entry",
+            "icons": [
+              {
+                "src": "/icons/icon-192x192.png",
+                "sizes": "192x192",
+                "type": "image/png"
+              }
+            ]
+          },
+          {
+            "name": "Analytics",
+            "short_name": "Stats",
+            "description": "View your journaling analytics and insights",
+            "url": "/?tab=analytics",
+            "icons": [
+              {
+                "src": "/icons/icon-192x192.png",
+                "sizes": "192x192",
+                "type": "image/png"
+              }
+            ]
+          }
+        ],
+        "widgets": [
+          {
+            "name": "Quick Journal Entry",
+            "short_name": "Quick Entry",
+            "description": "Write a quick journal entry from your home screen",
+            "tag": "quick-entry",
+            "template": "quick-entry-widget",
+            "ms_ac_template": "/adaptive-card.json",
+            "data": "/api/widget/quick-entry",
+            "type": "application/json",
+            "screenshots": [
+              {
+                "src": "/icons/icon-384x384.png",
+                "sizes": "384x384",
+                "platform": "windows"
+              }
+            ],
+            "icons": [
+              {
+                "src": "/icons/icon-96x96.png",
+                "sizes": "96x96",
+                "type": "image/png"
+              },
+              {
+                "src": "/icons/icon-256x256.png",
+                "sizes": "256x256",
+                "type": "image/png"
+              }
+            ],
+            "auth": false,
+            "update": 900,
+            "multiple": true
+          },
+          {
+            "name": "Journal Stats",
+            "short_name": "Stats",
+            "description": "View your journaling statistics and streaks",
+            "tag": "journal-stats",
+            "template": "stats-widget",
+            "ms_ac_template": "/stats-card.json",
+            "data": "/api/widget/stats",
+            "type": "application/json",
+            "screenshots": [
+              {
+                "src": "/icons/icon-384x384.png",
+                "sizes": "384x384",
+                "platform": "windows"
+              }
+            ],
+            "icons": [
+              {
+                "src": "/icons/icon-96x96.png",
+                "sizes": "96x96",
+                "type": "image/png"
+              },
+              {
+                "src": "/icons/icon-256x256.png",
+                "sizes": "256x256",
+                "type": "image/png"
+              }
+            ],
+            "auth": false,
+            "update": 3600,
+            "multiple": false
+          }
+        ],
+        "dir": "ltr",
+        "related_applications": [],
+        "prefer_related_applications": false,
+        "version": "1.3.1"
+      };
+      
+      res.setHeader('Content-Type', 'application/manifest+json');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.json(fixedManifest);
+    } catch (error: any) {
+      console.error("Error serving fixed manifest:", error);
+      res.status(500).json({ message: "Failed to serve fixed manifest", error: error.message });
+    }
+  });
+
   // PWA Manifest validation endpoint with guaranteed correct MIME type
   app.get("/api/pwa/manifest", async (req, res) => {
     try {

@@ -112,6 +112,12 @@
   "display_override": ["window-controls-overlay", "standalone"],
   "protocol_handlers": [],
   "dir": "ltr",
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "scope_extensions": [
+    {
+      "origin": "https://journowl.app"
+    }
+  ],
   "related_applications": [],
   "prefer_related_applications": false,
   "edge_side_panel": {
