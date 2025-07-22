@@ -1,0 +1,46 @@
+{
+  "packageId": "com.journowl.app",
+  "host": "journowl.app",
+  "name": "JournOwl - Your Wise Writing Companion",
+  "launcherName": "JournOwl",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#764ba2",
+  "navigationColor": "#667eea",
+  "backgroundColor": "#667eea",
+  "startUrl": "/",
+  "iconUrl": "https://journowl.app/icons/icon-512x512.png",
+  "maskableIconUrl": "https://journowl.app/icons/icon-512x512.png",
+  "monochromeIconUrl": "https://journowl.app/icons/icon-512x512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "alias": "journowl-key",
+    "fullName": "CN=JournOwl, OU=Development, O=JournOwl, L=City, S=State, C=US",
+    "organization": "JournOwl",
+    "organizationalUnit": "Development",
+    "countryCode": "US"
+  },
+  "appVersionName": "1.4.0",
+  "appVersionCode": 140,
+  "shortcuts": [
+    {
+      "name": "New Entry",
+      "short_name": "Write",
+      "url": "/write",
+      "icon": "https://journowl.app/icons/icon-192x192.png"
+    },
+    {
+      "name": "Analytics",
+      "short_name": "Stats", 
+      "url": "/analytics",
+      "icon": "https://journowl.app/icons/icon-192x192.png"
+    }
+  ],
+  "enableNotifications": true,
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "minSdkVersion": 24,
+  "targetSdkVersion": 34,
+  "compileSdkVersion": 34
+}
