@@ -1,4 +1,4 @@
-const CACHE_NAME = 'journowl-v1.3.0';
+const CACHE_NAME = 'journowl-v1.3.1';
 const BACKGROUND_SYNC_TAG = 'journowl-background-sync';
 const PENDING_WRITES_STORE = 'journowl-pending-writes';
 const WIDGET_CACHE = 'journowl-widgets';
