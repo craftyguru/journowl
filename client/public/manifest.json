@@ -160,6 +160,7 @@
   "widgets": [
     {
       "name": "Quick Journal Entry",
+      "short_name": "Quick Entry",
       "description": "Write a quick journal entry from your home screen",
       "tag": "quick-entry",
       "template": "quick-entry-widget",
@@ -170,12 +171,20 @@
       "icons": [
         {
           "src": "/icons/icon-192x192.png",
-          "sizes": "192x192"
+          "sizes": "192x192",
+          "type": "image/png"
         }
-      ]
+      ],
+      "auth": false,
+      "update": 900000
     }
   ],
   "offline_pages": ["/offline.html"],
-  "background_sync": ["journowl-background-sync"],
-  "permissions": ["background-sync", "notifications", "storage"]
+  "background_sync": ["journowl-background-sync", "journal-sync", "user-sync"],
+  "periodic_background_sync": ["journal-sync"],
+  "permissions": ["background-sync", "periodic-background-sync", "notifications", "storage", "persistent-storage"],
+  "sync_registration": {
+    "tags": ["journowl-background-sync"],
+    "min_period": 12000
+  }
 }

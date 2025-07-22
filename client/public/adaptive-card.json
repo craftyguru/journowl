@@ -1,0 +1,93 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.3",
+  "body": [
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "Image",
+                  "url": "/icons/icon-72x72.png",
+                  "size": "Small",
+                  "style": "Person"
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🦉 JournOwl",
+                  "weight": "Bolder",
+                  "size": "Medium"
+                },
+                {
+                  "type": "TextBlock",
+                  "text": "What's on your mind today?",
+                  "spacing": "None",
+                  "color": "Accent",
+                  "isSubtle": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Input.Text",
+      "id": "journalContent",
+      "placeholder": "Start writing your thoughts...",
+      "isMultiline": true,
+      "maxLength": 500
+    },
+    {
+      "type": "Input.ChoiceSet",
+      "id": "mood",
+      "style": "compact",
+      "placeholder": "How are you feeling?",
+      "choices": [
+        {
+          "title": "😊 Happy",
+          "value": "happy"
+        },
+        {
+          "title": "😐 Neutral",
+          "value": "neutral"
+        },
+        {
+          "title": "😔 Sad",
+          "value": "sad"
+        },
+        {
+          "title": "😴 Tired",
+          "value": "tired"
+        },
+        {
+          "title": "💪 Energetic",
+          "value": "energetic"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Save Entry",
+      "style": "positive",
+      "data": {
+        "action": "saveEntry"
+      }
+    }
+  ]
+}

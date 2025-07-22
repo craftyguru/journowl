@@ -97,15 +97,30 @@ self.addEventListener('activate', (event) => {
       // Take control immediately
       self.clients.claim()
     ])
-    .then(() => {
+    .then(async () => {
       console.log('JournOwl Service Worker activated with enhanced offline support');
+      
+      // Register periodic background sync for data consistency
+      if ('periodicSync' in self.registration) {
+        await self.registration.periodicSync.register('journal-sync', {
+          minInterval: 12 * 60 * 60 * 1000 // 12 hours
+        });
+        console.log('Periodic background sync registered');
+      }
+      
       // Notify all clients about enhanced capabilities
       return self.clients.matchAll()
         .then(clients => {
           clients.forEach(client => {
             client.postMessage({
               type: 'SW_ACTIVATED',
-              message: 'JournOwl now supports full offline mode with background sync!'
+              message: 'JournOwl now supports full offline mode with background sync and widgets!',
+              features: {
+                backgroundSync: true,
+                widgets: true,
+                offline: true,
+                periodicSync: 'periodicSync' in self.registration
+              }
             });
           });
         });
@@ -124,6 +139,47 @@ self.addEventListener('sync', (event) => {
     event.waitUntil(syncPendingData());
   }
 });
+
+// Periodic Background Sync for data consistency
+self.addEventListener('periodicsync', (event) => {
+  console.log('Periodic background sync triggered:', event.tag);
+  
+  if (event.tag === 'journal-sync') {
+    event.waitUntil(performPeriodicSync());
+  }
+});
+
+// Enhanced periodic sync function
+async function performPeriodicSync() {
+  try {
+    console.log('Performing periodic sync...');
+    
+    // Sync pending writes
+    await syncPendingData();
+    
+    // Update widget data cache
+    await updateWidgetCache();
+    
+    console.log('Periodic sync completed successfully');
+  } catch (error) {
+    console.error('Periodic sync failed:', error);
+  }
+}
+
+// Update widget data cache for better performance
+async function updateWidgetCache() {
+  try {
+    const response = await fetch('/api/widget/quick-entry');
+    if (response.ok) {
+      const widgetData = await response.json();
+      const cache = await caches.open(WIDGET_CACHE);
+      await cache.put('/api/widget/quick-entry', new Response(JSON.stringify(widgetData)));
+      console.log('Widget cache updated');
+    }
+  } catch (error) {
+    console.error('Failed to update widget cache:', error);
+  }
+}
 
 // Enhanced sync function for all pending data
 async function syncPendingData() {
@@ -181,24 +237,86 @@ self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'WIDGET_REQUEST') {
     handleWidgetRequest(event);
   }
+  
+  if (event.data && event.data.type === 'WIDGET_ACTION') {
+    handleWidgetAction(event);
+  }
 });
+
+// Handle widget interactions
+async function handleWidgetAction(event) {
+  try {
+    const { action, data } = event.data;
+    
+    if (action === 'saveEntry') {
+      // Save the journal entry from widget
+      const response = await fetch('/api/widget/quick-entry', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          content: data.journalContent,
+          mood: data.mood || 'neutral'
+        })
+      });
+      
+      if (response.ok) {
+        // Show success notification
+        if (self.registration.showNotification) {
+          self.registration.showNotification('🦉 Entry Saved!', {
+            body: 'Your journal entry has been saved successfully.',
+            icon: '/icons/icon-192x192.png',
+            badge: '/icons/icon-72x72.png',
+            tag: 'widget-success'
+          });
+        }
+        
+        event.ports[0].postMessage({
+          type: 'WIDGET_SUCCESS',
+          message: 'Journal entry saved successfully!'
+        });
+      } else {
+        throw new Error('Failed to save entry');
+      }
+    }
+  } catch (error) {
+    console.error('Widget action failed:', error);
+    event.ports[0].postMessage({
+      type: 'WIDGET_ERROR',
+      message: 'Failed to save entry. Please try again.'
+    });
+  }
+}
 
 async function handleWidgetRequest(event) {
   try {
-    const widgetData = {
-      quickEntry: {
-        template: 'quick-entry',
+    // Try to get widget data from cache first, then network
+    const cache = await caches.open(WIDGET_CACHE);
+    const cachedResponse = await cache.match('/api/widget/quick-entry');
+    
+    let widgetData;
+    if (cachedResponse) {
+      widgetData = await cachedResponse.json();
+    } else {
+      // Fallback widget data
+      widgetData = {
+        template: "quick-entry",
         data: {
           placeholder: "What's on your mind today? 🦉",
           prompts: [
             "How are you feeling right now?",
             "What made you smile today?",
             "What are you grateful for?",
-            "Describe your current mood in three words"
+            "Describe your current mood in three words",
+            "What's the best thing that happened today?",
+            "What challenge did you overcome today?",
+            "What are you looking forward to?",
+            "What did you learn today?"
           ]
         }
-      }
-    };
+      };
+    }
     
     event.ports[0].postMessage({
       type: 'WIDGET_RESPONSE',
@@ -206,6 +324,12 @@ async function handleWidgetRequest(event) {
     });
   } catch (error) {
     console.error('Widget request failed:', error);
+    
+    // Send error response
+    event.ports[0].postMessage({
+      type: 'WIDGET_ERROR',
+      message: 'Widget data unavailable'
+    });
   }
 }
 
@@ -407,17 +531,32 @@ self.addEventListener('fetch', (event) => {
             // Register background sync
             if (self.registration.sync) {
               await self.registration.sync.register(BACKGROUND_SYNC_TAG);
+              console.log('Background sync registered for failed request');
+            }
+            
+            // Show notification about offline save
+            if (self.registration.showNotification) {
+              self.registration.showNotification('🦉 Saved Offline', {
+                body: 'Your changes are saved and will sync when you\'re back online.',
+                icon: '/icons/icon-192x192.png',
+                badge: '/icons/icon-72x72.png',
+                tag: 'offline-save'
+              });
             }
             
             // Return an offline response
             return new Response(
               JSON.stringify({
-                error: 'offline',
-                message: 'Request stored for background sync'
+                success: true,
+                offline: true,
+                message: 'Content saved offline and will sync when connection returns'
               }),
               {
                 status: 202,
-                headers: { 'Content-Type': 'application/json' }
+                headers: { 
+                  'Content-Type': 'application/json',
+                  'X-Offline-Mode': 'true'
+                }
               }
             );
           })
