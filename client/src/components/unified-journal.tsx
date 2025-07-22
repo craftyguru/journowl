@@ -865,17 +865,21 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                       Color
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-48 p-3">
-                    <div className="space-y-2">
-                      <div className="grid grid-cols-4 gap-2">
-                        {['#000000', '#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'].map(color => (
-                          <button
-                            key={color}
-                            onClick={() => setTextColor(color)}
-                            className="w-8 h-8 rounded border-2"
-                            style={{ backgroundColor: color, borderColor: textColor === color ? '#000' : '#ccc' }}
-                          />
-                        ))}
+                  <PopoverContent className="w-64 p-3">
+                    <div className="space-y-3">
+                      <HexColorPicker 
+                        color={textColor} 
+                        onChange={setTextColor}
+                        style={{ width: '100%', height: '150px' }}
+                      />
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-8 h-8 rounded-lg border-2 border-gray-300 shadow-sm" 
+                          style={{ backgroundColor: textColor }}
+                        />
+                        <span className="text-xs text-gray-600 font-mono">
+                          {textColor}
+                        </span>
                       </div>
                     </div>
                   </PopoverContent>
