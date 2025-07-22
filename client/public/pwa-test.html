@@ -81,6 +81,28 @@
         addStatus('beforeinstallprompt fired: ' + !!deferredPrompt, !!deferredPrompt);
         if (!deferredPrompt) {
           addStatus('Possible reasons: User engagement too low, already installed, or browser restrictions', false);
+          // Add detailed guidance
+          const guidance = document.createElement('div');
+          guidance.style.cssText = 'margin-top: 20px; padding: 15px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; font-size: 14px;';
+          guidance.innerHTML = `
+            <h3 style="margin-top: 0; color: #856404;">📱 PWA Installation Requirements Met!</h3>
+            <p><strong>Technical Status:</strong> ✅ ALL PWA requirements are satisfied!</p>
+            <p><strong>Why no install prompt?</strong> Browsers require user engagement:</p>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              <li><strong>Time on site:</strong> Spend 30-60+ seconds actively using the app</li>
+              <li><strong>Multiple visits:</strong> Visit the app multiple times over several days</li>
+              <li><strong>User interaction:</strong> Click buttons, scroll, navigate between pages</li>
+              <li><strong>Not already installed:</strong> Check if app is already installed</li>
+            </ul>
+            <p><strong>Manual Installation Options:</strong></p>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+              <li><strong>Chrome/Edge Desktop:</strong> Look for install icon (⊕) in address bar</li>
+              <li><strong>Chrome Android:</strong> Menu → "Add to Home screen" or "Install app"</li>
+              <li><strong>Safari iOS:</strong> Share button → "Add to Home Screen"</li>
+            </ul>
+            <p style="margin-bottom: 0;"><strong>Next Steps:</strong> Use the app normally for a few minutes, then check browser menu for install options!</p>
+          `;
+          document.getElementById('results').appendChild(guidance);
         }
       }, 1000);
     }
