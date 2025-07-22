@@ -18,11 +18,21 @@ export function LandingPWAPrompt() {
     const isProduction = window.location.hostname === 'journowl.app';
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
 
+    // Check for existing global deferredPrompt first
+    if ((window as any).deferredPrompt) {
+      console.log('PWA: Using existing global deferredPrompt');
+      setDeferredPrompt((window as any).deferredPrompt);
+      if (isMobile && isProduction && !isInstalled) {
+        setTimeout(() => setShowPrompt(true), 2000);
+      }
+    }
+
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       console.log('PWA: beforeinstallprompt event fired - auto-install ready!');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
+      (window as any).deferredPrompt = e;
       
       // Show our custom prompt immediately when install is available
       if (isMobile && isProduction && !isInstalled) {
@@ -30,101 +40,93 @@ export function LandingPWAPrompt() {
       }
     };
 
+    // Listen for custom PWA installable event from index.html
+    const handlePWAInstallable = (e: CustomEvent) => {
+      console.log('PWA: Custom installable event received');
+      setDeferredPrompt(e.detail);
+      if (isMobile && isProduction && !isInstalled) {
+        setTimeout(() => setShowPrompt(true), 2000);
+      }
+    };
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
+    window.addEventListener('pwa-installable', handlePWAInstallable as EventListener);
 
     // Even if no beforeinstallprompt, show manual instructions on mobile
-    if (isMobile && isProduction && !isInstalled && !deferredPrompt) {
+    if (isMobile && isProduction && !isInstalled) {
       const timer = setTimeout(() => {
         setShowPrompt(true);
-      }, 3000);
+      }, 4000); // Show after 4 seconds if no install prompt
       return () => clearTimeout(timer);
     }
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
+      window.removeEventListener('pwa-installable', handlePWAInstallable as EventListener);
     };
   }, []);
 
   const handleInstall = async () => {
     console.log('PWA: Install button clicked - attempting auto-install');
+    console.log('PWA: deferredPrompt available:', !!deferredPrompt);
+    console.log('PWA: Global deferredPrompt available:', !!(window as any).deferredPrompt);
     
-    // First priority: Use native browser install prompt for automatic installation
-    if (deferredPrompt) {
+    // Try global deferredPrompt first
+    const promptToUse = deferredPrompt || (window as any).deferredPrompt;
+    
+    if (promptToUse) {
       try {
         console.log('PWA: Triggering automatic browser installation');
-        await deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+        await promptToUse.prompt();
+        const { outcome } = await promptToUse.userChoice;
         console.log('PWA: Installation result:', outcome);
         
         if (outcome === 'accepted') {
           console.log('PWA: Installation successful!');
           setShowPrompt(false);
+          setDeferredPrompt(null);
+          (window as any).deferredPrompt = null;
           return;
         }
       } catch (error) {
         console.error('PWA: Auto-install failed:', error);
       }
+    } else {
+      console.log('PWA: No install prompt available, showing manual instructions');
     }
 
-    // Fallback: Try to trigger browser-specific installation methods
+    // Fallback: Show platform-specific manual instructions
     const isAndroid = /Android/i.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     const isChrome = /Chrome/i.test(navigator.userAgent);
     
-    if (isAndroid && isChrome) {
-      // For Android Chrome, try to simulate the install flow
-      console.log('PWA: Attempting Chrome Android auto-install');
-      
-      // Check if there's an install prompt available in the browser
-      if ('serviceWorker' in navigator && 'PushManager' in window) {
-        // Show immediate install instructions that work like auto-install
-        const confirmed = confirm(`🚀 AUTO-INSTALL JOURNOWL NOW?
-
-Tap "OK" then look for the install prompt from your browser, or:
-
-→ Tap the menu (⋮) in Chrome
-→ Tap "Install app" or "Add to Home screen"
-→ Tap "Install"
-
-JournOwl will install automatically!`);
-        
-        if (confirmed) {
-          setShowPrompt(false);
-          return;
-        }
-      }
-    }
-
-    // For iOS - guide them to the native install method
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
     if (isIOS) {
-      const confirmed = confirm(`📱 AUTO-INSTALL ON iOS:
+      alert(`📱 INSTALL JOURNOWL ON iOS:
 
-Tap "OK" then:
-1. Tap the Share button (⬆️) at the bottom
-2. Tap "Add to Home Screen"
-3. Tap "Add"
+1. Tap the Share button (⬆️) at the bottom of Safari
+2. Scroll down and tap "Add to Home Screen"
+3. Tap "Add" to confirm installation
 
-JournOwl will install like a native app!`);
-      
-      if (confirmed) {
-        setShowPrompt(false);
-        return;
-      }
+JournOwl will appear on your home screen as a native app!`);
+    } else if (isAndroid) {
+      alert(`📱 INSTALL JOURNOWL ON ANDROID:
+
+1. Tap the menu (⋮) in your browser
+2. Look for "Install app" or "Add to Home screen"
+3. Tap "Install" to confirm
+
+JournOwl will install automatically to your home screen!`);
+    } else {
+      alert(`💻 INSTALL JOURNOWL:
+
+Look for an install icon in your browser's address bar, or:
+1. Chrome/Edge: Menu → Install JournOwl
+2. Firefox: Menu → Install This Site as App
+
+This creates a desktop app version of JournOwl!`);
     }
-
-    // Generic auto-install guidance
-    const confirmed = confirm(`🔄 AUTO-INSTALL JOURNOWL:
-
-Your browser should show an install prompt. If not:
-
-→ Look for an install icon in your address bar
-→ Or check your browser menu for "Install" option
-
-This will install JournOwl automatically!`);
     
-    if (confirmed) {
-      setShowPrompt(false);
-    }
+    setShowPrompt(false);
   };
 
   return (

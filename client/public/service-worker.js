@@ -1,17 +1,13 @@
-const CACHE_NAME = 'journowl-v1.1.0';
+const CACHE_NAME = 'journowl-v1.2.0';
 const BACKGROUND_SYNC_TAG = 'journowl-background-sync';
 const PENDING_WRITES_STORE = 'journowl-pending-writes';
 
 const STATIC_CACHE_URLS = [
   '/',
-  '/auth',
-  '/dashboard',
-  '/import',
-  '/share',
   '/manifest.json',
-  '/offline.html',
-  // Add core CSS and JS files that get built
-  // Note: In production, you'd want to add the actual built asset paths
+  '/offline.html'
+  // Only cache essential files that definitely exist
+  // Skip dynamic routes that may not exist
 ];
 
 const API_CACHE_URLS = [
@@ -54,7 +50,15 @@ self.addEventListener('install', (event) => {
       caches.open(CACHE_NAME)
         .then((cache) => {
           console.log('Caching core assets...');
-          return cache.addAll(STATIC_CACHE_URLS);
+          // Cache files individually to handle failures gracefully
+          return Promise.allSettled(
+            STATIC_CACHE_URLS.map(url => 
+              cache.add(url).catch(err => {
+                console.warn(`Failed to cache ${url}:`, err);
+                return null;
+              })
+            )
+          );
         }),
       initIndexedDB()
         .then(() => console.log('IndexedDB initialized for offline storage'))
@@ -65,6 +69,8 @@ self.addEventListener('install', (event) => {
     })
     .catch((error) => {
       console.error('Service Worker installation failed:', error);
+      // Continue with installation even if some caching fails
+      return self.skipWaiting();
     })
   );
 });
