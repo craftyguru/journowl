@@ -73,11 +73,17 @@
       }
       
       // PWA Install Prompt - Enhanced for debugging
-      let deferredPrompt;
+      let deferredPrompt = null;
+      
+      // Make deferredPrompt globally accessible
+      window.deferredPrompt = null;
+      
       window.addEventListener('beforeinstallprompt', (e) => {
         console.log('🎉 PWA Install Event Triggered! JournOwl can be installed!');
+        console.log('beforeinstallprompt event details:', e);
         e.preventDefault();
         deferredPrompt = e;
+        window.deferredPrompt = e;
         
         // Dispatch custom event for React components to listen
         window.dispatchEvent(new CustomEvent('pwa-installable', { detail: e }));
@@ -86,7 +92,27 @@
       // Track PWA installation
       window.addEventListener('appinstalled', (evt) => {
         console.log('JournOwl has been installed as a PWA!');
+        deferredPrompt = null;
+        window.deferredPrompt = null;
         // Track this event in analytics if needed
+      });
+      
+      // Debug PWA eligibility on page load
+      window.addEventListener('load', () => {
+        console.log('PWA Debug: Checking installation eligibility...');
+        console.log('PWA Debug: HTTPS:', window.location.protocol === 'https:');
+        console.log('PWA Debug: Service Worker supported:', 'serviceWorker' in navigator);
+        console.log('PWA Debug: Manifest linked:', !!document.querySelector('link[rel="manifest"]'));
+        
+        // Check if already installed
+        if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+          console.log('PWA Debug: Already installed in standalone mode');
+        }
+        
+        setTimeout(() => {
+          console.log('PWA Debug: beforeinstallprompt fired:', !!deferredPrompt);
+          console.log('PWA Debug: Global deferredPrompt available:', !!window.deferredPrompt);
+        }, 2000);
       });
     </script>
     

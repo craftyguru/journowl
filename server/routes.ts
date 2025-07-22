@@ -386,15 +386,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/auth/logout", (req, res) => {
-    req.session.destroy((err) => {
+  // Support both GET and POST for logout
+  const handleLogout = (req: any, res: any) => {
+    console.log('Logout request received');
+    req.session.destroy((err: any) => {
       if (err) {
         console.error('Logout error:', err);
+        if (req.method === 'POST') {
+          return res.status(500).json({ error: 'Logout failed' });
+        }
         return res.redirect('/');
+      }
+      console.log('Session destroyed successfully');
+      if (req.method === 'POST') {
+        return res.json({ success: true });
       }
       res.redirect('/');
     });
-  });
+  };
+
+  app.get("/api/auth/logout", handleLogout);
+  app.post("/api/auth/logout", handleLogout);
 
   app.get("/api/auth/me", requireAuth, async (req: any, res) => {
     try {
@@ -417,14 +429,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/auth/logout", (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ message: "Could not log out" });
-      }
-      res.json({ message: "Logged out successfully" });
-    });
-  });
+
 
   // OAuth Routes
   app.get('/api/auth/google', (req, res, next) => {

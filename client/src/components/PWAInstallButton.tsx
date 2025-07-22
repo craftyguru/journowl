@@ -32,9 +32,16 @@ export function PWAInstallButton() {
       protocol: window.location.protocol
     });
 
+    // Check if PWA event was already fired before React component mounted
+    if ((window as any).deferredPrompt) {
+      console.log('PWA Debug: Found existing deferredPrompt on mount');
+      setDeferredPrompt((window as any).deferredPrompt);
+      setIsInstallable(true);
+    }
+
     // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('PWA Debug: beforeinstallprompt event fired');
+      console.log('PWA Debug: beforeinstallprompt event fired in React component');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       setIsInstallable(true);
@@ -55,6 +62,8 @@ export function PWAInstallButton() {
     if (!isInstalled) {
       setTimeout(() => {
         console.log('PWA Debug: Showing helper button');
+        console.log('PWA Debug: Current deferredPrompt:', !!deferredPrompt);
+        console.log('PWA Debug: Global deferredPrompt:', !!(window as any).deferredPrompt);
         setShowDevHelper(true);
       }, 3000); // Show after 3 seconds to allow time for beforeinstallprompt
     }
