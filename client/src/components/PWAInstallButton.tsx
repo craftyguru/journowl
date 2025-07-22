@@ -51,12 +51,12 @@ export function PWAInstallButton() {
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
-    // In development, always show the helper button after a delay
-    if (isDev && !isInstalled) {
+    // Always show helper button if not installed (for both dev and production)
+    if (!isInstalled) {
       setTimeout(() => {
-        console.log('PWA Debug: Showing dev helper button');
+        console.log('PWA Debug: Showing helper button');
         setShowDevHelper(true);
-      }, 2000);
+      }, 3000); // Show after 3 seconds to allow time for beforeinstallprompt
     }
 
     return () => {
@@ -87,32 +87,55 @@ On production (journowl.app):
 Current environment: Development Mode`);
         return;
       }
+      
+      // On production, show helpful info if install prompt not available
+      alert(`PWA Installation Help:
+
+🦉 JournOwl can be installed as an app!
+
+Why the install button isn't working:
+• Browser needs more user interaction (30-60 seconds)
+• Some browsers require multiple visits over time
+• Chrome/Edge: Look for install icon in address bar
+• Mobile: Use browser menu → "Add to Home Screen"
+
+Manual Installation:
+📱 Android: Chrome menu → "Add to Home Screen"
+📱 iPhone: Safari Share → "Add to Home Screen"
+💻 Desktop: Look for install icon in address bar
+
+Try interacting with the site more, then the install prompt should appear!`);
       return;
     }
 
     console.log('PWA Debug: Triggering install prompt');
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    
-    if (outcome === 'accepted') {
-      console.log('PWA Debug: User accepted the install prompt');
-    } else {
-      console.log('PWA Debug: User dismissed the install prompt');
+    try {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      
+      if (outcome === 'accepted') {
+        console.log('PWA Debug: User accepted the install prompt');
+      } else {
+        console.log('PWA Debug: User dismissed the install prompt');
+      }
+      
+      setDeferredPrompt(null);
+      setIsInstallable(false);
+    } catch (error) {
+      console.error('PWA Debug: Error during install prompt:', error);
     }
-    
-    setDeferredPrompt(null);
-    setIsInstallable(false);
   };
 
-  // Show button if installable OR in development mode
+  // Show button if installable OR show helper for install guidance
   if (isInstalled) {
     return null;
   }
 
   const isDev = window.location.hostname.includes('replit.dev') || window.location.hostname === 'localhost';
+  const isProduction = window.location.hostname === 'journowl.app';
   
-  // Hide button if not installable and not in dev mode
-  if (!isInstallable && !isDev) {
+  // Always show button on production or if installable, hide only if no conditions met
+  if (!isInstallable && !isDev && !isProduction && !showDevHelper) {
     return null;
   }
 
