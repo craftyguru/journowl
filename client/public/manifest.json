@@ -160,7 +160,7 @@
   "widgets": [
     {
       "name": "Quick Journal Entry",
-      "short_name": "Quick Entry",
+      "short_name": "Quick Entry", 
       "description": "Write a quick journal entry from your home screen",
       "tag": "quick-entry",
       "template": "quick-entry-widget",
@@ -176,7 +176,31 @@
         }
       ],
       "auth": false,
-      "update": 900000
+      "update": 900000,
+      "ms_widget_host": "widgets",
+      "ms_widget_size": "medium"
+    },
+    {
+      "name": "Journal Stats",
+      "short_name": "Stats",
+      "description": "View your journaling statistics and streaks",
+      "tag": "journal-stats",
+      "template": "stats-widget", 
+      "ms_ac_template": "stats-card.json",
+      "data": "/api/widget/stats",
+      "type": "application/json",
+      "screenshot": "/icons/icon-384x384.png",
+      "icons": [
+        {
+          "src": "/icons/icon-192x192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ],
+      "auth": false,
+      "update": 3600000,
+      "ms_widget_host": "widgets",
+      "ms_widget_size": "small"
     }
   ],
   "offline_pages": ["/offline.html"],

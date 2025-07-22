@@ -2526,18 +2526,44 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Stats widget data endpoint
+  app.get("/api/widget/stats", async (req, res) => {
+    try {
+      // For demo purposes, return sample stats
+      // In production, you might want to show aggregated public stats or require authentication
+      const statsData = {
+        template: "stats-widget",
+        data: {
+          totalEntries: 47,
+          currentStreak: 8,
+          totalWords: 12543,
+          averageMood: "Happy",
+          lastUpdated: new Date().toISOString()
+        }
+      };
+
+      res.json(statsData);
+    } catch (error: any) {
+      console.error("Error fetching widget stats:", error);
+      res.status(500).json({ message: "Failed to fetch widget stats" });
+    }
+  });
+
   // Quick entry submission from widget
   app.post("/api/widget/quick-entry", async (req, res) => {
     try {
-      const { content, mood } = req.body;
+      const { content, mood, journalContent } = req.body;
       
-      // For widget entries, we'll save without authentication for demo purposes
-      // In production, you might want to require authentication or use a guest mode
+      // Handle both direct API calls and adaptive card submissions
+      const entryContent = content || journalContent || "Quick entry from widget";
+      const entryMood = mood || "neutral";
+      
       const quickEntry = {
-        content: content || "Quick entry from widget",
-        mood: mood || "neutral",
+        content: entryContent,
+        mood: entryMood,
         title: `Quick Entry - ${new Date().toLocaleDateString()}`,
-        createdAt: new Date()
+        createdAt: new Date(),
+        source: "widget"
       };
 
       res.json({ 

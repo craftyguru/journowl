@@ -169,12 +169,22 @@ async function performPeriodicSync() {
 // Update widget data cache for better performance
 async function updateWidgetCache() {
   try {
-    const response = await fetch('/api/widget/quick-entry');
-    if (response.ok) {
-      const widgetData = await response.json();
-      const cache = await caches.open(WIDGET_CACHE);
+    const cache = await caches.open(WIDGET_CACHE);
+    
+    // Update quick entry widget cache
+    const quickEntryResponse = await fetch('/api/widget/quick-entry');
+    if (quickEntryResponse.ok) {
+      const widgetData = await quickEntryResponse.json();
       await cache.put('/api/widget/quick-entry', new Response(JSON.stringify(widgetData)));
-      console.log('Widget cache updated');
+      console.log('Quick entry widget cache updated');
+    }
+    
+    // Update stats widget cache
+    const statsResponse = await fetch('/api/widget/stats');
+    if (statsResponse.ok) {
+      const statsData = await statsResponse.json();
+      await cache.put('/api/widget/stats', new Response(JSON.stringify(statsData)));
+      console.log('Stats widget cache updated');
     }
   } catch (error) {
     console.error('Failed to update widget cache:', error);
@@ -291,31 +301,54 @@ async function handleWidgetAction(event) {
 
 async function handleWidgetRequest(event) {
   try {
-    // Try to get widget data from cache first, then network
+    const { widgetType = 'quick-entry' } = event.data;
     const cache = await caches.open(WIDGET_CACHE);
-    const cachedResponse = await cache.match('/api/widget/quick-entry');
     
     let widgetData;
-    if (cachedResponse) {
-      widgetData = await cachedResponse.json();
+    let cachedResponse;
+    
+    if (widgetType === 'stats') {
+      // Handle stats widget request
+      cachedResponse = await cache.match('/api/widget/stats');
+      if (cachedResponse) {
+        widgetData = await cachedResponse.json();
+      } else {
+        // Fallback stats widget data
+        widgetData = {
+          template: "stats-widget",
+          data: {
+            totalEntries: 0,
+            currentStreak: 0,
+            totalWords: 0,
+            averageMood: "Neutral",
+            lastUpdated: new Date().toISOString()
+          }
+        };
+      }
     } else {
-      // Fallback widget data
-      widgetData = {
-        template: "quick-entry",
-        data: {
-          placeholder: "What's on your mind today? 🦉",
-          prompts: [
-            "How are you feeling right now?",
-            "What made you smile today?",
-            "What are you grateful for?",
-            "Describe your current mood in three words",
-            "What's the best thing that happened today?",
-            "What challenge did you overcome today?",
-            "What are you looking forward to?",
-            "What did you learn today?"
-          ]
-        }
-      };
+      // Handle quick entry widget request (default)
+      cachedResponse = await cache.match('/api/widget/quick-entry');
+      if (cachedResponse) {
+        widgetData = await cachedResponse.json();
+      } else {
+        // Fallback quick entry widget data
+        widgetData = {
+          template: "quick-entry",
+          data: {
+            placeholder: "What's on your mind today? 🦉",
+            prompts: [
+              "How are you feeling right now?",
+              "What made you smile today?",
+              "What are you grateful for?",
+              "Describe your current mood in three words",
+              "What's the best thing that happened today?",
+              "What challenge did you overcome today?",
+              "What are you looking forward to?",
+              "What did you learn today?"
+            ]
+          }
+        };
+      }
     }
     
     event.ports[0].postMessage({
