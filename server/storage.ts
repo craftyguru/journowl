@@ -164,7 +164,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJournalEntry(entry: InsertJournalEntry & { userId: number }): Promise<JournalEntry> {
+    console.log("createJournalEntry called with:", JSON.stringify(entry, null, 2));
+    
     const wordCount = entry.content.trim().split(/\s+/).filter((word: string) => word.length > 0).length;
+    console.log("Calculated word count:", wordCount);
 
     // Prepare entry data with all fields properly mapped
     const entryData = {
@@ -188,10 +191,15 @@ export class DatabaseStorage implements IStorage {
       updatedAt: new Date()
     };
 
-    const result = await db.insert(journalEntries).values(entryData).returning();
-    const newEntry = result[0];
+    console.log("About to insert entry data:", JSON.stringify(entryData, null, 2));
+    
+    try {
+      const result = await db.insert(journalEntries).values(entryData).returning();
+      console.log("Database insert successful, result:", JSON.stringify(result, null, 2));
+      const newEntry = result[0];
+      console.log("Returning new entry:", JSON.stringify(newEntry, null, 2));
 
-    // Update user stats
+      // Update user stats
     const stats = await this.getUserStats(entry.userId);
     if (stats) {
       const today = new Date();
@@ -217,11 +225,15 @@ export class DatabaseStorage implements IStorage {
         longestStreak,
         lastEntryDate: today,
       });
+      }
+
+      await this.updateUserXP(entry.userId, 50 + Math.floor(wordCount / 10));
+
+      return newEntry;
+    } catch (error) {
+      console.error("Database insert failed:", error);
+      throw error;
     }
-
-    await this.updateUserXP(entry.userId, 50 + Math.floor(wordCount / 10));
-
-    return newEntry;
   }
 
   async getJournalEntries(userId: number, limit = 10): Promise<JournalEntry[]> {
