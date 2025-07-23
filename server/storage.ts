@@ -164,9 +164,31 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJournalEntry(entry: InsertJournalEntry & { userId: number }): Promise<JournalEntry> {
-    const wordCount = (entry as any).content.trim().split(/\s+/).filter((word: string) => word.length > 0).length;
+    const wordCount = entry.content.trim().split(/\s+/).filter((word: string) => word.length > 0).length;
 
-    const result = await db.insert(journalEntries).values({ ...(entry as any), wordCount } as any).returning();
+    // Prepare entry data with all fields properly mapped
+    const entryData = {
+      userId: entry.userId,
+      title: entry.title,
+      content: entry.content,
+      mood: entry.mood,
+      wordCount,
+      fontFamily: entry.fontFamily || "Inter",
+      fontSize: entry.fontSize || 16,
+      textColor: entry.textColor || "#1f2937",
+      backgroundColor: entry.backgroundColor || "#ffffff",
+      isPrivate: entry.isPrivate || false,
+      tags: entry.tags || [],
+      photos: entry.photos || [],
+      drawings: entry.drawings || [],
+      location: entry.location || null,
+      weather: entry.weather || null,
+      aiInsights: null,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    const result = await db.insert(journalEntries).values(entryData).returning();
     const newEntry = result[0];
 
     // Update user stats

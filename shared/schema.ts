@@ -281,7 +281,16 @@ export const insertJournalEntrySchema = z.object({
   title: z.string().min(1),
   content: z.string().min(1),
   mood: z.string().min(1),
-  userId: z.number(),
+  fontFamily: z.string().optional(),
+  fontSize: z.number().optional(),
+  textColor: z.string().optional(),
+  backgroundColor: z.string().optional(),
+  isPrivate: z.boolean().optional(),
+  tags: z.array(z.string()).optional(),
+  photos: z.array(z.any()).optional(),
+  drawings: z.array(z.any()).optional(),
+  location: z.string().optional(),
+  weather: z.string().optional(),
 });
 
 export const insertAchievementSchema = z.object({
