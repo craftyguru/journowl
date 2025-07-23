@@ -736,6 +736,19 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
               </Tabs>
             </div>
           </div>
+
+          {/* Mobile Save Button - Always Visible */}
+          <div className="p-4 border-t border-purple-500/20 bg-slate-800/50">
+            <Button
+              onClick={() => {
+                console.log("📱 Mobile Save Entry button clicked!");
+                handleSave();
+              }}
+              className="w-full bg-green-600 hover:bg-green-700 h-12 font-semibold"
+            >
+              💾 Save Entry
+            </Button>
+          </div>
         </div>
       </div>
 
