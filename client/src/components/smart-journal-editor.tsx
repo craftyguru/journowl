@@ -283,6 +283,11 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
   }, [toast]);
 
   const handleSave = () => {
+    console.log("SmartJournalEditor handleSave called");
+    console.log("Current state - title:", title);
+    console.log("Current state - content:", content);
+    console.log("Current state - mood:", mood);
+    
     const entryData = {
       id: entry?.id,
       title,
@@ -303,7 +308,12 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
       updatedAt: new Date().toISOString()
     };
 
+    console.log("SmartJournalEditor - prepared entry data:", JSON.stringify(entryData, null, 2));
+    console.log("SmartJournalEditor - calling onSave function:", typeof onSave);
+    
     onSave(entryData);
+    
+    console.log("SmartJournalEditor - onSave called, showing toast");
     toast({
       title: "Entry Saved",
       description: "Your journal entry has been saved successfully!"
