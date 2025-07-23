@@ -92,6 +92,8 @@ export default function Dashboard() {
         // Create new entry
         console.log('Creating new entry');
         console.log('Making POST request to /api/journal/entries');
+        console.log('User authenticated, user ID:', user?.id);
+        console.log('About to make apiRequest with method POST to /api/journal/entries');
         response = await apiRequest("POST", "/api/journal/entries", cleanedData);
       }
 
