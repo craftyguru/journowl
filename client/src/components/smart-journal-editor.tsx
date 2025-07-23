@@ -428,7 +428,10 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
                 </div>
 
                 <Button
-                  onClick={handleSave}
+                  onClick={() => {
+                    console.log("💾 Save Entry button clicked!");
+                    handleSave();
+                  }}
                   className="w-full bg-green-600 hover:bg-green-700 h-12 sm:h-10"
                 >
                   💾 Save Entry
