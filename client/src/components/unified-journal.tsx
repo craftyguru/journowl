@@ -685,6 +685,11 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
   }, [mood]);
 
   const handleSave = () => {
+    console.log("🔥 UnifiedJournal handleSave called!");
+    console.log("UnifiedJournal - title:", title);
+    console.log("UnifiedJournal - content:", content);
+    console.log("UnifiedJournal - mood:", mood);
+    
     const entryData = {
       id: entry?.id,
       title: title || "Untitled Entry",
@@ -703,7 +708,12 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       updatedAt: new Date().toISOString()
     };
 
+    console.log("UnifiedJournal - prepared entry data:", JSON.stringify(entryData, null, 2));
+    console.log("UnifiedJournal - calling onSave function:", typeof onSave);
+    
     onSave(entryData);
+    
+    console.log("UnifiedJournal - onSave called successfully!");
   };
 
   const getCanvasCoordinates = (e: React.MouseEvent<HTMLCanvasElement>) => {
