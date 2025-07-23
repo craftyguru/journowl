@@ -566,11 +566,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Journal routes
   app.post("/api/journal/entries", requireAuth, async (req: any, res) => {
     try {
+      console.log("POST /api/journal/entries - Request body:", JSON.stringify(req.body, null, 2));
+      console.log("POST /api/journal/entries - Session userId:", req.session.userId);
+      
       const entryData = insertJournalEntrySchema.parse(req.body);
+      console.log("POST /api/journal/entries - Parsed entry data:", JSON.stringify(entryData, null, 2));
+      
       const entry = await storage.createJournalEntry({
         ...entryData,
         userId: req.session.userId,
       });
+      
+      console.log("POST /api/journal/entries - Created entry:", JSON.stringify(entry, null, 2));
       
       // Track the journal entry for achievements and goals
       try {
@@ -586,8 +593,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Continue without achievement tracking if it fails
       }
       
+      console.log("POST /api/journal/entries - Success, returning entry");
       res.json(entry);
     } catch (error: any) {
+      console.error("POST /api/journal/entries - Error:", error);
+      console.error("POST /api/journal/entries - Error message:", error.message);
+      console.error("POST /api/journal/entries - Error stack:", error.stack);
       res.status(400).json({ message: error.message });
     }
   });
