@@ -94,7 +94,18 @@ export default function Dashboard() {
         console.log('Making POST request to /api/journal/entries');
         console.log('User authenticated, user ID:', user?.id);
         console.log('About to make apiRequest with method POST to /api/journal/entries');
-        response = await apiRequest("POST", "/api/journal/entries", cleanedData);
+        console.log('ApiRequest function available:', typeof apiRequest);
+        
+        try {
+          response = await apiRequest("POST", "/api/journal/entries", cleanedData);
+          console.log('ApiRequest completed successfully');
+        } catch (apiError) {
+          console.error('ApiRequest failed with error:', apiError);
+          console.error('Error type:', typeof apiError);
+          console.error('Error message:', apiError?.message);
+          console.error('Error stack:', apiError?.stack);
+          throw apiError;
+        }
       }
 
       console.log('API response received:', response.status, response.statusText);
