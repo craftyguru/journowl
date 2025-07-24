@@ -57,6 +57,7 @@ export default function Dashboard() {
 
   const handleJournalSave = async (entryData: any) => {
     try {
+      console.log('🎯 Dashboard handleJournalSave called!');
       console.log('Saving entry:', entryData);
       
       // Check if user is authenticated first
@@ -113,10 +114,11 @@ export default function Dashboard() {
       console.log('API response data:', responseData);
 
       // Invalidate and refetch the journal entries
+      console.log('🔄 Invalidating queries to refresh dashboard...');
       queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       
-      console.log('Entry saved successfully, closing journal');
+      console.log('✅ Entry saved successfully, closing journal');
       closeJournal();
     } catch (error) {
       console.error('Error saving entry:', error);

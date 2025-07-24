@@ -710,10 +710,14 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
     console.log("UnifiedJournal - prepared entry data:", JSON.stringify(entryData, null, 2));
     console.log("UnifiedJournal - calling onSave function:", typeof onSave);
+    console.log("UnifiedJournal - onSave function:", onSave);
     
-    onSave(entryData);
-    
-    console.log("UnifiedJournal - onSave called successfully!");
+    try {
+      onSave(entryData);
+      console.log("UnifiedJournal - onSave called successfully!");
+    } catch (error) {
+      console.error("UnifiedJournal - Error calling onSave:", error);
+    }
   };
 
   const directSave = () => {
