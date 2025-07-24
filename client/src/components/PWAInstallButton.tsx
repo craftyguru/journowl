@@ -52,21 +52,30 @@ export function PWAInstallButton() {
     console.log('PWA Debug: Install button clicked');
     console.log('PWA Debug: deferredPrompt exists:', !!deferredPrompt);
 
-    // If we have the native prompt, use it
+    // If we have the native prompt, use it for direct installation
     if (deferredPrompt) {
       try {
+        console.log('PWA Debug: Triggering native installation');
         await deferredPrompt.prompt();
         const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') setIsInstalled(true);
+        
+        if (outcome === 'accepted') {
+          console.log('PWA Debug: App installed successfully!');
+          setIsInstalled(true);
+          alert('🎉 JournOwl installed successfully! Find it in your apps or home screen.');
+        } else {
+          console.log('PWA Debug: User cancelled installation');
+        }
+        
         setDeferredPrompt(null);
         setIsInstallable(false);
         return;
       } catch (error) {
-        console.error('PWA Debug: Error during install prompt:', error);
+        console.error('PWA Debug: Error during native install:', error);
       }
     }
 
-    // Show explanation and manual instructions
+    // Only show manual instructions if native installation failed/unavailable
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isAndroid = /Android/i.test(navigator.userAgent);
 
@@ -75,7 +84,7 @@ export function PWAInstallButton() {
     } else if (isIOS) {
       showIOSInstructions();
     } else if (isAndroid) {
-      showAndroidInstructions(!!deferredPrompt);
+      showAndroidInstructions(false); // Native prompt not available
     } else if (isMobile) {
       showGenericMobileInstructions();
     } else {

@@ -79,7 +79,7 @@ export function LandingPWAPrompt() {
   }, []);
 
   const handleInstall = async () => {
-    console.log('PWA: Install button clicked - attempting auto-install');
+    console.log('PWA: Install button clicked - attempting native installation');
     console.log('PWA: deferredPrompt available:', !!deferredPrompt);
     console.log('PWA: Global deferredPrompt available:', !!(window as any).deferredPrompt);
     
@@ -91,29 +91,33 @@ export function LandingPWAPrompt() {
     
     if (promptToUse) {
       try {
-        console.log('PWA: Triggering automatic browser installation');
+        console.log('PWA: Triggering native browser installation dialog');
         await promptToUse.prompt();
         const { outcome } = await promptToUse.userChoice;
         console.log('PWA: Installation result:', outcome);
         
         if (outcome === 'accepted') {
-          console.log('PWA: Installation successful!');
+          console.log('PWA: App successfully installed as native Android app!');
           setShowPrompt(false);
           setDeferredPrompt(null);
           (window as any).deferredPrompt = null;
           sessionStorage.setItem('pwa-installed', 'true');
+          
+          // Show success message for native installation
+          alert('🎉 JournOwl app installed successfully! You can now find it in your apps drawer and home screen.');
           return;
         } else {
-          console.log('PWA: User dismissed install prompt');
+          console.log('PWA: User dismissed native install prompt');
+          setShowPrompt(false);
+          return;
         }
       } catch (error) {
-        console.error('PWA: Auto-install failed:', error);
+        console.error('PWA: Native install failed:', error);
       }
-    } else {
-      console.log('PWA: No install prompt available, showing manual instructions');
     }
 
-    // Show beautiful animated install helper instead of generic alert
+    // Only show manual instructions if native installation is not available
+    console.log('PWA: Native installation not available, showing manual instructions');
     showAnimatedInstallHelper();
   };
 
