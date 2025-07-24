@@ -122,25 +122,21 @@ export class AchievementTracker {
 
   // Update achievement progress based on user actions
   static async updateAchievementProgress(userId: number, achievementId: string, newValue: number): Promise<void> {
-    // For now, just award XP based on achievement type until database schema is updated
+    // Award small amounts of XP to prevent overflow
     const user = await storage.getUser(userId);
     if (user && newValue > 0) {
-      // Prevent integer overflow by capping XP at a reasonable limit
-      const maxXP = 2000000000; // Safe limit well below PostgreSQL's integer max
-      const newXP = Math.min(user.xp + 25, maxXP);
-      await storage.updateUserXP(userId, newXP);
+      // Award only 5 XP per achievement progress to prevent rapid accumulation
+      await storage.updateUserXP(userId, 5);
     }
   }
 
   // Update goal progress based on user actions
   static async updateGoalProgress(userId: number, goalId: string, newValue: number): Promise<void> {
-    // For now, just award XP based on goal progress until database schema is updated
+    // Award small amounts of XP to prevent overflow
     const user = await storage.getUser(userId);
     if (user && newValue > 0) {
-      // Prevent integer overflow by capping XP at a reasonable limit
-      const maxXP = 2000000000; // Safe limit well below PostgreSQL's integer max
-      const newXP = Math.min(user.xp + 10, maxXP);
-      await storage.updateUserXP(userId, newXP);
+      // Award only 2 XP per goal progress to prevent rapid accumulation
+      await storage.updateUserXP(userId, 2);
     }
   }
 

@@ -157,7 +157,9 @@ export class DatabaseStorage implements IStorage {
     if (!currentUser) return;
 
     const currentXP = currentUser.xp || 0;
-    const newXP = currentXP + xp;
+    // Cap XP addition at reasonable values to prevent overflow
+    const safeXP = Math.min(Math.max(xp, 0), 1000); // Limit XP gain to max 1000 per operation
+    const newXP = Math.min(currentXP + safeXP, 999999); // Cap total XP at 999,999
     const newLevel = Math.floor(newXP / 1000) + 1;
 
     await db.update(users).set({ xp: newXP, level: newLevel } as any).where(eq(users.id, userId));

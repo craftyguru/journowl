@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fix XP</title>
+</head>
+<body>
+    <h1>Fix XP Issue</h1>
+    <button onclick="fixXP()">Fix My XP</button>
+    <div id="result"></div>
+
+    <script>
+        async function fixXP() {
+            try {
+                const response = await fetch('/api/fix-xp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'  // Include cookies for session
+                });
+                
+                const data = await response.json();
+                document.getElementById('result').innerHTML = `
+                    <h3>Result:</h3>
+                    <p>Message: ${data.message}</p>
+                    <p>New XP: ${data.newXP}</p>
+                    <p>New Level: ${data.newLevel}</p>
+                `;
+                
+                // Refresh the page after 2 seconds to see updated XP
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1035,6 +1035,31 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Fix XP endpoint - temporary for fixing overflow
+  app.post("/api/fix-xp", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      // Reset XP to reasonable value based on entries
+      const stats = await storage.getUserStats(userId);
+      const reasonableXP = (stats?.totalEntries || 1) * 50; // 50 XP per entry
+      const reasonableLevel = Math.floor(reasonableXP / 1000) + 1;
+      
+      await storage.updateUser(userId, { 
+        xp: reasonableXP, 
+        level: reasonableLevel 
+      });
+      
+      res.json({ 
+        message: "XP fixed successfully", 
+        newXP: reasonableXP, 
+        newLevel: reasonableLevel 
+      });
+    } catch (error: any) {
+      console.error("Error fixing XP:", error);
+      res.status(500).json({ message: "Failed to fix XP" });
+    }
+  });
+
   // Achievement routes
   app.get("/api/achievements", requireAuth, async (req: any, res) => {
     try {

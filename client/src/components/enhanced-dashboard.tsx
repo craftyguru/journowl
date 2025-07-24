@@ -883,6 +883,27 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
             </div>
             <div className="text-3xl font-bold text-white mb-1">{user?.xp || 0}</div>
             <div className="text-amber-300 text-sm">Level {user?.level || 1} ✨</div>
+            {(user?.xp || 0) > 100000 && (
+              <button 
+                onClick={async () => {
+                  try {
+                    const response = await fetch('/api/fix-xp', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      credentials: 'include'
+                    });
+                    if (response.ok) {
+                      window.location.reload();
+                    }
+                  } catch (error) {
+                    console.error('Fix XP failed:', error);
+                  }
+                }}
+                className="mt-1 text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+              >
+                Fix XP
+              </button>
+            )}
           </div>
         </motion.div>
       </motion.div>
