@@ -718,7 +718,6 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   const directSave = () => {
     console.log("🚨 DIRECT SAVE FUNCTION CALLED!");
-    alert("Direct save clicked!");
     handleSave();
   };
 
