@@ -16,45 +16,69 @@ export function LandingPWAPrompt() {
   const [installHelperType, setInstallHelperType] = useState<'ios' | 'android' | 'desktop'>('android');
 
   useEffect(() => {
-    // PWA install prompt disabled by user request - prevent flashing
-    console.log('PWA: Install prompts disabled by user request');
-    // Clear any existing session storage that might trigger prompts
-    sessionStorage.removeItem('pwa-prompt-shown');
-    sessionStorage.removeItem('pwa-install-attempted');
-    sessionStorage.removeItem('pwa-installed');
+    // Show on mobile devices (and allow testing on localhost for development)
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isProduction = window.location.hostname === 'journowl.app';
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname.includes('replit.dev');
+    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    const shouldShow = isMobile && (isProduction || isLocalhost) && !isInstalled;
+
+    console.log('PWA: Mobile check -', { isMobile, isProduction, isLocalhost, isInstalled, shouldShow });
+
+    // Prevent multiple prompts with better session management
+    if (sessionStorage.getItem('pwa-prompt-dismissed') === 'true') {
+      console.log('PWA: Prompt previously dismissed by user');
+      return;
+    }
+
+    // Listen for the beforeinstallprompt event
+    const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('PWA: beforeinstallprompt event fired - install available!');
+      e.preventDefault();
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
+      (window as any).deferredPrompt = e;
+      
+      // Show our custom prompt when install becomes available (only once)
+      if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
+        setTimeout(() => {
+          console.log('PWA: Showing install prompt with native support');
+          setShowPrompt(true);
+          sessionStorage.setItem('pwa-prompt-shown', 'true');
+        }, 3000); // Delay to prevent immediate flashing
+      }
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
+    };
   }, []);
 
   const handleInstall = async () => {
     console.log('PWA: Install button clicked - attempting native installation');
     console.log('PWA: deferredPrompt available:', !!deferredPrompt);
-    console.log('PWA: Global deferredPrompt available:', !!(window as any).deferredPrompt);
     
     // Mark that user has interacted with install
     sessionStorage.setItem('pwa-install-attempted', 'true');
     
-    // Try global deferredPrompt first
-    const promptToUse = deferredPrompt || (window as any).deferredPrompt;
-    
-    if (promptToUse) {
+    if (deferredPrompt) {
       try {
         console.log('PWA: Triggering native browser installation dialog');
-        await promptToUse.prompt();
-        const { outcome } = await promptToUse.userChoice;
+        await deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
         console.log('PWA: Installation result:', outcome);
         
         if (outcome === 'accepted') {
           console.log('PWA: App successfully installed as native Android app!');
           setShowPrompt(false);
           setDeferredPrompt(null);
-          (window as any).deferredPrompt = null;
           sessionStorage.setItem('pwa-installed', 'true');
-          
-          // Show success message for native installation
-          alert('🎉 JournOwl app installed successfully! You can now find it in your apps drawer and home screen.');
           return;
         } else {
           console.log('PWA: User dismissed native install prompt');
           setShowPrompt(false);
+          sessionStorage.setItem('pwa-prompt-dismissed', 'true');
           return;
         }
       } catch (error) {
@@ -65,7 +89,13 @@ export function LandingPWAPrompt() {
     // Only show manual instructions if native installation is not available
     console.log('PWA: Native installation not available, showing manual instructions');
     showAnimatedInstallHelper();
-  }
+  };
+
+  const handleDismiss = () => {
+    console.log('PWA: User dismissed install prompt');
+    setShowPrompt(false);
+    sessionStorage.setItem('pwa-prompt-dismissed', 'true');
+  };
 
   // Add test button for development (only visible on localhost/replit)
   const handleTestPrompt = () => {
@@ -218,9 +248,21 @@ export function LandingPWAPrompt() {
 
   return (
     <>
-      {/* PWA Prompts disabled by user request - no more flashing */}
+      {/* Development Test Button - only visible on localhost/replit */}
+      {(window.location.hostname === 'localhost' || window.location.hostname.includes('replit.dev')) && (
+        <div className="fixed top-4 left-4 z-50">
+          <Button
+            onClick={handleTestPrompt}
+            className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1"
+          >
+            Test PWA Prompt
+          </Button>
+        </div>
+      )}
+      
+      {/* PWA Install Prompt */}
       <AnimatePresence>
-        {false && (
+        {showPrompt && (
           <motion.div
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -242,7 +284,7 @@ export function LandingPWAPrompt() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowPrompt(false)}
+                onClick={handleDismiss}
                 className="text-white hover:bg-white/20 h-6 w-6 p-0"
               >
                 <X className="h-4 w-4" />
@@ -268,7 +310,7 @@ export function LandingPWAPrompt() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setShowPrompt(false)}
+                onClick={handleDismiss}
                 className="text-white hover:bg-white/20"
               >
                 Later
