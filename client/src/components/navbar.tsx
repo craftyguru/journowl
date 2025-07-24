@@ -5,8 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
 import { useState } from "react";
-import { PWAInstallButton } from "@/components/PWAInstallButton";
-// Using only PWAInstallButton for clean installation experience
+// PWA install functionality disabled by user request
 
 
 interface NavbarProps {
@@ -65,7 +64,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
             
-            <PWAInstallButton />
+            {/* PWA install button removed by user request */}
             
             <Button
               variant="ghost"

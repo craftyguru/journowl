@@ -25,7 +25,7 @@ import ImportPage from "@/pages/ImportPage";
 import SharePage from "@/pages/SharePage";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms";
-// Only keeping the main PWA install button
+// PWA install functionality disabled by user request
 
 function App() {
   // Check if demo mode is requested from URL params

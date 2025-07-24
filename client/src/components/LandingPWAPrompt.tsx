@@ -9,79 +9,19 @@ interface BeforeInstallPromptEvent extends Event {
 }
 
 export function LandingPWAPrompt() {
+  // PWA install prompt disabled by user request
   const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallHelper, setShowInstallHelper] = useState(false);
   const [installHelperType, setInstallHelperType] = useState<'ios' | 'android' | 'desktop'>('android');
 
   useEffect(() => {
-    // Show on mobile devices (and allow testing on localhost for development)
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isProduction = window.location.hostname === 'journowl.app';
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname.includes('replit.dev');
-    const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
-    const shouldShow = isMobile && (isProduction || isLocalhost) && !isInstalled;
-
-    console.log('PWA: Mobile check -', { isMobile, isProduction, isLocalhost, isInstalled, shouldShow });
-
-    // Check for existing global deferredPrompt first
-    if ((window as any).deferredPrompt) {
-      console.log('PWA: Using existing global deferredPrompt');
-      setDeferredPrompt((window as any).deferredPrompt);
-      if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
-        setTimeout(() => {
-          setShowPrompt(true);
-          sessionStorage.setItem('pwa-prompt-shown', 'true');
-        }, 2000);
-      }
-    }
-
-    // Listen for the beforeinstallprompt event
-    const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('PWA: beforeinstallprompt event fired - install available!');
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      (window as any).deferredPrompt = e;
-      
-      // Show our custom prompt when install becomes available
-      if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
-        setTimeout(() => {
-          console.log('PWA: Showing install prompt with native support');
-          setShowPrompt(true);
-          sessionStorage.setItem('pwa-prompt-shown', 'true');
-        }, 1500);
-      }
-    };
-
-    // Listen for custom PWA installable event from index.html
-    const handlePWAInstallable = (e: CustomEvent) => {
-      console.log('PWA: Custom installable event received');
-      setDeferredPrompt(e.detail);
-      if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
-        setTimeout(() => {
-          setShowPrompt(true);
-          sessionStorage.setItem('pwa-prompt-shown', 'true');
-        }, 1500);
-      }
-    };
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
-    window.addEventListener('pwa-installable', handlePWAInstallable as EventListener);
-
-    // Show prompt for mobile users even without beforeinstallprompt (fallback)
-    if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
-      const timer = setTimeout(() => {
-        console.log('PWA: Showing fallback install prompt for mobile users');
-        setShowPrompt(true);
-        sessionStorage.setItem('pwa-prompt-shown', 'true');
-      }, 3000); // Show after 3 seconds on mobile
-      return () => clearTimeout(timer);
-    }
-
-    return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
-      window.removeEventListener('pwa-installable', handlePWAInstallable as EventListener);
-    };
+    // PWA install prompt disabled by user request - prevent flashing
+    console.log('PWA: Install prompts disabled by user request');
+    // Clear any existing session storage that might trigger prompts
+    sessionStorage.removeItem('pwa-prompt-shown');
+    sessionStorage.removeItem('pwa-install-attempted');
+    sessionStorage.removeItem('pwa-installed');
   }, []);
 
   const handleInstall = async () => {
@@ -278,20 +218,9 @@ export function LandingPWAPrompt() {
 
   return (
     <>
-      {/* Development Test Button - only visible on localhost/replit */}
-      {(window.location.hostname === 'localhost' || window.location.hostname.includes('replit.dev')) && (
-        <div className="fixed top-4 left-4 z-50">
-          <Button
-            onClick={handleTestPrompt}
-            className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1"
-          >
-            Test PWA Prompt
-          </Button>
-        </div>
-      )}
-      
+      {/* PWA Prompts disabled by user request - no more flashing */}
       <AnimatePresence>
-        {showPrompt && (
+        {false && (
           <motion.div
             initial={{ opacity: 0, y: 100, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
