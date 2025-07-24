@@ -716,6 +716,26 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     console.log("UnifiedJournal - onSave called successfully!");
   };
 
+  const directSave = () => {
+    console.log("🚨 DIRECT SAVE FUNCTION CALLED!");
+    alert("Direct save clicked!");
+    handleSave();
+  };
+
+  // Add keyboard shortcut for save (Ctrl+S)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        console.log("🚨 KEYBOARD SAVE SHORTCUT USED!");
+        handleSave();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [title, content, mood]);
+
   const getCanvasCoordinates = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!canvasRef.current) return { x: 0, y: 0 };
     const canvas = canvasRef.current;
@@ -787,17 +807,9 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           
           <div className="flex items-center gap-1 sm:gap-4">
             <button 
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log("🚨 TOP RIGHT SAVE BUTTON CLICKED!");
-                console.log("Button event target:", e.target);
-                console.log("Current title:", title);
-                console.log("Current content:", content);
-                console.log("About to call handleSave function");
-                alert("Save button clicked! Check console for logs.");
-                handleSave();
-              }}
+              onClick={directSave}
+              onMouseDown={directSave}
+              onTouchStart={directSave}
               className="bg-emerald-500 hover:bg-emerald-600 text-white h-8 px-4 rounded text-sm font-medium flex items-center gap-2 cursor-pointer z-50 relative"
               type="button"
               style={{ pointerEvents: 'all' }}
