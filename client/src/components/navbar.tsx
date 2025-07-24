@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
 import { useState } from "react";
-import { PWAManager } from "@/components/PWAManager";
+import { PWAInstallButton } from "@/components/PWAManager";
 
 
 interface NavbarProps {
@@ -64,10 +64,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
             
-            {(() => {
-              const pwaManager = PWAManager();
-              return <pwaManager.DesktopInstallButton />;
-            })()}
+            <PWAInstallButton />
             
             <Button
               variant="ghost"

@@ -9,7 +9,7 @@ import {
   ArrowRight, Play, CheckCircle, Globe, Lightbulb
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PWAManager } from "@/components/PWAManager";
+import { PWAMobilePrompt } from "@/components/PWAManager";
 
 interface LandingHeroProps {
   onGetStarted: () => void;
@@ -1076,7 +1076,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
       </div>
       
       {/* PWA Install Prompt for Mobile Users */}
-      <PWAManager().MobileInstallPrompt />
+      <PWAMobilePrompt />
     </div>
   );
 }
