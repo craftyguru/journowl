@@ -22,6 +22,7 @@ import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
 import { AIStoryMaker } from "./kid-dashboard";
+import { SupportChatBubble } from "./SupportChatBubble";
 
 // All data now fetched from API endpoints instead of hardcoded values
 
@@ -90,7 +91,7 @@ interface EnhancedDashboardProps {
   initialTab?: string;
 }
 
-export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
+function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
@@ -3754,5 +3755,15 @@ function EditGoalForm({ goal, onClose }: { goal: any; onClose: () => void }) {
         </Button>
       </DialogFooter>
     </form>
+  );
+}
+
+// Main Enhanced Dashboard Export with Support Chat
+export default function EnhancedDashboardWithSupport({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
+  return (
+    <div className="relative">
+      <EnhancedDashboard onSwitchToKid={onSwitchToKid} initialTab={initialTab} />
+      <SupportChatBubble />
+    </div>
   );
 }

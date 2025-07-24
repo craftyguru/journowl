@@ -23,28 +23,116 @@ export function SupportChatBubble() {
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [messages, setMessages] = useState<SupportMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
+  const wsRef = useRef<WebSocket | null>(null);
 
-  // Fetch support messages
-  const { data: messages = [], isLoading } = useQuery({
-    queryKey: ['/api/support/messages'],
-    enabled: open,
-    refetchInterval: 30000, // Poll every 30 seconds to reduce server load
-    retry: false // Don't retry failed requests
+  // Get current user for WebSocket auth
+  const { data: currentUser } = useQuery({
+    queryKey: ['/api/auth/me'],
+    retry: false
   });
 
-  // Send message mutation
-  const sendMessageMutation = useMutation({
-    mutationFn: async (messageData: { message: string; attachmentUrl?: string; attachmentType?: string }) => {
-      return await apiRequest('POST', '/api/support/messages', messageData);
-    },
-    onSuccess: () => {
-      setMessage("");
-      queryClient.invalidateQueries({ queryKey: ['/api/support/messages'] });
+  // Initialize WebSocket connection when chat opens
+  useEffect(() => {
+    if (open && currentUser && !wsRef.current) {
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+      const wsUrl = `${protocol}//${window.location.host}/ws/support`;
+      
+      console.log('Connecting to support WebSocket:', wsUrl);
+      wsRef.current = new WebSocket(wsUrl);
+      
+      wsRef.current.onopen = () => {
+        console.log('Support WebSocket connected');
+        setIsConnected(true);
+        
+        // Authenticate user
+        wsRef.current?.send(JSON.stringify({
+          type: 'auth',
+          userId: currentUser.id,
+          isAdmin: false
+        }));
+      };
+      
+      wsRef.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        
+        if (data.type === 'new_message') {
+          setMessages(prev => [...prev, data.message]);
+        }
+      };
+      
+      wsRef.current.onclose = () => {
+        console.log('Support WebSocket disconnected');
+        setIsConnected(false);
+        wsRef.current = null;
+      };
+      
+      wsRef.current.onerror = (error) => {
+        console.error('Support WebSocket error:', error);
+        setIsConnected(false);
+      };
     }
-  });
+    
+    return () => {
+      if (!open && wsRef.current) {
+        wsRef.current.close();
+        wsRef.current = null;
+        setIsConnected(false);
+      }
+    };
+  }, [open, currentUser]);
+
+  // Fetch initial messages when chat opens
+  useEffect(() => {
+    if (open && messages.length === 0) {
+      setIsLoading(true);
+      fetch('/api/support/messages', {
+        credentials: 'include'
+      })
+      .then(res => res.json())
+      .then(data => {
+        setMessages(data || []);
+        setIsLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching messages:', error);
+        setIsLoading(false);
+      });
+    }
+  }, [open]);
+
+  // Send message via WebSocket
+  const sendMessage = async (messageData: { message: string; attachmentUrl?: string; attachmentType?: string }) => {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && currentUser) {
+      wsRef.current.send(JSON.stringify({
+        type: 'chat_message',
+        userId: currentUser.id,
+        message: messageData.message,
+        sender: 'user',
+        attachmentUrl: messageData.attachmentUrl,
+        attachmentType: messageData.attachmentType
+      }));
+      setMessage("");
+    } else {
+      // Fallback to HTTP if WebSocket not available
+      await fetch('/api/support/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(messageData)
+      });
+      setMessage("");
+      // Refresh messages
+      const response = await fetch('/api/support/messages', { credentials: 'include' });
+      const data = await response.json();
+      setMessages(data || []);
+    }
+  };
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -55,7 +143,7 @@ export function SupportChatBubble() {
     if (!message.trim()) return;
     
     setIsTyping(true);
-    await sendMessageMutation.mutateAsync({ message });
+    await sendMessage({ message });
     setIsTyping(false);
   };
 
@@ -68,7 +156,7 @@ export function SupportChatBubble() {
     const attachmentUrl = URL.createObjectURL(file);
     const attachmentType = file.type.startsWith('image/') ? 'image' : 'video';
     
-    sendMessageMutation.mutateAsync({
+    sendMessage({
       message: `Sent a ${attachmentType}`,
       attachmentUrl,
       attachmentType
@@ -154,8 +242,8 @@ export function SupportChatBubble() {
                         Support Chat
                       </CardTitle>
                       <Badge variant="secondary" className="mt-1">
-                        <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
-                        Online
+                        <div className={`w-2 h-2 rounded-full mr-2 ${isConnected ? 'bg-green-500' : 'bg-yellow-500'}`} />
+                        {isConnected ? 'Online' : 'Connecting...'}
                       </Badge>
                     </div>
                   </div>

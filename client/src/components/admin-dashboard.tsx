@@ -39,6 +39,7 @@ import EnhancedEmailCampaigns from "./enhanced-email-campaigns";
 import AdvancedRevenueDashboard from "./advanced-revenue-dashboard";
 import AdvancedActivityDashboard from "./advanced-activity-dashboard";
 import EnhancedUserManagement from "./enhanced-user-management";
+import { AdminSupportChat } from "./AdminSupportChat";
 
 interface User {
   id: number;
@@ -293,7 +294,7 @@ export default function AdminDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 bg-white/50 dark:bg-gray-800/50">
+          <TabsList className="grid w-full grid-cols-7 bg-white/50 dark:bg-gray-800/50">
             <TabsTrigger value="users" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
               Users
@@ -317,6 +318,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="activity" className="flex items-center gap-2">
               <Activity className="h-4 w-4" />
               Activity
+            </TabsTrigger>
+            <TabsTrigger value="support" className="flex items-center gap-2">
+              <Brain className="h-4 w-4" />
+              Support
             </TabsTrigger>
           </TabsList>
 
@@ -1019,6 +1024,24 @@ export default function AdminDashboard() {
               activityLogs={activityLogs as any}
               refreshActivity={loadAdminData}
             />
+          </TabsContent>
+
+          {/* Support Chat Tab */}
+          <TabsContent value="support">
+            <Card className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-blue-600" />
+                  Real-Time Support Chat
+                </CardTitle>
+                <CardDescription>
+                  Communicate directly with users in real-time. All messages are synchronized instantly.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <AdminSupportChat />
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </div>

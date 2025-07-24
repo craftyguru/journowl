@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { WebSocketServer, WebSocket } from "ws";
 import { storage, db } from "./storage";
 import { generateJournalPrompt, generatePersonalizedPrompt, generateInsight } from "./services/openai";
 import { trackableOpenAICall } from "./middleware/promptTracker";
@@ -2941,5 +2942,88 @@ Your story shows how every day brings new experiences and emotions, creating the
   });
 
   const httpServer = createServer(app);
+  
+  // Set up WebSocket server for real-time chat
+  const wss = new WebSocketServer({ 
+    server: httpServer, 
+    path: '/ws/support' 
+  });
+  
+  // Store active WebSocket connections by user ID
+  const activeConnections = new Map<number, WebSocket>();
+  const adminConnections = new Set<WebSocket>();
+  
+  wss.on('connection', (ws, req) => {
+    console.log('WebSocket connection established for support chat');
+    
+    ws.on('message', async (data) => {
+      try {
+        const message = JSON.parse(data.toString());
+        
+        if (message.type === 'auth') {
+          // Authenticate user and store connection
+          const userId = message.userId;
+          const isAdmin = message.isAdmin;
+          
+          if (isAdmin) {
+            adminConnections.add(ws);
+            console.log(`Admin connected to support chat`);
+          } else {
+            activeConnections.set(userId, ws);
+            console.log(`User ${userId} connected to support chat`);
+          }
+        } else if (message.type === 'chat_message') {
+          // Store message in database and broadcast to relevant connections
+          const supportMessage = await storage.createSupportMessage({
+            userId: message.userId,
+            message: message.message,
+            sender: message.sender,
+            attachmentUrl: message.attachmentUrl,
+            attachmentType: message.attachmentType,
+            adminName: message.adminName
+          });
+          
+          // Broadcast to user and all admins
+          const broadcastData = JSON.stringify({
+            type: 'new_message',
+            message: supportMessage
+          });
+          
+          // Send to specific user
+          const userWs = activeConnections.get(message.userId);
+          if (userWs && userWs.readyState === WebSocket.OPEN) {
+            userWs.send(broadcastData);
+          }
+          
+          // Send to all admins
+          for (const adminWs of adminConnections) {
+            if (adminWs.readyState === WebSocket.OPEN) {
+              adminWs.send(broadcastData);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('WebSocket message error:', error);
+      }
+    });
+    
+    ws.on('close', () => {
+      // Remove connection from maps
+      for (const [userId, connection] of activeConnections.entries()) {
+        if (connection === ws) {
+          activeConnections.delete(userId);
+          console.log(`User ${userId} disconnected from support chat`);
+          break;
+        }
+      }
+      adminConnections.delete(ws);
+      console.log('WebSocket connection closed');
+    });
+    
+    ws.on('error', (error) => {
+      console.error('WebSocket error:', error);
+    });
+  });
+  
   return httpServer;
 }
