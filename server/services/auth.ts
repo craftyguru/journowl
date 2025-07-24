@@ -43,3 +43,41 @@ export async function authenticateUser(identifier: string, password: string) {
 
   return user;
 }
+
+export async function createAdminUser() {
+  try {
+    // Check if admin already exists
+    const existingAdmin = await storage.getUserByEmail("archimedes@journowl.app");
+    if (existingAdmin) {
+      console.log("Admin user already exists");
+      return existingAdmin;
+    }
+
+    // Check by username too
+    const existingByUsername = await storage.getUserByUsername("archimedes");
+    if (existingByUsername) {
+      console.log("Admin username already exists");
+      return existingByUsername;
+    }
+
+    const hashedPassword = await hashPassword("7756guru");
+    const adminUser = await storage.createUser({
+      email: "archimedes@journowl.app",
+      username: "archimedes", 
+      password: hashedPassword,
+      role: "admin",
+      level: 99,
+      xp: 999999,
+      currentPlan: "power",
+      promptsRemaining: 999999,
+      emailVerified: true,
+      requiresEmailVerification: false
+    });
+
+    console.log("Admin user created successfully:", adminUser.username);
+    return adminUser;
+  } catch (error) {
+    console.error("Error creating admin user:", error);
+    throw error;
+  }
+}
