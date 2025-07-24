@@ -143,6 +143,8 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 - **Manual Fallback**: Beautiful animated instructions only shown if native installation fails or unavailable
 - **Success Feedback**: Clear confirmation messages guide users to find their newly installed app
 - **Production Domain**: Native installation requires HTTPS production domain (https://journowl.app)
+- **Mobile Prompt Visibility**: Install prompt now appears for mobile users on both production and development domains
+- **Development Testing**: Red "Test PWA Prompt" button available on localhost/replit.dev for testing
 
 ### July 24, 2025 - COMPREHENSIVE ANALYTICS DASHBOARD WITH ADVANCED TOOLS COMPLETE ✅
 - ✅ **ANALYTICS TAB VOID SPACE REMOVAL**: Successfully removed large void spaces and optimized analytics tab layout for better flow and visual appeal

@@ -15,16 +15,20 @@ export function LandingPWAPrompt() {
   const [installHelperType, setInstallHelperType] = useState<'ios' | 'android' | 'desktop'>('android');
 
   useEffect(() => {
-    // Only show on mobile devices on production domain
+    // Show on mobile devices (and allow testing on localhost for development)
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isProduction = window.location.hostname === 'journowl.app';
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname.includes('replit.dev');
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches;
+    const shouldShow = isMobile && (isProduction || isLocalhost) && !isInstalled;
+
+    console.log('PWA: Mobile check -', { isMobile, isProduction, isLocalhost, isInstalled, shouldShow });
 
     // Check for existing global deferredPrompt first
     if ((window as any).deferredPrompt) {
       console.log('PWA: Using existing global deferredPrompt');
       setDeferredPrompt((window as any).deferredPrompt);
-      if (isMobile && isProduction && !isInstalled && !sessionStorage.getItem('pwa-prompt-shown')) {
+      if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
         setTimeout(() => {
           setShowPrompt(true);
           sessionStorage.setItem('pwa-prompt-shown', 'true');
@@ -34,17 +38,18 @@ export function LandingPWAPrompt() {
 
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
-      console.log('PWA: beforeinstallprompt event fired - auto-install ready!');
+      console.log('PWA: beforeinstallprompt event fired - install available!');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
       (window as any).deferredPrompt = e;
       
-      // Show our custom prompt immediately when install is available
-      if (isMobile && isProduction && !isInstalled && !sessionStorage.getItem('pwa-prompt-shown')) {
+      // Show our custom prompt when install becomes available
+      if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
         setTimeout(() => {
+          console.log('PWA: Showing install prompt with native support');
           setShowPrompt(true);
           sessionStorage.setItem('pwa-prompt-shown', 'true');
-        }, 2000); // Show faster when auto-install available
+        }, 1500);
       }
     };
 
@@ -52,23 +57,24 @@ export function LandingPWAPrompt() {
     const handlePWAInstallable = (e: CustomEvent) => {
       console.log('PWA: Custom installable event received');
       setDeferredPrompt(e.detail);
-      if (isMobile && isProduction && !isInstalled && !sessionStorage.getItem('pwa-prompt-shown')) {
+      if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
         setTimeout(() => {
           setShowPrompt(true);
           sessionStorage.setItem('pwa-prompt-shown', 'true');
-        }, 2000);
+        }, 1500);
       }
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt as EventListener);
     window.addEventListener('pwa-installable', handlePWAInstallable as EventListener);
 
-    // Only show manual instructions if we haven't shown them already
-    if (isMobile && isProduction && !isInstalled && !sessionStorage.getItem('pwa-prompt-shown')) {
+    // Show prompt for mobile users even without beforeinstallprompt (fallback)
+    if (shouldShow && !sessionStorage.getItem('pwa-prompt-shown')) {
       const timer = setTimeout(() => {
+        console.log('PWA: Showing fallback install prompt for mobile users');
         setShowPrompt(true);
         sessionStorage.setItem('pwa-prompt-shown', 'true');
-      }, 4000); // Show after 4 seconds if no install prompt
+      }, 3000); // Show after 3 seconds on mobile
       return () => clearTimeout(timer);
     }
 
@@ -119,6 +125,15 @@ export function LandingPWAPrompt() {
     // Only show manual instructions if native installation is not available
     console.log('PWA: Native installation not available, showing manual instructions');
     showAnimatedInstallHelper();
+  }
+
+  // Add test button for development (only visible on localhost/replit)
+  const handleTestPrompt = () => {
+    console.log('PWA: Test button clicked - clearing storage and showing prompt');
+    sessionStorage.removeItem('pwa-prompt-shown');
+    sessionStorage.removeItem('pwa-install-attempted');
+    sessionStorage.removeItem('pwa-installed');
+    setShowPrompt(true);
   };
 
   const showAnimatedInstallHelper = () => {
@@ -262,15 +277,28 @@ export function LandingPWAPrompt() {
   };
 
   return (
-    <AnimatePresence>
-      {showPrompt && (
-        <motion.div
-          initial={{ opacity: 0, y: 100, scale: 0.9 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 100, scale: 0.9 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="fixed bottom-4 left-4 right-4 z-50 max-w-sm mx-auto"
-        >
+    <>
+      {/* Development Test Button - only visible on localhost/replit */}
+      {(window.location.hostname === 'localhost' || window.location.hostname.includes('replit.dev')) && (
+        <div className="fixed top-4 left-4 z-50">
+          <Button
+            onClick={handleTestPrompt}
+            className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1"
+          >
+            Test PWA Prompt
+          </Button>
+        </div>
+      )}
+      
+      <AnimatePresence>
+        {showPrompt && (
+          <motion.div
+            initial={{ opacity: 0, y: 100, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 100, scale: 0.9 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="fixed bottom-4 left-4 right-4 z-50 max-w-sm mx-auto"
+          >
           <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg shadow-2xl border border-white/20 p-4">
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center space-x-2">
@@ -322,6 +350,7 @@ export function LandingPWAPrompt() {
       )}
       
       {showInstallHelper && <InstallHelper />}
-    </AnimatePresence>
+      </AnimatePresence>
+    </>
   );
 }
