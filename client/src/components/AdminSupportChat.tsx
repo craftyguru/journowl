@@ -44,7 +44,7 @@ export function AdminSupportChat() {
   const { data: currentUser } = useQuery({
     queryKey: ['/api/auth/me'],
     retry: false
-  });
+  }) as { data: any };
 
   // Initialize WebSocket connection for admin
   useEffect(() => {

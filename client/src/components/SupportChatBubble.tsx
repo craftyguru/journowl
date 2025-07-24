@@ -35,7 +35,7 @@ export function SupportChatBubble() {
   const { data: currentUser } = useQuery({
     queryKey: ['/api/auth/me'],
     retry: false
-  });
+  }) as { data: any };
 
   // Initialize WebSocket connection when chat opens
   useEffect(() => {
@@ -350,7 +350,7 @@ export function SupportChatBubble() {
                         placeholder="Type your message..."
                         className="pr-10 text-sm sm:text-base"
                         onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                        disabled={sendMessageMutation.isPending}
+                        disabled={isTyping}
                       />
                       <Button
                         variant="ghost"
@@ -363,7 +363,7 @@ export function SupportChatBubble() {
                     </div>
                     <Button
                       onClick={handleSendMessage}
-                      disabled={!message.trim() || sendMessageMutation.isPending}
+                      disabled={!message.trim() || isTyping}
                       className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 px-3 sm:px-4"
                     >
                       <Send className="w-3 h-3 sm:w-4 sm:h-4" />

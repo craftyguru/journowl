@@ -1,0 +1,58 @@
+~/workspace$ npx tsc --noEmit
+client/src/components/AdminSupportChat.tsx:51:22 - error TS2339: Property 'role' does not exist on type 'unknown'.
+
+51     if (currentUser?.role === 'admin' && !wsRef.current) {
+                        ~~~~
+
+client/src/components/AdminSupportChat.tsx:65:31 - error TS2339: Property 'id' does not exist on type 'unknown'.
+
+65           userId: currentUser.id,
+                                 ~~
+
+client/src/components/AdminSupportChat.tsx:119:22 - error TS2339: Property 'role' does not exist on type 'unknown'.
+
+119     if (currentUser?.role === 'admin') {
+                         ~~~~
+
+client/src/components/AdminSupportChat.tsx:167:32 - error TS2339: Property 'username' does not exist on type 'unknown'.
+
+167         adminName: currentUser.username || currentUser.email
+                                   ~~~~~~~~
+
+client/src/components/AdminSupportChat.tsx:167:56 - error TS2339: Property 'email' does not exist on type 'unknown'.
+
+167         adminName: currentUser.username || currentUser.email
+                                                           ~~~~~
+
+client/src/components/AdminSupportChat.tsx:197:20 - error TS2339: Property 'role' does not exist on type 'unknown'.
+
+197   if (currentUser?.role !== 'admin') {
+                       ~~~~
+
+client/src/components/SupportChatBubble.tsx:56:31 - error TS2339: Property 'id' does not exist on type 'unknown'.
+
+56           userId: currentUser.id,
+                                 ~~
+
+client/src/components/SupportChatBubble.tsx:114:29 - error TS2339: Property 'id' does not exist on type 'unknown'.
+
+114         userId: currentUser.id,
+                                ~~
+
+client/src/components/SupportChatBubble.tsx:353:35 - error TS2304: Cannot find name 'sendMessageMutation'.
+
+353                         disabled={sendMessageMutation.isPending}
+                                      ~~~~~~~~~~~~~~~~~~~
+
+client/src/components/SupportChatBubble.tsx:366:52 - error TS2304: Cannot find name 'sendMessageMutation'.
+
+366                       disabled={!message.trim() || sendMessageMutation.isPending}
+                                                       ~~~~~~~~~~~~~~~~~~~
+
+
+Found 10 errors in 2 files.
+
+Errors  Files
+     6  client/src/components/AdminSupportChat.tsx:51
+     4  client/src/components/SupportChatBubble.tsx:56
+~/workspace$ 
