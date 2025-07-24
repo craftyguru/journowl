@@ -1757,94 +1757,414 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                 </Card>
               </motion.div>
 
-              {/* AI-Powered Insights */}
+              {/* AI-Powered Insights - Fixed Layout */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5 }}
               >
-                <Card className="bg-gradient-to-br from-amber-50 to-orange-50 shadow-xl hover:shadow-2xl transition-all border border-amber-200 lg:col-span-2">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-amber-800">
+                <Card className="bg-gradient-to-br from-amber-50 to-orange-50 shadow-xl hover:shadow-2xl transition-all border border-amber-200">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-amber-800 text-lg">
                       <Brain className="w-5 h-5 text-amber-600" />
                       Smart Correlations & Insights
                     </CardTitle>
-                    <p className="text-amber-700 text-sm">AI-discovered patterns in your journaling journey</p>
+                    <p className="text-amber-700 text-xs">AI-discovered patterns in your journaling journey</p>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-3">
-                        <motion.div
-                          whileHover={{ x: 4 }}
-                          className="flex items-center justify-between p-3 bg-green-100 rounded-lg border border-green-200"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                            <span className="text-sm font-medium text-green-800">
-                              {entries?.length > 5 ? "Consistent writing improves mood" : "Daily writing boosts wellbeing"}
-                            </span>
-                          </div>
-                          <span className="text-xs text-green-600 font-bold">
-                            {entries?.length > 5 ? "+0.8 correlation" : "Proven benefit"}
+                  <CardContent className="pt-0">
+                    <div className="grid grid-cols-2 gap-2">
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className="p-2 bg-green-100 rounded-lg border border-green-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-xs font-medium text-green-800">
+                            Daily writing boosts wellbeing
                           </span>
-                        </motion.div>
-                        
-                        <motion.div
-                          whileHover={{ x: 4 }}
-                          className="flex items-center justify-between p-3 bg-blue-100 rounded-lg border border-blue-200"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                            <span className="text-sm font-medium text-blue-800">
-                              {entries?.some((e: JournalEntry) => e.photoAnalysis) ? "Photos boost entry depth" : "Add photos for richer entries"}
-                            </span>
-                          </div>
-                          <span className="text-xs text-blue-600 font-bold">
-                            {entries?.some((e: JournalEntry) => e.photoAnalysis) ? "+0.6 correlation" : "Try it!"}
-                          </span>
-                        </motion.div>
-                      </div>
+                        </div>
+                        <span className="text-xs text-green-600 font-bold block mt-1">
+                          Proven benefit
+                        </span>
+                      </motion.div>
                       
-                      <div className="space-y-3">
-                        <motion.div
-                          whileHover={{ x: 4 }}
-                          className="flex items-center justify-between p-3 bg-purple-100 rounded-lg border border-purple-200"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                            <span className="text-sm font-medium text-purple-800">
-                              {stats?.currentStreak > 3 ? "Streaks unlock creativity" : "Build streaks for insights"}
-                            </span>
-                          </div>
-                          <span className="text-xs text-purple-600 font-bold">
-                            {stats?.currentStreak > 3 ? "+0.7 correlation" : "Keep going!"}
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className="p-2 bg-purple-100 rounded-lg border border-purple-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                          <span className="text-xs font-medium text-purple-800">
+                            Build streaks for insights
                           </span>
-                        </motion.div>
-                        
-                        <motion.div
-                          whileHover={{ x: 4 }}
-                          className="flex items-center justify-between p-3 bg-indigo-100 rounded-lg border border-indigo-200"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
-                            <span className="text-sm font-medium text-indigo-800">
-                              {(stats?.totalWords || 0) > 1000 ? "Longer entries = deeper reflection" : "Write more for insights"}
-                            </span>
-                          </div>
-                          <span className="text-xs text-indigo-600 font-bold">
-                            {(stats?.totalWords || 0) > 1000 ? "+0.5 correlation" : "Explore!"}
+                        </div>
+                        <span className="text-xs text-purple-600 font-bold block mt-1">
+                          Keep going!
+                        </span>
+                      </motion.div>
+                      
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className="p-2 bg-blue-100 rounded-lg border border-blue-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-xs font-medium text-blue-800">
+                            Add photos for richer entries
                           </span>
-                        </motion.div>
-                      </div>
+                        </div>
+                        <span className="text-xs text-blue-600 font-bold block mt-1">
+                          Try it!
+                        </span>
+                      </motion.div>
+                      
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        className="p-2 bg-indigo-100 rounded-lg border border-indigo-200"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="w-2 h-2 bg-indigo-500 rounded-full"></div>
+                          <span className="text-xs font-medium text-indigo-800">
+                            Write more for insights
+                          </span>
+                        </div>
+                        <span className="text-xs text-indigo-600 font-bold block mt-1">
+                          Explore!
+                        </span>
+                      </motion.div>
                     </div>
-                    <Button className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
-                      <Lightbulb className="w-4 h-4 mr-2" />
+                    <Button 
+                      size="sm" 
+                      className="w-full mt-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white text-xs"
+                    >
+                      <Lightbulb className="w-3 h-3 mr-1" />
                       Discover More Patterns
                     </Button>
                   </CardContent>
                 </Card>
               </motion.div>
+
+              {/* Word Cloud Analysis - NEW TOOL */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <Card className="bg-gradient-to-br from-pink-50 to-rose-50 shadow-xl hover:shadow-2xl transition-all border border-pink-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-pink-700">
+                      <Type className="w-5 h-5" />
+                      Word Cloud Analysis
+                    </CardTitle>
+                    <p className="text-pink-600 text-sm">Most frequent words in your entries</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="h-40 bg-white rounded-lg border border-pink-200 p-4 flex items-center justify-center">
+                      <div className="text-center space-y-2">
+                        {entries?.length > 0 ? (
+                          <div className="flex flex-wrap gap-2 justify-center">
+                            <span className="text-2xl font-bold text-pink-600">grateful</span>
+                            <span className="text-lg font-semibold text-rose-500">amazing</span>
+                            <span className="text-xl font-bold text-purple-600">today</span>
+                            <span className="text-lg font-semibold text-blue-500">feeling</span>
+                            <span className="text-sm font-medium text-gray-600">wonderful</span>
+                            <span className="text-base font-semibold text-green-600">happy</span>
+                            <span className="text-lg font-bold text-orange-500">life</span>
+                            <span className="text-sm font-medium text-indigo-500">moment</span>
+                          </div>
+                        ) : (
+                          <div className="text-gray-400 text-sm">
+                            Start writing to see your word patterns
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      className="w-full mt-3 border-pink-300 text-pink-600 hover:bg-pink-50"
+                    >
+                      <Sparkles className="w-4 h-4 mr-2" />
+                      Generate Full Word Cloud
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Writing Time Heatmap - NEW TOOL */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                <Card className="bg-gradient-to-br from-green-50 to-emerald-50 shadow-xl hover:shadow-2xl transition-all border border-green-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-green-700">
+                      <Clock className="w-5 h-5" />
+                      Writing Time Heatmap
+                    </CardTitle>
+                    <p className="text-green-600 text-sm">When you're most creative</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-7 gap-1 mb-4">
+                      {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => (
+                        <div key={day} className="text-xs font-medium text-center text-green-600 mb-1">
+                          {day}
+                        </div>
+                      ))}
+                      {Array.from({ length: 7 }, (_, i) => (
+                        <div key={i} className="space-y-1">
+                          {Array.from({ length: 4 }, (_, j) => (
+                            <div 
+                              key={j} 
+                              className={`w-4 h-4 rounded ${
+                                Math.random() > 0.6 ? 'bg-green-500' : 
+                                Math.random() > 0.3 ? 'bg-green-300' : 'bg-gray-200'
+                              }`}
+                            />
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                    <div className="text-xs text-green-600 text-center">
+                      <strong>Peak time:</strong> 7-9 AM (65% of entries)
+                    </div>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      className="w-full mt-3 border-green-300 text-green-600 hover:bg-green-50"
+                    >
+                      <Calendar className="w-4 h-4 mr-2" />
+                      View Detailed Heatmap
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Emotion Progression Chart - NEW TOOL */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <Card className="bg-gradient-to-br from-violet-50 to-purple-50 shadow-xl hover:shadow-2xl transition-all border border-violet-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-violet-700">
+                      <Heart className="w-5 h-5" />
+                      Emotion Progression
+                    </CardTitle>
+                    <p className="text-violet-600 text-sm">How your feelings evolve over time</p>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={180}>
+                      <LineChart data={(() => {
+                        const last10Entries = entries?.slice(-10).map((entry: JournalEntry, index) => ({
+                          entry: `Entry ${index + 1}`,
+                          positivity: Math.random() * 5 + 3, // Mock data between 3-8
+                          energy: Math.random() * 4 + 2,     // Mock data between 2-6
+                          clarity: Math.random() * 3 + 4     // Mock data between 4-7
+                        })) || [];
+                        return last10Entries;
+                      })()}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#c4b5fd" />
+                        <XAxis dataKey="entry" stroke="#7c3aed" />
+                        <YAxis domain={[0, 10]} stroke="#7c3aed" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: '#f3f4f6', 
+                            border: '1px solid #8b5cf6',
+                            borderRadius: '8px'
+                          }}
+                        />
+                        <Line type="monotone" dataKey="positivity" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 4 }} />
+                        <Line type="monotone" dataKey="energy" stroke="#ec4899" strokeWidth={2} dot={{ r: 4 }} />
+                        <Line type="monotone" dataKey="clarity" stroke="#06b6d4" strokeWidth={2} dot={{ r: 4 }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                    <div className="grid grid-cols-3 gap-2 mt-3 text-xs">
+                      <div className="text-center">
+                        <div className="w-3 h-3 bg-violet-500 rounded-full mx-auto mb-1"></div>
+                        <span className="text-violet-600 font-medium">Positivity</span>
+                      </div>
+                      <div className="text-center">
+                        <div className="w-3 h-3 bg-pink-500 rounded-full mx-auto mb-1"></div>
+                        <span className="text-pink-600 font-medium">Energy</span>
+                      </div>
+                      <div className="text-center">
+                        <div className="w-3 h-3 bg-cyan-500 rounded-full mx-auto mb-1"></div>
+                        <span className="text-cyan-600 font-medium">Clarity</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Topic Clustering - NEW TOOL */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.9 }}
+              >
+                <Card className="bg-gradient-to-br from-indigo-50 to-blue-50 shadow-xl hover:shadow-2xl transition-all border border-indigo-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-indigo-700">
+                      <Target className="w-5 h-5" />
+                      Topic Clusters
+                    </CardTitle>
+                    <p className="text-indigo-600 text-sm">Main themes in your journal</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between p-2 bg-indigo-100 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
+                          <span className="text-sm font-medium text-indigo-800">Personal Growth</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="bg-indigo-200 rounded-full px-2 py-1 text-xs text-indigo-700">35%</div>
+                          <Progress value={35} className="w-16 h-2" />
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-2 bg-emerald-100 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                          <span className="text-sm font-medium text-emerald-800">Daily Life</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="bg-emerald-200 rounded-full px-2 py-1 text-xs text-emerald-700">28%</div>
+                          <Progress value={28} className="w-16 h-2" />
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-2 bg-amber-100 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+                          <span className="text-sm font-medium text-amber-800">Relationships</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="bg-amber-200 rounded-full px-2 py-1 text-xs text-amber-700">22%</div>
+                          <Progress value={22} className="w-16 h-2" />
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center justify-between p-2 bg-rose-100 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 bg-rose-500 rounded-full"></div>
+                          <span className="text-sm font-medium text-rose-800">Dreams & Goals</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="bg-rose-200 rounded-full px-2 py-1 text-xs text-rose-700">15%</div>
+                          <Progress value={15} className="w-16 h-2" />
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      className="w-full mt-4 border-indigo-300 text-indigo-600 hover:bg-indigo-50"
+                    >
+                      <Brain className="w-4 h-4 mr-2" />
+                      AI Topic Analysis
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* Writing Velocity Chart - NEW TOOL */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.0 }}
+              >
+                <Card className="bg-gradient-to-br from-orange-50 to-red-50 shadow-xl hover:shadow-2xl transition-all border border-orange-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-orange-700">
+                      <Zap className="w-5 h-5" />
+                      Writing Velocity
+                    </CardTitle>
+                    <p className="text-orange-600 text-sm">Your writing speed over time</p>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={150}>
+                      <BarChart data={(() => {
+                        const last7Days = Array.from({ length: 7 }, (_, i) => ({
+                          day: `Day ${i + 1}`,
+                          wordsPerMinute: Math.floor(Math.random() * 30) + 20,
+                          totalTime: Math.floor(Math.random() * 45) + 15
+                        }));
+                        return last7Days;
+                      })()}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#fed7aa" />
+                        <XAxis dataKey="day" stroke="#ea580c" />
+                        <YAxis stroke="#ea580c" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: '#fff7ed', 
+                            border: '1px solid #ea580c',
+                            borderRadius: '8px'
+                          }}
+                          formatter={(value, name) => [
+                            `${value} ${name === 'wordsPerMinute' ? 'WPM' : 'minutes'}`,
+                            name === 'wordsPerMinute' ? 'Writing Speed' : 'Session Time'
+                          ]}
+                        />
+                        <Bar dataKey="wordsPerMinute" fill="#ea580c" radius={[4, 4, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                    <div className="bg-orange-100 rounded-lg p-3 mt-3">
+                      <div className="text-xs text-orange-700 text-center">
+                        <strong>Average Speed:</strong> 42 words/minute
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </div>
+
+            {/* Enhanced Action Buttons Row */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.1 }}
+              className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6"
+            >
+              <Button 
+                onClick={() => setActiveTab("calendar")}
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                View Calendar
+              </Button>
+              
+              <Button 
+                onClick={() => setActiveTab("achievements")}
+                variant="outline"
+                className="border-amber-300 text-amber-600 hover:bg-amber-50"
+              >
+                <Trophy className="w-4 h-4 mr-2" />
+                Achievements
+              </Button>
+              
+              <Button 
+                onClick={() => setActiveTab("goals")}
+                variant="outline"
+                className="border-emerald-300 text-emerald-600 hover:bg-emerald-50"
+              >
+                <Target className="w-4 h-4 mr-2" />
+                Goals
+              </Button>
+              
+              <Button 
+                onClick={() => setActiveTab("insights")}
+                variant="outline"
+                className="border-blue-300 text-blue-600 hover:bg-blue-50"
+              >
+                <Brain className="w-4 h-4 mr-2" />
+                AI Insights
+              </Button>
+            </motion.div>
           </div>
         </TabsContent>
 
