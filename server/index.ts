@@ -103,11 +103,15 @@ app.use((req, res, next) => {
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
   const distPath = path.resolve(__dirname, "..", "dist", "public");
   
-  // Use production mode for Railway deployment
-  if (process.env.NODE_ENV === "production" && fs.existsSync(distPath)) {
+  // CHOOSE ONE MODE - NEVER MIX DEV AND PRODUCTION
+  if (process.env.NODE_ENV === "production") {
     console.log("Production mode: serving static files from dist/public");
     
-    // Serve static files directly with proper MIME types
+    if (!fs.existsSync(distPath)) {
+      throw new Error(`Build files not found at ${distPath}. Run 'npm run build' first.`);
+    }
+    
+    // Production: Only serve static files
     app.use(express.static(distPath, {
       setHeaders: (res, filePath) => {
         if (filePath.endsWith('.js')) {
@@ -118,12 +122,13 @@ app.use((req, res, next) => {
       }
     }));
 
-    // Serve index.html for all unmatched routes (SPA fallback)
+    // SPA fallback for production
     app.use("*", (_req, res) => {
       res.sendFile(path.resolve(distPath, "index.html"));
     });
   } else {
     console.log("Development mode: using Vite development server");
+    // Development: Only use Vite dev server
     await setupVite(app, server);
   }
 
