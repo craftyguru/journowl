@@ -1,0 +1,443 @@
+analytics.tiktok.com/i18n/pixel/events.js?sdkid=D004GE3C77U8PIVDSDJG&lib=ttq:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+www.google-analytics.com/analytics.js:1  Failed to load resource: net::ERR_UNSAFE_REDIRECT
+www.googletagmanager.com/gtag/js?id=AW-11411994397:1  Failed to load resource: net::ERR_UNSAFE_REDIRECT
+_app-9c155643562ad653.js:38 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-9c155643562ad653.js:38 [LaunchDarkly] LaunchDarkly client initialized
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+ Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'battery'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'layout-animations'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'navigation-override'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'oversized-images'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'publickey-credentials'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'speaker-selection'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'unoptimized-images'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'unsized-media'.
+_ @ framework-e34fc25541eba055.js:1
+ Unrecognized feature: 'pointer-lock'.
+_ @ framework-e34fc25541eba055.js:1
+ Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-e34fc25541eba055.js:1
+ Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-e34fc25541eba055.js:1
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:402720)
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:402720)
+1kindpiece#server/utils/working-challenge-tracker.ts:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+b:1  Failed to load resource: net::ERR_NETWORK_IO_SUSPENDED
+b:1  Failed to load resource: net::ERR_NETWORK_IO_SUSPENDED
+b:1  Failed to load resource: net::ERR_NETWORK_IO_SUSPENDED
+b:1  Failed to load resource: net::ERR_NETWORK_IO_SUSPENDED
+b:1  Failed to load resource: net::ERR_NETWORK_IO_SUSPENDED
+b:1  Failed to load resource: net::ERR_NETWORK_IO_SUSPENDED
+ stallwart: failed ping 1
+ stallwart: failed ping 2
+/~:1 Blocked aria-hidden on an element because its descendant retained focus. The focus must not be hidden from assistive technology users. Avoid using aria-hidden on a focused element or its ancestor. Consider using the inert attribute instead, which will also prevent focus. For more details, see the aria-hidden section of the WAI-ARIA specification at https://w3c.github.io/aria/#aria-hidden.
+Element with focus: <div.cm-content cm-lineWrapping>
+Ancestor with aria-hidden: <div. useView_view__C2mnv css-17qdd0f Surface_surfaceRoot__TeA2u> 
+attached_assets/image_1752836132472.png:1  Failed to load resource: the server responded with a status of 404 ()
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+chrome-extension://h…content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:403564)
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+chrome-extension://h…content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:403564)
+chrome-extension://h…content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:403564)
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Ar3df%3A:32 Unrecognized feature: 'ambient-light-sensor'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Ar3df%3A:32 Unrecognized feature: 'battery'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Ar3df%3A:32 Unrecognized feature: 'execution-while-not-rendered'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Ar3df%3A:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/__replco/workspace_iframe.html?initialPath=%2F&id=%3Ar3df%3A:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?t=1753315081845&v=RevmCgkJQCsFT47yaU015:45 App initializing - pathname: / search: 
+chrome-extension://hdokiejnpimakedhajhdlcegeplioahd/web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:403564)
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:112 PWA Debug: Checking installation eligibility...
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:113 PWA Debug: HTTPS: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:114 PWA Debug: Service Worker supported: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:115 PWA Debug: Manifest linked: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:64 JournOwl SW registered:  ServiceWorkerRegistration
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:123 PWA Debug: beforeinstallprompt fired: false
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:124 PWA Debug: Global deferredPrompt available: false
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id separator https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:238 AI speech recognition initialized successfully
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:680 🚨 DIRECT SAVE FUNCTION CALLED!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:653 🔥 UnifiedJournal handleSave called!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:654 UnifiedJournal - title: 
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:655 UnifiedJournal - content: Lets GOOOOO!!!!!!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:656 UnifiedJournal - mood: 😊
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:674 UnifiedJournal - prepared entry data: {
+  "title": "Untitled Entry",
+  "content": "Lets GOOOOO!!!!!!",
+  "mood": "😊",
+  "fontFamily": "Inter",
+  "fontSize": 16,
+  "textColor": "#1f2937",
+  "backgroundColor": "#ffffff",
+  "isPrivate": false,
+  "tags": [],
+  "photos": [],
+  "drawings": [],
+  "wordCount": 2,
+  "createdAt": "2025-07-24T00:44:34.391Z",
+  "updatedAt": "2025-07-24T00:44:34.391Z"
+}
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:675 UnifiedJournal - calling onSave function: function
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/enhanced-dashboard.tsx?t=1753315081845:167 Saving entry: Object
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:677 UnifiedJournal - onSave called successfully!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:680 🚨 DIRECT SAVE FUNCTION CALLED!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:653 🔥 UnifiedJournal handleSave called!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:654 UnifiedJournal - title: 
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:655 UnifiedJournal - content: Lets GOOOOO!!!!!!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:656 UnifiedJournal - mood: 😊
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:674 UnifiedJournal - prepared entry data: {
+  "title": "Untitled Entry",
+  "content": "Lets GOOOOO!!!!!!",
+  "mood": "😊",
+  "fontFamily": "Inter",
+  "fontSize": 16,
+  "textColor": "#1f2937",
+  "backgroundColor": "#ffffff",
+  "isPrivate": false,
+  "tags": [],
+  "photos": [],
+  "drawings": [],
+  "wordCount": 2,
+  "createdAt": "2025-07-24T00:44:34.511Z",
+  "updatedAt": "2025-07-24T00:44:34.511Z"
+}
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:675 UnifiedJournal - calling onSave function: function
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/enhanced-dashboard.tsx?t=1753315081845:167 Saving entry: Object
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:677 UnifiedJournal - onSave called successfully!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:680 🚨 DIRECT SAVE FUNCTION CALLED!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:653 🔥 UnifiedJournal handleSave called!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:654 UnifiedJournal - title: 
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:655 UnifiedJournal - content: Lets GOOOOO!!!!!!
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:656 UnifiedJournal - mood: 😊
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:674 UnifiedJournal - prepared entry data: {
+  "title": "Untitled Entry",
+  "content": "Lets GOOOOO!!!!!!",
+  "mood": "😊",
+  "fontFamily": "Inter",
+  "fontSize": 16,
+  "textColor": "#1f2937",
+  "backgroundColor": "#ffffff",
+  "isPrivate": false,
+  "tags": [],
+  "photos": [],
+  "drawings": [],
+  "wordCount": 2,
+  "createdAt": "2025-07-24T00:44:34.516Z",
+  "updatedAt": "2025-07-24T00:44:34.516Z"
+}
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:675 UnifiedJournal - calling onSave function: function
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/enhanced-dashboard.tsx?t=1753315081845:167 Saving entry: Object
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/unified-journal.tsx:677 UnifiedJournal - onSave called successfully!
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id separator https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+web-client-content-script.js:2 Error: Extension context invalidated.
+    at web-client-content-script.js:2:223847
+    at new Promise (<anonymous>)
+    at Object.sendMessage (web-client-content-script.js:2:223798)
+    at web-client-content-script.js:2:225126
+    at p (web-client-content-script.js:2:215651)
+    at Generator.<anonymous> (web-client-content-script.js:2:216990)
+    at Generator.next (web-client-content-script.js:2:216016)
+    at u (web-client-content-script.js:2:222668)
+    at i (web-client-content-script.js:2:222871)
+    at web-client-content-script.js:2:222930
+stallwart.build.js:1 stallwart: failed ping 1
+client:560 [vite] server connection lost. Polling for restart...
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:12  GET https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@vite/client net::ERR_ABORTED 502 (Bad Gateway)
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+App.tsx:34 App initializing - pathname: / search: 
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:403564)
+(anonymous) @ web-client-content-script.js:2
+(index):112 PWA Debug: Checking installation eligibility...
+(index):113 PWA Debug: HTTPS: true
+(index):114 PWA Debug: Service Worker supported: true
+(index):115 PWA Debug: Manifest linked: true
+(index):64 JournOwl SW registered:  ServiceWorkerRegistration {installing: null, waiting: null, active: ServiceWorker, navigationPreload: NavigationPreloadManager, scope: 'https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/', …}
+(index):123 PWA Debug: beforeinstallprompt fired: false
+(index):124 PWA Debug: Global deferredPrompt available: false
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id separator https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
