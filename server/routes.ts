@@ -1085,6 +1085,60 @@ Your story shows how every day brings new experiences and emotions, creating the
     next();
   };
 
+  // Setup admin account - TEMPORARY ENDPOINT
+  app.post("/api/setup-admin", async (req, res) => {
+    try {
+      const { setupKey } = req.body;
+      
+      if (setupKey !== "7756guru") {
+        return res.status(403).json({ message: "Invalid setup key" });
+      }
+
+      // Import auth service
+      const { hashPassword } = await import("./services/auth");
+      
+      // Check for existing admin accounts
+      let adminUser = await storage.getUserByEmail("archimedes@journowl.app");
+      if (!adminUser) {
+        adminUser = await storage.getUserByEmail("CraftyGuru@1ofakindpiece.com");
+      }
+      if (!adminUser) {
+        adminUser = await storage.getUserByUsername("archimedes");
+      }
+      
+      if (adminUser) {
+        // Update existing admin
+        const hashedPassword = await hashPassword("7756guru");
+        await storage.updateUser(adminUser.id, {
+          username: "archimedes",
+          email: "archimedes@journowl.app",
+          password: hashedPassword,
+          role: "admin"
+        });
+        res.json({ message: "Admin account updated successfully", username: "archimedes" });
+      } else {
+        // Create new admin
+        const hashedPassword = await hashPassword("7756guru");
+        const newAdmin = await storage.createUser({
+          email: "archimedes@journowl.app",
+          username: "archimedes",
+          password: hashedPassword,
+          role: "admin",
+          level: 99,
+          xp: 999999,
+          currentPlan: "power",
+          promptsRemaining: 999999,
+          emailVerified: true,
+          requiresEmailVerification: false
+        });
+        res.json({ message: "Admin account created successfully", username: "archimedes" });
+      }
+    } catch (error: any) {
+      console.error("Error setting up admin:", error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Admin Routes
   app.get("/api/admin/users", requireAdmin, async (req: any, res) => {
     try {
