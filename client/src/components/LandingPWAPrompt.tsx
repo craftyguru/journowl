@@ -44,7 +44,7 @@ export function LandingPWAPrompt() {
           console.log('PWA: Showing install prompt with native support');
           setShowPrompt(true);
           sessionStorage.setItem('pwa-prompt-shown', 'true');
-        }, 3000); // Delay to prevent immediate flashing
+        }, 5000); // Longer delay to prevent flashing
       }
     };
 
@@ -86,9 +86,10 @@ export function LandingPWAPrompt() {
       }
     }
 
-    // Only show manual instructions if native installation is not available
-    console.log('PWA: Native installation not available, showing manual instructions');
-    showAnimatedInstallHelper();
+    // Skip manual instructions to prevent flashing
+    console.log('PWA: Native installation not available, dismissing prompt');
+    setShowPrompt(false);
+    sessionStorage.setItem('pwa-prompt-dismissed', 'true');
   };
 
   const handleDismiss = () => {
@@ -99,27 +100,20 @@ export function LandingPWAPrompt() {
 
   // Add test button for development (only visible on localhost/replit)
   const handleTestPrompt = () => {
-    console.log('PWA: Test button clicked - clearing storage and showing prompt');
+    console.log('PWA: Test button clicked - clearing storage and showing simple prompt only');
     sessionStorage.removeItem('pwa-prompt-shown');
     sessionStorage.removeItem('pwa-install-attempted');
     sessionStorage.removeItem('pwa-installed');
+    sessionStorage.removeItem('pwa-prompt-dismissed');
+    // Only show simple prompt, no install helpers
     setShowPrompt(true);
+    setShowInstallHelper(false);
   };
 
   const showAnimatedInstallHelper = () => {
-    const isAndroid = /Android/i.test(navigator.userAgent);
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-    
-    if (isIOS) {
-      setInstallHelperType('ios');
-    } else if (isAndroid) {
-      setInstallHelperType('android');
-    } else {
-      setInstallHelperType('desktop');
-    }
-    
+    // Disabled to prevent flashing - just dismiss the prompt
     setShowPrompt(false);
-    setShowInstallHelper(true);
+    sessionStorage.setItem('pwa-prompt-dismissed', 'true');
   };
 
   const InstallHelper = () => {
@@ -320,7 +314,7 @@ export function LandingPWAPrompt() {
         </motion.div>
       )}
       
-      {showInstallHelper && <InstallHelper />}
+      {/* Install helpers disabled to prevent flashing */}
       </AnimatePresence>
     </>
   );

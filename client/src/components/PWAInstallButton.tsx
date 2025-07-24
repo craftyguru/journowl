@@ -75,21 +75,8 @@ export function PWAInstallButton() {
       }
     }
 
-    // Only show manual instructions if native installation failed/unavailable
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    const isAndroid = /Android/i.test(navigator.userAgent);
-
-    if (isDevelopment()) {
-      showDevelopmentMessage();
-    } else if (isIOS) {
-      showIOSInstructions();
-    } else if (isAndroid) {
-      showAndroidInstructions(false); // Native prompt not available
-    } else if (isMobile) {
-      showGenericMobileInstructions();
-    } else {
-      showDesktopInstructions();
-    }
+    // Skip manual instructions to prevent flashing/alerts
+    console.log('PWA: Native installation not available, button disabled to prevent flashing');
   };
 
   const isDevelopment = () =>
@@ -157,11 +144,9 @@ Firefox: Menu → Page → Install This Site as App
 This creates a desktop app version of JournOwl!`);
   };
 
-  // Show the button if:
-  // - Not already installed
-  // - (Installable on this platform) OR (iOS and not standalone)
+  // Only show button for native install prompts to prevent flashing
   if (isInstalled) return null;
-  if (!isInstallable && !isIOS) return null;
+  if (!deferredPrompt) return null;
 
   return (
     <Button

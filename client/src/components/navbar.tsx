@@ -65,7 +65,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
             
-            <PWAInstallButton />
+            {/* PWA install button temporarily disabled to prevent flashing */}
             
             <Button
               variant="ghost"
