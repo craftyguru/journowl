@@ -99,19 +99,9 @@ app.use((req, res, next) => {
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
   const distPath = path.resolve(__dirname, "..", "dist", "public");
   
-  if (fs.existsSync(distPath)) {
-    console.log("Found built assets, serving static files from:", distPath);
-    // Manually serve static files since we can't modify vite.ts
-    const express = await import("express");
-    app.use(express.static(distPath));
-    // Serve index.html for all non-API routes
-    app.use("*", (_req, res) => {
-      res.sendFile(path.resolve(distPath, "index.html"));
-    });
-  } else {
-    console.log("No built assets found, using Vite development server");
-    await setupVite(app, server);
-  }
+  // Force development mode for debugging white screen issue
+  console.log("Using Vite development server for debugging");
+  await setupVite(app, server);
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.
