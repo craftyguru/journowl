@@ -103,9 +103,14 @@ app.use((req, res, next) => {
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
   const distPath = path.resolve(__dirname, "..", "dist", "public");
   
-  // Always use development mode for now to fix loading issue
-  console.log("Development mode: using Vite development server");
-  await setupVite(app, server);
+  // Use production mode for Railway deployment
+  if (process.env.NODE_ENV === "production" && fs.existsSync(distPath)) {
+    console.log("Production mode: serving static files from dist/public");
+    serveStatic(app);
+  } else {
+    console.log("Development mode: using Vite development server");
+    await setupVite(app, server);
+  }
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.

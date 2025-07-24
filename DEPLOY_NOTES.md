@@ -40,8 +40,15 @@ FACEBOOK_APP_SECRET=your-facebook-app-secret
 
 1. **Connect Repository**: Link your GitHub repo to Railway
 2. **Set Variables**: Add all environment variables in Railway dashboard
-3. **Deploy**: Railway automatically runs `npm run build && npm start`
+3. **Deploy**: Railway automatically runs build process using Nixpacks
 4. **Monitor**: Check `/health` endpoint for status
+
+### ✅ Railway Build Fix Applied
+
+The Node.js version error has been fixed with updated Nixpacks configuration:
+- Fixed `nodejs-20_x` undefined variable error
+- Updated to use standard `nodejs` and `npm` packages
+- Simplified build process for better compatibility
 
 ### ✅ Build Process Verified
 
@@ -71,5 +78,20 @@ npm start      # ✅ Successful - serves from dist/public
 - Username: `archimedes` (lowercase)
 - Password: `7756guru`
 - Email: `archimedes@journowl.app`
+
+### ✅ Alternative Deployment Method
+
+If Nixpacks continues to have issues, Railway can also use the Procfile:
+```
+web: npm start
+```
+
+### ✅ Deployment Status
+
+The Railway deployment build error has been fixed:
+- ✅ Fixed `nodejs-20_x` undefined variable in Nixpacks
+- ✅ Added fallback Procfile for alternative deployment
+- ✅ Verified build process works locally
+- ✅ Production configuration restored
 
 The Railway deployment is now production-ready! 🎉

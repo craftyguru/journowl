@@ -2,7 +2,8 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "npm run build && npm start"
+startCommand = "npm start"
 
 [nixpacks]
 providers = ["node"]
+nixpkgsVersion = "22.11"
