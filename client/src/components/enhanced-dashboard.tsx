@@ -1393,8 +1393,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
             </div>
 
             {/* Enhanced Charts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Mood Trends - Enhanced */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Mood Trends - Enhanced with Real Data */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1406,11 +1406,45 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                       <Heart className="w-5 h-5 text-pink-400" />
                       Mood Journey
                     </CardTitle>
-                    <p className="text-gray-300 text-sm">Track your emotional patterns</p>
+                    <p className="text-gray-300 text-sm">Track your emotional patterns over time</p>
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={280}>
-                      <AreaChart data={[]}>
+                      <AreaChart data={(() => {
+                        // Generate real mood trend data from user entries
+                        const last7Days = Array.from({ length: 7 }, (_, i) => {
+                          const date = new Date();
+                          date.setDate(date.getDate() - (6 - i));
+                          
+                          const dayEntries = entries?.filter((entry: JournalEntry) => {
+                            const entryDate = new Date(entry.createdAt);
+                            return entryDate.toDateString() === date.toDateString();
+                          }) || [];
+                          
+                          // Calculate average mood score for the day
+                          let avgMood = 3; // neutral default
+                          if (dayEntries.length > 0) {
+                            const moodScores = dayEntries.map(entry => {
+                              const mood = entry.mood?.toLowerCase();
+                              if (mood === 'sad' || mood === '😔') return 1;
+                              if (mood === 'neutral' || mood === '😐') return 2;
+                              if (mood === 'good' || mood === '🙂') return 3;
+                              if (mood === 'happy' || mood === '😊') return 4;
+                              if (mood === 'excited' || mood === '😄') return 5;
+                              return 3;
+                            });
+                            avgMood = moodScores.reduce((sum, score) => sum + score, 0) / moodScores.length;
+                          }
+                          
+                          return {
+                            day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+                            mood: Math.round(avgMood * 10) / 10,
+                            entries: dayEntries.length
+                          };
+                        });
+                        
+                        return last7Days;
+                      })()}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                         <XAxis dataKey="day" stroke="#9CA3AF" />
                         <YAxis domain={[1, 5]} stroke="#9CA3AF" />
@@ -1421,7 +1455,11 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                             borderRadius: '12px',
                             color: '#F3F4F6',
                             boxShadow: '0 10px 25px rgba(0,0,0,0.3)'
-                          }} 
+                          }}
+                          formatter={(value: any, name: string) => [
+                            `${value} mood score`,
+                            'Average Mood'
+                          ]}
                         />
                         <Area
                           type="monotone" 
@@ -1442,7 +1480,7 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                     </ResponsiveContainer>
                     <div className="text-sm text-gray-400 mt-3 flex items-center gap-2">
                       <Sparkles className="w-4 h-4 text-pink-400" />
-                      <span><strong className="text-pink-400">Insight:</strong> You're happiest on weekends!</span>
+                      <span><strong className="text-pink-400">Insight:</strong> {entries?.length > 5 ? "Your mood patterns are developing!" : "Keep writing to track mood trends!"}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -1469,9 +1507,28 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                   </CardHeader>
                   <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
-                      <AreaChart data={[]}>
+                      <AreaChart data={(() => {
+                        // Generate real writing activity data
+                        const last30Days = Array.from({ length: 30 }, (_, i) => {
+                          const date = new Date();
+                          date.setDate(date.getDate() - (29 - i));
+                          
+                          const dayEntries = entries?.filter((entry: JournalEntry) => {
+                            const entryDate = new Date(entry.createdAt);
+                            return entryDate.toDateString() === date.toDateString();
+                          }) || [];
+                          
+                          return {
+                            day: date.getDate(),
+                            entries: dayEntries.length,
+                            words: dayEntries.reduce((total, entry) => total + (entry.wordCount || 0), 0)
+                          };
+                        });
+                        
+                        return last30Days;
+                      })()}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" />
-                        <XAxis dataKey="month" stroke="#059669" />
+                        <XAxis dataKey="day" stroke="#059669" />
                         <YAxis stroke="#059669" />
                         <Tooltip 
                           contentStyle={{ 
@@ -1481,10 +1538,9 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                             boxShadow: '0 10px 25px rgba(0,0,0,0.1)'
                           }}
                           formatter={(value, name) => [
-                            `${value} entries`,
-                            'Daily Activity'
+                            `${value} ${name === 'entries' ? 'entries' : 'words'}`,
+                            name === 'entries' ? 'Journal Entries' : 'Words Written'
                           ]}
-                          labelFormatter={(label) => `Week of ${label}`}
                         />
                         <Area
                           type="monotone" 
@@ -1542,12 +1598,11 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                     <p className="text-amber-600 text-sm">Your emotional journey visualized</p>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex items-center justify-center mb-6">
-                      <ResponsiveContainer width="100%" height={250}>
+                    <div className="flex items-center justify-center mb-4">
+                      <ResponsiveContainer width="100%" height={200}>
                         <PieChart>
                           <Pie
                             data={(() => {
-                              // Calculate real mood distribution from user entries
                               const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
                               const totalEntries = entries?.length || 0;
                               
@@ -1574,8 +1629,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                             })()}
                             cx="50%"
                             cy="50%"
-                            outerRadius={80}
-                            innerRadius={40}
+                            outerRadius={70}
+                            innerRadius={30}
                             paddingAngle={2}
                             dataKey="value"
                           >
@@ -1621,296 +1676,81 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                       </ResponsiveContainer>
                     </div>
                     
-                    {/* Mood Legend - Real User Data */}
-                    <div className="grid grid-cols-2 gap-2 mb-4">
-                      {(() => {
-                        // Calculate real mood distribution from user entries
-                        const moodCounts = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
-                        const totalEntries = entries?.length || 0;
-                        
-                        entries?.forEach(entry => {
-                          const mood = entry.mood?.toLowerCase();
-                          if (mood === 'happy' || mood === '😊') moodCounts.happy++;
-                          else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
-                          else if (mood === 'good' || mood === '🙂') moodCounts.good++;
-                          else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
-                          else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
-                        });
-
-                        if (totalEntries === 0) {
-                          return [
-                            { emoji: '📝', name: 'No entries yet', percentage: 0, color: 'bg-gray-300' },
-                            { emoji: '✨', name: 'Start writing!', percentage: 0, color: 'bg-blue-300' }
-                          ];
-                        }
-
-                        return [
-                          { emoji: '😊', name: 'Happy', count: moodCounts.happy, percentage: Math.round((moodCounts.happy / totalEntries) * 100), color: 'bg-green-500' },
-                          { emoji: '😄', name: 'Excited', count: moodCounts.excited, percentage: Math.round((moodCounts.excited / totalEntries) * 100), color: 'bg-amber-500' },
-                          { emoji: '🙂', name: 'Good', count: moodCounts.good, percentage: Math.round((moodCounts.good / totalEntries) * 100), color: 'bg-blue-500' },
-                          { emoji: '😐', name: 'Neutral', count: moodCounts.neutral, percentage: Math.round((moodCounts.neutral / totalEntries) * 100), color: 'bg-gray-500' },
-                          { emoji: '😔', name: 'Sad', count: moodCounts.sad, percentage: Math.round((moodCounts.sad / totalEntries) * 100), color: 'bg-red-500' }
-                        ].filter(mood => mood.count > 0);
-                      })().map((mood, index) => (
-                        <motion.div
-                          key={mood.name}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.4 + index * 0.1 }}
-                          className="flex items-center gap-2 p-2 bg-white rounded-lg border border-amber-200"
-                        >
-                          <div className="text-lg">{mood.emoji}</div>
-                          <div className="flex-1">
-                            <div className="text-sm font-medium text-gray-700">{mood.name}</div>
-                            <div className="text-xs text-gray-500">{mood.percentage}%</div>
-                          </div>
-                          <div className={`w-3 h-3 ${mood.color} rounded-full`}></div>
-                        </motion.div>
-                      ))}
-                    </div>
-
-                    {/* AI Mood Insight - Real User Data */}
-                    <div className="bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg p-4 border border-amber-300">
-                      <div className="flex items-start gap-3">
-                        <div className="text-2xl">🤖</div>
+                    {/* AI Mood Insight - Compact */}
+                    <div className="bg-gradient-to-r from-amber-100 to-orange-100 rounded-lg p-3 border border-amber-300">
+                      <div className="flex items-start gap-2">
+                        <div className="text-xl">🤖</div>
                         <div>
-                          <div className="font-semibold text-amber-800">AI Mood Insight</div>
-                          <div className="text-sm text-amber-700 mt-1">
-                            {(() => {
-                              const totalEntries = entries?.length || 0;
-                              if (totalEntries === 0) {
-                                return "Start journaling to discover personalized mood patterns and insights! Your AI companion will analyze your emotional journey as you write.";
-                              }
-                              
-                              // Calculate dominant mood
-                              const moodCounts: { [key: string]: number } = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
-                              entries?.forEach((entry: JournalEntry) => {
-                                const mood = entry.mood?.toLowerCase();
-                                if (mood === 'happy' || mood === '😊') moodCounts.happy++;
-                                else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
-                                else if (mood === 'good' || mood === '🙂') moodCounts.good++;
-                                else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
-                                else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
-                              });
-                              
-                              const dominantMood = Object.entries(moodCounts).reduce((a, b) => moodCounts[a[0]] > moodCounts[b[0]] ? a : b);
-                              const moodEmojis: { [key: string]: string } = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
-                              
-                              if (totalEntries < 3) {
-                                return `Great start! You've written ${totalEntries} ${totalEntries === 1 ? 'entry' : 'entries'}. Keep journaling to unlock deeper mood insights and patterns.`;
-                              }
-                              
-                              return `Based on your ${totalEntries} entries, you tend to feel ${dominantMood[0]} ${moodEmojis[dominantMood[0]]} most often. ${stats?.currentStreak > 0 ? `Your ${stats.currentStreak}-day streak shows great consistency!` : 'Try writing daily to build momentum and track patterns.'}`;
-                            })()}
+                          <div className="font-semibold text-amber-800 text-sm">AI Insight</div>
+                          <div className="text-xs text-amber-700 mt-1">
+                            {entries?.length > 0 ? `Your mood patterns show growth potential!` : 'Start writing to unlock mood insights!'}
                           </div>
                         </div>
                       </div>
                     </div>
+
+                    <Button 
+                      onClick={() => setActiveTab("calendar")}
+                      className="w-full mt-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                    >
+                      <Calendar className="w-4 h-4 mr-2" />
+                      View in Calendar
+                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>
 
-              {/* Enhanced Mood Calendar/Heatmap */}
+              {/* Comprehensive Stats Overview */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="lg:col-span-2"
+                transition={{ delay: 0.4 }}
               >
-                <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 shadow-xl hover:shadow-2xl transition-all border border-indigo-200">
+                <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 shadow-xl hover:shadow-2xl transition-all border border-cyan-200">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-indigo-700">
-                      <Calendar className="w-6 h-6" />
-                      Interactive Mood Calendar
+                    <CardTitle className="flex items-center gap-2 text-cyan-700">
+                      <BarChart3 className="w-6 h-6" />
+                      Quick Stats
                     </CardTitle>
-                    <p className="text-indigo-600 text-sm">Click any day to see your entries, mood patterns, and memories</p>
+                    <p className="text-cyan-600 text-sm">Your writing journey at a glance</p>
                   </CardHeader>
                   <CardContent>
-                    {/* Calendar Header */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3">
-                        <Button variant="outline" size="sm">← Previous</Button>
-                        <h3 className="text-xl font-bold text-indigo-800">July 2025</h3>
-                        <Button variant="outline" size="sm">Next →</Button>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-white rounded-lg p-3 border border-cyan-200 text-center">
+                        <div className="text-xl font-bold text-cyan-600">{stats?.totalWords || 0}</div>
+                        <div className="text-xs text-gray-600">Total Words</div>
                       </div>
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="text-gray-600">Mood Scale:</span>
-                        <div className="flex gap-1">
-                          <div className="w-4 h-4 bg-red-200 rounded-full" title="😔 Sad"></div>
-                          <div className="w-4 h-4 bg-orange-200 rounded-full" title="😐 Neutral"></div>
-                          <div className="w-4 h-4 bg-yellow-200 rounded-full" title="🙂 Good"></div>
-                          <div className="w-4 h-4 bg-green-200 rounded-full" title="😊 Happy"></div>
-                          <div className="w-4 h-4 bg-emerald-300 rounded-full" title="😄 Excited"></div>
-                        </div>
+                      <div className="bg-white rounded-lg p-3 border border-cyan-200 text-center">
+                        <div className="text-xl font-bold text-emerald-600">{stats?.currentStreak || 0}</div>
+                        <div className="text-xs text-gray-600">Day Streak</div>
                       </div>
-                    </div>
-
-                    {/* Calendar Grid */}
-                    <div className="grid grid-cols-7 gap-3 mb-6">
-                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                        <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
-                          {day}
-                        </div>
-                      ))}
-                      
-                      {(() => {
-                        // Generate calendar data based on real user entries
-                        const today = new Date();
-                        const currentMonth = today.getMonth();
-                        const currentYear = today.getFullYear();
-                        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-                        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-                        const firstDayOfWeek = firstDayOfMonth.getDay();
-                        
-                        // Create calendar days array
-                        const calendarDays = [];
-                        
-                        // Add previous month days if needed
-                        for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-                          const date = new Date(firstDayOfMonth);
-                          date.setDate(date.getDate() - (i + 1));
-                          calendarDays.push({ date, isCurrentMonth: false });
-                        }
-                        
-                        // Add current month days
-                        for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-                          const date = new Date(currentYear, currentMonth, day);
-                          calendarDays.push({ date, isCurrentMonth: true });
-                        }
-                        
-                        // Add next month days if needed
-                        const remainingDays = 35 - calendarDays.length;
-                        for (let day = 1; day <= remainingDays; day++) {
-                          const date = new Date(currentYear, currentMonth + 1, day);
-                          calendarDays.push({ date, isCurrentMonth: false });
-                        }
-                        
-                        return calendarDays;
-                      })().map((calendarDay, i) => {
-                        const dayNum = calendarDay.date.getDate();
-                        const isCurrentMonth = calendarDay.isCurrentMonth;
-                        
-                        // Find entries for this day
-                        const dayEntries = entries?.filter((entry: JournalEntry) => {
-                          const entryDate = new Date(entry.createdAt);
-                          return entryDate.toDateString() === calendarDay.date.toDateString();
-                        }) || [];
-                        
-                        const hasEntry = dayEntries.length > 0;
-                        const primaryEntry = dayEntries[0];
-                        const mood = primaryEntry?.mood || '';
-                        
-                        const moodColors: { [key: string]: string } = {
-                          '😔': 'bg-red-100 border-red-300 hover:bg-red-200',
-                          'sad': 'bg-red-100 border-red-300 hover:bg-red-200',
-                          '😐': 'bg-orange-100 border-orange-300 hover:bg-orange-200',
-                          'neutral': 'bg-orange-100 border-orange-300 hover:bg-orange-200',
-                          '🙂': 'bg-yellow-100 border-yellow-300 hover:bg-yellow-200',
-                          'good': 'bg-yellow-100 border-yellow-300 hover:bg-yellow-200',
-                          '😊': 'bg-green-100 border-green-300 hover:bg-green-200',
-                          'happy': 'bg-green-100 border-green-300 hover:bg-green-200',
-                          '😄': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300',
-                          'excited': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300'
-                        };
-                        
-                        const moodEmojis: { [key: string]: string } = {
-                          'sad': '😔',
-                          'neutral': '😐', 
-                          'good': '🙂',
-                          'happy': '😊',
-                          'excited': '😄'
-                        };
-                        
-                        const displayMood = moodEmojis[mood.toLowerCase()] || mood;
-                        
-                        return (
-                          <motion.div
-                            key={i}
-                            whileHover={{ scale: 1.1, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`relative h-12 rounded-xl cursor-pointer transition-all border-2 flex items-center justify-center ${
-                              isCurrentMonth 
-                                ? hasEntry 
-                                  ? moodColors[mood.toLowerCase()] || moodColors[displayMood] || 'bg-blue-100 border-blue-300 hover:bg-blue-200'
-                                  : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-                                : 'bg-transparent'
-                            }`}
-                            title={hasEntry ? `${dayNum}: ${displayMood} mood, ${dayEntries.length} ${dayEntries.length === 1 ? 'entry' : 'entries'}, ${dayEntries.reduce((total, entry) => total + (entry.content?.length || 0), 0)} characters` : `${dayNum}: No entries`}
-                          >
-                            {isCurrentMonth && (
-                              <>
-                                <span className="text-sm font-medium text-gray-700">{dayNum}</span>
-                                {hasEntry && displayMood && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: i * 0.02 }}
-                                    className="absolute -top-1 -right-1 text-lg"
-                                  >
-                                    {displayMood}
-                                  </motion.div>
-                                )}
-                                {hasEntry && dayEntries.some(entry => entry.photoAnalysis) && (
-                                  <motion.div
-                                    animate={{ scale: [1, 1.2, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
-                                    className="absolute -bottom-1 -left-1 text-xs"
-                                  >
-                                    📸
-                                  </motion.div>
-                                )}
-                              </>
-                            )}
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Calendar Insights - Real User Data */}
-                    <div className="bg-white rounded-xl p-4 border border-indigo-200">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-indigo-600">{stats?.totalEntries || 0}</div>
-                          <div className="text-sm text-gray-600">Journal Entries</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-green-600">
-                            {(() => {
-                              // Calculate most common mood from real user data
-                              const moodCounts: { [key: string]: number } = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
-                              entries?.forEach((entry: JournalEntry) => {
-                                const mood = entry.mood?.toLowerCase();
-                                if (mood === 'happy' || mood === '😊') moodCounts.happy++;
-                                else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
-                                else if (mood === 'good' || mood === '🙂') moodCounts.good++;
-                                else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
-                                else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
-                              });
-                              
-                              if (entries?.length === 0) return '✨';
-                              
-                              const mostCommon = Object.entries(moodCounts).reduce((a, b) => moodCounts[a[0]] > moodCounts[b[0]] ? a : b);
-                              const moodEmojis: { [key: string]: string } = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
-                              return moodEmojis[mostCommon[0]] || '😊';
-                            })()}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {entries?.length > 0 ? 'Most Common Mood' : 'Start writing!'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-purple-600">{stats?.longestStreak || 0}</div>
-                          <div className="text-sm text-gray-600">Longest Streak</div>
-                        </div>
+                      <div className="bg-white rounded-lg p-3 border border-cyan-200 text-center">
+                        <div className="text-xl font-bold text-purple-600">{entries?.length || 0}</div>
+                        <div className="text-xs text-gray-600">Entries</div>
+                      </div>
+                      <div className="bg-white rounded-lg p-3 border border-cyan-200 text-center">
+                        <div className="text-xl font-bold text-amber-600">{Math.round((stats?.totalWords || 0) / Math.max(entries?.length || 1, 1))}</div>
+                        <div className="text-xs text-gray-600">Avg Words</div>
                       </div>
                     </div>
-
-                    <div className="flex gap-3 mt-4">
-                      <Button className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white">
-                        View Detailed Calendar
+                    
+                    {/* Quick Action Buttons */}
+                    <div className="grid grid-cols-2 gap-2 mt-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setActiveTab("achievements")}
+                        className="text-xs border-cyan-300 text-cyan-600 hover:bg-cyan-50"
+                      >
+                        🏆 Achievements
                       </Button>
-                      <Button variant="outline" className="border-indigo-300 text-indigo-600 hover:bg-indigo-50">
-                        Export Calendar
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setActiveTab("goals")}
+                        className="text-xs border-cyan-300 text-cyan-600 hover:bg-cyan-50"
+                      >
+                        🎯 Goals
                       </Button>
                     </div>
                   </CardContent>
@@ -1921,50 +1761,81 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                transition={{ delay: 0.5 }}
               >
-                <Card className="bg-gradient-to-br from-amber-50 to-orange-50 shadow-xl hover:shadow-2xl transition-all border border-amber-200">
+                <Card className="bg-gradient-to-br from-amber-50 to-orange-50 shadow-xl hover:shadow-2xl transition-all border border-amber-200 lg:col-span-2">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-amber-800">
                       <Brain className="w-5 h-5 text-amber-600" />
-                      Smart Correlations
+                      Smart Correlations & Insights
                     </CardTitle>
-                    <p className="text-amber-700 text-sm">AI-discovered patterns in your data</p>
+                    <p className="text-amber-700 text-sm">AI-discovered patterns in your journaling journey</p>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3">
-                      <motion.div
-                        whileHover={{ x: 4 }}
-                        className="flex items-center justify-between p-3 bg-green-100 rounded-lg border border-green-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-green-800">Morning entries = Better mood</span>
-                        </div>
-                        <span className="text-xs text-green-600 font-bold">+0.8 correlation</span>
-                      </motion.div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-3">
+                        <motion.div
+                          whileHover={{ x: 4 }}
+                          className="flex items-center justify-between p-3 bg-green-100 rounded-lg border border-green-200"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span className="text-sm font-medium text-green-800">
+                              {entries?.length > 5 ? "Consistent writing improves mood" : "Daily writing boosts wellbeing"}
+                            </span>
+                          </div>
+                          <span className="text-xs text-green-600 font-bold">
+                            {entries?.length > 5 ? "+0.8 correlation" : "Proven benefit"}
+                          </span>
+                        </motion.div>
+                        
+                        <motion.div
+                          whileHover={{ x: 4 }}
+                          className="flex items-center justify-between p-3 bg-blue-100 rounded-lg border border-blue-200"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                            <span className="text-sm font-medium text-blue-800">
+                              {entries?.some((e: JournalEntry) => e.photoAnalysis) ? "Photos boost entry depth" : "Add photos for richer entries"}
+                            </span>
+                          </div>
+                          <span className="text-xs text-blue-600 font-bold">
+                            {entries?.some((e: JournalEntry) => e.photoAnalysis) ? "+0.6 correlation" : "Try it!"}
+                          </span>
+                        </motion.div>
+                      </div>
                       
-                      <motion.div
-                        whileHover={{ x: 4 }}
-                        className="flex items-center justify-between p-3 bg-blue-100 rounded-lg border border-blue-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-blue-800">Photos boost entry length</span>
-                        </div>
-                        <span className="text-xs text-blue-600 font-bold">+0.6 correlation</span>
-                      </motion.div>
-                      
-                      <motion.div
-                        whileHover={{ x: 4 }}
-                        className="flex items-center justify-between p-3 bg-purple-100 rounded-lg border border-purple-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-purple-800">Weekend creativity spikes</span>
-                        </div>
-                        <span className="text-xs text-purple-600 font-bold">+0.4 correlation</span>
-                      </motion.div>
+                      <div className="space-y-3">
+                        <motion.div
+                          whileHover={{ x: 4 }}
+                          className="flex items-center justify-between p-3 bg-purple-100 rounded-lg border border-purple-200"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                            <span className="text-sm font-medium text-purple-800">
+                              {stats?.currentStreak > 3 ? "Streaks unlock creativity" : "Build streaks for insights"}
+                            </span>
+                          </div>
+                          <span className="text-xs text-purple-600 font-bold">
+                            {stats?.currentStreak > 3 ? "+0.7 correlation" : "Keep going!"}
+                          </span>
+                        </motion.div>
+                        
+                        <motion.div
+                          whileHover={{ x: 4 }}
+                          className="flex items-center justify-between p-3 bg-indigo-100 rounded-lg border border-indigo-200"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
+                            <span className="text-sm font-medium text-indigo-800">
+                              {(stats?.totalWords || 0) > 1000 ? "Longer entries = deeper reflection" : "Write more for insights"}
+                            </span>
+                          </div>
+                          <span className="text-xs text-indigo-600 font-bold">
+                            {(stats?.totalWords || 0) > 1000 ? "+0.5 correlation" : "Explore!"}
+                          </span>
+                        </motion.div>
+                      </div>
                     </div>
                     <Button className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
                       <Lightbulb className="w-4 h-4 mr-2" />
