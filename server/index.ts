@@ -21,6 +21,10 @@ app.use((req, res, next) => {
     res.setHeader('Content-Type', 'image/png');
   } else if (req.path === '/service-worker.js') {
     res.setHeader('Content-Type', 'application/javascript');
+  } else if (req.path.endsWith('.js') || req.path.includes('/assets/') && req.path.endsWith('.js')) {
+    res.setHeader('Content-Type', 'application/javascript');
+  } else if (req.path.endsWith('.css') || req.path.includes('/assets/') && req.path.endsWith('.css')) {
+    res.setHeader('Content-Type', 'text/css');
   } else if (req.path === '/adaptive-card.json' || req.path === '/stats-card.json') {
     res.setHeader('Content-Type', 'application/json');
   } else if (req.path === '/offline.html') {
@@ -88,15 +92,25 @@ app.use((req, res, next) => {
   // importantly only setup vite in development and after
   // setting up all the other routes so the catch-all route
   // doesn't interfere with the other routes
-  if (app.get("env") === "development" || process.env.NODE_ENV === "development") {
-    await setupVite(app, server);
+  
+  // Check if dist/public exists to determine if we should serve static files
+  const fs = await import("fs");
+  const path = await import("path");
+  const __dirname = path.dirname(new URL(import.meta.url).pathname);
+  const distPath = path.resolve(__dirname, "..", "dist", "public");
+  
+  if (fs.existsSync(distPath)) {
+    console.log("Found built assets, serving static files from:", distPath);
+    // Manually serve static files since we can't modify vite.ts
+    const express = await import("express");
+    app.use(express.static(distPath));
+    // Serve index.html for all non-API routes
+    app.use("*", (_req, res) => {
+      res.sendFile(path.resolve(distPath, "index.html"));
+    });
   } else {
-    try {
-      serveStatic(app);
-    } catch (error) {
-      console.warn("Static files not found, falling back to development mode");
-      await setupVite(app, server);
-    }
+    console.log("No built assets found, using Vite development server");
+    await setupVite(app, server);
   }
 
   // ALWAYS serve the app on port 5000
