@@ -786,7 +786,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           </div>
           
           <div className="flex items-center gap-1 sm:gap-4">
-            <Button 
+            <button 
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -794,15 +794,17 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 console.log("Button event target:", e.target);
                 console.log("Current title:", title);
                 console.log("Current content:", content);
+                console.log("About to call handleSave function");
+                alert("Save button clicked! Check console for logs.");
                 handleSave();
               }}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white h-6 sm:h-auto px-2 sm:px-4 text-xs sm:text-sm"
+              className="bg-emerald-500 hover:bg-emerald-600 text-white h-8 px-4 rounded text-sm font-medium flex items-center gap-2 cursor-pointer z-50 relative"
               type="button"
+              style={{ pointerEvents: 'all' }}
             >
-              <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-              <span className="hidden sm:inline">Save Entry</span>
-              <span className="sm:hidden">Save</span>
-            </Button>
+              <Save className="w-4 h-4" />
+              <span>Save Entry</span>
+            </button>
             <Button 
               onClick={onClose}
               variant="outline"
