@@ -787,11 +787,17 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           
           <div className="flex items-center gap-1 sm:gap-4">
             <Button 
-              onClick={() => {
-                console.log("🚨 SAVE BUTTON CLICKED IN UNIFIED JOURNAL!");
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("🚨 TOP RIGHT SAVE BUTTON CLICKED!");
+                console.log("Button event target:", e.target);
+                console.log("Current title:", title);
+                console.log("Current content:", content);
                 handleSave();
               }}
               className="bg-emerald-500 hover:bg-emerald-600 text-white h-6 sm:h-auto px-2 sm:px-4 text-xs sm:text-sm"
+              type="button"
             >
               <Save className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
               <span className="hidden sm:inline">Save Entry</span>
@@ -1972,18 +1978,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           </AlertDialogContent>
         </AlertDialog>
 
-        {/* Large Mobile Save Button - Always Visible */}
-        <div className="p-4 bg-gradient-to-r from-emerald-500 to-green-600 border-t border-emerald-400">
-          <Button
-            onClick={() => {
-              console.log("🚨 MOBILE SAVE BUTTON CLICKED!");
-              handleSave();
-            }}
-            className="w-full bg-white/20 hover:bg-white/30 text-white h-12 font-semibold text-lg border border-white/30"
-          >
-            💾 Save My Journal Entry
-          </Button>
-        </div>
+
 
       </motion.div>
     </motion.div>
