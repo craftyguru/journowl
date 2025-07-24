@@ -365,14 +365,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Support both old 'email' field and new 'identifier' field for backwards compatibility
       const loginIdentifier = identifier || email;
       
+      console.log('Login attempt:', { identifier: loginIdentifier, passwordProvided: !!password });
+      
       if (!loginIdentifier || !password) {
         return res.status(400).json({ message: "Email/username and password are required" });
       }
       
       const user = await authenticateUser(loginIdentifier, password);
+      console.log('Authentication successful for user:', user.username, user.email, user.role);
       
       // Check if email verification is required
       if (user.requiresEmailVerification && !user.emailVerified) {
+        console.log('Email verification required for user:', user.email);
         return res.status(403).json({ 
           message: "Please verify your email before signing in. Check your inbox for a verification link.",
           emailVerificationRequired: true,
@@ -381,8 +385,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       req.session.userId = user.id;
+      console.log('Login successful, session userId set to:', user.id);
       res.json({ user: { id: user.id, email: user.email, username: user.username, level: user.level, xp: user.xp, role: user.role } });
     } catch (error: any) {
+      console.log('Login failed:', error.message);
       res.status(400).json({ message: error.message });
     }
   });

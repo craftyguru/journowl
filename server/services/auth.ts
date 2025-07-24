@@ -24,23 +24,33 @@ export async function createUser(userData: InsertUser) {
 }
 
 export async function authenticateUser(identifier: string, password: string) {
+  console.log('authenticateUser called with identifier:', identifier);
+  
   // Try to find user by email first, then by username
   let user = await storage.getUserByEmail(identifier);
+  console.log('getUserByEmail result:', user ? 'Found user' : 'No user found');
   
   if (!user) {
     // If not found by email, try by username
     user = await storage.getUserByUsername(identifier);
+    console.log('getUserByUsername result:', user ? 'Found user' : 'No user found');
   }
   
   if (!user) {
+    console.log('No user found for identifier:', identifier);
     throw new Error("Invalid credentials");
   }
 
+  console.log('User found:', user.username, user.email, 'hasPassword:', !!user.password);
   const isValid = await verifyPassword(password, user.password || "");
+  console.log('Password verification result:', isValid);
+  
   if (!isValid) {
+    console.log('Password verification failed for user:', user.username);
     throw new Error("Invalid credentials");
   }
 
+  console.log('Authentication successful for user:', user.username);
   return user;
 }
 
