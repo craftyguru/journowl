@@ -1,0 +1,4 @@
+{
+  "providers": ["node"],
+  "buildImage": "ghcr.io/railwayapp/nixpacks:latest"
+}

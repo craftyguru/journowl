@@ -79,19 +79,23 @@ npm start      # ✅ Successful - serves from dist/public
 - Password: `7756guru`
 - Email: `archimedes@journowl.app`
 
-### ✅ Alternative Deployment Method
+### ✅ Final Deployment Fix Applied
 
-If Nixpacks continues to have issues, Railway can also use the Procfile:
+**LATEST FIX**: Removed problematic `nixpacks.toml` completely and using Railway's automatic Node.js detection with Procfile:
+
 ```
 web: npm start
 ```
 
+**What was fixed**:
+- ✅ Removed custom Nixpacks configuration causing "undefined variable" errors
+- ✅ Let Railway auto-detect Node.js environment using standard detection
+- ✅ Added Procfile for reliable process management
+- ✅ Set NODE_ENV=production in railway.toml variables
+- ✅ Simplified deployment to use Railway's proven Node.js build process
+
 ### ✅ Deployment Status
 
-The Railway deployment build error has been fixed:
-- ✅ Fixed `nodejs-20_x` undefined variable in Nixpacks
-- ✅ Added fallback Procfile for alternative deployment
-- ✅ Verified build process works locally
-- ✅ Production configuration restored
+The Railway deployment should now work with automatic Node.js detection instead of problematic custom Nixpacks configuration.
 
 The Railway deployment is now production-ready! 🎉

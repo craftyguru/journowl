@@ -4,6 +4,5 @@ builder = "NIXPACKS"
 [deploy]
 startCommand = "npm start"
 
-[nixpacks]
-providers = ["node"]
-nixpkgsVersion = "22.11"
+[variables]
+NODE_ENV = "production"
