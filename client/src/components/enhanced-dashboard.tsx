@@ -13,7 +13,8 @@ import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Cartesia
 import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 import InteractiveJournal from "./interactive-journal";
 import SmartJournalEditor from "./smart-journal-editor";
 import UnifiedJournal from "./unified-journal";
@@ -99,6 +100,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
   const [showEditGoalModal, setShowEditGoalModal] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<any>(null);
   const [showPromptPurchase, setShowPromptPurchase] = useState(false);
+  
+  const queryClient = useQueryClient();
 
   // Update active tab when initialTab prop changes
   React.useEffect(() => {
@@ -254,12 +257,63 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
 
   const goals = goalsResponse?.goals || defaultGoals;
   const insights = insightsResponse?.insights || [];
-  const handleSaveEntry = (entryData: any) => {
-    console.log('Saving entry:', entryData);
-    // Here you would typically save to backend
-    setShowSmartEditor(false);
-    setShowUnifiedJournal(false);
-    setSelectedEntry(null);
+  const handleSaveEntry = async (entryData: any) => {
+    try {
+      console.log('🎯 Enhanced Dashboard handleSaveEntry called!');
+      console.log('Saving entry:', entryData);
+      
+      // Check if user is authenticated first
+      if (!user) {
+        console.error('User not authenticated');
+        alert('Please refresh the page and log in again');
+        return;
+      }
+
+      // Remove unnecessary fields that might cause issues
+      const cleanedData = {
+        title: entryData.title || "Untitled Entry",
+        content: entryData.content || "",
+        mood: entryData.mood || "😊",
+        fontFamily: entryData.fontFamily || "Inter",
+        fontSize: entryData.fontSize || 16,
+        textColor: entryData.textColor || "#1f2937",
+        backgroundColor: entryData.backgroundColor || "#ffffff",
+        isPrivate: entryData.isPrivate || false,
+        tags: entryData.tags || [],
+        photos: entryData.photos || [],
+        drawings: entryData.drawings || []
+      };
+
+      console.log('Sending API request with data:', cleanedData);
+      console.log('Making POST request to /api/journal/entries');
+      console.log('User authenticated, user ID:', user?.id);
+      
+      const response = await apiRequest("POST", "/api/journal/entries", cleanedData);
+      console.log('API response received:', response.status, response.statusText);
+      const responseData = await response.json();
+      console.log('API response data:', responseData);
+
+      // Invalidate and refetch the journal entries
+      console.log('🔄 Invalidating queries to refresh dashboard...');
+      queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      
+      console.log('✅ Entry saved successfully, closing journal');
+      setShowSmartEditor(false);
+      setShowUnifiedJournal(false);
+      setSelectedEntry(null);
+    } catch (error) {
+      console.error('Error saving entry:', error);
+      
+      // Show user-friendly error message
+      if (error.message.includes('401')) {
+        alert('Authentication expired. Please refresh the page and log in again.');
+      } else {
+        alert(`Failed to save entry: ${error.message}`);
+      }
+      
+      // Keep the journal open so user can try again
+    }
   };
 
   const openSmartEditor = (entry?: any) => {
