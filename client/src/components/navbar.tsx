@@ -5,8 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
 import { useState } from "react";
-import { PWAInstallButton } from "@/components/PWAInstallButton";
-// PWA install functionality restored for native Android app installation
+import { PWAManager } from "@/components/PWAManager";
 
 
 interface NavbarProps {
@@ -65,7 +64,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
             
-            {/* PWA install button temporarily disabled to prevent flashing */}
+            {(() => {
+              const pwaManager = PWAManager();
+              return <pwaManager.DesktopInstallButton />;
+            })()}
             
             <Button
               variant="ghost"
