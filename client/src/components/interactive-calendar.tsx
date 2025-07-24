@@ -62,9 +62,18 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterMood, setFilterMood] = useState<string>("");
-  const [viewMode, setViewMode] = useState<"month" | "week">("month");
+  const [viewMode, setViewMode] = useState<"month" | "week" | "year">("month");
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
   const [showQuickAdd, setShowQuickAdd] = useState<Date | null>(null);
+  const [selectedRange, setSelectedRange] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null });
+  const [isRangeSelecting, setIsRangeSelecting] = useState(false);
+  const [showHeatmap, setShowHeatmap] = useState(false);
+  const [filterTags, setFilterTags] = useState<string[]>([]);
+  const [showPrivateEntries, setShowPrivateEntries] = useState(true);
+  const [calendarTheme, setCalendarTheme] = useState<"default" | "dark" | "colorful">("colorful");
+  const [sortBy, setSortBy] = useState<"date" | "mood" | "wordCount" | "title">("date");
+  const [showMiniPreview, setShowMiniPreview] = useState(true);
+  const [animationsEnabled, setAnimationsEnabled] = useState(true);
 
   // Calculate calendar days
   const monthStart = startOfMonth(currentDate);
@@ -214,16 +223,523 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mb-3 flex gap-2"
+            className="bg-white/10 rounded-lg p-3 mt-3 flex gap-4 justify-around text-sm"
           >
-            <div className="bg-white/20 rounded-lg px-3 py-2 text-xs font-medium flex-1 text-center">
-              🔥 {calculateStreak()} day streak
+            <div className="text-center">
+              <div className="font-bold">🔥 {calculateStreak()}</div>
+              <div className="text-purple-100 text-xs">Streak</div>
             </div>
-            <div className="bg-white/20 rounded-lg px-3 py-2 text-xs font-medium flex-1 text-center">
-              📊 {entries.length} memories
+            <div className="text-center">
+              <div className="font-bold">📊 {entries.length}</div>
+              <div className="text-purple-100 text-xs">Memories</div>
+            </div>
+            <div className="text-center">
+              <div className="font-bold">📝 {entries.reduce((sum, e) => sum + (e.wordCount || 0), 0)}</div>
+              <div className="text-purple-100 text-xs">Words</div>
             </div>
           </motion.div>
         )}
+
+        {/* Advanced Filter & Search Bar */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-300" />
+            <Input
+              placeholder="Search memories..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-purple-200 focus:bg-white/20"
+            />
+          </div>
+
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button 
+                variant="ghost" 
+                className="bg-white/10 hover:bg-white/20 text-white border-white/20 justify-start"
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                {filterMood || "All Moods"}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-64 p-2">
+              <div className="grid grid-cols-4 gap-2">
+                <Button
+                  variant={!filterMood ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setFilterMood("")}
+                  className="h-10"
+                >
+                  All
+                </Button>
+                {moodEmojis.map((mood) => (
+                  <Button
+                    key={mood}
+                    variant={filterMood === mood ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setFilterMood(mood)}
+                    className="h-10 text-lg"
+                  >
+                    {mood}
+                  </Button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          <div className="flex gap-1">
+            <Button
+              variant={viewMode === "month" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("month")}
+              className="bg-white/10 hover:bg-white/20 text-white flex-1"
+            >
+              Month
+            </Button>
+            <Button
+              variant={viewMode === "week" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("week")}
+              className="bg-white/10 hover:bg-white/20 text-white flex-1"
+            >
+              Week
+            </Button>
+            <Button
+              variant={viewMode === "year" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("year")}
+              className="bg-white/10 hover:bg-white/20 text-white flex-1"
+            >
+              Year
+            </Button>
+          </div>
+
+          <div className="flex gap-1">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={showHeatmap ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setShowHeatmap(!showHeatmap)}
+                  className="bg-white/10 hover:bg-white/20 text-white"
+                >
+                  <Flame className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Toggle Activity Heatmap</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={showPrivateEntries ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setShowPrivateEntries(!showPrivateEntries)}
+                  className="bg-white/10 hover:bg-white/20 text-white"
+                >
+                  {showPrivateEntries ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Toggle Private Entries</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsRangeSelecting(!isRangeSelecting)}
+                  className="bg-white/10 hover:bg-white/20 text-white"
+                >
+                  <Pin className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Select Date Range</TooltipContent>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Calendar Area */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Calendar Grid */}
+        <div className="flex-1 p-4 overflow-auto">
+          {/* Navigation Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigateMonth('prev')}
+                className="hover:bg-purple-50"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </Button>
+              
+              <h3 className="text-2xl font-bold text-gray-800 min-w-[200px] text-center">
+                {format(currentDate, 'MMMM yyyy')}
+              </h3>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigateMonth('next')}
+                className="hover:bg-purple-50"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentDate(new Date())}
+                className="hover:bg-purple-50"
+              >
+                Today
+              </Button>
+              
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="hover:bg-purple-50">
+                    <Palette className="w-4 h-4 mr-2" />
+                    Theme
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-2">
+                  <div className="space-y-2">
+                    {[
+                      { key: "colorful", label: "Colorful", icon: "🌈" },
+                      { key: "default", label: "Clean", icon: "⚪" },
+                      { key: "dark", label: "Dark", icon: "🌙" }
+                    ].map((theme) => (
+                      <Button
+                        key={theme.key}
+                        variant={calendarTheme === theme.key ? "default" : "ghost"}
+                        size="sm"
+                        onClick={() => setCalendarTheme(theme.key as any)}
+                        className="w-full justify-start"
+                      >
+                        <span className="mr-2">{theme.icon}</span>
+                        {theme.label}
+                      </Button>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+
+          {/* Calendar Header Days */}
+          <div className="grid grid-cols-7 gap-2 mb-4">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+              <div key={day} className="text-center text-sm font-semibold text-gray-600 py-2">
+                {day}
+              </div>
+            ))}
+          </div>
+
+          {/* Calendar Days Grid */}
+          <div className="grid grid-cols-7 gap-2">
+            {calendarDays.map((date, index) => {
+              const isCurrentMonth = isSameMonth(date, currentDate);
+              const isSelected = selectedDate && isSameDay(date, selectedDate);
+              const dayEntries = getEntriesForDate(date);
+              const hasEntries = dayEntries.length > 0;
+              const primaryMood = getDateMood(date);
+              const microSummary = getMicroSummary(date);
+              const isInRange = selectedRange.start && selectedRange.end && 
+                date >= selectedRange.start && date <= selectedRange.end;
+
+              return (
+                <motion.div
+                  key={index}
+                  initial={animationsEnabled ? { opacity: 0, scale: 0.8 } : false}
+                  animate={animationsEnabled ? { opacity: 1, scale: 1 } : false}
+                  transition={animationsEnabled ? { delay: index * 0.01 } : undefined}
+                  whileHover={animationsEnabled ? { scale: 1.05, y: -2 } : undefined}
+                  className={`
+                    relative h-24 sm:h-28 rounded-xl border-2 cursor-pointer transition-all duration-200
+                    ${isCurrentMonth ? 'border-gray-200' : 'border-gray-100 opacity-60'}
+                    ${isSelected ? 'ring-4 ring-purple-300 border-purple-400' : ''}
+                    ${isInRange ? 'bg-purple-100 border-purple-300' : ''}
+                    ${isToday(date) ? 'ring-2 ring-amber-400 border-amber-300' : ''}
+                    ${hasEntries ? 
+                      (calendarTheme === 'colorful' && primaryMood ? 
+                        `bg-gradient-to-br ${moodColors[primaryMood as keyof typeof moodColors]} opacity-80` : 
+                        'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200') : 
+                      'bg-white hover:bg-gray-50'}
+                  `}
+                  onClick={() => handleDateClick(date)}
+                  onMouseEnter={() => setHoveredDate(date)}
+                  onMouseLeave={() => setHoveredDate(null)}
+                >
+                  {/* Date Number */}
+                  <div className={`
+                    absolute top-2 left-2 w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold
+                    ${isToday(date) ? 'bg-amber-400 text-white' : 
+                      hasEntries ? 'bg-white/80 text-gray-800' : 'text-gray-600'}
+                  `}>
+                    {format(date, 'd')}
+                  </div>
+
+                  {/* Entry Indicators */}
+                  {hasEntries && (
+                    <div className="absolute top-2 right-2">
+                      <div className={`
+                        w-3 h-3 rounded-full
+                        ${dayEntries.length > 3 ? 'bg-emerald-500' : 
+                          dayEntries.length > 1 ? 'bg-blue-500' : 'bg-purple-500'}
+                      `}>
+                        <div className="absolute -top-1 -right-1 text-xs font-bold text-white bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center">
+                          {dayEntries.length}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Micro Summary */}
+                  {microSummary && showMiniPreview && (
+                    <div className="absolute bottom-1 left-1 right-1 text-xs truncate text-center text-gray-700 bg-white/60 rounded px-1">
+                      {microSummary}
+                    </div>
+                  )}
+
+                  {/* Quick Add Button on Hover */}
+                  {hoveredDate && isSameDay(hoveredDate, date) && !hasEntries && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="absolute inset-0 flex items-center justify-center bg-purple-500/10 rounded-xl"
+                    >
+                      <Button
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowQuickAdd(date);
+                        }}
+                        className="bg-purple-500 hover:bg-purple-600 text-white shadow-lg"
+                      >
+                        <Plus className="w-4 h-4" />
+                      </Button>
+                    </motion.div>
+                  )}
+
+                  {/* Heatmap Overlay */}
+                  {showHeatmap && hasEntries && (
+                    <div className={`
+                      absolute inset-0 rounded-xl opacity-60
+                      ${dayEntries.reduce((sum, e) => sum + (e.wordCount || 0), 0) > 1000 ? 'bg-red-400' :
+                        dayEntries.reduce((sum, e) => sum + (e.wordCount || 0), 0) > 500 ? 'bg-orange-400' :
+                        dayEntries.reduce((sum, e) => sum + (e.wordCount || 0), 0) > 100 ? 'bg-yellow-400' : 'bg-green-400'}
+                    `} />
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Sidebar for Selected Date */}
+        {selectedDate && (
+          <motion.div
+            initial={{ x: 300, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 300, opacity: 0 }}
+            className="w-80 bg-white border-l border-gray-200 p-6 overflow-y-auto"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-800">
+                {format(selectedDate, 'MMMM d, yyyy')}
+              </h3>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedDate(null)}
+              >
+                ✕
+              </Button>
+            </div>
+
+            {selectedDateEntries.length > 0 ? (
+              <div className="space-y-4">
+                {selectedDateEntries.map((entry, index) => (
+                  <motion.div
+                    key={entry.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200 cursor-pointer hover:shadow-lg transition-all"
+                    onClick={() => onEntryEdit(entry)}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-2xl">{entry.mood}</span>
+                        <span className="text-sm font-medium text-gray-700">{entry.title}</span>
+                      </div>
+                      {entry.isPinned && <Star className="w-4 h-4 text-amber-500" />}
+                      {entry.isPrivate && <Lock className="w-4 h-4 text-purple-500" />}
+                    </div>
+                    
+                    <p className="text-sm text-gray-600 line-clamp-3 mb-3">
+                      {entry.content}
+                    </p>
+                    
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span>{entry.wordCount || 0} words</span>
+                      <div className="flex gap-2">
+                        {entry.photos && entry.photos.length > 0 && (
+                          <span className="flex items-center gap-1">
+                            <Camera className="w-3 h-3" />
+                            {entry.photos.length}
+                          </span>
+                        )}
+                        {entry.tags && entry.tags.length > 0 && (
+                          <span className="flex items-center gap-1">
+                            <span>#</span>
+                            {entry.tags.length}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <CalendarIcon className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 mb-4">No memories for this day</p>
+                <Button
+                  onClick={() => onDateSelect(selectedDate)}
+                  className="bg-purple-500 hover:bg-purple-600 text-white"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Memory
+                </Button>
+              </div>
+            )}
+
+            {/* Quick Actions */}
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Quick Actions</h4>
+              <div className="grid grid-cols-2 gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleQuickAdd(selectedDate, "entry")}
+                  className="flex flex-col items-center gap-1 h-auto py-3"
+                >
+                  <Edit className="w-4 h-4" />
+                  <span className="text-xs">Write</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleQuickAdd(selectedDate, "photo")}
+                  className="flex flex-col items-center gap-1 h-auto py-3"
+                >
+                  <Camera className="w-4 h-4" />
+                  <span className="text-xs">Photo</span>
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </div>
+
+      {/* Quick Entry Popup */}
+      {showQuickAdd && (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setShowQuickAdd(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-white rounded-xl p-6 shadow-2xl max-w-md w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-bold mb-4">Quick Add - {format(showQuickAdd, 'MMM d')}</h3>
+            <div className="grid grid-cols-3 gap-3">
+              <Button
+                onClick={() => handleQuickAdd(showQuickAdd, "entry")}
+                className="flex flex-col items-center gap-2 h-20 bg-purple-500 hover:bg-purple-600"
+              >
+                <Edit className="w-6 h-6" />
+                <span className="text-sm">Journal Entry</span>
+              </Button>
+              <Button
+                onClick={() => handleQuickAdd(showQuickAdd, "photo")}
+                className="flex flex-col items-center gap-2 h-20 bg-blue-500 hover:bg-blue-600"
+              >
+                <Camera className="w-6 h-6" />
+                <span className="text-sm">Photo Memory</span>
+              </Button>
+              <Button
+                onClick={() => handleQuickAdd(showQuickAdd, "voice")}
+                className="flex flex-col items-center gap-2 h-20 bg-green-500 hover:bg-green-600"
+              >
+                <Mic className="w-6 h-6" />
+                <span className="text-sm">Voice Note</span>
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Recent Memories Ticker */}
+      {entries.length > 0 && (
+        <motion.div
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-3"
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <Sparkles className="w-5 h-5" />
+            <span className="font-medium">Recent Memories</span>
+          </div>
+          
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            {entries.slice(0, 8).map((entry, index) => (
+              <motion.div
+                key={entry.id}
+                initial={{ scale: 0, rotate: -10 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: index * 0.1 }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="flex-shrink-0 w-32 h-20 bg-white rounded-lg shadow-md p-2 cursor-pointer border-2 border-transparent hover:border-purple-300"
+                onClick={() => onEntryEdit(entry)}
+              >
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-lg">{entry.mood}</span>
+                  <div className="text-xs text-gray-500">
+                    {format(entry.date, 'MMM d')}
+                  </div>
+                </div>
+                <div className="text-xs text-gray-700 line-clamp-2">
+                  {entry.title}
+                </div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {entry.wordCount} words
+                </div>
+              </motion.div>
+            ))}
+            
+            {/* Add Memory Button */}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              className="flex-shrink-0 w-32 h-20 bg-gradient-to-br from-purple-100 to-pink-100 rounded-lg border-2 border-dashed border-purple-300 flex flex-col items-center justify-center cursor-pointer hover:from-purple-200 hover:to-pink-200"
+              onClick={() => onDateSelect(new Date())}
+            >
+              <Plus className="w-6 h-6 text-purple-500 mb-1" />
+              <span className="text-xs text-purple-600 font-medium">Add Memory</span>
+            </motion.div>
+          </div>
+        </motion.div>
+      )}
 
         {/* Mobile-Optimized Search and Filters */}
         <div className="space-y-2 sm:space-y-0 sm:flex sm:gap-2 sm:items-center">
