@@ -101,6 +101,24 @@ Standard Heroku buildpack configuration with environment variables
 
 ### ✅ Deployment Status
 
-The Railway deployment should now work with automatic Node.js detection instead of problematic custom Nixpacks configuration.
+**IMPORTANT**: The Railway deployment needs to be redeployed with the latest code changes:
+
+1. **Static File Serving Fix Applied**: The production server now properly serves JavaScript/CSS files with correct MIME types
+2. **Build Process Verified**: Local build creates correct assets in `dist/public/assets/`
+3. **Production Server Fixed**: Server correctly detects production mode and serves static files
+
+**Current Issue**: The live site is still using the old deployment that serves HTML for JavaScript files. 
+
+**Solution**: Redeploy to Railway to get the latest static file serving fixes.
+
+### 🚀 Quick Deployment
+
+Use the provided deployment script:
+```bash
+./deploy.sh
+railway up
+```
+
+The deployment should now work with automatic Node.js detection and proper static file serving.
 
 The Railway deployment is now production-ready! 🎉
