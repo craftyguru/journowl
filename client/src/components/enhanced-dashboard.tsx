@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight } from "lucide-react";
+import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight, Download, Eye } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -1710,1858 +1710,636 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
                 </Card>
               </motion.div>
 
-              {/* Enhanced Mood Calendar/Heatmap */}
+              {/* Enhanced Interactive Memory Calendar with Advanced Tools */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
                 className="lg:col-span-2"
               >
-                <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 shadow-xl hover:shadow-2xl transition-all border border-indigo-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-indigo-700">
-                      <Calendar className="w-6 h-6" />
-                      Interactive Mood Calendar
-                    </CardTitle>
-                    <p className="text-indigo-600 text-sm">Click any day to see your entries, mood patterns, and memories</p>
-                  </CardHeader>
-                  <CardContent>
-                    {/* Calendar Header */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3">
-                        <Button variant="outline" size="sm">← Previous</Button>
-                        <h3 className="text-xl font-bold text-indigo-800">July 2025</h3>
-                        <Button variant="outline" size="sm">Next →</Button>
-                      </div>
-                      <div className="flex items-center gap-2 text-xs">
-                        <span className="text-gray-600">Mood Scale:</span>
-                        <div className="flex gap-1">
-                          <div className="w-4 h-4 bg-red-200 rounded-full" title="😔 Sad"></div>
-                          <div className="w-4 h-4 bg-orange-200 rounded-full" title="😐 Neutral"></div>
-                          <div className="w-4 h-4 bg-yellow-200 rounded-full" title="🙂 Good"></div>
-                          <div className="w-4 h-4 bg-green-200 rounded-full" title="😊 Happy"></div>
-                          <div className="w-4 h-4 bg-emerald-300 rounded-full" title="😄 Excited"></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Calendar Grid */}
-                    <div className="grid grid-cols-7 gap-3 mb-6">
-                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                        <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
-                          {day}
-                        </div>
-                      ))}
-                      
-                      {(() => {
-                        // Generate calendar data based on real user entries
-                        const today = new Date();
-                        const currentMonth = today.getMonth();
-                        const currentYear = today.getFullYear();
-                        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
-                        const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
-                        const firstDayOfWeek = firstDayOfMonth.getDay();
-                        
-                        // Create calendar days array
-                        const calendarDays = [];
-                        
-                        // Add previous month days if needed
-                        for (let i = firstDayOfWeek - 1; i >= 0; i--) {
-                          const date = new Date(firstDayOfMonth);
-                          date.setDate(date.getDate() - (i + 1));
-                          calendarDays.push({ date, isCurrentMonth: false });
-                        }
-                        
-                        // Add current month days
-                        for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-                          const date = new Date(currentYear, currentMonth, day);
-                          calendarDays.push({ date, isCurrentMonth: true });
-                        }
-                        
-                        // Add next month days if needed
-                        const remainingDays = 35 - calendarDays.length;
-                        for (let day = 1; day <= remainingDays; day++) {
-                          const date = new Date(currentYear, currentMonth + 1, day);
-                          calendarDays.push({ date, isCurrentMonth: false });
-                        }
-                        
-                        return calendarDays;
-                      })().map((calendarDay, i) => {
-                        const dayNum = calendarDay.date.getDate();
-                        const isCurrentMonth = calendarDay.isCurrentMonth;
-                        
-                        // Find entries for this day
-                        const dayEntries = entries?.filter((entry: JournalEntry) => {
-                          const entryDate = new Date(entry.createdAt);
-                          return entryDate.toDateString() === calendarDay.date.toDateString();
-                        }) || [];
-                        
-                        const hasEntry = dayEntries.length > 0;
-                        const primaryEntry = dayEntries[0];
-                        const mood = primaryEntry?.mood || '';
-                        
-                        const moodColors: { [key: string]: string } = {
-                          '😔': 'bg-red-100 border-red-300 hover:bg-red-200',
-                          'sad': 'bg-red-100 border-red-300 hover:bg-red-200',
-                          '😐': 'bg-orange-100 border-orange-300 hover:bg-orange-200',
-                          'neutral': 'bg-orange-100 border-orange-300 hover:bg-orange-200',
-                          '🙂': 'bg-yellow-100 border-yellow-300 hover:bg-yellow-200',
-                          'good': 'bg-yellow-100 border-yellow-300 hover:bg-yellow-200',
-                          '😊': 'bg-green-100 border-green-300 hover:bg-green-200',
-                          'happy': 'bg-green-100 border-green-300 hover:bg-green-200',
-                          '😄': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300',
-                          'excited': 'bg-emerald-200 border-emerald-400 hover:bg-emerald-300'
-                        };
-                        
-                        const moodEmojis: { [key: string]: string } = {
-                          'sad': '😔',
-                          'neutral': '😐', 
-                          'good': '🙂',
-                          'happy': '😊',
-                          'excited': '😄'
-                        };
-                        
-                        const displayMood = moodEmojis[mood.toLowerCase()] || mood;
-                        
-                        return (
-                          <motion.div
-                            key={i}
-                            whileHover={{ scale: 1.1, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`relative h-12 rounded-xl cursor-pointer transition-all border-2 flex items-center justify-center ${
-                              isCurrentMonth 
-                                ? hasEntry 
-                                  ? moodColors[mood.toLowerCase()] || moodColors[displayMood] || 'bg-blue-100 border-blue-300 hover:bg-blue-200'
-                                  : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-                                : 'bg-transparent'
-                            }`}
-                            title={hasEntry ? `${dayNum}: ${displayMood} mood, ${dayEntries.length} ${dayEntries.length === 1 ? 'entry' : 'entries'}, ${dayEntries.reduce((total, entry) => total + (entry.content?.length || 0), 0)} characters` : `${dayNum}: No entries`}
-                          >
-                            {isCurrentMonth && (
-                              <>
-                                <span className="text-sm font-medium text-gray-700">{dayNum}</span>
-                                {hasEntry && displayMood && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: i * 0.02 }}
-                                    className="absolute -top-1 -right-1 text-lg"
-                                  >
-                                    {displayMood}
-                                  </motion.div>
-                                )}
-                                {hasEntry && dayEntries.some(entry => entry.photoAnalysis) && (
-                                  <motion.div
-                                    animate={{ scale: [1, 1.2, 1] }}
-                                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
-                                    className="absolute -bottom-1 -left-1 text-xs"
-                                  >
-                                    📸
-                                  </motion.div>
-                                )}
-                              </>
-                            )}
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Calendar Insights - Real User Data */}
-                    <div className="bg-white rounded-xl p-4 border border-indigo-200">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-indigo-600">{stats?.totalEntries || 0}</div>
-                          <div className="text-sm text-gray-600">Journal Entries</div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-green-600">
-                            {(() => {
-                              // Calculate most common mood from real user data
-                              const moodCounts: { [key: string]: number } = { happy: 0, excited: 0, good: 0, neutral: 0, sad: 0 };
-                              entries?.forEach((entry: JournalEntry) => {
-                                const mood = entry.mood?.toLowerCase();
-                                if (mood === 'happy' || mood === '😊') moodCounts.happy++;
-                                else if (mood === 'excited' || mood === '😄') moodCounts.excited++;
-                                else if (mood === 'good' || mood === '🙂') moodCounts.good++;
-                                else if (mood === 'neutral' || mood === '😐') moodCounts.neutral++;
-                                else if (mood === 'sad' || mood === '😔') moodCounts.sad++;
-                              });
-                              
-                              if (entries?.length === 0) return '✨';
-                              
-                              const mostCommon = Object.entries(moodCounts).reduce((a, b) => moodCounts[a[0]] > moodCounts[b[0]] ? a : b);
-                              const moodEmojis: { [key: string]: string } = { happy: '😊', excited: '😄', good: '🙂', neutral: '😐', sad: '😔' };
-                              return moodEmojis[mostCommon[0]] || '😊';
-                            })()}
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            {entries?.length > 0 ? 'Most Common Mood' : 'Start writing!'}
-                          </div>
-                        </div>
-                        <div className="text-center">
-                          <div className="text-2xl font-bold text-purple-600">{stats?.longestStreak || 0}</div>
-                          <div className="text-sm text-gray-600">Longest Streak</div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-3 mt-4">
-                      <Button className="flex-1 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white">
-                        View Detailed Calendar
-                      </Button>
-                      <Button variant="outline" className="border-indigo-300 text-indigo-600 hover:bg-indigo-50">
-                        Export Calendar
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              {/* AI-Powered Insights */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <Card className="bg-gradient-to-br from-amber-50 to-orange-50 shadow-xl hover:shadow-2xl transition-all border border-amber-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-amber-800">
-                      <Brain className="w-5 h-5 text-amber-600" />
-                      Smart Correlations
-                    </CardTitle>
-                    <p className="text-amber-700 text-sm">AI-discovered patterns in your data</p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <motion.div
-                        whileHover={{ x: 4 }}
-                        className="flex items-center justify-between p-3 bg-green-100 rounded-lg border border-green-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-green-800">Morning entries = Better mood</span>
-                        </div>
-                        <span className="text-xs text-green-600 font-bold">+0.8 correlation</span>
-                      </motion.div>
-                      
-                      <motion.div
-                        whileHover={{ x: 4 }}
-                        className="flex items-center justify-between p-3 bg-blue-100 rounded-lg border border-blue-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-blue-800">Photos boost entry length</span>
-                        </div>
-                        <span className="text-xs text-blue-600 font-bold">+0.6 correlation</span>
-                      </motion.div>
-                      
-                      <motion.div
-                        whileHover={{ x: 4 }}
-                        className="flex items-center justify-between p-3 bg-purple-100 rounded-lg border border-purple-200"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                          <span className="text-sm font-medium text-purple-800">Weekend creativity spikes</span>
-                        </div>
-                        <span className="text-xs text-purple-600 font-bold">+0.4 correlation</span>
-                      </motion.div>
-                    </div>
-                    <Button className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white">
-                      <Lightbulb className="w-4 h-4 mr-2" />
-                      Discover More Patterns
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="achievements" data-tabs-content>
-          <div className="space-y-6">
-            {/* Achievements Header */}
-            <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-3xl font-bold">🏆 Achievements</h2>
-                  <p className="text-amber-100 text-lg">Celebrate your journaling milestones</p>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold">{achievements.filter(a => a.unlockedAt).length}/{achievements.length}</div>
-                  <div className="text-amber-100 text-sm">Unlocked</div>
-                </div>
-              </div>
-              
-              {/* Achievement Progress Bar */}
-              <div className="bg-white/20 rounded-full h-3 mb-4">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${achievements.length > 0 ? (achievements.filter(a => a.unlockedAt).length / achievements.length) * 100 : 0}%` }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
-                  className="bg-gradient-to-r from-yellow-300 to-amber-300 h-full rounded-full"
-                />
-              </div>
-              <div className="text-amber-100 text-sm">
-                {achievements.length > 0 ? Math.round((achievements.filter(a => a.unlockedAt).length / achievements.length) * 100) : 0}% complete - 
-                {achievements.filter(a => !a.unlockedAt).length > 0 
-                  ? ` ${achievements.filter(a => !a.unlockedAt).length} more to unlock!`
-                  : " All achievements unlocked! Amazing work!"
-                }
-              </div>
-            </div>
-
-            {/* Achievement Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {achievements.slice(0, 24).map((achievement, index) => (
-                <motion.div
-                  key={achievement.id}
-                  initial={{ opacity: 0, scale: 0.8, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  transition={{ 
-                    delay: index * 0.1, 
-                    type: "spring", 
-                    stiffness: 100,
-                    damping: 15
-                  }}
-                  whileHover={{ 
-                    scale: 1.05, 
-                    y: -8,
-                    rotateY: achievement.unlockedAt ? 5 : 0
-                  }}
-                  className={`relative overflow-hidden rounded-2xl p-6 shadow-xl transition-all cursor-pointer ${
-                    achievement.unlockedAt
-                      ? achievement.rarity === 'legendary'
-                        ? 'bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 border-2 border-yellow-300 shadow-yellow-400/50'
-                        : achievement.rarity === 'epic'
-                        ? 'bg-gradient-to-br from-purple-500 via-pink-500 to-red-500 border-2 border-purple-300 shadow-purple-500/50'
-                        : achievement.rarity === 'rare'
-                        ? 'bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500 border-2 border-blue-300 shadow-blue-500/50'
-                        : 'bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 border-2 border-green-300 shadow-green-500/50'
-                      : 'bg-gradient-to-br from-gray-100 to-gray-200 border-2 border-gray-300'
-                  }`}
-                >
-                  {/* Animated sparkle effects for unlocked achievements */}
-                  {achievement.unlockedAt && (
-                    <>
-                      <div className="absolute inset-0 overflow-hidden">
-                        <motion.div
-                          animate={{ 
-                            x: [-100, 400],
-                            rotate: [0, 360]
-                          }}
-                          transition={{ 
-                            duration: 3, 
-                            repeat: Infinity, 
-                            ease: "linear",
-                            delay: index * 0.5
-                          }}
-                          className="absolute top-1/2 left-0 w-8 h-8 bg-white/30 rounded-full blur-sm"
-                        />
-                        <motion.div
-                          animate={{ 
-                            scale: [1, 1.5, 1],
-                            opacity: [0.3, 0.7, 0.3]
-                          }}
-                          transition={{ 
-                            duration: 2, 
-                            repeat: Infinity,
-                            delay: index * 0.3
-                          }}
-                          className="absolute top-2 right-2 w-3 h-3 bg-yellow-300 rounded-full"
-                        />
-                      </div>
-                      
-                      {/* Confetti burst animation */}
-                      <AnimatePresence>
-                        <motion.div
-                          initial={{ scale: 0, rotate: 0 }}
-                          animate={{ scale: [0, 1.2, 0], rotate: [0, 180, 360] }}
-                          transition={{ 
-                            duration: 1.5, 
-                            ease: "easeOut",
-                            delay: index * 0.2
-                          }}
-                          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-6xl opacity-30"
-                        >
-                          ✨
-                        </motion.div>
-                      </AnimatePresence>
-                    </>
-                  )}
-                  
-                  <div className="relative z-10">
-                    <div className="flex items-center justify-between mb-4">
-                      <motion.div 
-                        className="text-5xl"
-                        animate={achievement.unlockedAt ? { 
-                          rotate: [0, -10, 10, -10, 0],
-                          scale: [1, 1.1, 1]
-                        } : {}}
-                        transition={{ 
-                          duration: 2, 
-                          repeat: Infinity,
-                          delay: index * 0.5
-                        }}
-                      >
-                        {achievement.icon}
-                      </motion.div>
-                      {achievement.unlockedAt && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ delay: index * 0.1 + 0.5, type: "spring" }}
-                        >
-                          <Trophy className="w-8 h-8 text-yellow-300 drop-shadow-lg" />
-                        </motion.div>
-                      )}
-                    </div>
-                    
-                    <h3 className={`text-xl font-bold mb-3 ${achievement.unlockedAt ? 'text-white drop-shadow-md' : 'text-gray-500'}`}>
-                      {achievement.title}
-                    </h3>
-                    
-                    <p className={`text-sm mb-4 ${achievement.unlockedAt ? 'text-white/90' : 'text-gray-400'}`}>
-                      {achievement.description}
-                    </p>
-                    
+                <Card className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 shadow-xl hover:shadow-2xl transition-all border border-indigo-200 overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white">
                     <div className="flex items-center justify-between">
-                      <Badge 
-                        variant="outline" 
-                        className={`text-xs font-bold px-3 py-1 ${
-                          achievement.unlockedAt 
-                            ? 'border-white/40 text-white bg-white/20 shadow-sm' 
-                            : 'border-gray-400 text-gray-500 bg-gray-50'
-                        }`}
-                      >
-                        {achievement.rarity.toUpperCase()}
-                      </Badge>
-                      
-                      {achievement.unlockedAt ? (
-                        <motion.div
-                          initial={{ scale: 0 }}
-                          animate={{ scale: 1 }}
-                          transition={{ delay: index * 0.1 + 0.3, type: "spring", stiffness: 200 }}
-                          className="flex items-center gap-2"
+                      <div className="flex items-center gap-3">
+                        <motion.div 
+                          animate={{ rotate: [0, 360] }}
+                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                          className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
                         >
-                          <CheckCircle className="w-6 h-6 text-white" />
-                          <span className="text-white text-sm font-medium">Unlocked!</span>
+                          <Calendar className="w-6 h-6" />
                         </motion.div>
-                      ) : (
-                        <div className="flex items-center gap-2 text-gray-400">
-                          <Clock className="w-5 h-5" />
-                          <span className="text-sm">Locked</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Progress indicator for locked achievements */}
-                    {!achievement.unlockedAt && (
-                      <div className="mt-4 pt-4 border-t border-gray-300">
-                        <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
-                          <span>Progress</span>
-                          <span>
-                            {achievement.title === "First Steps" ? `${stats?.totalEntries || 0}/1 entries` :
-                             achievement.title === "Daily Writer" ? `${stats?.currentStreak || 0}/3 days` :
-                             achievement.title === "Word Explorer" ? `${stats?.totalWords || 0}/100 words` :
-                             achievement.title === "Mood Tracker" ? `0/5 moods` :
-                             achievement.title === "Early Bird" ? `0/1 morning entries` :
-                             achievement.title === "Night Owl" ? `0/1 evening entries` :
-                             achievement.title === "Grateful Heart" ? `0/3 gratitude entries` :
-                             achievement.title === "Weather Reporter" ? `0/5 weather mentions` :
-                             achievement.title === "Weekly Warrior" ? `${stats?.currentStreak || 0}/7 days` :
-                             achievement.title === "Storyteller" ? `${stats?.totalWords || 0}/500 words` :
-                             achievement.title === "Photo Memory" ? `0/10 photos` :
-                             achievement.title === "Emoji Master" ? `0/50 emojis` :
-                             achievement.title === "Deep Thinker" ? `0/10 reflective entries` :
-                             achievement.title === "Adventure Logger" ? `0/15 activities` :
-                             achievement.title === "Mood Rainbow" ? `0/7 mood types` :
-                             achievement.title === "Time Traveler" ? `0/20 memory entries` :
-                             achievement.title === "Monthly Champion" ? `${stats?.currentStreak || 0}/30 days` :
-                             achievement.title === "Novel Writer" ? `${stats?.totalWords || 0}/10000 words` :
-                             achievement.title === "Memory Keeper" ? `${stats?.totalEntries || 0}/100 entries` :
-                             achievement.title === "Artist" ? `0/20 drawings` :
-                             achievement.title === "Wisdom Seeker" ? `0/25 philosophical entries` :
-                             achievement.title === "Social Butterfly" ? `0/30 relationship entries` :
-                             achievement.title === "Goal Crusher" ? `0/50 goals completed` :
-                             achievement.title === "Master Chronicler" ? `${stats?.totalWords || 0}/50000 words` :
-                             "0/1 complete"}
-                          </span>
-                        </div>
-                        <div className="bg-gray-200 rounded-full h-2">
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ 
-                              width: achievement.title === "First Steps" ? `${Math.min(100, ((stats?.totalEntries || 0) / 1) * 100)}%` :
-                                     achievement.title === "Daily Writer" ? `${Math.min(100, ((stats?.currentStreak || 0) / 3) * 100)}%` :
-                                     achievement.title === "Word Explorer" ? `${Math.min(100, ((stats?.totalWords || 0) / 100) * 100)}%` :
-                                     achievement.title === "Weekly Warrior" ? `${Math.min(100, ((stats?.currentStreak || 0) / 7) * 100)}%` :
-                                     achievement.title === "Storyteller" ? `${Math.min(100, ((stats?.totalWords || 0) / 500) * 100)}%` :
-                                     achievement.title === "Monthly Champion" ? `${Math.min(100, ((stats?.currentStreak || 0) / 30) * 100)}%` :
-                                     achievement.title === "Novel Writer" ? `${Math.min(100, ((stats?.totalWords || 0) / 10000) * 100)}%` :
-                                     achievement.title === "Memory Keeper" ? `${Math.min(100, ((stats?.totalEntries || 0) / 100) * 100)}%` :
-                                     achievement.title === "Master Chronicler" ? `${Math.min(100, ((stats?.totalWords || 0) / 50000) * 100)}%` :
-                                     "0%"
-                            }}
-                            transition={{ duration: 1, delay: index * 0.1 }}
-                            className="bg-gradient-to-r from-blue-400 to-purple-500 h-full rounded-full"
-                          />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Next Achievement Preview */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="bg-gradient-to-r from-indigo-100 to-purple-100 rounded-2xl p-6 border border-indigo-200"
-            >
-              <h3 className="text-lg font-bold text-indigo-800 mb-3 flex items-center gap-2">
-                <Star className="w-5 h-5" />
-                Start Your Journey!
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                  <div className="text-2xl mb-2">📝</div>
-                  <h4 className="font-semibold text-indigo-700">First Steps</h4>
-                  <p className="text-sm text-indigo-600 mb-2">Write your first journal entry</p>
-                  <div className="text-xs text-indigo-500">Ready to unlock - Write your first entry!</div>
-                </div>
-                <div className="bg-white rounded-lg p-4 border border-indigo-200">
-                  <div className="text-2xl mb-2">😊</div>
-                  <h4 className="font-semibold text-indigo-700">Mood Tracker</h4>
-                  <p className="text-sm text-indigo-600 mb-2">Track your mood for 5 days</p>
-                  <div className="text-xs text-indigo-500">Ready to unlock - Start tracking your mood!</div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="goals" data-tabs-content>
-          <div className="space-y-6">
-            {/* Goals Header */}
-            <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className="text-3xl font-bold">🎯 Goals & Tracking</h2>
-                  <p className="text-emerald-100 text-lg">Stay motivated with personalized challenges</p>
-                </div>
-                <Button 
-                  onClick={() => setShowNewGoalModal(true)}
-                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  New Goal
-                </Button>
-              </div>
-              
-              {/* Quick Progress Overview */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">{goals.filter(g => !g.isCompleted).length}/{goals.length}</div>
-                  <div className="text-emerald-100 text-sm">Active Goals</div>
-                  <div className="text-xs text-green-300">{goals.length === 0 ? 'Loading goals...' : 'Keep going!'}</div>
-                </div>
-                <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">{goals.filter(g => g.isCompleted).length}</div>
-                  <div className="text-emerald-100 text-sm">Completed Goals</div>
-                  <div className="text-xs text-green-300">{goals.filter(g => g.isCompleted).length > 0 ? 'Great work!' : 'First goal coming up!'}</div>
-                </div>
-                <div className="bg-white/20 rounded-xl p-4 backdrop-blur-lg">
-                  <div className="text-2xl font-bold">{goals.length > 0 ? Math.round(goals.reduce((sum, g) => sum + (g.currentValue / g.targetValue * 100), 0) / goals.length) : 0}%</div>
-                  <div className="text-emerald-100 text-sm">Avg Progress</div>
-                  <div className="text-xs text-green-300">Keep it up!</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Active Goals */}
-            <div className="space-y-6">
-              {goals.slice(0, 24).map((goal, index) => (
-                <motion.div
-                  key={goal.id}
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  className={`rounded-2xl p-6 shadow-xl border hover:shadow-2xl transition-all ${
-                    goal.difficulty === 'beginner' 
-                      ? 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200'
-                      : goal.difficulty === 'intermediate'
-                      ? 'bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200'
-                      : 'bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200'
-                  }`}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${
-                          goal.type === 'streak' ? 'bg-orange-100' :
-                          goal.type === 'writing' ? 'bg-blue-100' :
-                          goal.type === 'mood' ? 'bg-pink-100' :
-                          goal.type === 'creative' ? 'bg-purple-100' :
-                          goal.type === 'reflection' ? 'bg-yellow-100' :
-                          goal.type === 'mindfulness' ? 'bg-indigo-100' :
-                          'bg-gray-100'
-                        }`}>
-                          {goal.type === 'streak' ? '🔥' : 
-                           goal.type === 'writing' ? '📝' : 
-                           goal.type === 'mood' ? '😊' :
-                           goal.type === 'creative' ? '🎨' :
-                           goal.type === 'reflection' ? '🧘' :
-                           goal.type === 'mindfulness' ? '🌸' :
-                           goal.type === 'adventure' ? '🗺️' :
-                           goal.type === 'social' ? '👥' :
-                           goal.type === 'memory' ? '📸' :
-                           goal.type === 'dreams' ? '💭' :
-                           '🎯'}
-                        </div>
                         <div>
-                          <h3 className="text-xl font-bold text-gray-800">{goal.title}</h3>
-                          <p className="text-gray-600 text-sm">{goal.description}</p>
+                          <CardTitle className="text-2xl font-bold">🌟 Memory Calendar Plus</CardTitle>
+                          <p className="text-indigo-100 text-sm">Advanced tools, mood heatmap, memory surfacing & AI insights</p>
                         </div>
                       </div>
-                    </div>
-                    
-                    <div className="text-right flex flex-col gap-2">
-                      <Badge 
-                        className={`px-3 py-1 text-xs font-bold ${
-                          goal.difficulty === 'beginner' ? 'bg-green-500 text-white' :
-                          goal.difficulty === 'intermediate' ? 'bg-blue-500 text-white' :
-                          'bg-purple-500 text-white'
-                        }`}
-                      >
-                        {goal.difficulty.toUpperCase()}
-                      </Badge>
-                      <Badge 
-                        className={`px-3 py-1 text-sm font-bold ${
-                          (goal.currentValue / goal.targetValue * 100) >= 90 ? 'bg-green-500 text-white' :
-                          (goal.currentValue / goal.targetValue * 100) >= 70 ? 'bg-amber-500 text-white' :
-                          'bg-gray-500 text-white'
-                        }`}
-                      >
-                        {goal.currentValue}/{goal.targetValue}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  {/* Enhanced Progress Visualization */}
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-500">Progress</span>
-                      <span className={`text-lg font-bold ${
-                        (goal.currentValue / goal.targetValue * 100) >= 90 ? 'text-green-600' :
-                        (goal.currentValue / goal.targetValue * 100) >= 70 ? 'text-amber-600' :
-                        'text-gray-600'
-                      }`}>
-                        {Math.round(goal.currentValue / goal.targetValue * 100)}%
-                      </span>
-                    </div>
-                    
-                    {/* Animated Progress Ring */}
-                    <div className="relative">
-                      <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${Math.round(goal.currentValue / goal.targetValue * 100)}%` }}
-                          transition={{ duration: 1.5, delay: index * 0.2, ease: "easeOut" }}
-                          className={`h-full rounded-full ${
-                            (goal.currentValue / goal.targetValue * 100) >= 90 ? 'bg-gradient-to-r from-green-400 to-emerald-500' :
-                            (goal.currentValue / goal.targetValue * 100) >= 70 ? 'bg-gradient-to-r from-amber-400 to-orange-500' :
-                            'bg-gradient-to-r from-gray-400 to-gray-500'
-                          }`}
-                        />
-                      </div>
-                      
-                      {/* Progress markers */}
-                      <div className="flex justify-between mt-2 text-xs text-gray-400">
-                        <span>0</span>
-                        <span>25%</span>
-                        <span>50%</span>
-                        <span>75%</span>
-                        <span>100%</span>
-                      </div>
-                    </div>
-
-                    {/* Goal Actions */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-100">
                       <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="text-xs"
-                          onClick={() => {
-                            setSelectedGoal(goal);
-                            setShowGoalDetailsModal(true);
-                          }}
-                        >
-                          📊 View Details
+                        <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                          <Download className="w-4 h-4 mr-1" />
+                          Export
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
-                          className="text-xs"
-                          onClick={() => {
-                            setSelectedGoal(goal);
-                            setShowEditGoalModal(true);
-                          }}
-                        >
-                          ✏️ Edit Goal
+                        <Button variant="outline" size="sm" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                          🤖 AI Summary
                         </Button>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    {/* Advanced Calendar Toolbar */}
+                    <div className="bg-gradient-to-r from-slate-100 to-slate-50 p-4 border-b border-indigo-200">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm" className="bg-indigo-500 text-white border-indigo-500 hover:bg-indigo-600">
+                            <ChevronLeft className="w-4 h-4" />
+                            Previous
+                          </Button>
+                          <motion.h3 
+                            key={new Date().getMonth()}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="text-xl font-bold text-indigo-700 px-4"
+                          >
+                            {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+                          </motion.h3>
+                          <Button variant="outline" size="sm" className="bg-indigo-500 text-white border-indigo-500 hover:bg-indigo-600">
+                            Next
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        
+                        {/* View Mode Toggle */}
+                        <div className="flex items-center gap-2 bg-white rounded-lg p-1 shadow-sm border">
+                          <Button size="sm" className="bg-purple-500 text-white text-xs">📅 Month</Button>
+                          <Button variant="outline" size="sm" className="text-xs">📊 Heatmap</Button>
+                          <Button variant="outline" size="sm" className="text-xs">📈 Timeline</Button>
+                          <Button variant="outline" size="sm" className="text-xs">🔍 Search</Button>
+                        </div>
                       </div>
                       
-                      {(goal.currentValue / goal.targetValue * 100) >= 90 && (
-                        <motion.div
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          transition={{ delay: index * 0.1 + 1, type: "spring" }}
-                          className="flex items-center gap-2 text-green-600"
-                        >
-                          <Star className="w-4 h-4" />
-                          <span className="text-sm font-medium">Almost complete!</span>
-                        </motion.div>
-                      )}
-                    </div>
-
-                    {/* Time remaining indicator */}
-                    <div className="bg-gray-50 rounded-lg p-3 mt-4">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-600">Time Remaining</span>
-                        <span className="font-medium text-gray-800">
-                          {goal.type === 'streak' ? '2 days left this month' :
-                           goal.type === 'words' ? '8 days to hit target' :
-                           '3 weeks remaining'}
-                        </span>
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        {(goal.currentValue / goal.targetValue * 100) >= 80 ? 'Great pace! You\'re ahead of schedule' :
-                         (goal.currentValue / goal.targetValue * 100) >= 50 ? 'On track to complete on time' :
-                         'Consider increasing your daily effort'}
+                      {/* Advanced Filter Controls */}
+                      <div className="flex items-center gap-4 flex-wrap">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium text-gray-600">Filter by:</span>
+                          <Button variant="outline" size="sm" className="text-xs bg-green-100 text-green-700 border-green-300">
+                            😊 Happy Days
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-xs bg-blue-100 text-blue-700 border-blue-300">
+                            📸 With Photos
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-xs bg-yellow-100 text-yellow-700 border-yellow-300">
+                            🏆 Achievement Days
+                          </Button>
+                          <Button variant="outline" size="sm" className="text-xs bg-purple-100 text-purple-700 border-purple-300">
+                            ✨ AI Insights
+                          </Button>
+                        </div>
+                        <div className="flex items-center gap-2 ml-auto">
+                          <span className="text-sm text-gray-500">Quick Tools:</span>
+                          <Button size="sm" className="text-xs bg-gradient-to-r from-emerald-500 to-teal-500 text-white">
+                            <Plus className="w-3 h-3 mr-1" />
+                            Add Memory
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
 
-            {/* AI-Powered Goal Suggestions */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="bg-gradient-to-r from-violet-100 to-purple-100 rounded-2xl p-6 border border-violet-200"
-            >
-              <h3 className="text-xl font-bold text-violet-800 mb-4 flex items-center gap-2">
-                <Brain className="w-6 h-6" />
-                AI Goal Recommendations
-              </h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="bg-white rounded-xl p-4 border border-violet-200 cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center text-lg">🌅</div>
-                    <div>
-                      <h4 className="font-semibold text-violet-700">Morning Pages Challenge</h4>
-                      <p className="text-sm text-violet-600">Write 3 pages every morning for 30 days</p>
-                    </div>
-                  </div>
-                  <div className="text-xs text-violet-500 bg-violet-50 rounded-lg p-2">
-                    💡 <strong>AI Insight:</strong> You write 40% more when starting early in the day
-                  </div>
-                  <Button className="w-full mt-3 bg-violet-500 hover:bg-violet-600 text-white" size="sm">
-                    Accept Challenge
-                  </Button>
-                </motion.div>
-
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  className="bg-white rounded-xl p-4 border border-violet-200 cursor-pointer"
-                >
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center text-lg">📸</div>
-                    <div>
-                      <h4 className="font-semibold text-violet-700">Photo Memory Week</h4>
-                      <p className="text-sm text-violet-600">Add one photo to your entries for 7 days</p>
-                    </div>
-                  </div>
-                  <div className="text-xs text-violet-500 bg-violet-50 rounded-lg p-2">
-                    💡 <strong>AI Insight:</strong> Your entries are 60% longer when you include photos
-                  </div>
-                  <Button className="w-full mt-3 bg-violet-500 hover:bg-violet-600 text-white" size="sm">
-                    Start Challenge
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="insights" data-tabs-content>
-          <div className="space-y-6">
-            {/* AI Insights Header - Mobile Optimized */}
-            <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white rounded-2xl p-4 sm:p-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                <div className="flex-1">
-                  <h2 className="text-2xl sm:text-3xl font-bold">🤖 AI Insights</h2>
-                  <p className="text-indigo-100 text-sm sm:text-lg">Your personal AI writing companion & advisor</p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-sm">
-                    <Brain className="w-4 h-4 mr-2" />
-                    Ask AI
-                  </Button>
-                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-sm">
-                    📊 Generate Report
-                  </Button>
-                </div>
-              </div>
-              
-              {/* AI Status Indicators - Mobile Optimized */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-                <div className="bg-white/20 rounded-xl p-3 sm:p-4 backdrop-blur-lg">
-                  <div className="text-xl sm:text-2xl font-bold">{stats?.totalEntries || 0}</div>
-                  <div className="text-indigo-100 text-sm">Total Entries</div>
-                  <div className="text-xs text-green-300">Start writing to see progress</div>
-                </div>
-                <div className="bg-white/20 rounded-xl p-3 sm:p-4 backdrop-blur-lg">
-                  <div className="text-xl sm:text-2xl font-bold">{stats?.currentStreak || 0}</div>
-                  <div className="text-indigo-100 text-sm">Day Streak</div>
-                  <div className="text-xs text-green-300">Keep going!</div>
-                </div>
-                <div className="bg-white/20 rounded-xl p-3 sm:p-4 backdrop-blur-lg">
-                  <div className="text-xl sm:text-2xl font-bold">{stats?.totalWords || 0}</div>
-                  <div className="text-indigo-100 text-sm">Words Written</div>
-                  <div className="text-xs text-green-300">Express yourself!</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Main Insights Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Weekly AI Summary */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-              >
-                <Card className="bg-gradient-to-br from-violet-50 to-purple-50 shadow-xl hover:shadow-2xl transition-all border border-violet-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-violet-700">
-                      <Sparkles className="w-6 h-6" />
-                      Weekly AI Summary
-                    </CardTitle>
-                    <p className="text-violet-600 text-sm">Your personalized weekly insights</p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
-                        className="p-4 bg-white rounded-xl border border-violet-200"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 bg-violet-100 rounded-full flex items-center justify-center text-lg">🎯</div>
-                          <div>
-                            <h4 className="font-semibold text-violet-800">Focus Theme</h4>
-                            <p className="text-sm text-violet-600 mt-1">This week you've been reflecting deeply on personal growth and setting intentions for the future.</p>
+                    {/* Enhanced Calendar Grid with Mood Heatmap */}
+                    <div className="p-6">
+                      <div className="grid grid-cols-7 gap-1 mb-4">
+                        {/* Day Headers */}
+                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+                          <div key={day} className="text-center text-sm font-medium text-gray-500 py-2">
+                            {day}
                           </div>
-                        </div>
-                      </motion.div>
+                        ))}
+                        
+                        {/* Calendar Days with Enhanced Features */}
+                        {Array.from({ length: 35 }, (_, i) => {
+                          const date = new Date();
+                          date.setDate(date.getDate() - 15 + i);
+                          const dayEntries = entries?.filter((entry: JournalEntry) => 
+                            new Date(entry.createdAt).toDateString() === date.toDateString()
+                          ) || [];
+                          const hasEntry = dayEntries.length > 0;
+                          const isToday = date.toDateString() === new Date().toDateString();
+                          const dominantMood = dayEntries[0]?.mood || '';
+                          
+                          // Mood-based background colors
+                          const getMoodColor = (mood: string) => {
+                            if (mood.includes('😊') || mood.includes('happy')) return 'bg-green-200 border-green-400';
+                            if (mood.includes('😄') || mood.includes('excited')) return 'bg-yellow-200 border-yellow-400';
+                            if (mood.includes('🙂') || mood.includes('good')) return 'bg-blue-200 border-blue-400';
+                            if (mood.includes('😐') || mood.includes('neutral')) return 'bg-gray-200 border-gray-400';
+                            if (mood.includes('😔') || mood.includes('sad')) return 'bg-red-200 border-red-400';
+                            return 'bg-slate-50 border-slate-200';
+                          };
 
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="p-4 bg-white rounded-xl border border-violet-200"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-lg">📈</div>
-                          <div>
-                            <h4 className="font-semibold text-green-700">Writing Evolution</h4>
-                            <p className="text-sm text-green-600 mt-1">Your vocabulary has expanded by 15% and you're using more descriptive language than ever before.</p>
-                          </div>
-                        </div>
-                      </motion.div>
-
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 }}
-                        className="p-4 bg-white rounded-xl border border-violet-200"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-lg">💡</div>
-                          <div>
-                            <h4 className="font-semibold text-amber-700">Key Insight</h4>
-                            <p className="text-sm text-amber-600 mt-1">You write most creatively between 7-9 AM, with 40% longer entries during this golden hour.</p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              {/* Interactive Chat with AI */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 shadow-xl hover:shadow-2xl transition-all border border-blue-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-blue-700">
-                      <Brain className="w-6 h-6" />
-                      Chat with Your AI Sidekick
-                    </CardTitle>
-                    <p className="text-blue-600 text-sm">Ask questions about your journaling patterns</p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {/* Sample conversation */}
-                      <div className="space-y-3 max-h-60 overflow-y-auto">
-                        <div className="flex justify-end">
-                          <div className="bg-blue-500 text-white rounded-2xl rounded-tr-sm px-4 py-2 max-w-xs">
-                            <p className="text-sm">How has my mood changed this month?</p>
-                          </div>
+                          return (
+                            <motion.div
+                              key={i}
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: i * 0.01 }}
+                              whileHover={{ scale: 1.1, z: 10 }}
+                              onClick={() => hasEntry && openUnifiedJournal(dayEntries[0])}
+                              className={`
+                                relative aspect-square rounded-lg border-2 transition-all cursor-pointer
+                                ${hasEntry ? getMoodColor(dominantMood) + ' shadow-lg' : 'bg-slate-50 border-slate-200'}
+                                ${isToday ? 'ring-4 ring-purple-400 ring-opacity-50' : ''}
+                                hover:shadow-xl hover:scale-105
+                              `}
+                            >
+                              {/* Day Number */}
+                              <div className={`absolute top-1 left-1 text-xs font-bold ${
+                                isToday ? 'text-purple-700' : hasEntry ? 'text-gray-700' : 'text-gray-400'
+                              }`}>
+                                {date.getDate()}
+                              </div>
+                              
+                              {/* Entry Indicators */}
+                              {hasEntry && (
+                                <>
+                                  {/* Mood Emoji */}
+                                  <div className="absolute top-1 right-1 text-lg">
+                                    {dominantMood}
+                                  </div>
+                                  
+                                  {/* Entry Count Dot */}
+                                  <div className="absolute bottom-1 left-1 flex gap-0.5">
+                                    {Array.from({ length: Math.min(dayEntries.length, 3) }, (_, j) => (
+                                      <div key={j} className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
+                                    ))}
+                                  </div>
+                                  
+                                  {/* Special Indicators */}
+                                  <div className="absolute bottom-1 right-1 flex gap-0.5">
+                                    {dayEntries[0]?.photos && dayEntries[0].photos.length > 0 && (
+                                      <div className="text-xs">📸</div>
+                                    )}
+                                    {(dayEntries[0]?.wordCount || 0) > 500 && (
+                                      <div className="text-xs">✨</div>
+                                    )}
+                                  </div>
+                                </>
+                              )}
+                              
+                              {/* Today Indicator */}
+                              {isToday && (
+                                <motion.div
+                                  animate={{ scale: [1, 1.2, 1] }}
+                                  transition={{ duration: 2, repeat: Infinity }}
+                                  className="absolute inset-0 border-2 border-purple-400 rounded-lg pointer-events-none"
+                                />
+                              )}
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                      
+                      {/* Calendar Legend */}
+                      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-4 border border-indigo-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-semibold text-indigo-700">Calendar Legend & Tools</h4>
+                          <Button size="sm" variant="outline" className="text-xs">
+                            <Eye className="w-3 h-3 mr-1" />
+                            Toggle Legend
+                          </Button>
                         </div>
                         
-                        <div className="flex justify-start">
-                          <div className="bg-white border border-blue-200 rounded-2xl rounded-tl-sm px-4 py-2 max-w-xs">
-                            <p className="text-sm text-gray-700">Your mood has improved by 25% this month! You've had more happy (😊) days and fewer neutral days. The biggest boost came after you started your morning writing routine.</p>
-                          </div>
-                        </div>
-
-                        <div className="flex justify-end">
-                          <div className="bg-blue-500 text-white rounded-2xl rounded-tr-sm px-4 py-2 max-w-xs">
-                            <p className="text-sm">What should I write about today?</p>
-                          </div>
-                        </div>
-                        
-                        <div className="flex justify-start">
-                          <div className="bg-white border border-blue-200 rounded-2xl rounded-tl-sm px-4 py-2 max-w-xs">
-                            <p className="text-sm text-gray-700">Based on your patterns, try writing about a recent accomplishment you're proud of. You tend to write longer, more reflective entries when focusing on positive achievements.</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Quick question buttons */}
-                      <div className="grid grid-cols-2 gap-2 pt-4 border-t border-blue-200">
-                        <Button variant="outline" size="sm" className="text-xs h-8">
-                          📊 Monthly summary
-                        </Button>
-                        <Button variant="outline" size="sm" className="text-xs h-8">
-                          💭 Writing prompt
-                        </Button>
-                        <Button variant="outline" size="sm" className="text-xs h-8">
-                          🎯 Goal suggestions
-                        </Button>
-                        <Button variant="outline" size="sm" className="text-xs h-8">
-                          📈 Progress review
-                        </Button>
-                      </div>
-
-                      <div className="pt-2">
-                        <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
-                          <Brain className="w-4 h-4 mr-2" />
-                          Start New Conversation
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              {/* Memory Surfacing */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                <Card className="bg-gradient-to-br from-rose-50 to-pink-50 shadow-xl hover:shadow-2xl transition-all border border-rose-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-rose-700">
-                      <Heart className="w-6 h-6" />
-                      Memory Lane
-                    </CardTitle>
-                    <p className="text-rose-600 text-sm">AI-surfaced memories from your past entries</p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        className="p-4 bg-white rounded-xl border border-rose-200 cursor-pointer"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="text-2xl">📷</div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-rose-700">On this day last year...</h4>
-                            <p className="text-sm text-rose-600 mt-1">"Today I took my first photography class. The way light danced through the trees reminded me why I love capturing moments."</p>
-                            <div className="text-xs text-rose-400 mt-2">July 15, 2024 • 3 photos attached</div>
-                          </div>
-                        </div>
-                      </motion.div>
-
-                      <motion.div
-                        whileHover={{ scale: 1.02 }}
-                        className="p-4 bg-white rounded-xl border border-rose-200 cursor-pointer"
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className="text-2xl">🎓</div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-rose-700">Remember this achievement?</h4>
-                            <p className="text-sm text-rose-600 mt-1">"Finally completed my certification! All those late nights studying were worth it. Feeling proud and ready for new challenges."</p>
-                            <div className="text-xs text-rose-400 mt-2">March 12, 2025 • Tagged: achievement, growth</div>
-                          </div>
-                        </div>
-                      </motion.div>
-
-                      <Button className="w-full bg-rose-500 hover:bg-rose-600 text-white">
-                        <Clock className="w-4 h-4 mr-2" />
-                        Explore More Memories
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              {/* Personalized Writing Prompts */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                <Card className="bg-gradient-to-br from-amber-50 to-yellow-50 shadow-xl hover:shadow-2xl transition-all border border-amber-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-amber-700">
-                      <Lightbulb className="w-6 h-6" />
-                      AI Writing Prompts
-                    </CardTitle>
-                    <p className="text-amber-600 text-sm">Personalized prompts based on your interests</p>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      {[].map((prompt, index) => (
-                        <motion.div
-                          key={index}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 + 0.5 }}
-                          whileHover={{ scale: 1.02, x: 4 }}
-                          className="p-4 bg-white rounded-xl border border-amber-200 cursor-pointer hover:shadow-md transition-all group"
-                        >
-                          <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-sm group-hover:bg-amber-200 transition-colors">✨</div>
-                            <div className="flex-1">
-                              <p className="text-amber-800 font-medium group-hover:text-amber-900">{prompt}</p>
-                              <div className="text-xs text-amber-500 mt-1">Tap to start writing</div>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {/* Mood Legend */}
+                          <div>
+                            <h5 className="text-sm font-medium text-gray-600 mb-2">Mood Colors</h5>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 text-xs">
+                                <div className="w-3 h-3 bg-green-200 border border-green-400 rounded"></div>
+                                <span>😊 Happy</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-xs">
+                                <div className="w-3 h-3 bg-yellow-200 border border-yellow-400 rounded"></div>
+                                <span>😄 Excited</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-xs">
+                                <div className="w-3 h-3 bg-blue-200 border border-blue-400 rounded"></div>
+                                <span>🙂 Good</span>
+                              </div>
                             </div>
                           </div>
-                        </motion.div>
-                      ))}
+                          
+                          {/* Indicators Legend */}
+                          <div>
+                            <h5 className="text-sm font-medium text-gray-600 mb-2">Indicators</h5>
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2 text-xs">
+                                <span>📸</span>
+                                <span>Has Photos</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-xs">
+                                <span>✨</span>
+                                <span>Long Entry (500+ words)</span>
+                              </div>
+                              <div className="flex items-center gap-2 text-xs">
+                                <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
+                                <span>Entry Count</span>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Quick Stats */}
+                          <div>
+                            <h5 className="text-sm font-medium text-gray-600 mb-2">This Month</h5>
+                            <div className="space-y-1 text-xs">
+                              <div>📝 {entries?.filter((entry: JournalEntry) => 
+                                new Date(entry.createdAt).getMonth() === new Date().getMonth()
+                              ).length || 0} entries</div>
+                              <div>🔥 {stats?.currentStreak || 0} day streak</div>
+                              <div>📊 {Math.round(((entries?.filter((entry: JournalEntry) => 
+                                new Date(entry.createdAt).getMonth() === new Date().getMonth()
+                              ).length || 0) / new Date().getDate()) * 100)}% coverage</div>
+                            </div>
+                          </div>
+                          
+                          {/* Quick Actions */}
+                          <div>
+                            <h5 className="text-sm font-medium text-gray-600 mb-2">Quick Actions</h5>
+                            <div className="space-y-1">
+                              <Button size="sm" variant="outline" className="w-full text-xs">
+                                📈 Monthly Report
+                              </Button>
+                              <Button size="sm" variant="outline" className="w-full text-xs">
+                                🔍 Search Entries
+                              </Button>
+                              <Button size="sm" variant="outline" className="w-full text-xs">
+                                💫 Memory Highlights
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div className="pt-4 border-t border-amber-200">
-                      <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white">
-                        <Lightbulb className="w-4 h-4 mr-2" />
-                        Generate New Prompts
-                      </Button>
+
+                    {/* Memory Surfacing Tools */}
+                    <div className="bg-gradient-to-r from-rose-50 to-pink-50 p-6 border-t border-indigo-200">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-lg font-bold text-rose-700 flex items-center gap-2">
+                          <Sparkles className="w-5 h-5" />
+                          AI Memory Surfacing
+                        </h4>
+                        <Button size="sm" className="bg-gradient-to-r from-rose-500 to-pink-500 text-white">
+                          <Brain className="w-4 h-4 mr-2" />
+                          Analyze Memories
+                        </Button>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* Random Memory */}
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          className="bg-white rounded-xl p-4 border border-rose-200 shadow-sm"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">💭</span>
+                            <h5 className="font-semibold text-rose-700 text-sm">Random Memory</h5>
+                          </div>
+                          {entries && entries.length > 0 ? (
+                            <div>
+                              <p className="text-xs text-gray-600 mb-1">
+                                {new Date(entries[Math.floor(Math.random() * entries.length)].createdAt).toLocaleDateString()}
+                              </p>
+                              <p className="text-sm text-gray-700 line-clamp-2">
+                                {entries[Math.floor(Math.random() * entries.length)].content.substring(0, 100)}...
+                              </p>
+                            </div>
+                          ) : (
+                            <p className="text-xs text-gray-500">No memories yet. Start journaling!</p>
+                          )}
+                        </motion.div>
+                        
+                        {/* Year Ago Today */}
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          className="bg-white rounded-xl p-4 border border-rose-200 shadow-sm"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">📅</span>
+                            <h5 className="font-semibold text-rose-700 text-sm">This Day in History</h5>
+                          </div>
+                          <p className="text-xs text-gray-500">Feature coming soon! We'll show you what you wrote on this day in previous years.</p>
+                        </motion.div>
+                        
+                        {/* Mood Pattern */}
+                        <motion.div
+                          whileHover={{ scale: 1.02 }}
+                          className="bg-white rounded-xl p-4 border border-rose-200 shadow-sm"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-lg">📊</span>
+                            <h5 className="font-semibold text-rose-700 text-sm">Mood Insight</h5>
+                          </div>
+                          <p className="text-xs text-gray-600">
+                            {entries && entries.length > 0 
+                              ? `Your most common mood this month is ${entries[0]?.mood || '😊'}`
+                              : "Start writing to discover your mood patterns!"
+                            }
+                          </p>
+                        </motion.div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               </motion.div>
-            </div>
 
-            {/* AI-Generated Mood Cloud */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="bg-gradient-to-r from-teal-100 to-cyan-100 rounded-2xl p-6 border border-teal-200"
-            >
-              <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center gap-2">
-                <Gift className="w-6 h-6" />
-                Your Personal Word Cloud
-              </h3>
-              
-              <div className="bg-white rounded-xl p-6 border border-teal-200">
-                <div className="flex flex-wrap gap-2 justify-center items-center">
-                  {[
-                    { word: "grateful", size: "text-4xl", color: "text-green-500" },
-                    { word: "creative", size: "text-2xl", color: "text-purple-500" },
-                    { word: "peaceful", size: "text-3xl", color: "text-blue-500" },
-                    { word: "growth", size: "text-2xl", color: "text-emerald-500" },
-                    { word: "inspired", size: "text-3xl", color: "text-pink-500" },
-                    { word: "focused", size: "text-xl", color: "text-indigo-500" },
-                    { word: "determined", size: "text-2xl", color: "text-orange-500" },
-                    { word: "mindful", size: "text-3xl", color: "text-teal-500" },
-                    { word: "hopeful", size: "text-2xl", color: "text-rose-500" },
-                    { word: "confident", size: "text-xl", color: "text-violet-500" },
-                  ].map((item, index) => (
-                    <motion.span
-                      key={item.word}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 + 0.7 }}
-                      whileHover={{ scale: 1.1 }}
-                      className={`${item.size} ${item.color} font-bold cursor-pointer hover:opacity-80 transition-opacity`}
-                    >
-                      {item.word}
-                    </motion.span>
-                  ))}
-                </div>
-                <p className="text-center text-teal-600 text-sm mt-4">
-                  These are your most frequent positive words from the past month
-                </p>
-              </div>
-            </motion.div>
+            </Tabs>
           </div>
-        </TabsContent>
 
-        <TabsContent value="calendar" data-tabs-content>
-          <div className="h-[80vh]">
-            <InteractiveCalendar 
-              entries={calendarEntries}
-              onDateSelect={handleDateSelect}
-              onEntryEdit={handleEntryEdit}
-            />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="stories" data-tabs-content>
-          <div className="h-[80vh]">
-            <AIStoryMaker 
-              entries={entries}
-              stats={stats}
-            />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="referral" data-tabs-content>
-          <div className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-500/20"
-            >
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-white mb-4">🎁 Refer Friends & Earn AI Prompts!</h2>
-                <p className="text-gray-300 text-lg">Share JournOwl with friends and get 100 free AI prompts for each successful referral!</p>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-purple-800/40 to-pink-800/40 rounded-xl p-6 border border-purple-400/30">
-                  <h3 className="text-xl font-bold text-white mb-4">📤 Your Referral Link</h3>
-                  <div className="flex gap-2">
-                    <Input 
-                      value={`https://journowl.com/join?ref=${user?.id || 'demo'}`}
-                      readOnly
-                      className="bg-slate-700/50 border-purple-400/30 text-white"
-                    />
-                    <Button 
-                      onClick={() => navigator.clipboard.writeText(`https://journowl.com/join?ref=${user?.id || 'demo'}`)}
-                      className="bg-purple-500 hover:bg-purple-600"
-                    >
-                      📋 Copy
-                    </Button>
-                  </div>
-                  <p className="text-gray-400 text-sm mt-2">Share this link with friends to start earning rewards!</p>
-                </div>
-                
-                <div className="bg-gradient-to-br from-green-800/40 to-emerald-800/40 rounded-xl p-6 border border-green-400/30">
-                  <h3 className="text-xl font-bold text-white mb-4">🏆 Your Referral Stats</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Total Referrals:</span>
-                      <span className="text-white font-bold">0</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">AI Prompts Earned:</span>
-                      <span className="text-green-400 font-bold">0</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Pending Referrals:</span>
-                      <span className="text-yellow-400 font-bold">0</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-8 grid md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
-                  <div className="text-2xl mb-2">👥</div>
-                  <h4 className="font-semibold text-white mb-1">Step 1: Share</h4>
-                  <p className="text-gray-400 text-sm">Send your referral link to friends</p>
-                </div>
-                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
-                  <div className="text-2xl mb-2">✨</div>
-                  <h4 className="font-semibold text-white mb-1">Step 2: They Join</h4>
-                  <p className="text-gray-400 text-sm">Friends sign up using your link</p>
-                </div>
-                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
-                  <div className="text-2xl mb-2">🎁</div>
-                  <h4 className="font-semibold text-white mb-1">Step 3: Earn Rewards</h4>
-                  <p className="text-gray-400 text-sm">Get 100 AI prompts per referral</p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="analytics-insights" data-tabs-content>
-          <div className="space-y-6">
-            {/* Header Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-purple-900/90 via-purple-800/80 to-purple-900/90 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-500/20"
-            >
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-                <div className="flex-1">
-                  <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">📊 Insights & Analytics</h2>
-                  <p className="text-gray-300">Discover patterns in your journaling journey</p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white text-sm px-3 py-2">
-                    ➕ Add Entry
-                  </Button>
-                  <Button variant="outline" className="border-purple-400 text-purple-200 hover:bg-purple-800 text-sm px-3 py-2">
-                    ⬇️ Export
-                  </Button>
-                  <Button variant="outline" className="border-purple-400 text-purple-200 hover:bg-purple-800 text-sm px-3 py-2">
-                    📤 Share
-                  </Button>
-                </div>
-              </div>
-
-              {/* Search and Filters */}
-              <div className="flex gap-4 mb-6">
-                <div className="flex-1">
-                  <Input 
-                    placeholder="🔍 Search entries, moods, or keywords..."
-                    className="bg-slate-700/50 border-purple-400/30 text-white placeholder:text-gray-400"
-                  />
-                </div>
-                <select className="bg-slate-700/50 border border-purple-400/30 text-white rounded-md px-3 py-2">
-                  <option>All Moods</option>
-                  <option>😊 Happy</option>
-                  <option>😔 Sad</option>
-                  <option>😤 Angry</option>
-                  <option>😌 Calm</option>
-                </select>
-                <select className="bg-slate-700/50 border border-purple-400/30 text-white rounded-md px-3 py-2">
-                  <option>Month</option>
-                  <option>Week</option>
-                  <option>Year</option>
-                </select>
-              </div>
-
-              {/* Stats Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                      📝
-                    </div>
-                    <div className="text-xs text-green-400">📈</div>
-                  </div>
-                  <div className="text-2xl font-bold text-white">{stats?.totalEntries || 1}</div>
-                  <div className="text-xs text-gray-400">Total Entries</div>
-                  <div className="text-xs text-purple-300 mt-1">Keep writing!</div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                      📖
-                    </div>
-                    <div className="text-xs text-green-400">📈</div>
-                  </div>
-                  <div className="text-2xl font-bold text-white">{stats?.totalWords || 25}</div>
-                  <div className="text-xs text-gray-400">Total Words</div>
-                  <div className="text-xs text-green-300 mt-1">Amazing progress</div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                      🔥
-                    </div>
-                    <div className="text-xs text-orange-400">⭕ On fire!</div>
-                  </div>
-                  <div className="text-2xl font-bold text-white">{stats?.currentStreak || 0} <span className="text-sm">days</span></div>
-                  <div className="text-xs text-gray-400">Current Streak</div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                      🏆
-                    </div>
-                  </div>
-                  <div className="text-2xl font-bold text-white">{stats?.longestStreak || 1} <span className="text-sm">days</span></div>
-                  <div className="text-xs text-gray-400">Longest Streak</div>
-                  <div className="text-xs text-yellow-300 mt-1">Personal best</div>
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Analytics Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Writing Activity Chart */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    📊 Writing Activity
-                  </h3>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-xs bg-purple-500/20 border-purple-400/30 text-purple-200">
-                      Area
-                    </Button>
-                    <Button size="sm" variant="outline" className="text-xs border-purple-400/30 text-purple-200">
-                      Bar
-                    </Button>
-                    <Button size="sm" variant="outline" className="text-xs border-purple-400/30 text-purple-200">
-                      Line
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="h-48 bg-slate-900/40 rounded-lg border border-purple-400/10 flex items-center justify-center">
-                  <div className="text-center text-gray-400">
-                    <div className="text-2xl mb-2">📈</div>
-                    <p className="text-sm">Writing activity chart will appear here</p>
-                    <p className="text-xs mt-1">Based on your journal entries</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Mood Distribution */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    🎭 Mood Distribution
-                  </h3>
-                  <div className="text-right">
-                    <div className="text-sm text-gray-400">Average Mood</div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-lg">😊</span>
-                      <span className="text-sm text-green-400 bg-green-400/20 px-2 py-1 rounded">100%</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="h-40 bg-slate-900/40 rounded-lg border border-purple-400/10 flex items-center justify-center mb-4">
-                  <div className="text-center text-gray-400">
-                    <div className="text-2xl mb-2">🍩</div>
-                    <p className="text-sm">Mood distribution chart</p>
-                    <p className="text-xs mt-1">Donut chart coming soon</p>
-                  </div>
-                </div>
-
-                <div className="bg-purple-900/40 rounded-lg p-4 border border-purple-400/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 bg-purple-400 rounded-full"></div>
-                    <span className="text-sm text-purple-200">AI Insight</span>
-                  </div>
-                  <p className="text-sm text-gray-300">"You're happiest on Sundays. Most common mood: Grateful."</p>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Mood Calendar Heatmap */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                  📅 Mood Calendar Heatmap
-                </h3>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <ChevronLeft className="w-4 h-4 text-gray-400 cursor-pointer hover:text-white" />
-                    <span className="text-white font-medium">July 2025</span>
-                    <ChevronRight className="w-4 h-4 text-gray-400 cursor-pointer hover:text-white" />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-7 gap-2 mb-4">
-                {['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'].map(day => (
-                  <div key={day} className="text-center text-xs text-gray-400 font-medium py-1">
-                    {day}
-                  </div>
-                ))}
-              </div>
-              
-              <div className="grid grid-cols-7 gap-2">
-                {Array.from({ length: 31 }, (_, i) => (
-                  <motion.div
-                    key={i + 1}
-                    whileHover={{ scale: 1.1 }}
-                    className={`aspect-square rounded-lg border border-purple-400/20 flex items-center justify-center text-xs font-medium cursor-pointer transition-all ${
-                      i + 1 === 16 
-                        ? 'bg-green-500/80 text-white border-green-400' 
-                        : 'bg-slate-700/40 text-gray-400 hover:bg-purple-500/20 hover:text-white'
-                    }`}
+          {/* Interactive Journal Editor Modals */}
+          {showUnifiedJournal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden">
+                <div className="flex items-center justify-between p-4 border-b bg-gradient-to-r from-orange-500 to-red-500 text-white">
+                  <h2 className="text-lg font-bold">📖 Smart Journal Editor</h2>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setShowUnifiedJournal(false)}
+                    className="text-white hover:bg-white/20"
                   >
-                    {i + 1}
-                  </motion.div>
-                ))}
-              </div>
-              
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-purple-400/20">
-                <div className="text-sm text-gray-400">
-                  Less activity
+                    ✕
+                  </Button>
                 </div>
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map(level => (
-                    <div 
-                      key={level}
-                      className={`w-3 h-3 rounded-sm ${
-                        level === 1 ? 'bg-slate-700' :
-                        level === 2 ? 'bg-green-800/60' :
-                        level === 3 ? 'bg-green-600/70' :
-                        level === 4 ? 'bg-green-500/80' :
-                        'bg-green-400'
-                      }`}
+                <div className="overflow-auto" style={{ maxHeight: 'calc(90vh - 80px)' }}>
+                  <SmartJournalEditor onClose={() => setShowUnifiedJournal(false)} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Achievement Details Modal */}
+          {selectedAchievement && showAchievementModal && (
+            <Dialog open={showAchievementModal} onOpenChange={setShowAchievementModal}>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${
+                      selectedAchievement.rarity === 'legendary' ? 'bg-gradient-to-r from-yellow-400 to-amber-500' :
+                      selectedAchievement.rarity === 'epic' ? 'bg-gradient-to-r from-purple-400 to-indigo-500' :
+                      selectedAchievement.rarity === 'rare' ? 'bg-gradient-to-r from-blue-400 to-cyan-500' :
+                      'bg-gradient-to-r from-gray-400 to-gray-500'
+                    } text-white`}>
+                      {selectedAchievement.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">{selectedAchievement.title}</h3>
+                      <Badge className={`${
+                        selectedAchievement.rarity === 'legendary' ? 'bg-yellow-500' :
+                        selectedAchievement.rarity === 'epic' ? 'bg-purple-500' :
+                        selectedAchievement.rarity === 'rare' ? 'bg-blue-500' :
+                        'bg-gray-500'
+                      } text-white`}>
+                        {selectedAchievement.rarity.toUpperCase()}
+                      </Badge>
+                    </div>
+                  </DialogTitle>
+                </DialogHeader>
+                
+                <div className="space-y-4">
+                  <p className="text-gray-600">{selectedAchievement.description}</p>
+                  
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">Progress Details</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Current:</span>
+                        <span className="font-medium">{selectedAchievement.currentValue}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Target:</span>
+                        <span className="font-medium">{selectedAchievement.targetValue}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Progress:</span>
+                        <span className="font-medium">{Math.round((selectedAchievement.currentValue / selectedAchievement.targetValue) * 100)}%</span>
+                      </div>
+                    </div>
+                    <Progress 
+                      value={(selectedAchievement.currentValue / selectedAchievement.targetValue) * 100} 
+                      className="mt-3"
                     />
-                  ))}
-                </div>
-                <div className="text-sm text-gray-400">
-                  More activity
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      {/* Smart Journal Editor Modal */}
-      <AnimatePresence>
-        {showSmartEditor && (
-          <SmartJournalEditor
-            entry={selectedEntry}
-            onSave={handleSaveEntry}
-            onClose={() => {
-              setShowSmartEditor(false);
-              setSelectedEntry(null);
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Unified Journal Book Experience */}
-      <AnimatePresence>
-        {showUnifiedJournal && (
-          <UnifiedJournal
-            entry={selectedEntry}
-            onSave={handleSaveEntry}
-            onClose={() => {
-              setShowUnifiedJournal(false);
-              setSelectedEntry(null);
-            }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* New Goal Modal */}
-      <Dialog open={showNewGoalModal} onOpenChange={setShowNewGoalModal}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-emerald-700">
-              <Target className="w-5 h-5" />
-              Create New Goal
-            </DialogTitle>
-          </DialogHeader>
-          <NewGoalForm onClose={() => setShowNewGoalModal(false)} />
-        </DialogContent>
-      </Dialog>
-
-      {/* Goal Details Modal */}
-      <Dialog open={showGoalDetailsModal} onOpenChange={setShowGoalDetailsModal}>
-        <DialogContent className="sm:max-w-[700px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-blue-700">
-              <TrendingUp className="w-5 h-5" />
-              Goal Details
-            </DialogTitle>
-          </DialogHeader>
-          {selectedGoal && <GoalDetailsView goal={selectedGoal} onClose={() => setShowGoalDetailsModal(false)} />}
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Goal Modal */}
-      <Dialog open={showEditGoalModal} onOpenChange={setShowEditGoalModal}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-purple-700">
-              <Target className="w-5 h-5" />
-              Edit Goal
-            </DialogTitle>
-          </DialogHeader>
-          {selectedGoal && <EditGoalForm goal={selectedGoal} onClose={() => setShowEditGoalModal(false)} />}
-        </DialogContent>
-      </Dialog>
-
-      {/* Prompt Purchase Modal */}
-      <Dialog open={showPromptPurchase} onOpenChange={setShowPromptPurchase}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-600" />
-              Top Off AI Prompts
-            </DialogTitle>
-          </DialogHeader>
-          <PromptPurchase />
-        </DialogContent>
-      </Dialog>
-
-      {/* Floating Action Bubbles - Only show when journal editor is closed */}
-      {!showSmartEditor && !showUnifiedJournal && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
-          <motion.button
-            onClick={capturePhoto}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Take Photo"
-          >
-            📸
-          </motion.button>
-          
-          <motion.button
-            onClick={recordAudio}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Record Audio"
-          >
-            🎤
-          </motion.button>
-        </div>
-      )}
-    </div>
-  );
-}
-
-// New Goal Form Component
-function NewGoalForm({ onClose }: { onClose: () => void }) {
-  const [goalType, setGoalType] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [targetValue, setTargetValue] = useState("");
-  const [difficulty, setDifficulty] = useState("");
-
-  const trackableGoalTypes = [
-    { value: "streak", label: "📅 Daily Writing Streak", description: "Track consecutive days of journaling", unit: "days" },
-    { value: "words", label: "📝 Word Count Goal", description: "Reach a specific word count", unit: "words" },
-    { value: "entries", label: "📚 Journal Entries", description: "Write a certain number of entries", unit: "entries" },
-    { value: "mood", label: "😊 Mood Tracking", description: "Track mood for consecutive days", unit: "days" },
-    { value: "photos", label: "📸 Photo Journaling", description: "Add photos to journal entries", unit: "photos" },
-    { value: "reflection", label: "🧘 Deep Reflection", description: "Write thoughtful, reflective entries", unit: "entries" },
-    { value: "creative", label: "🎨 Creative Writing", description: "Focus on creative expression", unit: "entries" },
-    { value: "gratitude", label: "🙏 Gratitude Practice", description: "Write gratitude-focused entries", unit: "entries" },
-    { value: "reading_time", label: "⏰ Reading Time", description: "Spend time reading past entries", unit: "minutes" },
-    { value: "consistency", label: "⚡ Weekly Consistency", description: "Write at least X times per week", unit: "weeks" }
-  ];
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically make an API call to create the goal
-    console.log("Creating goal:", { goalType, title, description, targetValue, difficulty });
-    onClose();
-  };
-
-  const selectedGoalType = trackableGoalTypes.find(t => t.value === goalType);
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="goalType">Goal Type</Label>
-          <Select value={goalType} onValueChange={setGoalType}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a trackable goal type..." />
-            </SelectTrigger>
-            <SelectContent>
-              {trackableGoalTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>
-                  <div className="flex flex-col">
-                    <span>{type.label}</span>
-                    <span className="text-xs text-gray-500">{type.description}</span>
                   </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {selectedGoalType && (
-            <p className="text-sm text-gray-600 mt-1">
-              💡 This goal will track: {selectedGoalType.description}
-            </p>
+                  
+                  {selectedAchievement.unlocked && (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                      <div className="flex items-center gap-2 text-green-700">
+                        <Check className="w-5 h-5" />
+                        <span className="font-semibold">Achievement Unlocked!</span>
+                      </div>
+                      <p className="text-green-600 text-sm mt-1">Congratulations on reaching this milestone!</p>
+                    </div>
+                  )}
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
+
+          {/* Goal Details Modal */}
+          {selectedGoal && showGoalDetailsModal && (
+            <Dialog open={showGoalDetailsModal} onOpenChange={setShowGoalDetailsModal}>
+              <DialogContent className="max-w-2xl">
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-3">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl ${
+                      selectedGoal.difficulty === 'beginner' ? 'bg-green-100' :
+                      selectedGoal.difficulty === 'intermediate' ? 'bg-blue-100' :
+                      'bg-purple-100'
+                    }`}>
+                      {selectedGoal.type === 'streak' ? '🔥' : 
+                       selectedGoal.type === 'writing' ? '📝' : 
+                       selectedGoal.type === 'mood' ? '😊' :
+                       selectedGoal.type === 'creative' ? '🎨' :
+                       selectedGoal.type === 'reflection' ? '🧘' :
+                       selectedGoal.type === 'mindfulness' ? '🌸' :
+                       selectedGoal.type === 'adventure' ? '🗺️' :
+                       selectedGoal.type === 'social' ? '👥' :
+                       selectedGoal.type === 'memory' ? '📸' :
+                       selectedGoal.type === 'dreams' ? '💭' :
+                       '🎯'}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold">{selectedGoal.title}</h3>
+                      <Badge className={`${
+                        selectedGoal.difficulty === 'beginner' ? 'bg-green-500' :
+                        selectedGoal.difficulty === 'intermediate' ? 'bg-blue-500' :
+                        'bg-purple-500'
+                      } text-white`}>
+                        {selectedGoal.difficulty.toUpperCase()}
+                      </Badge>
+                    </div>
+                  </DialogTitle>
+                </DialogHeader>
+                
+                <div className="space-y-4">
+                  <p className="text-gray-600">{selectedGoal.description}</p>
+                  
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="font-semibold mb-2">Goal Progress</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Current:</span>
+                        <span className="font-medium">{selectedGoal.currentValue}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Target:</span>
+                        <span className="font-medium">{selectedGoal.targetValue}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Progress:</span>
+                        <span className="font-medium">{Math.round((selectedGoal.currentValue / selectedGoal.targetValue) * 100)}%</span>
+                      </div>
+                    </div>
+                    <Progress 
+                      value={(selectedGoal.currentValue / selectedGoal.targetValue) * 100} 
+                      className="mt-3"
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-blue-50 rounded-lg p-3">
+                      <div className="text-sm text-blue-600">Category</div>
+                      <div className="font-semibold text-blue-800 capitalize">{selectedGoal.type}</div>
+                    </div>
+                    <div className="bg-purple-50 rounded-lg p-3">
+                      <div className="text-sm text-purple-600">Type</div>
+                      <div className="font-semibold text-purple-800 capitalize">{selectedGoal.difficulty}</div>
+                    </div>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
+
+          {/* Edit Goal Modal */}
+          {showEditGoalModal && selectedGoal && (
+            <Dialog open={showEditGoalModal} onOpenChange={setShowEditGoalModal}>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>Edit Goal</DialogTitle>
+                </DialogHeader>
+                <EditGoalForm 
+                  goal={selectedGoal}
+                  onClose={() => setShowEditGoalModal(false)}
+                />
+              </DialogContent>
+            </Dialog>
           )}
         </div>
+      );
+    }
 
-        <div>
-          <Label htmlFor="title">Goal Title</Label>
-          <Input
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder={selectedGoalType ? `My ${selectedGoalType.label.split(' ').slice(1).join(' ')} Goal` : "Enter goal title..."}
-            required
-          />
-        </div>
+    interface EditGoalFormProps {
+      goal: any;
+      onClose: () => void;
+    }
 
-        <div>
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe what you want to achieve and why it matters to you..."
-            required
-          />
-        </div>
+    function EditGoalForm({ goal, onClose }: EditGoalFormProps) {
+      const [title, setTitle] = useState(goal.title);
+      const [description, setDescription] = useState(goal.description);
+      const [currentValue, setCurrentValue] = useState(goal.currentValue.toString());
+      const [targetValue, setTargetValue] = useState(goal.targetValue.toString());
+      const [difficulty, setDifficulty] = useState(goal.difficulty);
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="targetValue">Target ({selectedGoalType?.unit || "value"})</Label>
-            <Input
-              id="targetValue"
-              type="number"
-              value={targetValue}
-              onChange={(e) => setTargetValue(e.target.value)}
-              placeholder={goalType === "streak" ? "7" : goalType === "words" ? "1000" : goalType === "entries" ? "10" : "Enter target..."}
-              required
-            />
+      const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // Handle form submission here
+        console.log('Updating goal:', {
+          ...goal,
+          title,
+          description,
+          currentValue: parseInt(currentValue),
+          targetValue: parseInt(targetValue),
+          difficulty,
+        });
+        onClose();
+      };
+
+      return (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="editTitle">Goal Title</Label>
+              <Input
+                id="editTitle"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="editDescription">Description</Label>
+              <Textarea
+                id="editDescription"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="editDifficulty">Difficulty</Label>
+                <Select value={difficulty} onValueChange={setDifficulty}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="beginner">Beginner</SelectItem>
+                    <SelectItem value="intermediate">Intermediate</SelectItem>
+                    <SelectItem value="advanced">Advanced</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label htmlFor="editCurrentValue">Current Value</Label>
+                <Input
+                  id="editCurrentValue"
+                  type="number"
+                  value={currentValue}
+                  onChange={(e) => setCurrentValue(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="editTargetValue">Target Value</Label>
+              <Input
+                id="editTargetValue"
+                type="number"
+                value={targetValue}
+                onChange={(e) => setTargetValue(e.target.value)}
+                required
+              />
+            </div>
           </div>
 
-          <div>
-            <Label htmlFor="difficulty">Difficulty</Label>
-            <Select value={difficulty} onValueChange={setDifficulty}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose difficulty..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="beginner">🟢 Beginner</SelectItem>
-                <SelectItem value="intermediate">🟡 Intermediate</SelectItem>
-                <SelectItem value="advanced">🔴 Advanced</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
-
-      <DialogFooter>
-        <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button type="submit" disabled={!goalType || !title || !targetValue || !difficulty} className="bg-emerald-500 hover:bg-emerald-600">
-          <Plus className="w-4 h-4 mr-2" />
-          Create Goal
-        </Button>
-      </DialogFooter>
-    </form>
-  );
-}
-
-// Goal Details View Component
-function GoalDetailsView({ goal, onClose }: { goal: any; onClose: () => void }) {
-  const progressPercentage = Math.round((goal.currentValue / goal.targetValue) * 100);
-  
-  return (
-    <div className="space-y-6">
-      <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">
-            {goal.type === 'streak' ? '🔥' : goal.type === 'words' ? '📝' : goal.type === 'mood' ? '😊' : '🎯'}
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-blue-800">{goal.title}</h3>
-            <p className="text-blue-600">{goal.description}</p>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg p-3 border border-blue-200">
-            <div className="text-2xl font-bold text-blue-700">{goal.currentValue}</div>
-            <div className="text-sm text-blue-600">Current Progress</div>
-          </div>
-          <div className="bg-white rounded-lg p-3 border border-blue-200">
-            <div className="text-2xl font-bold text-blue-700">{goal.targetValue}</div>
-            <div className="text-sm text-blue-600">Target Goal</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="font-medium">Progress</span>
-            <span className="text-lg font-bold text-blue-600">{progressPercentage}%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-4">
-            <div 
-              className="bg-gradient-to-r from-blue-400 to-cyan-500 h-full rounded-full transition-all duration-500"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600">Difficulty</div>
-            <Badge className={`mt-1 ${
-              goal.difficulty === 'beginner' ? 'bg-green-500' :
-              goal.difficulty === 'intermediate' ? 'bg-blue-500' : 'bg-purple-500'
-            } text-white`}>
-              {goal.difficulty.toUpperCase()}
-            </Badge>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600">Remaining</div>
-            <div className="font-semibold">{goal.targetValue - goal.currentValue} to go</div>
-          </div>
-        </div>
-
-        <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-          <h4 className="font-semibold text-yellow-800 mb-2">💡 AI Insights</h4>
-          <p className="text-sm text-yellow-700">
-            {progressPercentage >= 80 ? "You're almost there! Keep up the excellent momentum." :
-             progressPercentage >= 50 ? "Great progress! You're halfway to your goal." :
-             progressPercentage >= 25 ? "Good start! Stay consistent to build momentum." :
-             "Every journey begins with a single step. You've got this!"}
-          </p>
-        </div>
-      </div>
-
-      <DialogFooter>
-        <Button onClick={onClose}>Close</Button>
-      </DialogFooter>
-    </div>
-  );
-}
-
-// Edit Goal Form Component
-function EditGoalForm({ goal, onClose }: { goal: any; onClose: () => void }) {
-  const [title, setTitle] = useState(goal.title);
-  const [description, setDescription] = useState(goal.description);
-  const [targetValue, setTargetValue] = useState(goal.targetValue.toString());
-  const [currentValue, setCurrentValue] = useState(goal.currentValue.toString());
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Here you would typically make an API call to update the goal
-    console.log("Updating goal:", { title, description, targetValue, currentValue });
-    onClose();
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="editTitle">Goal Title</Label>
-          <Input
-            id="editTitle"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="editDescription">Description</Label>
-          <Textarea
-            id="editDescription"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="editCurrentValue">Current Progress</Label>
-            <Input
-              id="editCurrentValue"
-              type="number"
-              value={currentValue}
-              onChange={(e) => setCurrentValue(e.target.value)}
-              required
-            />
+          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+            <div className="text-sm text-blue-700">
+              <strong>Progress Preview:</strong> {Math.round((parseInt(currentValue) / parseInt(targetValue)) * 100)}% complete
+            </div>
           </div>
 
-          <div>
-            <Label htmlFor="editTargetValue">Target Value</Label>
-            <Input
-              id="editTargetValue"
-              type="number"
-              value={targetValue}
-              onChange={(e) => setTargetValue(e.target.value)}
-              required
-            />
-          </div>
-        </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" className="bg-purple-500 hover:bg-purple-600">
+              <CheckCircle className="w-4 h-4 mr-2" />
+              Update Goal
+            </Button>
+          </DialogFooter>
+        </form>
+      );
+    }
 
-        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-          <div className="text-sm text-blue-700">
-            <strong>Progress Preview:</strong> {Math.round((parseInt(currentValue) / parseInt(targetValue)) * 100)}% complete
-          </div>
-        </div>
-      </div>
-
-      <DialogFooter>
-        <Button type="button" variant="outline" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button type="submit" className="bg-purple-500 hover:bg-purple-600">
-          <CheckCircle className="w-4 h-4 mr-2" />
-          Update Goal
-        </Button>
-      </DialogFooter>
-    </form>
-  );
-}
+    export default EnhancedDashboard;
