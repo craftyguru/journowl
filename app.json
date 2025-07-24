@@ -1,0 +1,29 @@
+{
+  "name": "JournOwl",
+  "description": "AI-powered journaling platform",
+  "env": {
+    "NODE_ENV": {
+      "value": "production"
+    },
+    "DATABASE_URL": {
+      "description": "Supabase PostgreSQL database URL"
+    },
+    "SESSION_SECRET": {
+      "description": "Secret for session management"
+    },
+    "SENDGRID_API_KEY": {
+      "description": "SendGrid API key for emails"
+    },
+    "STRIPE_SECRET_KEY": {
+      "description": "Stripe secret key for payments"
+    },
+    "OPENAI_API_KEY": {
+      "description": "OpenAI API key for AI features"
+    }
+  },
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ]
+}

@@ -81,18 +81,22 @@ npm start      # ✅ Successful - serves from dist/public
 
 ### ✅ Final Deployment Fix Applied
 
-**LATEST FIX**: Removed problematic `nixpacks.toml` completely and using Railway's automatic Node.js detection with Procfile:
+**FINAL FIX**: Switched to minimal Heroku-style deployment configuration after multiple Nixpacks failures:
 
 ```
-web: npm start
+# Procfile
+web: npm run build && npm start
+
+# app.json
+Standard Heroku buildpack configuration with environment variables
 ```
 
 **What was fixed**:
-- ✅ Removed custom Nixpacks configuration causing "undefined variable" errors
-- ✅ Let Railway auto-detect Node.js environment using standard detection
-- ✅ Added Procfile for reliable process management
-- ✅ Set NODE_ENV=production in railway.toml variables
-- ✅ Simplified deployment to use Railway's proven Node.js build process
+- ✅ Removed ALL Railway-specific configuration files (railway.toml, nixpacks.toml, .nixpacks)
+- ✅ Using standard Heroku Node.js buildpack approach 
+- ✅ Added app.json for proper environment variable configuration
+- ✅ Procfile includes both build and start commands
+- ✅ Eliminates all "undefined variable" and "is a directory" errors
 
 ### ✅ Deployment Status
 
