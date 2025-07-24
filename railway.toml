@@ -2,17 +2,7 @@
 builder = "NIXPACKS"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "npm run build && npm start"
 
-[[services]]
-name = "journowl-web"
-
-[services.source]
-repo = "your-username/journowl"
-branch = "main"
-
-[services.variables]
-NODE_ENV = "production"
-
-[services.domains]
-production = "journowl.railway.app"
+[nixpacks]
+providers = ["node"]

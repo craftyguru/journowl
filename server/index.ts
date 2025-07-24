@@ -1,6 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
-console.log("STRIPE_SECRET_KEY loaded:", process.env.STRIPE_SECRET_KEY);
+
+// Only log Stripe key in development for security
+if (process.env.NODE_ENV === "development") {
+  console.log("STRIPE_SECRET_KEY loaded:", process.env.STRIPE_SECRET_KEY?.substring(0, 20) + "...");
+}
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -71,7 +75,7 @@ app.use((req, res, next) => {
     res.json({ status: "OK", message: "JournOwl server is running!", timestamp: new Date().toISOString() });
   });
 
-  // Serve PWA static files in development mode
+  // Serve PWA static files in development and production
   app.use('/manifest.json', express.static('client/public/manifest.json'));
   app.use('/service-worker.js', express.static('client/public/service-worker.js'));
   app.use('/offline.html', express.static('client/public/offline.html'));
@@ -99,9 +103,14 @@ app.use((req, res, next) => {
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
   const distPath = path.resolve(__dirname, "..", "dist", "public");
   
-  // Force development mode for debugging white screen issue
-  console.log("Using Vite development server for debugging");
-  await setupVite(app, server);
+  // Use production mode for Railway deployment
+  if (process.env.NODE_ENV === "production" && fs.existsSync(distPath)) {
+    console.log("Production mode: serving static files from dist/public");
+    serveStatic(app);
+  } else {
+    console.log("Development mode: using Vite development server");
+    await setupVite(app, server);
+  }
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.

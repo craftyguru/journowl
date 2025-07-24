@@ -51,15 +51,20 @@ const upload = multer({
   }
 });
 
-// Initialize Stripe (optional)
+// Initialize Stripe (optional) - safer initialization
 let stripe: Stripe | null = null;
-if (process.env.STRIPE_SECRET_KEY) {
-  stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: "2024-06-20" as any,
-  });
-  console.log('Stripe initialized successfully');
-} else {
-  console.warn('Stripe not initialized: STRIPE_SECRET_KEY not provided. Payment features will be disabled.');
+try {
+  if (process.env.STRIPE_SECRET_KEY && process.env.STRIPE_SECRET_KEY !== 'sk_live_placeholder-key-for-production') {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2024-06-20" as any,
+    });
+    console.log('Stripe initialized successfully');
+  } else {
+    console.warn('Stripe not initialized: STRIPE_SECRET_KEY not provided or is placeholder. Payment features will be disabled.');
+  }
+} catch (error) {
+  console.error('Stripe initialization failed:', error);
+  console.warn('Payment features will be disabled.');
 }
 
 // Extend session types
