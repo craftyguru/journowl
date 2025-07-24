@@ -816,7 +816,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
       >
         <motion.div
           whileHover={{ scale: 1.05, rotateY: 5 }}
-          className="relative bg-gradient-to-br from-purple-800/80 via-purple-700/70 to-purple-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-400/30 overflow-hidden"
+          onClick={() => setActiveTab("journal")}
+          className="relative bg-gradient-to-br from-purple-800/80 via-purple-700/70 to-purple-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-400/30 overflow-hidden cursor-pointer transition-all hover:shadow-purple-500/20"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-purple-400/20 rounded-full blur-xl"></div>
           <div className="relative z-10">
@@ -833,7 +834,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
 
         <motion.div
           whileHover={{ scale: 1.05, rotateY: 5 }}
-          className="relative bg-gradient-to-br from-pink-800/80 via-pink-700/70 to-pink-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-pink-400/30 overflow-hidden"
+          onClick={() => setActiveTab("analytics")}
+          className="relative bg-gradient-to-br from-pink-800/80 via-pink-700/70 to-pink-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-pink-400/30 overflow-hidden cursor-pointer transition-all hover:shadow-pink-500/20"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-pink-400/20 rounded-full blur-xl"></div>
           <div className="relative z-10">
@@ -850,7 +852,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
 
         <motion.div
           whileHover={{ scale: 1.05, rotateY: 5 }}
-          className="relative bg-gradient-to-br from-emerald-800/80 via-emerald-700/70 to-emerald-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-emerald-400/30 overflow-hidden"
+          onClick={() => setActiveTab("analytics")}
+          className="relative bg-gradient-to-br from-emerald-800/80 via-emerald-700/70 to-emerald-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-emerald-400/30 overflow-hidden cursor-pointer transition-all hover:shadow-emerald-500/20"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl"></div>
           <div className="relative z-10">
@@ -867,7 +870,8 @@ export default function EnhancedDashboard({ onSwitchToKid, initialTab = "journal
 
         <motion.div
           whileHover={{ scale: 1.05, rotateY: 5 }}
-          className="relative bg-gradient-to-br from-amber-800/80 via-amber-700/70 to-amber-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-amber-400/30 overflow-hidden"
+          onClick={() => setActiveTab("achievements")}
+          className="relative bg-gradient-to-br from-amber-800/80 via-amber-700/70 to-amber-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-amber-400/30 overflow-hidden cursor-pointer transition-all hover:shadow-amber-500/20"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-amber-400/20 rounded-full blur-xl"></div>
           <div className="relative z-10">
