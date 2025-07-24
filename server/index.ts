@@ -106,7 +106,22 @@ app.use((req, res, next) => {
   // Use production mode for Railway deployment
   if (process.env.NODE_ENV === "production" && fs.existsSync(distPath)) {
     console.log("Production mode: serving static files from dist/public");
-    serveStatic(app);
+    
+    // Serve static files directly with proper MIME types
+    app.use(express.static(distPath, {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.js')) {
+          res.setHeader('Content-Type', 'application/javascript');
+        } else if (filePath.endsWith('.css')) {
+          res.setHeader('Content-Type', 'text/css');
+        }
+      }
+    }));
+
+    // Serve index.html for all unmatched routes (SPA fallback)
+    app.use("*", (_req, res) => {
+      res.sendFile(path.resolve(distPath, "index.html"));
+    });
   } else {
     console.log("Development mode: using Vite development server");
     await setupVite(app, server);
