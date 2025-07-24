@@ -713,6 +713,8 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     console.log("UnifiedJournal - onSave function:", onSave);
     
     try {
+      console.log("🔥 About to call onSave with entry data...");
+      console.log("🔥 onSave function exists:", !!onSave);
       onSave(entryData);
       console.log("UnifiedJournal - onSave called successfully!");
     } catch (error) {
@@ -722,6 +724,8 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   const directSave = () => {
     console.log("🚨 DIRECT SAVE FUNCTION CALLED!");
+    console.log("🚨 onSave prop type:", typeof onSave);
+    console.log("🚨 onSave prop value:", onSave);
     handleSave();
   };
 
