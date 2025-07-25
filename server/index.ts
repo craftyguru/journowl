@@ -15,10 +15,6 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // PWA MIME type middleware - CRITICAL for PWABuilder compatibility
 app.use((req, res, next) => {
-  // Allow iframe embedding for development preview
-  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-  res.setHeader('Content-Security-Policy', "frame-ancestors 'self' *.replit.dev *.replit.com localhost:*");
-  
   // Set correct MIME types for PWA files
   if (req.path === '/manifest.json' || req.path.startsWith('/manifest.json')) {
     res.setHeader('Content-Type', 'application/manifest+json');

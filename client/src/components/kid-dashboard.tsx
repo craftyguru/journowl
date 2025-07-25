@@ -12,7 +12,7 @@ import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Pal
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
-// React Sketch Canvas removed due to version conflicts - using HTML5 Canvas instead
+import { ReactSketchCanvas } from "react-sketch-canvas";
 import UsageMeters from "@/components/UsageMeters";
 
 // Web Speech API types
@@ -2803,12 +2803,18 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                         Draw your story!
                       </Label>
                       <div className="bg-white rounded-2xl border-3 border-purple-300 p-4">
-                        <canvas
+                        <ReactSketchCanvas
                           ref={canvasRef}
-                          width={600}
-                          height={300}
-                          className="w-full bg-white rounded-2xl border-2 border-dashed border-purple-400 cursor-crosshair"
-                          style={{ touchAction: 'none' }}
+                          style={{
+                            border: "2px dashed #a855f7",
+                            borderRadius: "16px",
+                            cursor: "crosshair"
+                          }}
+                          width="100%"
+                          height="300px"
+                          strokeWidth={4}
+                          strokeColor="#7c3aed"
+                          canvasColor="white"
                         />
                         <div className="flex gap-2 mt-4 justify-center">
                           <Button

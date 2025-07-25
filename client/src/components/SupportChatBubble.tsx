@@ -41,9 +41,7 @@ export function SupportChatBubble() {
   useEffect(() => {
     if (open && currentUser && !wsRef.current) {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const host = window.location.hostname;
-      const port = window.location.port || (protocol === "wss:" ? "443" : "80");
-      const wsUrl = `${protocol}//${host}:${port}/ws/support`;
+      const wsUrl = `${protocol}//${window.location.host}/ws/support`;
       
       console.log('Connecting to support WebSocket:', wsUrl);
       wsRef.current = new WebSocket(wsUrl);

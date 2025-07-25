@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import MDEditor from '@uiw/react-md-editor';
 import { HexColorPicker } from "react-colorful";
-// React Sketch Canvas removed due to version conflicts - using HTML5 Canvas instead
+import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,7 +71,7 @@ const moodOptions = [
 
 export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJournalEditorProps) {
   const { toast } = useToast();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const canvasRef = useRef<ReactSketchCanvasRef>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
@@ -216,7 +216,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
     if (!canvasRef.current) return;
     
     try {
-      const canvasData = canvasRef.current.toDataURL("image/png");
+      const canvasData = await canvasRef.current.exportImage("png");
       const newDrawing = {
         id: Date.now(),
         data: canvasData,
@@ -242,35 +242,27 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
 
   const clearCanvas = useCallback(() => {
     if (canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d');
-      if (ctx) {
-        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      }
+      canvasRef.current.clearCanvas();
     }
   }, []);
 
   const undoDrawing = useCallback(() => {
-    // Undo functionality would require drawing history implementation
-    toast({
-      title: "Undo",
-      description: "Undo feature coming soon for HTML5 canvas!"
-    });
-  }, [toast]);
+    if (canvasRef.current) {
+      canvasRef.current.undo();
+    }
+  }, []);
 
   const redoDrawing = useCallback(() => {
-    // Redo functionality would require drawing history implementation
-    toast({
-      title: "Redo", 
-      description: "Redo feature coming soon for HTML5 canvas!"
-    });
-  }, [toast]);
+    if (canvasRef.current) {
+      canvasRef.current.redo();
+    }
+  }, []);
 
   const downloadDrawing = useCallback(async () => {
     if (!canvasRef.current) return;
     
     try {
-      const canvas = canvasRef.current;
-      const canvasData = canvas.toDataURL("image/png");
+      const canvasData = await canvasRef.current.exportImage("png");
       const link = document.createElement('a');
       link.download = `journal-drawing-${Date.now()}.png`;
       link.href = canvasData;
@@ -633,12 +625,21 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
 
                     {/* Drawing Canvas */}
                     <div className="flex-1 bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
-                      <canvas
+                      <ReactSketchCanvas
                         ref={canvasRef}
-                        width={800}
-                        height={400}
-                        className="w-full h-full bg-white rounded-lg cursor-crosshair"
-                        style={{ touchAction: 'none' }}
+                        style={{
+                          border: 'none',
+                          borderRadius: '8px',
+                        }}
+                        width="100%"
+                        height="400px"
+                        strokeWidth={brushSize}
+                        strokeColor={drawingTool === 'eraser' ? canvasBackground : brushColor}
+                        canvasColor={canvasBackground}
+                        backgroundImage=""
+                        exportWithBackgroundImage={true}
+                        allowOnlyPointerType="all"
+                        svgStyle={{}}
                       />
                     </div>
 
