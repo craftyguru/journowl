@@ -17,6 +17,7 @@ import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
 import { SupportChatBubble } from "./SupportChatBubble";
+import { type JournalEntry as SharedJournalEntry } from "@/lib/types";
 // Removed import - using local NewGoalForm component instead
 
 // Typewriter hook for animated text
@@ -81,19 +82,35 @@ interface Stats {
   wordsThisWeek: number;
 }
 
-interface JournalEntry {
+// Calendar-specific JournalEntry interface that extends the shared one
+interface CalendarJournalEntry {
   id: number;
+  date: Date;
   title: string;
   content: string;
   mood: string;
-  createdAt: string;
-  photos?: Array<string> | Array<{ url: string; timestamp: string }>;
-  drawings?: Array<any>;
+  photos?: string[];
   tags?: string[];
-  date?: Date;
+  isPrivate?: boolean;
+  isPinned?: boolean;
   wordCount?: number;
-  photoAnalysis?: any;
 }
+
+// Helper function to convert from shared JournalEntry to calendar format
+const convertToCalendarEntry = (entry: SharedJournalEntry): CalendarJournalEntry => {
+  return {
+    id: entry.id,
+    date: new Date(entry.createdAt),
+    title: entry.title,
+    content: entry.content,
+    mood: entry.mood,
+    photos: [],
+    tags: [],
+    isPrivate: false,
+    isPinned: false,
+    wordCount: entry.wordCount
+  };
+};
 
 interface Achievement {
   id: number;
@@ -124,7 +141,7 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
   const queryClient = useQueryClient();
   
   // State management
-  const [selectedEntry, setSelectedEntry] = useState<JournalEntry | null>(null);
+  const [selectedEntry, setSelectedEntry] = useState<SharedJournalEntry | null>(null);
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
@@ -144,7 +161,7 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: entries = [] } = useQuery<JournalEntry[]>({
+  const { data: entries = [] } = useQuery<SharedJournalEntry[]>({
     queryKey: ['/api/journal/entries'],
     staleTime: 2 * 60 * 1000,
   });
@@ -169,7 +186,7 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
     setShowNewGoalModal(true);
   };
 
-  const handleEntrySelect = (entry: JournalEntry) => {
+  const handleEntrySelect = (entry: SharedJournalEntry) => {
     setSelectedEntry(entry);
     setShowSmartEditor(true);
   };
@@ -303,7 +320,7 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
           <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
             <h3 className="text-lg font-bold text-white mb-4">📝 Recent Entries</h3>
             <div className="space-y-3">
-              {entries.slice(0, 3).map((entry: JournalEntry) => (
+              {entries.slice(0, 3).map((entry: SharedJournalEntry) => (
                 <div 
                   key={entry.id} 
                   className="p-3 bg-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-700/70 transition-colors"
@@ -394,9 +411,24 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
       <AnimatePresence>
         {showCalendar && (
           <InteractiveCalendar
-            entries={entries || []}
-            onClose={() => setShowCalendar(false)}
-            onEntrySelect={handleEntrySelect}
+            entries={entries.map(convertToCalendarEntry)}
+            onDateSelect={(date: Date) => console.log('Date selected:', date)}
+            onEntryEdit={(entry: CalendarJournalEntry) => {
+              // Convert back to SharedJournalEntry for compatibility
+              const sharedEntry: SharedJournalEntry = {
+                id: entry.id,
+                userId: user?.id || 0,
+                title: entry.title,
+                content: entry.content,
+                mood: entry.mood,
+                wordCount: entry.wordCount || 0,
+                createdAt: entry.date.toISOString(),
+                updatedAt: entry.date.toISOString()
+              };
+              handleEntrySelect(sharedEntry);
+              setShowCalendar(false);
+            }}
+            onEntryDelete={handleEntryDelete}
           />
         )}
       </AnimatePresence>
