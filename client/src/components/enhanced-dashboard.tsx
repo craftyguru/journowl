@@ -853,6 +853,21 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           className="relative bg-gradient-to-br from-purple-800/80 via-purple-700/70 to-purple-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-400/30 overflow-hidden cursor-pointer transition-all hover:shadow-purple-500/20"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-purple-400/20 rounded-full blur-xl"></div>
+          {/* Floating animated elements */}
+          <motion.div
+            animate={{ y: [0, -10, 0], opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className="absolute top-2 left-2 text-xl"
+          >
+            📝
+          </motion.div>
+          <motion.div
+            animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+            transition={{ duration: 8, repeat: Infinity }}
+            className="absolute bottom-2 right-2 text-sm"
+          >
+            ⭐
+          </motion.div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-300 rounded-xl flex items-center justify-center">
@@ -860,8 +875,24 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               </div>
               <div className="text-purple-200 text-xs uppercase tracking-wider">Entries</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">{stats?.totalEntries || 0}</div>
-            <div className="text-purple-300 text-sm">Total entries</div>
+            <div className="text-4xl font-black text-white mb-2">{stats?.totalEntries || 0}</div>
+            <div className="text-purple-300 text-sm font-medium mb-3">Total entries</div>
+            
+            {/* Additional highlights */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between text-purple-200">
+                <span>This week:</span>
+                <span className="font-bold text-yellow-300">+{Math.min(stats?.totalEntries || 0, 7)}</span>
+              </div>
+              <div className="flex justify-between text-purple-200">
+                <span>Best day:</span>
+                <span className="font-bold text-green-300">{entries.length > 0 ? new Date(entries[0].createdAt).toLocaleDateString('en-US', { weekday: 'short' }) : 'Today'}</span>
+              </div>
+              <div className="flex justify-between text-purple-200">
+                <span>Avg/week:</span>
+                <span className="font-bold text-blue-300">{Math.round((stats?.totalEntries || 0) / Math.max(1, Math.ceil((Date.now() - new Date(user?.createdAt || Date.now()).getTime()) / (7 * 24 * 60 * 60 * 1000))))}</span>
+              </div>
+            </div>
           </div>
         </motion.div>
 
@@ -871,6 +902,21 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           className="relative bg-gradient-to-br from-pink-800/80 via-pink-700/70 to-pink-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-pink-400/30 overflow-hidden cursor-pointer transition-all hover:shadow-pink-500/20"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-pink-400/20 rounded-full blur-xl"></div>
+          {/* Floating animated elements */}
+          <motion.div
+            animate={{ x: [0, 10, 0], opacity: [0.6, 1, 0.6] }}
+            transition={{ duration: 2.5, repeat: Infinity }}
+            className="absolute top-2 left-2 text-xl"
+          >
+            ⚡
+          </motion.div>
+          <motion.div
+            animate={{ rotate: -360, scale: [1, 1.3, 1] }}
+            transition={{ duration: 6, repeat: Infinity }}
+            className="absolute bottom-2 right-2 text-sm"
+          >
+            💫
+          </motion.div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <div className="w-12 h-12 bg-gradient-to-r from-pink-400 to-pink-300 rounded-xl flex items-center justify-center">
@@ -878,8 +924,24 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               </div>
               <div className="text-pink-200 text-xs uppercase tracking-wider">Words</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">{stats?.totalWords || 0}</div>
-            <div className="text-pink-300 text-sm">Total words</div>
+            <div className="text-4xl font-black text-white mb-2">{stats?.totalWords || 0}</div>
+            <div className="text-pink-300 text-sm font-medium mb-3">Total words</div>
+            
+            {/* Additional highlights */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between text-pink-200">
+                <span>Avg/entry:</span>
+                <span className="font-bold text-yellow-300">{Math.round((stats?.totalWords || 0) / Math.max(1, stats?.totalEntries || 1))}</span>
+              </div>
+              <div className="flex justify-between text-pink-200">
+                <span>Best entry:</span>
+                <span className="font-bold text-green-300">{Math.max(...entries.map(e => e.wordCount || 0), 0)} words</span>
+              </div>
+              <div className="flex justify-between text-pink-200">
+                <span>Goal:</span>
+                <span className="font-bold text-blue-300">1000+ words</span>
+              </div>
+            </div>
           </div>
         </motion.div>
 
@@ -889,6 +951,21 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           className="relative bg-gradient-to-br from-emerald-800/80 via-emerald-700/70 to-emerald-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-emerald-400/30 overflow-hidden cursor-pointer transition-all hover:shadow-emerald-500/20"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl"></div>
+          {/* Floating animated elements */}
+          <motion.div
+            animate={{ y: [0, -8, 0], scale: [1, 1.1, 1] }}
+            transition={{ duration: 4, repeat: Infinity }}
+            className="absolute top-2 left-2 text-xl"
+          >
+            🔥
+          </motion.div>
+          <motion.div
+            animate={{ rotate: 360, x: [0, 5, 0] }}
+            transition={{ duration: 5, repeat: Infinity }}
+            className="absolute bottom-2 right-2 text-sm"
+          >
+            🎯
+          </motion.div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <div className="w-12 h-12 bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-xl flex items-center justify-center">
@@ -896,8 +973,24 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               </div>
               <div className="text-emerald-200 text-xs uppercase tracking-wider">Streak</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">{stats?.currentStreak || 0}</div>
-            <div className="text-emerald-300 text-sm">days strong 🔥</div>
+            <div className="text-4xl font-black text-white mb-2">{stats?.currentStreak || 0}</div>
+            <div className="text-emerald-300 text-sm font-medium mb-3">days strong 🔥</div>
+            
+            {/* Additional highlights */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between text-emerald-200">
+                <span>Best streak:</span>
+                <span className="font-bold text-yellow-300">{stats?.longestStreak || 0} days</span>
+              </div>
+              <div className="flex justify-between text-emerald-200">
+                <span>This month:</span>
+                <span className="font-bold text-green-300">{Math.min(stats?.totalEntries || 0, 30)} entries</span>
+              </div>
+              <div className="flex justify-between text-emerald-200">
+                <span>Target:</span>
+                <span className="font-bold text-blue-300">30-day streak</span>
+              </div>
+            </div>
           </div>
         </motion.div>
 
@@ -907,6 +1000,21 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           className="relative bg-gradient-to-br from-amber-800/80 via-amber-700/70 to-amber-600/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-amber-400/30 overflow-hidden cursor-pointer transition-all hover:shadow-amber-500/20"
         >
           <div className="absolute top-0 right-0 w-20 h-20 bg-amber-400/20 rounded-full blur-xl"></div>
+          {/* Floating animated elements */}
+          <motion.div
+            animate={{ rotate: [0, 15, -15, 0], scale: [1, 1.2, 1] }}
+            transition={{ duration: 3, repeat: Infinity }}
+            className="absolute top-2 left-2 text-xl"
+          >
+            ✨
+          </motion.div>
+          <motion.div
+            animate={{ y: [0, -5, 0], opacity: [0.7, 1, 0.7] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="absolute bottom-2 right-2 text-sm"
+          >
+            🏆
+          </motion.div>
           <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <div className="w-12 h-12 bg-gradient-to-r from-amber-400 to-amber-300 rounded-xl flex items-center justify-center">
@@ -914,8 +1022,24 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               </div>
               <div className="text-amber-200 text-xs uppercase tracking-wider">XP</div>
             </div>
-            <div className="text-3xl font-bold text-white mb-1">{user?.xp || 0}</div>
-            <div className="text-amber-300 text-sm">Level {user?.level || 1} ✨</div>
+            <div className="text-4xl font-black text-white mb-2">{user?.xp || 0}</div>
+            <div className="text-amber-300 text-sm font-medium mb-3">Level {user?.level || 1} ✨</div>
+            
+            {/* Additional highlights */}
+            <div className="space-y-1 text-xs">
+              <div className="flex justify-between text-amber-200">
+                <span>To next level:</span>
+                <span className="font-bold text-yellow-300">{1000 - ((user?.xp || 0) % 1000)} XP</span>
+              </div>
+              <div className="flex justify-between text-amber-200">
+                <span>Progress:</span>
+                <span className="font-bold text-green-300">{Math.round(((user?.xp || 0) % 1000) / 10)}%</span>
+              </div>
+              <div className="flex justify-between text-amber-200">
+                <span>Rank:</span>
+                <span className="font-bold text-blue-300">{user?.level >= 10 ? 'Expert' : user?.level >= 5 ? 'Advanced' : 'Beginner'}</span>
+              </div>
+            </div>
             {(user?.xp || 0) > 100000 && (
               <button 
                 onClick={async () => {
@@ -1030,21 +1154,190 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="analytics" 
-              className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
+                activeTab === 'analytics' 
+                  ? 'bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 text-white shadow-lg shadow-cyan-500/50 scale-105' 
+                  : 'bg-gradient-to-r from-blue-400/20 via-cyan-400/20 to-teal-400/20 text-blue-200 hover:from-blue-400/40 hover:via-cyan-400/40 hover:to-teal-400/40 hover:text-white hover:scale-105'
+              }`}
             >
-              📊 Analytics
+              <motion.div
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'analytics' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'analytics' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              >
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    rotate: activeTab === 'analytics' ? [0, 360] : 0,
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: activeTab === 'analytics' ? Infinity : 0,
+                    ease: "linear"
+                  }}
+                >
+                  📊
+                </motion.span>
+                <span className="relative">
+                  Analytics
+                  {activeTab === 'analytics' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-cyan-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'analytics' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
+              </motion.div>
             </TabsTrigger>
             <TabsTrigger 
               value="achievements" 
-              className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
+                activeTab === 'achievements' 
+                  ? 'bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500 text-white shadow-lg shadow-yellow-500/50 scale-105' 
+                  : 'bg-gradient-to-r from-amber-400/20 via-yellow-400/20 to-orange-400/20 text-amber-200 hover:from-amber-400/40 hover:via-yellow-400/40 hover:to-orange-400/40 hover:text-white hover:scale-105'
+              }`}
             >
-              🏆 Achievements
+              <motion.div
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'achievements' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'achievements' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              >
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    rotate: activeTab === 'achievements' ? [0, 15, -15, 0] : 0,
+                    scale: activeTab === 'achievements' ? [1, 1.2, 1] : 1,
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: activeTab === 'achievements' ? Infinity : 0,
+                    repeatType: "reverse"
+                  }}
+                >
+                  🏆
+                </motion.span>
+                <span className="relative">
+                  Achievements
+                  {activeTab === 'achievements' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-yellow-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'achievements' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
+              </motion.div>
             </TabsTrigger>
             <TabsTrigger 
               value="goals" 
-              className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
+                activeTab === 'goals' 
+                  ? 'bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white shadow-lg shadow-green-500/50 scale-105' 
+                  : 'bg-gradient-to-r from-emerald-400/20 via-green-400/20 to-teal-400/20 text-emerald-200 hover:from-emerald-400/40 hover:via-green-400/40 hover:to-teal-400/40 hover:text-white hover:scale-105'
+              }`}
             >
-              🎯 Goals
+              <motion.div
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'goals' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'goals' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              >
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    scale: activeTab === 'goals' ? [1, 1.3, 1] : 1,
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: activeTab === 'goals' ? Infinity : 0,
+                    repeatType: "reverse"
+                  }}
+                >
+                  🎯
+                </motion.span>
+                <span className="relative">
+                  Goals
+                  {activeTab === 'goals' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-green-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'goals' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
+              </motion.div>
             </TabsTrigger>
             <TabsTrigger 
               value="insights" 

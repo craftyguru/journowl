@@ -32,6 +32,18 @@
     font-size: 16px;
   }
 
+  /* Rock Salt font family variable */
+  .rock-salt {
+    font-family: 'Rock Salt', cursive;
+  }
+
+  /* Gradient shift animation for colorful backgrounds */
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
   /* Mobile-friendly scrollbars */
   ::-webkit-scrollbar {
     width: 8px;
