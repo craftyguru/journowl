@@ -1,0 +1,130 @@
+_app-882776d542ea97b1.js:18 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-882776d542ea97b1.js:18 [LaunchDarkly] LaunchDarkly client initialized
+framework-3398caaee76c3414.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'battery'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-3398caaee76c3414.js:1
+framework-3398caaee76c3414.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-3398caaee76c3414.js:1
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A02095020C6B0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0F094020C6B0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A05095020C6B0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A04027030C6B0000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=2UeAYq-MgZHd' failed: 
+setupWebSocket @ client:536
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+stallwart.build.js:1 stallwart: failed ping 1
+image_1753002525330.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752836460017.png:1  Failed to load resource: the server responded with a status of 404 ()
+stallwart.build.js:1 stallwart: failed ping 1
+stallwart.build.js:1 stallwart: failed ping 2
+stallwart.build.js:1 stallwart: failed ping 3
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=2UeAYq-MgZHd' failed: 
+setupWebSocket @ client:536
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=2UeAYq-MgZHd' is invalid.
+ App initializing - pathname: / search: 
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+auth.ts:61 getCurrentUser failed: Error: Not authenticated
+getCurrentUser @ auth.ts:61
+ PWA Debug: Checking installation eligibility...
+ PWA Debug: HTTPS: true
+ PWA Debug: Service Worker supported: true
+ PWA Debug: Manifest linked: true
+ JournOwl SW registered:  [object ServiceWorkerRegistration]
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+auth.ts:61 getCurrentUser failed: Error: Not authenticated
+getCurrentUser @ auth.ts:61
+ PWA Debug: beforeinstallprompt fired: false
+ PWA Debug: Global deferredPrompt available: false
+client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=2UeAYq-MgZHd' failed: 
+setupWebSocket @ client:536
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=2UeAYq-MgZHd' is invalid.
+ App initializing - pathname: /dashboard search: 
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+auth.ts:61 getCurrentUser failed: Error: Not authenticated
+getCurrentUser @ auth.ts:61
+dashboard:122 PWA Debug: Checking installation eligibility...
+dashboard:123 PWA Debug: HTTPS: true
+dashboard:124 PWA Debug: Service Worker supported: true
+dashboard:125 PWA Debug: Manifest linked: true
+dashboard:74 JournOwl SW registered:  [object ServiceWorkerRegistration]
+dashboard:133 PWA Debug: beforeinstallprompt fired: false
+dashboard:134 PWA Debug: Global deferredPrompt available: false
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+auth.ts:61 getCurrentUser failed: Error: Not authenticated
+getCurrentUser @ auth.ts:61
+client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=2UeAYq-MgZHd' failed: 
+setupWebSocket @ client:536
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=2UeAYq-MgZHd' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)
+App.tsx:34 App initializing - pathname: /dashboard search: 
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+auth.ts:61 getCurrentUser failed: Error: Not authenticated
+    at getCurrentUser (auth.ts:57:13)
+getCurrentUser @ auth.ts:61
+dashboard:122 PWA Debug: Checking installation eligibility...
+dashboard:123 PWA Debug: HTTPS: true
+dashboard:124 PWA Debug: Service Worker supported: true
+dashboard:125 PWA Debug: Manifest linked: true
+dashboard:74 JournOwl SW registered:  ServiceWorkerRegistration
+dashboard:133 PWA Debug: beforeinstallprompt fired: false
+dashboard:134 PWA Debug: Global deferredPrompt available: false
