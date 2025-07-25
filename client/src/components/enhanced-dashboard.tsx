@@ -4783,10 +4783,10 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
                 </div>
                 <div className="space-y-2 mb-4">
                   <div className="text-xs text-green-300 bg-green-500/20 px-2 py-1 rounded inline-block">
-                    Peak: {timeAnalysisData.peakHour || 'Unknown'}
+                    Peak: {timeAnalysisData?.peakHour || 'Unknown'}
                   </div>
                   <div className="text-xs text-teal-300 bg-teal-500/20 px-2 py-1 rounded inline-block ml-2">
-                    {Object.keys(timeAnalysisData.hourCounts || {}).length} hours tracked
+                    {Object.keys(timeAnalysisData?.hourCounts || {}).length} hours tracked
                   </div>
                 </div>
                 <Button 
