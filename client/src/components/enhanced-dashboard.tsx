@@ -73,6 +73,7 @@ interface User {
   email?: string;
   firstName?: string;
   lastName?: string;
+  createdAt?: string;
   profileImageUrl?: string;
   xp?: number;
   level?: number;
