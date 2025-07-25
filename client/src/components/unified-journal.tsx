@@ -103,6 +103,8 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [isVideoMode, setIsVideoMode] = useState(false);
   const [videoRecordings, setVideoRecordings] = useState<{url: string, duration: number, timestamp: Date, type: 'photo' | 'video'}[]>([]);
   const [showPromptPurchase, setShowPromptPurchase] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -684,11 +686,24 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   }, [mood]);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
+    // Prevent multiple saves - debounce with immediate execution
+    if (isSaving) {
+      console.log("Save already in progress, ignoring duplicate call");
+      return;
+    }
+
     console.log("🔥 UnifiedJournal handleSave called!");
     console.log("UnifiedJournal - title:", title);
     console.log("UnifiedJournal - content:", content);
     console.log("UnifiedJournal - mood:", mood);
+    
+    setIsSaving(true);
+
+    // Clear any existing timeout
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current);
+    }
     
     const entryData = {
       id: entry?.id,
@@ -710,24 +725,31 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
     console.log("UnifiedJournal - prepared entry data:", JSON.stringify(entryData, null, 2));
     console.log("UnifiedJournal - calling onSave function:", typeof onSave);
-    console.log("UnifiedJournal - onSave function:", onSave);
     
     try {
       console.log("🔥 About to call onSave with entry data...");
-      console.log("🔥 onSave function exists:", !!onSave);
       onSave(entryData);
       console.log("UnifiedJournal - onSave called successfully!");
+      
+      // Reset saving state after a brief delay to prevent rapid re-saves
+      saveTimeoutRef.current = setTimeout(() => {
+        setIsSaving(false);
+      }, 2000);
+      
     } catch (error) {
       console.error("UnifiedJournal - Error calling onSave:", error);
+      setIsSaving(false);
     }
-  };
+  }, [title, content, mood, selectedFont, fontSize, textColor, backgroundColor, isPrivate, tags, photos, drawings, entry?.id, entry?.createdAt, onSave, isSaving]);
 
-  const directSave = () => {
-    console.log("🚨 DIRECT SAVE FUNCTION CALLED!");
-    console.log("🚨 onSave prop type:", typeof onSave);
-    console.log("🚨 onSave prop value:", onSave);
-    handleSave();
-  };
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current) {
+        clearTimeout(saveTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Add keyboard shortcut for save (Ctrl+S)
   useEffect(() => {
@@ -814,15 +836,18 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           
           <div className="flex items-center gap-1 sm:gap-4">
             <button 
-              onClick={directSave}
-              onMouseDown={directSave}
-              onTouchStart={directSave}
-              className="bg-emerald-500 hover:bg-emerald-600 text-white h-8 px-4 rounded text-sm font-medium flex items-center gap-2 cursor-pointer z-50 relative"
+              onClick={handleSave}
+              disabled={isSaving}
+              className={`${
+                isSaving 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-emerald-500 hover:bg-emerald-600 cursor-pointer'
+              } text-white h-8 px-4 rounded text-sm font-medium flex items-center gap-2 z-50 relative transition-colors`}
               type="button"
               style={{ pointerEvents: 'all' }}
             >
               <Save className="w-4 h-4" />
-              <span>Save Entry</span>
+              <span>{isSaving ? 'Saving...' : 'Save Entry'}</span>
             </button>
             <Button 
               onClick={onClose}
