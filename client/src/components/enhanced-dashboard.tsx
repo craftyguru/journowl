@@ -1315,10 +1315,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
         <div className="relative w-full">
-          <TabsList className="flex w-full overflow-x-auto bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-thin" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
+          <TabsList className="flex w-full overflow-x-auto bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)' }}>
             <TabsTrigger 
               value="journal" 
-              className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] ${
                 activeTab === 'journal' 
                   ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/50 scale-105' 
                   : 'bg-gradient-to-r from-orange-400/20 to-amber-400/20 text-orange-200 hover:from-orange-400/40 hover:to-amber-400/40 hover:text-white hover:scale-105'
@@ -1393,7 +1393,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="analytics" 
-              className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] ${
                 activeTab === 'analytics' 
                   ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/50 scale-105' 
                   : 'bg-gradient-to-r from-blue-400/20 to-cyan-400/20 text-blue-200 hover:from-blue-400/40 hover:to-cyan-400/40 hover:text-white hover:scale-105'
@@ -1455,7 +1455,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="achievements" 
-              className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] ${
                 activeTab === 'achievements' 
                   ? 'bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-lg shadow-yellow-500/50 scale-105' 
                   : 'bg-gradient-to-r from-yellow-400/20 to-amber-400/20 text-yellow-200 hover:from-yellow-400/40 hover:to-amber-400/40 hover:text-white hover:scale-105'
@@ -1518,7 +1518,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="goals" 
-              className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[100px] ${
                 activeTab === 'goals' 
                   ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/50 scale-105' 
                   : 'bg-gradient-to-r from-green-400/20 to-emerald-400/20 text-green-200 hover:from-green-400/40 hover:to-emerald-400/40 hover:text-white hover:scale-105'
@@ -1580,7 +1580,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="insights" 
-              className={`flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md transition-all duration-200 whitespace-nowrap ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] ${
                 activeTab === 'insights' 
                   ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/50 scale-105' 
                   : 'bg-gradient-to-r from-purple-400/20 to-violet-400/20 text-purple-200 hover:from-purple-400/40 hover:to-violet-400/40 hover:text-white hover:scale-105'
@@ -1591,7 +1591,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="analytics-insights" 
-              className={`flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md transition-all duration-200 whitespace-nowrap ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[130px] ${
                 activeTab === 'analytics-insights' 
                   ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-500/50 scale-105' 
                   : 'bg-gradient-to-r from-indigo-400/20 to-blue-400/20 text-indigo-200 hover:from-indigo-400/40 hover:to-blue-400/40 hover:text-white hover:scale-105'
@@ -1602,7 +1602,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="calendar" 
-              className={`flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md transition-all duration-200 whitespace-nowrap ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[170px] ${
                 activeTab === 'calendar' 
                   ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/50 scale-105' 
                   : 'bg-gradient-to-r from-teal-400/20 to-cyan-400/20 text-teal-200 hover:from-teal-400/40 hover:to-cyan-400/40 hover:text-white hover:scale-105'
@@ -1613,7 +1613,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="stories" 
-              className={`flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md transition-all duration-200 whitespace-nowrap ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[130px] ${
                 activeTab === 'stories' 
                   ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/50 scale-105' 
                   : 'bg-gradient-to-r from-emerald-400/20 to-teal-400/20 text-emerald-200 hover:from-emerald-400/40 hover:to-teal-400/40 hover:text-white hover:scale-105'
@@ -1624,7 +1624,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </TabsTrigger>
             <TabsTrigger 
               value="referral" 
-              className={`flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md transition-all duration-200 whitespace-nowrap ${
+              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] ${
                 activeTab === 'referral' 
                   ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg shadow-pink-500/50 scale-105' 
                   : 'bg-gradient-to-r from-pink-400/20 to-rose-400/20 text-pink-200 hover:from-pink-400/40 hover:to-rose-400/40 hover:text-white hover:scale-105'
