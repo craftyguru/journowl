@@ -590,9 +590,44 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                             whileTap={{ scale: 0.9 }}
                             onClick={(e) => {
                               e.stopPropagation();
-                              if (window.confirm(`Are you sure you want to delete "${entry.title}"? This action cannot be undone.`)) {
-                                onEntryDelete(entry.id);
-                              }
+                              // Show colorful animated confirmation dialog
+                              const confirmDiv = document.createElement('div');
+                              confirmDiv.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center';
+                              confirmDiv.innerHTML = `
+                                <div class="bg-gradient-to-br from-red-600 via-pink-600 to-purple-600 text-white p-8 rounded-3xl shadow-2xl border-2 border-red-300/30 backdrop-blur-lg max-w-md mx-4 animate-bounce">
+                                  <div class="text-center">
+                                    <div class="text-6xl mb-4 animate-pulse">🗑️</div>
+                                    <div class="text-2xl font-bold mb-2">Delete Entry?</div>
+                                    <div class="text-red-100 mb-6">Are you sure you want to delete "${entry.title}"? This action cannot be undone.</div>
+                                    <div class="flex gap-4 justify-center">
+                                      <button id="confirmDeleteEntry" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 px-6 py-3 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg">
+                                        🗑️ Delete
+                                      </button>
+                                      <button id="cancelDeleteEntry" class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 px-6 py-3 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg">
+                                        ❌ Cancel
+                                      </button>
+                                    </div>
+                                  </div>
+                                </div>
+                              `;
+                              document.body.appendChild(confirmDiv);
+                              
+                              const handleConfirm = () => {
+                                if (onEntryDelete) {
+                                  onEntryDelete(entry.id);
+                                }
+                                document.body.removeChild(confirmDiv);
+                              };
+                              
+                              document.getElementById('confirmDeleteEntry')?.addEventListener('click', handleConfirm);
+                              
+                              document.getElementById('cancelDeleteEntry')?.addEventListener('click', () => {
+                                document.body.removeChild(confirmDiv);
+                              });
+                              
+                              confirmDiv.addEventListener('click', (e) => {
+                                if (e.target === confirmDiv) document.body.removeChild(confirmDiv);
+                              });
                             }}
                             className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-red-100 text-red-500 hover:text-red-700"
                             title="Delete entry"
@@ -741,9 +776,40 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                     whileTap={{ scale: 0.9 }}
                     onClick={(e) => {
                       e.stopPropagation();
-                      if (window.confirm(`Are you sure you want to delete "${entry.title}"? This action cannot be undone.`)) {
+                      // Show colorful animated confirmation dialog
+                      const confirmDiv = document.createElement('div');
+                      confirmDiv.className = 'fixed inset-0 bg-black/50 backdrop-blur-sm z-[9999] flex items-center justify-center';
+                      confirmDiv.innerHTML = `
+                        <div class="bg-gradient-to-br from-red-600 via-pink-600 to-purple-600 text-white p-8 rounded-3xl shadow-2xl border-2 border-red-300/30 backdrop-blur-lg max-w-md mx-4 animate-bounce">
+                          <div class="text-center">
+                            <div class="text-6xl mb-4 animate-pulse">🗑️</div>
+                            <div class="text-2xl font-bold mb-2">Delete Entry?</div>
+                            <div class="text-red-100 mb-6">Are you sure you want to delete "${entry.title}"? This action cannot be undone.</div>
+                            <div class="flex gap-4 justify-center">
+                              <button id="confirmDelete" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 px-6 py-3 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg">
+                                🗑️ Delete
+                              </button>
+                              <button id="cancelDelete" class="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 px-6 py-3 rounded-xl font-bold transition-all duration-200 hover:scale-105 shadow-lg">
+                                ❌ Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      `;
+                      document.body.appendChild(confirmDiv);
+                      
+                      document.getElementById('confirmDelete')?.addEventListener('click', () => {
                         onEntryDelete(entry.id);
-                      }
+                        document.body.removeChild(confirmDiv);
+                      });
+                      
+                      document.getElementById('cancelDelete')?.addEventListener('click', () => {
+                        document.body.removeChild(confirmDiv);
+                      });
+                      
+                      confirmDiv.addEventListener('click', (e) => {
+                        if (e.target === confirmDiv) document.body.removeChild(confirmDiv);
+                      });
                     }}
                     className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-lg z-10"
                     title="Delete entry"

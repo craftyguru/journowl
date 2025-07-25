@@ -266,7 +266,23 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       // Check if user is authenticated first
       if (!user) {
         console.error('User not authenticated');
-        alert('Please refresh the page and log in again');
+        // Show colorful animated login message
+        const loginDiv = document.createElement('div');
+        loginDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+        loginDiv.innerHTML = `
+          <div class="bg-gradient-to-r from-orange-500 via-yellow-500 to-amber-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-orange-300/30 backdrop-blur-lg animate-pulse">
+            <div class="flex items-center gap-4">
+              <div class="text-4xl animate-bounce">🔐</div>
+              <div>
+                <div class="text-xl font-bold">Login Required</div>
+                <div class="text-orange-100 text-sm">Please refresh the page and log in again</div>
+              </div>
+              <div class="text-2xl animate-spin">🔄</div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(loginDiv);
+        setTimeout(() => document.body.removeChild(loginDiv), 4000);
         return;
       }
 
@@ -308,9 +324,41 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       
       // Show user-friendly error message
       if (error.message.includes('401')) {
-        alert('Authentication expired. Please refresh the page and log in again.');
+        // Show colorful animated auth expired message
+        const authDiv = document.createElement('div');
+        authDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+        authDiv.innerHTML = `
+          <div class="bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-purple-300/30 backdrop-blur-lg animate-pulse">
+            <div class="flex items-center gap-4">
+              <div class="text-4xl animate-bounce">⏰</div>
+              <div>
+                <div class="text-xl font-bold">Session Expired</div>
+                <div class="text-purple-100 text-sm">Authentication expired. Please refresh the page and log in again.</div>
+              </div>
+              <div class="text-2xl animate-spin">🔑</div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(authDiv);
+        setTimeout(() => document.body.removeChild(authDiv), 4000);
       } else {
-        alert(`Failed to save entry: ${error.message}`);
+        // Show colorful animated save error message
+        const saveErrorDiv = document.createElement('div');
+        saveErrorDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+        saveErrorDiv.innerHTML = `
+          <div class="bg-gradient-to-r from-red-500 via-pink-500 to-rose-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-red-300/30 backdrop-blur-lg animate-pulse">
+            <div class="flex items-center gap-4">
+              <div class="text-4xl animate-bounce">💾</div>
+              <div>
+                <div class="text-xl font-bold">Save Failed</div>
+                <div class="text-red-100 text-sm">Failed to save entry: ${error.message}</div>
+              </div>
+              <div class="text-2xl animate-spin">❌</div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(saveErrorDiv);
+        setTimeout(() => document.body.removeChild(saveErrorDiv), 4000);
       }
       
       // Keep the journal open so user can try again
@@ -361,10 +409,42 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       
       // Show success message
-      alert("Journal entry deleted successfully!");
+      // Show colorful animated success message
+      const successDiv = document.createElement('div');
+      successDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+      successDiv.innerHTML = `
+        <div class="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-green-300/30 backdrop-blur-lg animate-pulse">
+          <div class="flex items-center gap-4">
+            <div class="text-4xl animate-bounce">🎉</div>
+            <div>
+              <div class="text-xl font-bold">Success!</div>
+              <div class="text-green-100 text-sm">Journal entry deleted successfully!</div>
+            </div>
+            <div class="text-2xl animate-spin">✨</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(successDiv);
+      setTimeout(() => document.body.removeChild(successDiv), 3000);
     } catch (error: any) {
       console.error("Failed to delete journal entry:", error);
-      alert(`Failed to delete journal entry: ${error.message}`);
+      // Show colorful animated error message
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+      errorDiv.innerHTML = `
+        <div class="bg-gradient-to-r from-red-500 via-pink-500 to-purple-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-red-300/30 backdrop-blur-lg animate-pulse">
+          <div class="flex items-center gap-4">
+            <div class="text-4xl animate-bounce">😞</div>
+            <div>
+              <div class="text-xl font-bold">Oops!</div>
+              <div class="text-red-100 text-sm">Failed to delete journal entry: ${error.message}</div>
+            </div>
+            <div class="text-2xl animate-spin">💔</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(errorDiv);
+      setTimeout(() => document.body.removeChild(errorDiv), 4000);
     }
   };
 
@@ -485,7 +565,23 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       
     } catch (error) {
       console.error('Camera access failed:', error);
-      alert('Unable to access camera. Please check permissions.');
+      // Show colorful animated camera permission message
+      const cameraDiv = document.createElement('div');
+      cameraDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+      cameraDiv.innerHTML = `
+        <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-indigo-300/30 backdrop-blur-lg animate-pulse">
+          <div class="flex items-center gap-4">
+            <div class="text-4xl animate-bounce">📷</div>
+            <div>
+              <div class="text-xl font-bold">Camera Access</div>
+              <div class="text-indigo-100 text-sm">Unable to access camera. Please check permissions.</div>
+            </div>
+            <div class="text-2xl animate-spin">🔐</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(cameraDiv);
+      setTimeout(() => document.body.removeChild(cameraDiv), 4000);
     }
   };
 
@@ -746,7 +842,23 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       
     } catch (error) {
       console.error('Audio recording failed:', error);
-      alert('Unable to access microphone. Please check permissions.');
+      // Show colorful animated microphone permission message
+      const micDiv = document.createElement('div');
+      micDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+      micDiv.innerHTML = `
+        <div class="bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-teal-300/30 backdrop-blur-lg animate-pulse">
+          <div class="flex items-center gap-4">
+            <div class="text-4xl animate-bounce">🎤</div>
+            <div>
+              <div class="text-xl font-bold">Microphone Access</div>
+              <div class="text-teal-100 text-sm">Unable to access microphone. Please check permissions.</div>
+            </div>
+            <div class="text-2xl animate-spin">🔒</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(micDiv);
+      setTimeout(() => document.body.removeChild(micDiv), 4000);
     }
   };
 

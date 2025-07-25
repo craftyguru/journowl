@@ -613,7 +613,23 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       
     } catch (error) {
       console.error('Camera access failed:', error);
-      alert('Unable to access camera. Please check permissions.');
+      // Show colorful animated camera permission message
+      const cameraDiv = document.createElement('div');
+      cameraDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+      cameraDiv.innerHTML = `
+        <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-indigo-300/30 backdrop-blur-lg animate-pulse">
+          <div class="flex items-center gap-4">
+            <div class="text-4xl animate-bounce">📷</div>
+            <div>
+              <div class="text-xl font-bold">Camera Access</div>
+              <div class="text-indigo-100 text-sm">Unable to access camera. Please check permissions.</div>
+            </div>
+            <div class="text-2xl animate-spin">🔐</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(cameraDiv);
+      setTimeout(() => document.body.removeChild(cameraDiv), 4000);
     }
   };
 
@@ -877,7 +893,23 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
       
     } catch (error) {
       console.error('Audio recording failed:', error);
-      alert('Unable to access microphone. Please check permissions.');
+      // Show colorful animated microphone permission message
+      const micDiv = document.createElement('div');
+      micDiv.className = 'fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[9999] pointer-events-none';
+      micDiv.innerHTML = `
+        <div class="bg-gradient-to-r from-teal-500 via-cyan-500 to-blue-500 text-white px-8 py-6 rounded-2xl shadow-2xl border-2 border-teal-300/30 backdrop-blur-lg animate-pulse">
+          <div class="flex items-center gap-4">
+            <div class="text-4xl animate-bounce">🎤</div>
+            <div>
+              <div class="text-xl font-bold">Microphone Access</div>
+              <div class="text-teal-100 text-sm">Unable to access microphone. Please check permissions.</div>
+            </div>
+            <div class="text-2xl animate-spin">🔒</div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(micDiv);
+      setTimeout(() => document.body.removeChild(micDiv), 4000);
     }
   };
 
