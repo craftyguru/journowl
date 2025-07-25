@@ -114,6 +114,8 @@ Standard Heroku buildpack configuration with environment variables
 - Development: Uses Vite dev server only
 - Production: Serves static files only (requires npm run build first)
 - Added error handling for missing build files
+- **CRITICAL FIX**: Fixed SPA fallback to NOT serve index.html for asset requests (js, css, png files)
+- Assets now return 404 instead of HTML, preventing "Unexpected token '<'" errors
 
 ### 🚀 Quick Deployment
 

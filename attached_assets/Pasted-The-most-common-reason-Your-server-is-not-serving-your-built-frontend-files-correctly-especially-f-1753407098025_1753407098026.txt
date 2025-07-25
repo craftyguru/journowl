@@ -1,0 +1,75 @@
+The most common reason:
+Your server is not serving your built frontend files correctly, especially for dynamic/pretty URLs.
+
+Example:
+Instead of returning your compiled JS (/dist/public/assets/index-LjAQzOi3.js), your server is returning your index.html for every path.
+
+It can also happen if your vite.config.js outDir, or your Express static path, is not aligned.
+
+How to fix:
+1. Confirm your production build exists
+Did you run vite build or npm run build for your frontend?
+
+Is your build output (usually /dist/public or /dist) present and full of JS/CSS files?
+
+2. Check your Express static serving
+In your Express server, you have code like:
+
+js
+Copy
+Edit
+const distPath = path.resolve(__dirname, "public");
+app.use(express.static(distPath));
+// Fallback for SPA:
+app.use("*", (_req, res) => {
+  res.sendFile(path.resolve(distPath, "index.html"));
+});
+distPath must point to the directory that actually contains your JS assets (dist/public or similar).
+
+If it’s pointing to an empty folder or a wrong path, you’ll get this exact error.
+
+3. Check your vite.config.js
+Your build.outDir should match the directory your server is serving static files from.
+
+If you’re using root: "client" and outDir: "dist/public", then your Express must serve from "dist/public".
+
+Debug steps:
+Open dist/public (or your outDir) after build.
+
+Does it contain your JS/CSS files? If not, you’re serving the wrong folder.
+
+Open index.html from your built output in a text editor.
+
+Find a <script src="..."> tag. Try to load that JS path in the browser.
+
+If it gives you HTML, your server fallback is serving index.html for JS assets — this is the bug.
+
+How to fix in code (example):
+If your build outputs to dist/public:
+
+js
+Copy
+Edit
+// server.js (Express)
+const distPath = path.resolve(__dirname, "../dist/public"); // <-- match your outDir
+app.use(express.static(distPath));
+
+// Only fallback to index.html for *routes*, not for assets!
+app.get("*", (req, res) => {
+  // Only serve index.html for non-file requests
+  if (req.path.startsWith("/assets/") || req.path.endsWith(".js") || req.path.endsWith(".css")) {
+    res.status(404).end();
+    return;
+  }
+  res.sendFile(path.join(distPath, "index.html"));
+});
+Summary / What to do next:
+Align your Express static path with your Vite build output.
+
+Make sure your fallback only serves index.html for routes, not for assets.
+
+Rebuild your frontend (npm run build in the client).
+
+Restart your server.
+
+Clear browser cache and try again.

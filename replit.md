@@ -135,6 +135,7 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 - ✅ **STRIPE INITIALIZATION HARDENED**: Added comprehensive error handling for Stripe initialization preventing deployment crashes
 - ✅ **DEPLOYMENT CONFIGURATION SIMPLIFIED**: Switched to Heroku buildpack after multiple Nixpacks failures (undefined variables, directory errors)
 - ✅ **CRITICAL DEV/PROD MODE SEPARATION**: Fixed "Unexpected token '<'" JavaScript error by enforcing strict separation between development and production modes
+- ✅ **SPA FALLBACK ROUTE FIX**: Fixed server to never serve index.html for asset requests (/assets/, .js, .css files) preventing HTML being parsed as JavaScript
 - ✅ **PRODUCTION STATIC FILE SERVING**: Server now properly serves built files from dist/public in production mode ONLY
 - ✅ **DEVELOPMENT MODE ISOLATION**: Development mode uses Vite dev server ONLY, never mixing with static file serving
 - ✅ **ENVIRONMENT VARIABLE HANDLING**: Enhanced environment variable validation and fallback handling for missing keys

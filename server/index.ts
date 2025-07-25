@@ -122,8 +122,18 @@ app.use((req, res, next) => {
       }
     }));
 
-    // SPA fallback for production
-    app.use("*", (_req, res) => {
+    // SPA fallback - only serve index.html for routes, NOT for assets
+    app.get("*", (req, res) => {
+      // Don't serve index.html for asset requests
+      if (req.path.startsWith("/assets/") || 
+          req.path.endsWith(".js") || 
+          req.path.endsWith(".css") || 
+          req.path.endsWith(".png") || 
+          req.path.endsWith(".ico") || 
+          req.path.endsWith(".json")) {
+        res.status(404).end();
+        return;
+      }
       res.sendFile(path.resolve(distPath, "index.html"));
     });
   } else {
