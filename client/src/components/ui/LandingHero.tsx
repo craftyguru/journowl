@@ -136,6 +136,184 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
       {/* Subtle overlay for better text readability */}
       <div className="absolute inset-0 bg-black/20 z-0" />
 
+      {/* Animated Owls on Both Sides */}
+      {/* Left Owl */}
+      <motion.div
+        className="absolute left-4 sm:left-8 lg:left-16 top-1/2 transform -translate-y-1/2 z-10 hidden md:block"
+        animate={{ 
+          scale: [1, 1.3, 0.9, 1.2, 1],
+          rotate: [0, 5, -5, 3, 0],
+          y: [0, -10, 5, -8, 0]
+        }}
+        transition={{ 
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
+        <svg className="w-16 h-16 lg:w-24 lg:h-24 xl:w-32 xl:h-32" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+          <circle cx="42" cy="40" r="4" fill="white"/>
+          <circle cx="58" cy="40" r="4" fill="white"/>
+          <circle cx="42" cy="40" r="2" fill="black"/>
+          <circle cx="58" cy="40" r="2" fill="black"/>
+          <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+          <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+          <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+          <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+        </svg>
+        {/* Glowing effect around left owl */}
+        <motion.div 
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400/30 to-orange-500/30 blur-xl"
+          animate={{ opacity: [0.3, 0.7, 0.3] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+        {/* Sparkles around left owl */}
+        <motion.div
+          className="absolute -top-2 -left-2 text-yellow-400"
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1, 1.5, 1]
+          }}
+          transition={{ duration: 3, repeat: Infinity }}
+        >
+          ✨
+        </motion.div>
+        <motion.div
+          className="absolute -bottom-2 -right-2 text-orange-400"
+          animate={{ 
+            rotate: [360, 0],
+            scale: [1.2, 0.8, 1.2]
+          }}
+          transition={{ duration: 2.5, repeat: Infinity, delay: 1 }}
+        >
+          ⭐
+        </motion.div>
+      </motion.div>
+
+      {/* Right Owl */}
+      <motion.div
+        className="absolute right-4 sm:right-8 lg:right-16 top-1/2 transform -translate-y-1/2 z-10 hidden md:block"
+        animate={{ 
+          scale: [1.2, 0.9, 1.4, 1, 1.2],
+          rotate: [0, -5, 5, -3, 0],
+          y: [0, 8, -12, 6, 0]
+        }}
+        transition={{ 
+          duration: 4.5,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 2
+        }}
+      >
+        <svg className="w-16 h-16 lg:w-24 lg:h-24 xl:w-32 xl:h-32" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+          <circle cx="42" cy="40" r="4" fill="white"/>
+          <circle cx="58" cy="40" r="4" fill="white"/>
+          <circle cx="42" cy="40" r="2" fill="black"/>
+          <circle cx="58" cy="40" r="2" fill="black"/>
+          <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+          <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+          <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+          <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+        </svg>
+        {/* Glowing effect around right owl */}
+        <motion.div 
+          className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400/30 to-pink-500/30 blur-xl"
+          animate={{ opacity: [0.7, 0.3, 0.7] }}
+          transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+        />
+        {/* Sparkles around right owl */}
+        <motion.div
+          className="absolute -top-3 -right-1 text-purple-400"
+          animate={{ 
+            rotate: [0, 360],
+            scale: [1.3, 0.7, 1.3]
+          }}
+          transition={{ duration: 3.5, repeat: Infinity, delay: 0.5 }}
+        >
+          💫
+        </motion.div>
+        <motion.div
+          className="absolute -bottom-1 -left-3 text-pink-400"
+          animate={{ 
+            rotate: [360, 0],
+            scale: [0.8, 1.4, 0.8]
+          }}
+          transition={{ duration: 2.8, repeat: Infinity, delay: 1.5 }}
+        >
+          ✨
+        </motion.div>
+      </motion.div>
+
+      {/* Mobile Owls - Top Corners */}
+      {/* Top Left Mobile Owl */}
+      <motion.div
+        className="absolute top-20 left-4 z-10 md:hidden"
+        animate={{ 
+          scale: [1, 1.2, 1],
+          rotate: [0, 8, -8, 0]
+        }}
+        transition={{ 
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
+        <svg className="w-8 h-8 sm:w-12 sm:h-12" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+          <circle cx="42" cy="40" r="4" fill="white"/>
+          <circle cx="58" cy="40" r="4" fill="white"/>
+          <circle cx="42" cy="40" r="2" fill="black"/>
+          <circle cx="58" cy="40" r="2" fill="black"/>
+          <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+          <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+          <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+          <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+        </svg>
+        <motion.div
+          className="absolute -top-1 -right-1 text-xs"
+          animate={{ scale: [1, 1.3, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          ✨
+        </motion.div>
+      </motion.div>
+
+      {/* Top Right Mobile Owl */}
+      <motion.div
+        className="absolute top-20 right-4 z-10 md:hidden"
+        animate={{ 
+          scale: [1.1, 0.9, 1.1],
+          rotate: [0, -8, 8, 0]
+        }}
+        transition={{ 
+          duration: 3.5,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1.5
+        }}
+      >
+        <svg className="w-8 h-8 sm:w-12 sm:h-12" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+          <circle cx="42" cy="40" r="4" fill="white"/>
+          <circle cx="58" cy="40" r="4" fill="white"/>
+          <circle cx="42" cy="40" r="2" fill="black"/>
+          <circle cx="58" cy="40" r="2" fill="black"/>
+          <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+          <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+          <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+          <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+        </svg>
+        <motion.div
+          className="absolute -bottom-1 -left-1 text-xs"
+          animate={{ scale: [1.2, 0.8, 1.2] }}
+          transition={{ duration: 2.2, repeat: Infinity, delay: 1 }}
+        >
+          💫
+        </motion.div>
+      </motion.div>
+
       {/* Main Content */}
       <div className="relative z-20 mobile-container py-8 sm:py-12 lg:py-20 pt-16 sm:pt-24 lg:pt-32">
         

@@ -130,6 +130,26 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 
 ## Recent Changes
 
+### July 25, 2025 - LANDING PAGE ANIMATED OWLS WITH ZOOM EFFECTS COMPLETE ✅
+- ✅ **ANIMATED OWLS ON BOTH SIDES**: Added beautiful animated owl mascots on left and right sides of landing page with sophisticated zoom in/out effects
+- ✅ **ADVANCED ZOOM ANIMATIONS**: Left owl scales from 1 to 1.3 to 0.9 to 1.2 and back with floating vertical movement and gentle rotation
+- ✅ **MIRRORED RIGHT OWL**: Right owl has complementary animation scaling from 1.2 to 0.9 to 1.4 with different timing for dynamic visual variety
+- ✅ **MAGICAL SPARKLE EFFECTS**: Added animated sparkles and stars around both owls with rotating and scaling effects (✨⭐💫)
+- ✅ **GLOWING AURA EFFECTS**: Left owl has amber-orange gradient glow, right owl has purple-pink gradient glow with pulsing opacity
+- ✅ **MOBILE RESPONSIVE OWLS**: Smaller owls positioned in top corners for mobile devices with adapted animations
+- ✅ **LAYERED VISUAL DEPTH**: Owls positioned at z-10 with proper layering above background but below main content
+- ✅ **SMOOTH EASING**: All animations use easeInOut transitions with varied durations (3-4.5 seconds) for natural movement
+- ✅ **DESKTOP/MOBILE VARIANTS**: Large owls hidden on mobile (md:hidden), small corner owls shown only on mobile (md:hidden)
+- ✅ **COLORFUL SPARKLE VARIETY**: Yellow/orange sparkles for left owl, purple/pink sparkles for right owl matching gradient themes
+
+**Animated Owl Features Now Active:**
+- **Dynamic Scaling**: Complex zoom in/out patterns with multiple scale points creating breathing/floating effect
+- **Gentle Rotation**: Subtle rotation animations (-5° to +5°) adding organic movement to owl mascots
+- **Vertical Float**: Y-axis movement creating floating sensation as owls gently bob up and down
+- **Magical Sparkles**: Rotating and scaling emoji sparkles (✨⭐💫) positioned around each owl
+- **Gradient Glows**: Color-coordinated glowing aura effects that pulse in rhythm with owl movements
+- **Responsive Design**: Different owl sizes and positions optimized for desktop (sides) and mobile (top corners)
+
 ### July 25, 2025 - INSIGHTS TAB AI THERAPIST TRANSFORMATION COMPLETE ✅
 - ✅ **INSIGHTS TAB FULLY TRANSFORMED INTO AI THERAPIST**: Completely restructured the Insights tab from general AI insights to comprehensive psychological therapy experience
 - ✅ **AI THERAPIST HEADER & BRANDING**: Replaced "AI Insights" with "AI Therapist" featuring emerald-teal gradient and counselor messaging
