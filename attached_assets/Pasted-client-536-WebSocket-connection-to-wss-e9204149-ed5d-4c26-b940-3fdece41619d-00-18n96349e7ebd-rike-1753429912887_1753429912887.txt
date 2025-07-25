@@ -1,0 +1,65 @@
+client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=BraZIbGv9VrU' failed: 
+setupWebSocket @ client:536
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=BraZIbGv9VrU' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)
+chunk-RPCDYKBN.js?v=249c9dc9:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+App.tsx:34 App initializing - pathname: / search: 
+(index):122 PWA Debug: Checking installation eligibility...
+(index):123 PWA Debug: HTTPS: true
+(index):124 PWA Debug: Service Worker supported: true
+(index):125 PWA Debug: Manifest linked: true
+(index):74 JournOwl SW registered:  ServiceWorkerRegistration
+enhanced-dashboard.tsx:4270 Uncaught ReferenceError: X is not defined
+    at EnhancedDashboard (enhanced-dashboard.tsx:4270:18)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=249c9dc9:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=249c9dc9:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=249c9dc9:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=249c9dc9:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=249c9dc9:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=249c9dc9:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=249c9dc9:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=249c9dc9:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=249c9dc9:19137:13)
+enhanced-dashboard.tsx:4270 Uncaught ReferenceError: X is not defined
+    at EnhancedDashboard (enhanced-dashboard.tsx:4270:18)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=249c9dc9:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=249c9dc9:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=249c9dc9:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=249c9dc9:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=249c9dc9:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=249c9dc9:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=249c9dc9:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=249c9dc9:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=249c9dc9:19137:13)
+chunk-RPCDYKBN.js?v=249c9dc9:14032 The above error occurred in the <EnhancedDashboard> component:
+
+    at EnhancedDashboard (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/enhanced-dashboard.tsx:85:30)
+    at div
+    at EnhancedDashboardWithSupport (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/enhanced-dashboard.tsx:10164:56)
+    at main
+    at div
+    at AuthenticatedApp (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=QhiS4BuzTGqaD_efdCLr4:550:29)
+    at Provider (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=249c9dc9:38:15)
+    at TooltipProvider (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=249c9dc9:64:5)
+    at ThemeProvider (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/theme-provider.tsx:20:33)
+    at QueryClientProvider (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=249c9dc9:2805:3)
+    at App (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=QhiS4BuzTGqaD_efdCLr4:43:41)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+logCapturedError @ chunk-RPCDYKBN.js?v=249c9dc9:14032
+chunk-RPCDYKBN.js?v=249c9dc9:9129 Uncaught ReferenceError: X is not defined
+    at EnhancedDashboard (enhanced-dashboard.tsx:4270:18)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=249c9dc9:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=249c9dc9:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=249c9dc9:15914:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=249c9dc9:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=249c9dc9:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=249c9dc9:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js?v=249c9dc9:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js?v=249c9dc9:18736:28)
+    at performSyncWorkOnRoot (chunk-RPCDYKBN.js?v=249c9dc9:18879:28)
+(index):133 PWA Debug: beforeinstallprompt fired: false
+(index):134 PWA Debug: Global deferredPrompt available: false
