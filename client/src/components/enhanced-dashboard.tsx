@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight, BarChart3 } from "lucide-react";
+import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight, BarChart3, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -1779,12 +1779,25 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                           </div>
                         </div>
                       </div>
-                      <div className="flex gap-1">
-                        {(entry.tags || []).map((tag: string, i: number) => (
-                          <Badge key={i} variant="outline" className="text-xs border-purple-400/20 text-purple-300 bg-purple-500/10">
-                            {tag}
-                          </Badge>
-                        ))}
+                      <div className="flex items-center gap-2">
+                        <div className="flex gap-1">
+                          {(entry.tags || []).map((tag: string, i: number) => (
+                            <Badge key={i} variant="outline" className="text-xs border-purple-400/20 text-purple-300 bg-purple-500/10">
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent triggering the entry click
+                            handleEntryDelete(entry.id);
+                          }}
+                          className="text-red-400 hover:text-red-300 hover:bg-red-500/20 p-2 h-8 w-8"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </div>
                     </div>
                   </motion.div>
