@@ -301,12 +301,22 @@ function App() {
       );
   }
 
-  // Fallback: if not authenticated and no specific view, redirect to landing
+  // Fallback: if not authenticated and no specific view, show landing instead of infinite redirect
   if (!isAuthenticated) {
-    // This shouldn't happen with proper state management, but just in case
-    console.log('Fallback triggered, redirecting to landing. CurrentView:', currentView);
-    setCurrentView("landing");
-    return null;
+    console.log('Fallback triggered, showing landing. CurrentView:', currentView);
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <div className="min-h-screen relative overflow-hidden">
+              <StarryBackground />
+              <LandingHero onGetStarted={() => handleNavigate("auth")} />
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
   }
 
   return (
@@ -342,18 +352,10 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
   }
 
   if (error || !user) {
-    // User is not authenticated, redirect to landing page
-    console.log('User not authenticated, redirecting to landing:', error);
-    setTimeout(() => {
-      window.location.href = '/';
-    }, 100);
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-        <div className="text-white text-center">
-          <p>Redirecting to login...</p>
-        </div>
-      </div>
-    );
+    // User is not authenticated, show landing page
+    console.log('Authentication failed or no user, showing landing');
+    window.location.href = '/';
+    return null;
   }
 
   // Admin Dashboard for admin users
