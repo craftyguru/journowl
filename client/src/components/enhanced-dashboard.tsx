@@ -4357,357 +4357,6 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
 
-
-        <TabsContent value="calendar" data-tabs-content>
-          <div className="h-[80vh]">
-            <InteractiveCalendar 
-              entries={calendarEntries}
-              onDateSelect={handleDateSelect}
-              onEntryEdit={handleEntryEdit}
-              onEntryDelete={handleEntryDelete}
-            />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="stories" data-tabs-content>
-          <div className="h-[80vh]">
-            <AIStoryMaker 
-              entries={entries}
-              stats={stats}
-            />
-          </div>
-        </TabsContent>
-        
-        <TabsContent value="referral" data-tabs-content>
-          <div className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-500/20"
-            >
-              <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-white mb-4">🎁 Refer Friends & Earn AI Prompts!</h2>
-                <p className="text-gray-300 text-lg">Share JournOwl with friends and get 100 free AI prompts for each successful referral!</p>
-              </div>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="bg-gradient-to-br from-purple-800/40 to-pink-800/40 rounded-xl p-6 border border-purple-400/30">
-                  <h3 className="text-xl font-bold text-white mb-4">📤 Your Referral Link</h3>
-                  <div className="flex gap-2">
-                    <Input 
-                      value={`https://journowl.com/join?ref=${user?.id || 'demo'}`}
-                      readOnly
-                      className="bg-slate-700/50 border-purple-400/30 text-white"
-                    />
-                    <Button 
-                      onClick={() => navigator.clipboard.writeText(`https://journowl.com/join?ref=${user?.id || 'demo'}`)}
-                      className="bg-purple-500 hover:bg-purple-600"
-                    >
-                      📋 Copy
-                    </Button>
-                  </div>
-                  <p className="text-gray-400 text-sm mt-2">Share this link with friends to start earning rewards!</p>
-                </div>
-                
-                <div className="bg-gradient-to-br from-green-800/40 to-emerald-800/40 rounded-xl p-6 border border-green-400/30">
-                  <h3 className="text-xl font-bold text-white mb-4">🏆 Your Referral Stats</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Total Referrals:</span>
-                      <span className="text-white font-bold">0</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">AI Prompts Earned:</span>
-                      <span className="text-green-400 font-bold">0</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-300">Pending Referrals:</span>
-                      <span className="text-yellow-400 font-bold">0</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-8 grid md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
-                  <div className="text-2xl mb-2">👥</div>
-                  <h4 className="font-semibold text-white mb-1">Step 1: Share</h4>
-                  <p className="text-gray-400 text-sm">Send your referral link to friends</p>
-                </div>
-                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
-                  <div className="text-2xl mb-2">✨</div>
-                  <h4 className="font-semibold text-white mb-1">Step 2: They Join</h4>
-                  <p className="text-gray-400 text-sm">Friends sign up using your link</p>
-                </div>
-                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
-                  <div className="text-2xl mb-2">🎁</div>
-                  <h4 className="font-semibold text-white mb-1">Step 3: Earn Rewards</h4>
-                  <p className="text-gray-400 text-sm">Get 100 AI prompts per referral</p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </TabsContent>
-
-          <div className="space-y-6">
-            {/* Header Section */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-br from-purple-900/90 via-purple-800/80 to-purple-900/90 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-500/20"
-            >
-              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
-                <div className="flex-1">
-                  <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2">📊 Insights & Analytics</h2>
-                  <p className="text-gray-300">Discover patterns in your journaling journey</p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
-                  <Button className="bg-purple-600 hover:bg-purple-700 text-white text-sm px-3 py-2">
-                    ➕ Add Entry
-                  </Button>
-                  <Button variant="outline" className="border-purple-400 text-purple-200 hover:bg-purple-800 text-sm px-3 py-2">
-                    ⬇️ Export
-                  </Button>
-                  <Button variant="outline" className="border-purple-400 text-purple-200 hover:bg-purple-800 text-sm px-3 py-2">
-                    📤 Share
-                  </Button>
-                </div>
-              </div>
-
-              {/* Search and Filters */}
-              <div className="flex gap-4 mb-6">
-                <div className="flex-1">
-                  <Input 
-                    placeholder="🔍 Search entries, moods, or keywords..."
-                    className="bg-slate-700/50 border-purple-400/30 text-white placeholder:text-gray-400"
-                  />
-                </div>
-                <select className="bg-slate-700/50 border border-purple-400/30 text-white rounded-md px-3 py-2">
-                  <option>All Moods</option>
-                  <option>😊 Happy</option>
-                  <option>😔 Sad</option>
-                  <option>😤 Angry</option>
-                  <option>😌 Calm</option>
-                </select>
-                <select className="bg-slate-700/50 border border-purple-400/30 text-white rounded-md px-3 py-2">
-                  <option>Month</option>
-                  <option>Week</option>
-                  <option>Year</option>
-                </select>
-              </div>
-
-              {/* Stats Cards */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                      📝
-                    </div>
-                    <div className="text-xs text-green-400">📈</div>
-                  </div>
-                  <div className="text-2xl font-bold text-white">{stats?.totalEntries || 1}</div>
-                  <div className="text-xs text-gray-400">Total Entries</div>
-                  <div className="text-xs text-purple-300 mt-1">Keep writing!</div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center">
-                      📖
-                    </div>
-                    <div className="text-xs text-green-400">📈</div>
-                  </div>
-                  <div className="text-2xl font-bold text-white">{stats?.totalWords || 25}</div>
-                  <div className="text-xs text-gray-400">Total Words</div>
-                  <div className="text-xs text-green-300 mt-1">Amazing progress</div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.3 }}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-10 h-10 bg-orange-500/20 rounded-lg flex items-center justify-center">
-                      🔥
-                    </div>
-                    <div className="text-xs text-orange-400">⭕ On fire!</div>
-                  </div>
-                  <div className="text-2xl font-bold text-white">{stats?.currentStreak || 0} <span className="text-sm">days</span></div>
-                  <div className="text-xs text-gray-400">Current Streak</div>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.4 }}
-                  className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20"
-                >
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="w-10 h-10 bg-yellow-500/20 rounded-lg flex items-center justify-center">
-                      🏆
-                    </div>
-                  </div>
-                  <div className="text-2xl font-bold text-white">{stats?.longestStreak || 1} <span className="text-sm">days</span></div>
-                  <div className="text-xs text-gray-400">Longest Streak</div>
-                  <div className="text-xs text-yellow-300 mt-1">Personal best</div>
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Analytics Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Writing Activity Chart */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    📊 Writing Activity
-                  </h3>
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" className="text-xs bg-purple-500/20 border-purple-400/30 text-purple-200">
-                      Area
-                    </Button>
-                    <Button size="sm" variant="outline" className="text-xs border-purple-400/30 text-purple-200">
-                      Bar
-                    </Button>
-                    <Button size="sm" variant="outline" className="text-xs border-purple-400/30 text-purple-200">
-                      Line
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="h-48 bg-slate-900/40 rounded-lg border border-purple-400/10 flex items-center justify-center">
-                  <div className="text-center text-gray-400">
-                    <div className="text-2xl mb-2">📈</div>
-                    <p className="text-sm">Writing activity chart will appear here</p>
-                    <p className="text-xs mt-1">Based on your journal entries</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Mood Distribution */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    🎭 Mood Distribution
-                  </h3>
-                  <div className="text-right">
-                    <div className="text-sm text-gray-400">Average Mood</div>
-                    <div className="flex items-center gap-1">
-                      <span className="text-lg">😊</span>
-                      <span className="text-sm text-green-400 bg-green-400/20 px-2 py-1 rounded">100%</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="h-40 bg-slate-900/40 rounded-lg border border-purple-400/10 flex items-center justify-center mb-4">
-                  <div className="text-center text-gray-400">
-                    <div className="text-2xl mb-2">🍩</div>
-                    <p className="text-sm">Mood distribution chart</p>
-                    <p className="text-xs mt-1">Donut chart coming soon</p>
-                  </div>
-                </div>
-
-                <div className="bg-purple-900/40 rounded-lg p-4 border border-purple-400/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-4 h-4 bg-purple-400 rounded-full"></div>
-                    <span className="text-sm text-purple-200">AI Insight</span>
-                  </div>
-                  <p className="text-sm text-gray-300">"You're happiest on Sundays. Most common mood: Grateful."</p>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Mood Calendar Heatmap */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20"
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                  📅 Mood Calendar Heatmap
-                </h3>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <ChevronLeft className="w-4 h-4 text-gray-400 cursor-pointer hover:text-white" />
-                    <span className="text-white font-medium">July 2025</span>
-                    <ChevronRight className="w-4 h-4 text-gray-400 cursor-pointer hover:text-white" />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-7 gap-2 mb-4">
-                {['Thu', 'Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed'].map(day => (
-                  <div key={day} className="text-center text-xs text-gray-400 font-medium py-1">
-                    {day}
-                  </div>
-                ))}
-              </div>
-              
-              <div className="grid grid-cols-7 gap-2">
-                {Array.from({ length: 31 }, (_, i) => (
-                  <motion.div
-                    key={i + 1}
-                    whileHover={{ scale: 1.1 }}
-                    className={`aspect-square rounded-lg border border-purple-400/20 flex items-center justify-center text-xs font-medium cursor-pointer transition-all ${
-                      i + 1 === 16 
-                        ? 'bg-green-500/80 text-white border-green-400' 
-                        : 'bg-slate-700/40 text-gray-400 hover:bg-purple-500/20 hover:text-white'
-                    }`}
-                  >
-                    {i + 1}
-                  </motion.div>
-                ))}
-              </div>
-              
-              <div className="flex items-center justify-between mt-4 pt-4 border-t border-purple-400/20">
-                <div className="text-sm text-gray-400">
-                  Less activity
-                </div>
-                <div className="flex items-center gap-1">
-                  {[1, 2, 3, 4, 5].map(level => (
-                    <div 
-                      key={level}
-                      className={`w-3 h-3 rounded-sm ${
-                        level === 1 ? 'bg-slate-700' :
-                        level === 2 ? 'bg-green-800/60' :
-                        level === 3 ? 'bg-green-600/70' :
-                        level === 4 ? 'bg-green-500/80' :
-                        'bg-green-400'
-                      }`}
-                    />
-                  ))}
-                </div>
-                <div className="text-sm text-gray-400">
-                  More activity
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </TabsContent>
       </Tabs>
 
       {/* Smart Journal Editor Modal */}
@@ -4751,19 +4400,6 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
         </DialogContent>
       </Dialog>
 
-      {/* Goal Details Modal */}
-      <Dialog open={showGoalDetailsModal} onOpenChange={setShowGoalDetailsModal}>
-        <DialogContent className="sm:max-w-[700px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-blue-700">
-              <TrendingUp className="w-5 h-5" />
-              Goal Details
-            </DialogTitle>
-          </DialogHeader>
-          {selectedGoal && <GoalDetailsView goal={selectedGoal} onClose={() => setShowGoalDetailsModal(false)} />}
-        </DialogContent>
-      </Dialog>
-
       {/* Edit Goal Modal */}
       <Dialog open={showEditGoalModal} onOpenChange={setShowEditGoalModal}>
         <DialogContent className="sm:max-w-[600px]">
@@ -4789,475 +4425,87 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           <PromptPurchase />
         </DialogContent>
       </Dialog>
-
-      {/* Beautiful Word Cloud Modal */}
-      <Dialog open={showWordCloudModal} onOpenChange={setShowWordCloudModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center gap-2 text-pink-700">
-                <Sparkles className="w-6 h-6" />
-                Your Word Cloud Analysis
-              </DialogTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowWordCloudModal(false)}
-                className="h-8 w-8 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </DialogHeader>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-xl p-6 border border-pink-200">
-              <div className="text-center mb-6">
-                <motion.h3 
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  className="text-2xl font-bold text-pink-800 mb-2"
-                >
-                  ✨ Your Most Powerful Words ✨
-                </motion.h3>
-                <p className="text-pink-600">Discover the words that define your journaling journey</p>
-              </div>
-              
-              {wordCloudData.length > 0 ? (
-                <div className="flex flex-wrap gap-3 justify-center">
-                  {wordCloudData.map((item, index) => (
-                    <motion.div
-                      key={item.word}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 }}
-                      className={`
-                        inline-block px-4 py-2 rounded-full font-bold text-white shadow-lg
-                        ${item.count > 10 ? 'text-2xl bg-gradient-to-r from-purple-600 to-pink-600' :
-                          item.count > 5 ? 'text-xl bg-gradient-to-r from-blue-500 to-purple-500' :
-                          item.count > 3 ? 'text-lg bg-gradient-to-r from-green-500 to-blue-500' :
-                          'text-base bg-gradient-to-r from-yellow-500 to-green-500'}
-                      `}
-                      style={{
-                        fontSize: `${Math.max(0.8, Math.min(2, item.count / 5))}rem`
-                      }}
-                    >
-                      {item.word} ({item.count})
-                    </motion.div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    className="text-6xl mb-4"
-                  >
-                    ✍️
-                  </motion.div>
-                  <h4 className="text-xl font-bold text-purple-700 mb-2">Start Your Word Journey!</h4>
-                  <p className="text-purple-600">Write more journal entries to generate your personal word cloud</p>
-                </div>
-              )}
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white rounded-lg p-4 border border-pink-200 text-center">
-                <div className="text-2xl font-bold text-pink-600">{wordCloudData.length}</div>
-                <div className="text-sm text-gray-600">Unique Words</div>
-              </div>
-              <div className="bg-white rounded-lg p-4 border border-pink-200 text-center">
-                <div className="text-2xl font-bold text-purple-600">
-                  {wordCloudData.reduce((sum, item) => sum + item.count, 0)}
-                </div>
-                <div className="text-sm text-gray-600">Total Usage</div>
-              </div>
-            </div>
-          </motion.div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Beautiful Time Heatmap Modal */}
-      <Dialog open={showTimeHeatmapModal} onOpenChange={setShowTimeHeatmapModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center gap-2 text-green-700">
-                <Clock className="w-6 h-6" />
-                Writing Time Analysis
-              </DialogTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowTimeHeatmapModal(false)}
-                className="h-8 w-8 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </DialogHeader>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-xl p-6 border border-green-200">
-              <div className="text-center mb-6">
-                <motion.h3 
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  className="text-2xl font-bold text-green-800 mb-2"
-                >
-                  ⏰ Your Writing Rhythm ⏰
-                </motion.h3>
-                <p className="text-green-600">Discover when you're most creative and productive</p>
-              </div>
-              
-              {timeAnalysisData && timeAnalysisData.totalEntries > 0 ? (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className="bg-white rounded-lg p-4 border border-green-200 text-center"
-                    >
-                      <div className="text-3xl mb-2">📊</div>
-                      <div className="text-xl font-bold text-green-700">
-                        {timeAnalysisData.peakHour ? `${timeAnalysisData.peakHour.hour}:00` : 'N/A'}
-                      </div>
-                      <div className="text-sm text-gray-600">Peak Writing Hour</div>
-                      {timeAnalysisData.peakHour && (
-                        <div className="text-xs text-green-600 mt-1">
-                          {timeAnalysisData.peakHour.count} entries
-                        </div>
-                      )}
-                    </motion.div>
-                    
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.1 }}
-                      className="bg-white rounded-lg p-4 border border-green-200 text-center"
-                    >
-                      <div className="text-3xl mb-2">📅</div>
-                      <div className="text-xl font-bold text-emerald-700">{timeAnalysisData.totalDays}</div>
-                      <div className="text-sm text-gray-600">Writing Days</div>
-                    </motion.div>
-                    
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.2 }}
-                      className="bg-white rounded-lg p-4 border border-green-200 text-center"
-                    >
-                      <div className="text-3xl mb-2">✍️</div>
-                      <div className="text-xl font-bold text-teal-700">{timeAnalysisData.totalEntries}</div>
-                      <div className="text-sm text-gray-600">Total Entries</div>
-                    </motion.div>
-                  </div>
-                  
-                  <div className="bg-white rounded-lg p-4 border border-green-200">
-                    <h4 className="font-bold text-green-800 mb-3">📈 Writing Schedule Heatmap</h4>
-                    <div className="grid grid-cols-6 gap-2">
-                      {Array.from({ length: 24 }, (_, hour) => {
-                        const count = timeAnalysisData.hourCounts[hour] || 0;
-                        const intensity = count > 0 ? Math.min(count / Math.max(...Object.values(timeAnalysisData.hourCounts)), 1) : 0;
-                        return (
-                          <motion.div
-                            key={hour}
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ delay: hour * 0.05 }}
-                            className={`
-                              h-8 rounded flex items-center justify-center text-xs font-bold
-                              ${intensity > 0.7 ? 'bg-green-600 text-white' :
-                                intensity > 0.4 ? 'bg-green-400 text-white' :
-                                intensity > 0.1 ? 'bg-green-200 text-green-800' :
-                                'bg-gray-100 text-gray-500'}
-                            `}
-                            title={`${hour}:00 - ${count} entries`}
-                          >
-                            {hour}:00
-                          </motion.div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <motion.div
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="text-6xl mb-4"
-                  >
-                    ⏰
-                  </motion.div>
-                  <h4 className="text-xl font-bold text-green-700 mb-2">Start Tracking Your Writing Times!</h4>
-                  <p className="text-green-600">Write more entries to discover your peak creative hours</p>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Beautiful Topic Analysis Modal */}
-      <Dialog open={showTopicAnalysisModal} onOpenChange={setShowTopicAnalysisModal}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="flex items-center gap-2 text-indigo-700">
-                <Brain className="w-6 h-6" />
-                AI Topic Analysis
-              </DialogTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowTopicAnalysisModal(false)}
-                className="h-8 w-8 p-0"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          </DialogHeader>
-          
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-xl p-6 border border-indigo-200">
-              <div className="text-center mb-6">
-                <motion.h3 
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  className="text-2xl font-bold text-indigo-800 mb-2"
-                >
-                  🧠 Your Journal Themes 🧠
-                </motion.h3>
-                <p className="text-indigo-600">AI-powered analysis of your writing patterns and topics</p>
-              </div>
-              
-              {topicAnalysisData && topicAnalysisData.totalEntries > 0 ? (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-white rounded-lg p-4 border border-indigo-200 text-center">
-                      <div className="text-2xl font-bold text-indigo-700">{topicAnalysisData.totalWords}</div>
-                      <div className="text-sm text-gray-600">Words Analyzed</div>
-                    </div>
-                    <div className="bg-white rounded-lg p-4 border border-indigo-200 text-center">
-                      <div className="text-2xl font-bold text-purple-700">{topicAnalysisData.totalEntries}</div>
-                      <div className="text-sm text-gray-600">Entries Processed</div>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <h4 className="font-bold text-indigo-800 text-center mb-4">🎨 Theme Distribution</h4>
-                    {topicAnalysisData.themes
-                      .filter((theme: any) => theme.percentage > 0)
-                      .sort((a: any, b: any) => b.percentage - a.percentage)
-                      .map((theme: any, index: number) => (
-                        <motion.div
-                          key={theme.theme}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          className="bg-white rounded-lg p-4 border border-indigo-200"
-                        >
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-3">
-                              <div 
-                                className="w-4 h-4 rounded-full"
-                                style={{ backgroundColor: theme.color }}
-                              />
-                              <span className="font-medium text-gray-800">{theme.theme}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-lg" style={{ color: theme.color }}>
-                                {theme.percentage}%
-                              </span>
-                              <span className="text-sm text-gray-500">({theme.count} mentions)</span>
-                            </div>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-3">
-                            <motion.div
-                              initial={{ width: 0 }}
-                              animate={{ width: `${theme.percentage}%` }}
-                              transition={{ delay: index * 0.1 + 0.3, duration: 0.8 }}
-                              className="h-full rounded-full"
-                              style={{ backgroundColor: theme.color }}
-                            />
-                          </div>
-                        </motion.div>
-                      ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-12">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                    className="text-6xl mb-4"
-                  >
-                    🧠
-                  </motion.div>
-                  <h4 className="text-xl font-bold text-indigo-700 mb-2">Unlock Your Writing Themes!</h4>
-                  <p className="text-indigo-600">Write more journal entries to discover your unique patterns and topics</p>
-                </div>
-              )}
-            </div>
-          </motion.div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Floating Action Bubbles - Only show when journal editor is closed */}
-      {!showSmartEditor && !showUnifiedJournal && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
-          <motion.button
-            onClick={capturePhoto}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Take Photo"
-          >
-            📸
-          </motion.button>
-          
-          <motion.button
-            onClick={recordAudio}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Record Audio"
-          >
-            🎤
-          </motion.button>
-        </div>
-      )}
     </div>
   );
 }
 
-// New Goal Form Component
+// Form Components
 function NewGoalForm({ onClose }: { onClose: () => void }) {
-  const [goalType, setGoalType] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [targetValue, setTargetValue] = useState("");
-  const [difficulty, setDifficulty] = useState("");
+  const [formData, setFormData] = useState({
+    title: '',
+    type: 'writing',
+    targetValue: 0,
+    description: ''
+  });
 
-  const trackableGoalTypes = [
-    { value: "streak", label: "📅 Daily Writing Streak", description: "Track consecutive days of journaling", unit: "days" },
-    { value: "words", label: "📝 Word Count Goal", description: "Reach a specific word count", unit: "words" },
-    { value: "entries", label: "📚 Journal Entries", description: "Write a certain number of entries", unit: "entries" },
-    { value: "mood", label: "😊 Mood Tracking", description: "Track mood for consecutive days", unit: "days" },
-    { value: "photos", label: "📸 Photo Journaling", description: "Add photos to journal entries", unit: "photos" },
-    { value: "reflection", label: "🧘 Deep Reflection", description: "Write thoughtful, reflective entries", unit: "entries" },
-    { value: "creative", label: "🎨 Creative Writing", description: "Focus on creative expression", unit: "entries" },
-    { value: "gratitude", label: "🙏 Gratitude Practice", description: "Write gratitude-focused entries", unit: "entries" },
-    { value: "reading_time", label: "⏰ Reading Time", description: "Spend time reading past entries", unit: "minutes" },
-    { value: "consistency", label: "⚡ Weekly Consistency", description: "Write at least X times per week", unit: "weeks" }
-  ];
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically make an API call to create the goal
-    console.log("Creating goal:", { goalType, title, description, targetValue, difficulty });
-    onClose();
+    try {
+      await apiRequest('/api/goals', {
+        method: 'POST',
+        body: JSON.stringify(formData)
+      });
+      onClose();
+      queryClient.invalidateQueries({ queryKey: ['/api/goals'] });
+    } catch (error) {
+      console.error('Failed to create goal:', error);
+    }
   };
 
-  const selectedGoalType = trackableGoalTypes.find(t => t.value === goalType);
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="goalType">Goal Type</Label>
-          <Select value={goalType} onValueChange={setGoalType}>
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a trackable goal type..." />
-            </SelectTrigger>
-            <SelectContent>
-              {trackableGoalTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>
-                  <div className="flex flex-col">
-                    <span>{type.label}</span>
-                    <span className="text-xs text-gray-500">{type.description}</span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {selectedGoalType && (
-            <p className="text-sm text-gray-600 mt-1">
-              💡 This goal will track: {selectedGoalType.description}
-            </p>
-          )}
-        </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="title">Goal Title</Label>
+        <Input
+          id="title"
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          placeholder="Write 10,000 words this month"
+          required
+        />
+      </div>
 
-        <div>
-          <Label htmlFor="title">Goal Title</Label>
-          <Input
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder={selectedGoalType ? `My ${selectedGoalType.label.split(' ').slice(1).join(' ')} Goal` : "Enter goal title..."}
-            required
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="type">Goal Type</Label>
+        <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="writing">Writing Goal</SelectItem>
+            <SelectItem value="streak">Streak Goal</SelectItem>
+            <SelectItem value="entries">Entry Goal</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-        <div>
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Describe what you want to achieve and why it matters to you..."
-            required
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="target">Target Value</Label>
+        <Input
+          id="target"
+          type="number"
+          value={formData.targetValue}
+          onChange={(e) => setFormData({ ...formData, targetValue: parseInt(e.target.value) })}
+          placeholder="1000"
+          required
+        />
+      </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="targetValue">Target ({selectedGoalType?.unit || "value"})</Label>
-            <Input
-              id="targetValue"
-              type="number"
-              value={targetValue}
-              onChange={(e) => setTargetValue(e.target.value)}
-              placeholder={goalType === "streak" ? "7" : goalType === "words" ? "1000" : goalType === "entries" ? "10" : "Enter target..."}
-              required
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="difficulty">Difficulty</Label>
-            <Select value={difficulty} onValueChange={setDifficulty}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choose difficulty..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="beginner">🟢 Beginner</SelectItem>
-                <SelectItem value="intermediate">🟡 Intermediate</SelectItem>
-                <SelectItem value="advanced">🔴 Advanced</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="description">Description (Optional)</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          placeholder="Write a compelling description for your goal..."
+        />
       </div>
 
       <DialogFooter>
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button type="submit" disabled={!goalType || !title || !targetValue || !difficulty} className="bg-emerald-500 hover:bg-emerald-600">
-          <Plus className="w-4 h-4 mr-2" />
+        <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700">
           Create Goal
         </Button>
       </DialogFooter>
@@ -5265,157 +4513,79 @@ function NewGoalForm({ onClose }: { onClose: () => void }) {
   );
 }
 
-// Goal Details View Component
-function GoalDetailsView({ goal, onClose }: { goal: any; onClose: () => void }) {
-  const progressPercentage = Math.round((goal.currentValue / goal.targetValue) * 100);
-  
-  return (
-    <div className="space-y-6">
-      <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl p-6 border border-blue-200">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-3xl">
-            {goal.type === 'streak' ? '🔥' : goal.type === 'words' ? '📝' : goal.type === 'mood' ? '😊' : '🎯'}
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-blue-800">{goal.title}</h3>
-            <p className="text-blue-600">{goal.description}</p>
-          </div>
-        </div>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg p-3 border border-blue-200">
-            <div className="text-2xl font-bold text-blue-700">{goal.currentValue}</div>
-            <div className="text-sm text-blue-600">Current Progress</div>
-          </div>
-          <div className="bg-white rounded-lg p-3 border border-blue-200">
-            <div className="text-2xl font-bold text-blue-700">{goal.targetValue}</div>
-            <div className="text-sm text-blue-600">Target Goal</div>
-          </div>
-        </div>
-      </div>
+function EditGoalForm({ goal, onClose }: { goal: any, onClose: () => void }) {
+  const [formData, setFormData] = useState({
+    title: goal.title || '',
+    type: goal.type || 'writing',
+    targetValue: goal.targetValue || 0,
+    description: goal.description || ''
+  });
 
-      <div className="space-y-4">
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <span className="font-medium">Progress</span>
-            <span className="text-lg font-bold text-blue-600">{progressPercentage}%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-4">
-            <div 
-              className="bg-gradient-to-r from-blue-400 to-cyan-500 h-full rounded-full transition-all duration-500"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600">Difficulty</div>
-            <Badge className={`mt-1 ${
-              goal.difficulty === 'beginner' ? 'bg-green-500' :
-              goal.difficulty === 'intermediate' ? 'bg-blue-500' : 'bg-purple-500'
-            } text-white`}>
-              {goal.difficulty.toUpperCase()}
-            </Badge>
-          </div>
-          <div className="bg-gray-50 rounded-lg p-4">
-            <div className="text-sm text-gray-600">Remaining</div>
-            <div className="font-semibold">{goal.targetValue - goal.currentValue} to go</div>
-          </div>
-        </div>
-
-        <div className="bg-yellow-50 rounded-lg p-4 border border-yellow-200">
-          <h4 className="font-semibold text-yellow-800 mb-2">💡 AI Insights</h4>
-          <p className="text-sm text-yellow-700">
-            {progressPercentage >= 80 ? "You're almost there! Keep up the excellent momentum." :
-             progressPercentage >= 50 ? "Great progress! You're halfway to your goal." :
-             progressPercentage >= 25 ? "Good start! Stay consistent to build momentum." :
-             "Every journey begins with a single step. You've got this!"}
-          </p>
-        </div>
-      </div>
-
-      <DialogFooter>
-        <Button onClick={onClose}>Close</Button>
-      </DialogFooter>
-    </div>
-  );
-}
-
-// Edit Goal Form Component
-function EditGoalForm({ goal, onClose }: { goal: any; onClose: () => void }) {
-  const [title, setTitle] = useState(goal.title);
-  const [description, setDescription] = useState(goal.description);
-  const [targetValue, setTargetValue] = useState(goal.targetValue.toString());
-  const [currentValue, setCurrentValue] = useState(goal.currentValue.toString());
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically make an API call to update the goal
-    console.log("Updating goal:", { title, description, targetValue, currentValue });
-    onClose();
+    try {
+      await apiRequest(`/api/goals/${goal.id}`, {
+        method: 'PUT',
+        body: JSON.stringify(formData)
+      });
+      onClose();
+      queryClient.invalidateQueries({ queryKey: ['/api/goals'] });
+    } catch (error) {
+      console.error('Failed to update goal:', error);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-4">
-        <div>
-          <Label htmlFor="editTitle">Goal Title</Label>
-          <Input
-            id="editTitle"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="title">Goal Title</Label>
+        <Input
+          id="title"
+          value={formData.title}
+          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          required
+        />
+      </div>
 
-        <div>
-          <Label htmlFor="editDescription">Description</Label>
-          <Textarea
-            id="editDescription"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="type">Goal Type</Label>
+        <Select value={formData.type} onValueChange={(value) => setFormData({ ...formData, type: value })}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="writing">Writing Goal</SelectItem>
+            <SelectItem value="streak">Streak Goal</SelectItem>
+            <SelectItem value="entries">Entry Goal</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="editCurrentValue">Current Progress</Label>
-            <Input
-              id="editCurrentValue"
-              type="number"
-              value={currentValue}
-              onChange={(e) => setCurrentValue(e.target.value)}
-              required
-            />
-          </div>
+      <div className="space-y-2">
+        <Label htmlFor="target">Target Value</Label>
+        <Input
+          id="target"
+          type="number"
+          value={formData.targetValue}
+          onChange={(e) => setFormData({ ...formData, targetValue: parseInt(e.target.value) })}
+          required
+        />
+      </div>
 
-          <div>
-            <Label htmlFor="editTargetValue">Target Value</Label>
-            <Input
-              id="editTargetValue"
-              type="number"
-              value={targetValue}
-              onChange={(e) => setTargetValue(e.target.value)}
-              required
-            />
-          </div>
-        </div>
-
-        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
-          <div className="text-sm text-blue-700">
-            <strong>Progress Preview:</strong> {Math.round((parseInt(currentValue) / parseInt(targetValue)) * 100)}% complete
-          </div>
-        </div>
+      <div className="space-y-2">
+        <Label htmlFor="description">Description (Optional)</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+        />
       </div>
 
       <DialogFooter>
         <Button type="button" variant="outline" onClick={onClose}>
           Cancel
         </Button>
-        <Button type="submit" className="bg-purple-500 hover:bg-purple-600">
-          <CheckCircle className="w-4 h-4 mr-2" />
+        <Button type="submit" className="bg-purple-600 hover:bg-purple-700">
           Update Goal
         </Button>
       </DialogFooter>
