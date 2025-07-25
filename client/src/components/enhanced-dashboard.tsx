@@ -968,71 +968,99 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           </CardContent>
         </Card>
       </motion.div>
-      {/* Combined Welcome & Intro Tutorial Section */}
+      {/* Mobile-Optimized Welcome Banner */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative text-center bg-gradient-to-r from-orange-400 via-purple-500 to-purple-600 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-orange-300/30 overflow-hidden min-h-[200px]"
+        className="relative text-center bg-gradient-to-br from-pink-400 via-orange-500 via-red-500 to-purple-600 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-3 sm:p-4 shadow-2xl border border-orange-300/30 overflow-hidden min-h-[160px] sm:min-h-[180px]"
       >
         {/* Animated Background Elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-purple-600/20 to-purple-700/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/30 via-pink-600/30 via-orange-600/30 to-purple-700/30"></div>
+        <div className="absolute top-2 left-4 w-8 h-8 bg-yellow-400/40 rounded-full blur-lg animate-pulse"></div>
+        <div className="absolute bottom-2 right-4 w-6 h-6 bg-pink-400/40 rounded-full blur-md animate-bounce"></div>
+        <div className="absolute top-6 right-8 w-4 h-4 bg-orange-400/50 rounded-full blur-sm animate-pulse delay-1000"></div>
         
         {/* Flying Owl Animation */}
         <motion.div
           animate={{ 
-            x: [0, 100, 0], 
-            y: [0, -10, 0],
-            rotate: [0, 5, -5, 0]
+            x: [0, 60, 0], 
+            y: [0, -8, 0],
+            rotate: [0, 3, -3, 0]
           }}
           transition={{ 
-            duration: 8, 
+            duration: 6, 
             repeat: Infinity, 
             ease: "easeInOut" 
           }}
-          className="absolute top-4 left-6 text-2xl z-20"
+          className="absolute top-2 left-3 text-xl sm:text-2xl z-20"
         >
           🦉
         </motion.div>
 
-        <div className="relative z-30 flex items-center justify-between">
-          <div className="flex-1">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
+        <div className="relative z-30 flex flex-col items-center justify-center h-full">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-3 sm:mb-4"
+          >
+            <h1 className="text-lg sm:text-xl lg:text-2xl text-white mb-1 sm:mb-2 flex items-center justify-center gap-1 sm:gap-2" style={{ fontFamily: '"Rock Salt", cursive' }}>
+              <span className="text-xl sm:text-2xl lg:text-3xl">🎯</span>
+              <span className="px-1">Welcome back, {user?.username || 'Writer'}!</span>
+              <span className="text-xl sm:text-2xl lg:text-3xl">🦉</span>
+            </h1>
+            <motion.h2 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5, duration: 1 }}
+              className="text-base sm:text-lg lg:text-xl font-bold text-yellow-100 mb-2" 
+              style={{ fontFamily: '"Rock Salt", cursive' }}
             >
-              <h1 className="text-left text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 flex items-center gap-2">
-                <span className="text-3xl">🎯</span>
-                <TypewriterTitle text={`Welcome back, ${user?.username || 'Writer'}! Start Your Daily Journal!`} />
-                <span className="text-2xl">🦉</span>
-              </h1>
-              <motion.p 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1, duration: 1 }}
-                className="text-left text-orange-100 text-sm sm:text-base font-medium"
-              >
-                😊 Today is perfect for journaling! Capture your thoughts, analyze photos with AI, and unlock personalized insights
-              </motion.p>
-            </motion.div>
-          </div>
+              ✨ Start Your Daily Journal! ✨
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 1 }}
+              className="text-orange-100 text-xs sm:text-sm font-medium px-2"
+            >
+              😊 Today is perfect for journaling! Capture thoughts, analyze photos with AI, unlock insights!
+            </motion.p>
+          </motion.div>
           
+          {/* Centered Write Button */}
           <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5, duration: 0.8 }}
-            className="flex-shrink-0 ml-4"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            className="flex justify-center w-full"
           >
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.08, rotate: 1 }}
+              whileTap={{ scale: 0.92 }}
               onClick={() => setShowUnifiedJournal(true)}
-              className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-300 hover:to-orange-300 text-black font-bold px-6 py-3 rounded-full shadow-lg transition-all duration-200 flex items-center gap-2"
+              className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 hover:from-yellow-200 hover:via-yellow-300 hover:to-orange-300 text-black font-black px-6 py-2 sm:px-8 sm:py-3 rounded-full shadow-xl transition-all duration-300 flex items-center gap-2 text-sm sm:text-base border-2 border-white/20"
+              style={{ 
+                textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
+                boxShadow: '0 8px 25px rgba(255,193,7,0.4), inset 0 1px 0 rgba(255,255,255,0.6)'
+              }}
             >
-              <span className="text-lg">📝</span>
-              Write Now!
-              <span className="text-lg">🚀</span>
+              <motion.span 
+                className="text-base sm:text-lg"
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+              >
+                📝
+              </motion.span>
+              <span style={{ fontFamily: '"Rock Salt", cursive' }}>Write Now!</span>
+              <motion.span 
+                className="text-base sm:text-lg"
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse" }}
+              >
+                🚀
+              </motion.span>
             </motion.button>
           </motion.div>
         </div>
@@ -1044,7 +1072,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             animate={{ opacity: 1 }}
             transition={{ delay: 2 }}
             onClick={() => setShowIntroTutorial(false)}
-            className="absolute top-2 right-2 text-white/60 hover:text-white transition-colors z-40"
+            className="absolute top-1 right-2 text-white/60 hover:text-white transition-colors z-40 text-sm"
           >
             ✕
           </motion.button>
