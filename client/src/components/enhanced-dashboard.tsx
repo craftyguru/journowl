@@ -141,6 +141,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
   const [showEditGoalModal, setShowEditGoalModal] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<any>(null);
   const [showPromptPurchase, setShowPromptPurchase] = useState(false);
+  const [showIntroTutorial, setShowIntroTutorial] = useState(false);
+  const [isFirstLogin, setIsFirstLogin] = useState(false);
   
   const queryClient = useQueryClient();
 
@@ -148,6 +150,22 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
   React.useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
+
+  // Auto-scroll to top on first login and show intro tutorial
+  React.useEffect(() => {
+    const lastLoginTime = localStorage.getItem('lastDashboardLogin');
+    const currentTime = Date.now();
+    const isFirstLoginToday = !lastLoginTime || currentTime - parseInt(lastLoginTime) > 24 * 60 * 60 * 1000;
+
+    if (isFirstLoginToday) {
+      setIsFirstLogin(true);
+      setShowIntroTutorial(true);
+      // Scroll to top smoothly
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Store current login time
+      localStorage.setItem('lastDashboardLogin', currentTime.toString());
+    }
+  }, []);
 
   // Auto-scroll to tab navigation when tab changes (for mobile navigation)
   React.useEffect(() => {
@@ -949,163 +967,87 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           </CardContent>
         </Card>
       </motion.div>
-      {/* Enhanced Welcome Section with Flying Owls */}
+      {/* Combined Welcome & Intro Tutorial Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative text-center bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-purple-500/20 overflow-hidden min-h-[280px]"
+        className="relative text-center bg-gradient-to-r from-orange-400 via-purple-500 to-purple-600 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-orange-300/30 overflow-hidden min-h-[200px]"
       >
         {/* Animated Background Elements */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-pink-500/20 to-orange-400/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-purple-600/20 to-purple-700/20"></div>
         
-        {/* Flying Animated Owls */}
+        {/* Flying Owl Animation */}
         <motion.div
           animate={{ 
-            x: [0, 300, 0], 
-            y: [0, -20, -40, -20, 0],
+            x: [0, 100, 0], 
+            y: [0, -10, 0],
             rotate: [0, 5, -5, 0]
           }}
           transition={{ 
-            duration: 12, 
+            duration: 8, 
             repeat: Infinity, 
             ease: "easeInOut" 
           }}
-          className="absolute top-8 left-4 text-4xl z-20"
+          className="absolute top-4 left-6 text-2xl z-20"
         >
           🦉
-        </motion.div>
-        
-        <motion.div
-          animate={{ 
-            x: [400, 0, 400], 
-            y: [0, -30, -60, -30, 0],
-            rotate: [0, -5, 5, 0]
-          }}
-          transition={{ 
-            duration: 15, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 3
-          }}
-          className="absolute top-12 right-8 text-3xl z-20"
-        >
-          🦉
-        </motion.div>
-        
-        <motion.div
-          animate={{ 
-            x: [0, 150, 300, 150, 0], 
-            y: [100, 80, 60, 80, 100],
-            rotate: [0, 10, -10, 0]
-          }}
-          transition={{ 
-            duration: 18, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 6
-          }}
-          className="absolute bottom-16 left-12 text-2xl z-20"
-        >
-          🦉
-        </motion.div>
-        
-        {/* Floating Magical Elements */}
-        <motion.div
-          animate={{ 
-            y: [0, -15, 0],
-            rotate: [0, 360],
-            scale: [1, 1.2, 1]
-          }}
-          transition={{ 
-            duration: 4, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-          className="absolute top-16 right-20 text-2xl z-10"
-        >
-          ✨
-        </motion.div>
-        
-        <motion.div
-          animate={{ 
-            y: [0, -10, 0],
-            x: [0, 5, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ 
-            duration: 3, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 1
-          }}
-          className="absolute bottom-20 right-16 text-xl z-10"
-        >
-          🌟
-        </motion.div>
-        
-        <motion.div
-          animate={{ 
-            y: [0, -12, 0],
-            rotate: [0, 180, 360],
-            opacity: [0.7, 1, 0.7]
-          }}
-          transition={{ 
-            duration: 5, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 2
-          }}
-          className="absolute top-24 left-32 text-lg z-10"
-        >
-          💫
         </motion.div>
 
-        <div className="relative z-30">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-2 sm:mb-3 leading-tight">
-              <TypewriterTitle text={`🦉 Welcome back, ${user?.username || 'Wise Writer'}!`} />
-            </h1>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 2, duration: 1 }}
-              className="text-gray-300 text-sm sm:text-base lg:text-lg mb-6"
+        <div className="relative z-30 flex items-center justify-between">
+          <div className="flex-1">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
             >
-              Your wise JournOwl companion is ready to help capture today's thoughts and memories! ✨
-            </motion.p>
-            
-            <motion.div 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 3, duration: 0.8 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mt-4 sm:mt-6 flex-wrap"
-            >
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-r from-white/20 to-white/30 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"
+              <h1 className="text-left text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 flex items-center gap-2">
+                <span className="text-3xl">🎯</span>
+                <TypewriterTitle text="Start Your Daily Journal!" />
+                <span className="text-2xl">🦉</span>
+              </h1>
+              <motion.p 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1, duration: 1 }}
+                className="text-left text-orange-100 text-sm sm:text-base font-medium"
               >
-                <span className="text-sm font-medium">🏆 Level {user?.level || 1}</span>
-              </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-r from-orange-400/30 to-red-400/30 px-4 py-2 rounded-full backdrop-blur-sm border border-orange-300/30"
-              >
-                <span className="text-sm font-medium">🔥 {stats?.currentStreak || 0} day streak</span>
-              </motion.div>
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="bg-gradient-to-r from-purple-400/30 to-pink-400/30 px-4 py-2 rounded-full backdrop-blur-sm border border-purple-300/30"
-              >
-                <span className="text-sm font-medium">📝 {stats?.totalEntries || 0} entries</span>
-              </motion.div>
+                😊 Today is perfect for journaling! Capture your thoughts, analyze photos with AI, and unlock personalized insights
+              </motion.p>
             </motion.div>
+          </div>
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
+            className="flex-shrink-0 ml-4"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowUnifiedJournal(true)}
+              className="bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-300 hover:to-orange-300 text-black font-bold px-6 py-3 rounded-full shadow-lg transition-all duration-200 flex items-center gap-2"
+            >
+              <span className="text-lg">📝</span>
+              Write Now!
+              <span className="text-lg">🚀</span>
+            </motion.button>
           </motion.div>
         </div>
+        
+        {/* Dismiss Tutorial Button */}
+        {showIntroTutorial && (
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2 }}
+            onClick={() => setShowIntroTutorial(false)}
+            className="absolute top-2 right-2 text-white/60 hover:text-white transition-colors z-40"
+          >
+            ✕
+          </motion.button>
+        )}
       </motion.div>
 
       {/* Artistic Stats Cards */}
