@@ -336,6 +336,24 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
     openUnifiedJournal(entry);
   };
 
+  const handleEntryDelete = async (entryId: number) => {
+    try {
+      await apiRequest(`/api/journal/entries/${entryId}`, {
+        method: 'DELETE',
+      });
+      
+      // Invalidate and refetch journal entries
+      queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+      
+      // Show success message
+      console.log("Journal entry deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete journal entry:", error);
+      alert("Failed to delete journal entry. Please try again.");
+    }
+  };
+
   // Camera and Media Capture Functions
   const capturePhoto = async () => {
     try {
@@ -3226,6 +3244,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               entries={calendarEntries}
               onDateSelect={handleDateSelect}
               onEntryEdit={handleEntryEdit}
+              onEntryDelete={handleEntryDelete}
             />
           </div>
         </TabsContent>

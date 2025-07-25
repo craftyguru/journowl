@@ -4,7 +4,7 @@ import {
   Calendar as CalendarIcon, ChevronLeft, ChevronRight, Search, 
   Filter, Eye, Edit, Star, Camera, Palette, Heart, 
   Sparkles, Pin, Share, Download, Lock, Unlock, Plus,
-  Mic, Sticker, Flame, Zap, Award, Image, Smile
+  Mic, Sticker, Flame, Zap, Award, Image, Smile, Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +31,7 @@ interface InteractiveCalendarProps {
   entries: JournalEntry[];
   onDateSelect: (date: Date) => void;
   onEntryEdit: (entry: JournalEntry) => void;
+  onEntryDelete?: (entryId: number) => void;
 }
 
 const moodColors = {
@@ -57,7 +58,7 @@ const moodBackgrounds = {
 
 const moodEmojis = ["😊", "😐", "😔", "🤔", "😄", "🎉", "😠", "😴"];
 
-export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit }: InteractiveCalendarProps) {
+export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit, onEntryDelete }: InteractiveCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -570,37 +571,59 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200 cursor-pointer hover:shadow-lg transition-all"
-                    onClick={() => onEntryEdit(entry)}
+                    className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200 hover:shadow-lg transition-all group"
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
+                      <div 
+                        className="flex items-center gap-2 flex-1 cursor-pointer" 
+                        onClick={() => onEntryEdit(entry)}
+                      >
                         <span className="text-2xl">{entry.mood}</span>
                         <span className="text-sm font-medium text-gray-700">{entry.title}</span>
                       </div>
-                      {entry.isPinned && <Star className="w-4 h-4 text-amber-500" />}
-                      {entry.isPrivate && <Lock className="w-4 h-4 text-purple-500" />}
+                      <div className="flex items-center gap-2">
+                        {entry.isPinned && <Star className="w-4 h-4 text-amber-500" />}
+                        {entry.isPrivate && <Lock className="w-4 h-4 text-purple-500" />}
+                        {onEntryDelete && (
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (window.confirm(`Are you sure you want to delete "${entry.title}"? This action cannot be undone.`)) {
+                                onEntryDelete(entry.id);
+                              }
+                            }}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded-full hover:bg-red-100 text-red-500 hover:text-red-700"
+                            title="Delete entry"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </motion.button>
+                        )}
+                      </div>
                     </div>
                     
-                    <p className="text-sm text-gray-600 line-clamp-3 mb-3">
-                      {entry.content}
-                    </p>
-                    
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>{entry.wordCount || 0} words</span>
-                      <div className="flex gap-2">
-                        {entry.photos && entry.photos.length > 0 && (
-                          <span className="flex items-center gap-1">
-                            <Camera className="w-3 h-3" />
-                            {entry.photos.length}
-                          </span>
-                        )}
-                        {entry.tags && entry.tags.length > 0 && (
-                          <span className="flex items-center gap-1">
-                            <span>#</span>
-                            {entry.tags.length}
-                          </span>
-                        )}
+                    <div onClick={() => onEntryEdit(entry)} className="cursor-pointer">
+                      <p className="text-sm text-gray-600 line-clamp-3 mb-3">
+                        {entry.content}
+                      </p>
+                      
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <span>{entry.wordCount || 0} words</span>
+                        <div className="flex gap-2">
+                          {entry.photos && entry.photos.length > 0 && (
+                            <span className="flex items-center gap-1">
+                              <Camera className="w-3 h-3" />
+                              {entry.photos.length}
+                            </span>
+                          )}
+                          {entry.tags && entry.tags.length > 0 && (
+                            <span className="flex items-center gap-1">
+                              <span>#</span>
+                              {entry.tags.length}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -710,20 +733,37 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="flex-shrink-0 w-32 h-20 bg-white rounded-lg shadow-md p-2 cursor-pointer border-2 border-transparent hover:border-purple-300"
-                onClick={() => onEntryEdit(entry)}
+                className="flex-shrink-0 w-32 h-20 bg-white rounded-lg shadow-md p-2 border-2 border-transparent hover:border-purple-300 group relative"
               >
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-lg">{entry.mood}</span>
-                  <div className="text-xs text-gray-500">
-                    {format(entry.date, 'MMM d')}
+                {onEntryDelete && (
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (window.confirm(`Are you sure you want to delete "${entry.title}"? This action cannot be undone.`)) {
+                        onEntryDelete(entry.id);
+                      }
+                    }}
+                    className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 text-white rounded-full p-1 hover:bg-red-600 shadow-lg z-10"
+                    title="Delete entry"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </motion.button>
+                )}
+                <div className="cursor-pointer" onClick={() => onEntryEdit(entry)}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">{entry.mood}</span>
+                    <div className="text-xs text-gray-500">
+                      {format(entry.date, 'MMM d')}
+                    </div>
                   </div>
-                </div>
-                <div className="text-xs text-gray-700 line-clamp-2">
-                  {entry.title}
-                </div>
-                <div className="text-xs text-gray-500 mt-1">
-                  {entry.wordCount} words
+                  <div className="text-xs text-gray-700 line-clamp-2">
+                    {entry.title}
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {entry.wordCount} words
+                  </div>
                 </div>
               </motion.div>
             ))}
