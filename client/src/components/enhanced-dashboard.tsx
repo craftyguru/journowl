@@ -1869,41 +1869,86 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
         <TabsContent value="analytics" data-tabs-content>
           <div className="space-y-6">
             {/* Premium Analytics Header with Animated Stats */}
-            <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white rounded-3xl p-8 shadow-2xl">
-              <div className="flex items-center justify-between mb-8">
-                <div>
+            <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white rounded-3xl p-4 md:p-8 shadow-2xl">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
+                <div className="flex-1">
                   <motion.h2 
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="text-4xl font-bold bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent"
+                    className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent"
                   >
                     📊 Premium Analytics
                   </motion.h2>
-                  <p className="text-purple-100 text-xl mt-2">Your complete journaling insights dashboard</p>
+                  <p className="text-purple-100 text-sm md:text-xl mt-2">Your complete journaling insights dashboard</p>
                 </div>
-                <div className="flex gap-3">
-                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-lg">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Last 30 Days
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+                  <Button 
+                    onClick={() => {
+                      // Export analytics data as CSV
+                      const csvData = `Date,Entries,Words,Mood\n${entries.map(e => 
+                        `${e.date || new Date(e.createdAt).toLocaleDateString()},1,${e.wordCount || 0},${e.mood || 'N/A'}`
+                      ).join('\n')}`;
+                      const blob = new Blob([csvData], { type: 'text/csv' });
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'journowl-analytics.csv';
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                    }}
+                    className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-lg text-xs md:text-sm px-2 md:px-4 py-1 md:py-2"
+                  >
+                    <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">Last 30 Days</span>
+                    <span className="sm:hidden">30d</span>
                   </Button>
-                  <Button className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-lg">
-                    📥 Export Report
+                  <Button 
+                    onClick={() => {
+                      // Export detailed analytics report
+                      const reportData = {
+                        totalEntries: stats.totalEntries || 0,
+                        totalWords: stats.totalWords || 0,
+                        currentStreak: stats.currentStreak || 0,
+                        avgWordsPerEntry: stats.totalEntries > 0 ? Math.round((stats.totalWords || 0) / stats.totalEntries) : 0,
+                        entries: entries.map(e => ({
+                          title: e.title,
+                          date: e.date || new Date(e.createdAt).toLocaleDateString(),
+                          wordCount: e.wordCount || 0,
+                          mood: e.mood,
+                          tags: e.tags || []
+                        }))
+                      };
+                      const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+                      const url = window.URL.createObjectURL(blob);
+                      const a = document.createElement('a');
+                      a.href = url;
+                      a.download = 'journowl-full-report.json';
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                    }}
+                    className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-lg text-xs md:text-sm px-2 md:px-4 py-1 md:py-2"
+                  >
+                    📥 <span className="hidden sm:inline">Export Report</span><span className="sm:hidden">Export</span>
                   </Button>
-                  <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Quick Entry
+                  <Button 
+                    onClick={() => openUnifiedJournal()}
+                    className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg text-xs md:text-sm px-2 md:px-4 py-1 md:py-2"
+                  >
+                    <Plus className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                    <span className="hidden sm:inline">Quick Entry</span>
+                    <span className="sm:hidden">Write</span>
                   </Button>
                 </div>
               </div>
               
-              {/* Animated Metric Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+              {/* Animated Metric Cards - Mobile Optimized */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-4 md:p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
                 >
                   <motion.div
                     animate={{ x: [-20, 100], opacity: [0, 1, 0] }}
@@ -1911,8 +1956,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                     className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-xl"
                   />
                   <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">{stats.totalEntries || 0}</div>
-                    <div className="text-white/90 text-sm font-medium mb-1">Total Entries</div>
+                    <div className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">{stats.totalEntries || 0}</div>
+                    <div className="text-white/90 text-xs md:text-sm font-medium mb-1">Total Entries</div>
                     <div className="flex items-center gap-1 text-xs text-green-300">
                       <motion.div
                         animate={{ scale: [1, 1.2, 1] }}
@@ -1930,7 +1975,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-4 md:p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
                 >
                   <motion.div
                     animate={{ rotate: 360 }}
@@ -1940,8 +1985,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                     ✨
                   </motion.div>
                   <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">{(stats.totalWords || 0).toLocaleString()}</div>
-                    <div className="text-white/90 text-sm font-medium mb-1">Total Words</div>
+                    <div className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">{(stats.totalWords || 0).toLocaleString()}</div>
+                    <div className="text-white/90 text-xs md:text-sm font-medium mb-1">Total Words</div>
                     <div className="flex items-center gap-1 text-xs text-blue-300">
                       <TrendingUp className="w-3 h-3" />
                       <span>Average: {stats.totalEntries > 0 ? Math.round((stats.totalWords || 0) / stats.totalEntries) : 0}/entry</span>
@@ -1954,7 +1999,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
                   whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
+                  className="bg-gradient-to-br from-white/25 to-white/10 rounded-2xl p-4 md:p-6 backdrop-blur-lg border border-white/20 relative overflow-hidden"
                 >
                   <motion.div
                     animate={{ scale: [1, 1.3, 1], rotate: [0, 360, 0] }}
@@ -1964,8 +2009,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                     🔥
                   </motion.div>
                   <div className="relative z-10">
-                    <div className="text-4xl font-bold mb-2">{stats.currentStreak || 0}</div>
-                    <div className="text-white/90 text-sm font-medium mb-1">Current Streak</div>
+                    <div className="text-2xl md:text-4xl font-bold mb-1 md:mb-2">{stats.currentStreak || 0}</div>
+                    <div className="text-white/90 text-xs md:text-sm font-medium mb-1">Current Streak</div>
                     <div className="flex items-center gap-1 text-xs text-orange-300">
                       <Trophy className="w-3 h-3" />
                       <span>{stats.currentStreak >= stats.longestStreak ? "Personal Best!" : "Keep going!"}</span>
@@ -2533,6 +2578,24 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                     <Button 
                       size="sm" 
                       variant="outline"
+                      onClick={async () => {
+                        // Generate word cloud from journal entries
+                        const allText = entries?.map(e => e.content || '').join(' ') || '';
+                        const words = allText.split(/\s+/).filter(w => w.length > 3);
+                        const wordCounts = words.reduce((acc, word) => {
+                          const clean = word.toLowerCase().replace(/[^\w]/g, '');
+                          acc[clean] = (acc[clean] || 0) + 1;
+                          return acc;
+                        }, {} as Record<string, number>);
+                        
+                        const topWords = Object.entries(wordCounts)
+                          .sort(([,a], [,b]) => b - a)
+                          .slice(0, 50)
+                          .map(([word, count]) => `${word} (${count})`)
+                          .join(', ');
+                          
+                        alert(`Your Top 50 Words:\n\n${topWords || 'Start writing to generate word cloud!'}`);
+                      }}
                       className="w-full mt-3 border-pink-300 text-pink-600 hover:bg-pink-50"
                     >
                       <Sparkles className="w-4 h-4 mr-2" />
@@ -2583,6 +2646,27 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                     <Button 
                       size="sm" 
                       variant="outline"
+                      onClick={() => {
+                        // Show detailed writing time analysis
+                        const hourCounts = entries?.reduce((acc, entry) => {
+                          const hour = new Date(entry.createdAt).getHours();
+                          acc[hour] = (acc[hour] || 0) + 1;
+                          return acc;
+                        }, {} as Record<number, number>) || {};
+                        
+                        const peakHour = Object.entries(hourCounts)
+                          .sort(([,a], [,b]) => b - a)[0];
+                        
+                        const timeAnalysis = `Writing Time Analysis:
+                        
+📊 Peak Writing Hour: ${peakHour ? `${peakHour[0]}:00 (${peakHour[1]} entries)` : 'No data yet'}
+📅 Total Writing Days: ${new Set(entries?.map(e => new Date(e.createdAt).toDateString())).size || 0}
+✍️ Most Productive Day: ${entries?.length > 0 ? 'Keep writing to find out!' : 'Start your first entry!'}
+
+${entries?.length === 0 ? 'Create more entries to unlock detailed insights!' : ''}`;
+                        
+                        alert(timeAnalysis);
+                      }}
                       className="w-full mt-3 border-green-300 text-green-600 hover:bg-green-50"
                     >
                       <Calendar className="w-4 h-4 mr-2" />
@@ -2714,6 +2798,30 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                     <Button 
                       size="sm" 
                       variant="outline"
+                      onClick={async () => {
+                        // Analyze topics from journal entries
+                        const allContent = entries?.map(e => e.content || '').join(' ') || '';
+                        const themes = {
+                          'Personal Growth': ['growth', 'improve', 'better', 'learn', 'develop', 'progress', 'goals', 'achievement'],
+                          'Daily Life': ['today', 'work', 'morning', 'evening', 'routine', 'day', 'home', 'family'],
+                          'Relationships': ['friend', 'love', 'partner', 'family', 'relationship', 'social', 'together'],
+                          'Dreams & Goals': ['dream', 'future', 'plan', 'hope', 'want', 'wish', 'aspire', 'goal']
+                        };
+                        
+                        const themeCounts = Object.entries(themes).map(([theme, keywords]) => {
+                          const count = keywords.reduce((acc, keyword) => 
+                            acc + (allContent.toLowerCase().split(keyword).length - 1), 0
+                          );
+                          return { theme, count };
+                        });
+                        
+                        const total = themeCounts.reduce((acc, t) => acc + t.count, 0);
+                        const analysis = themeCounts
+                          .map(t => `${t.theme}: ${total > 0 ? Math.round((t.count / total) * 100) : 0}%`)
+                          .join('\n');
+                        
+                        alert(`AI Topic Analysis:\n\n${analysis || 'Start writing to discover your themes!'}`);
+                      }}
                       className="w-full mt-4 border-indigo-300 text-indigo-600 hover:bg-indigo-50"
                     >
                       <Brain className="w-4 h-4 mr-2" />
@@ -2774,46 +2882,49 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               </motion.div>
             </div>
 
-            {/* Enhanced Action Buttons Row */}
+            {/* Enhanced Action Buttons Row - Mobile Optimized */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.1 }}
-              className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6"
+              className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mt-6 mb-20 sm:mb-6"
             >
               <Button 
                 onClick={() => setActiveTab("calendar")}
-                className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white"
+                className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white text-xs md:text-sm py-2 md:py-3"
               >
-                <Calendar className="w-4 h-4 mr-2" />
-                View Calendar
+                <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">View Calendar</span>
+                <span className="sm:hidden">Calendar</span>
               </Button>
               
               <Button 
                 onClick={() => setActiveTab("achievements")}
                 variant="outline"
-                className="border-amber-300 text-amber-600 hover:bg-amber-50"
+                className="border-amber-300 text-amber-600 hover:bg-amber-50 text-xs md:text-sm py-2 md:py-3"
               >
-                <Trophy className="w-4 h-4 mr-2" />
-                Achievements
+                <Trophy className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">Achievements</span>
+                <span className="sm:hidden">Awards</span>
               </Button>
               
               <Button 
                 onClick={() => setActiveTab("goals")}
                 variant="outline"
-                className="border-emerald-300 text-emerald-600 hover:bg-emerald-50"
+                className="border-emerald-300 text-emerald-600 hover:bg-emerald-50 text-xs md:text-sm py-2 md:py-3"
               >
-                <Target className="w-4 h-4 mr-2" />
+                <Target className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                 Goals
               </Button>
               
               <Button 
                 onClick={() => setActiveTab("insights")}
                 variant="outline"
-                className="border-blue-300 text-blue-600 hover:bg-blue-50"
+                className="border-blue-300 text-blue-600 hover:bg-blue-50 text-xs md:text-sm py-2 md:py-3"
               >
-                <Brain className="w-4 h-4 mr-2" />
-                AI Insights
+                <Brain className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                <span className="hidden sm:inline">AI Insights</span>
+                <span className="sm:hidden">AI</span>
               </Button>
             </motion.div>
           </div>
