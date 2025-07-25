@@ -1100,7 +1100,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               </div>
               <div className="flex justify-between text-purple-200">
                 <span>Avg/week:</span>
-                <span className="font-bold text-blue-300">{Math.round((stats?.totalEntries || 0) / Math.max(1, Math.ceil((Date.now() - new Date(user?.createdAt || Date.now()).getTime()) / (7 * 24 * 60 * 60 * 1000))))}</span>
+                <span className="font-bold text-blue-300">{Math.round((stats?.totalEntries || 0) / Math.max(1, 4))}</span>
               </div>
             </div>
           </div>
