@@ -1611,17 +1611,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             >
               🤖 AI Thoughts
             </TabsTrigger>
-            <TabsTrigger 
-              value="analytics-insights" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[130px] lg:flex-1 lg:min-w-0 lg:justify-center ${
-                activeTab === 'analytics-insights' 
-                  ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-indigo-400/20 to-blue-400/20 text-indigo-200 hover:from-indigo-400/40 hover:to-blue-400/40 hover:text-white hover:scale-105'
-              }`}
-              style={{ fontFamily: '"Rock Salt", cursive' }}
-            >
-              📈 Insights
-            </TabsTrigger>
+
             <TabsTrigger 
               value="calendar" 
               className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[170px] lg:flex-1 lg:min-w-0 lg:justify-center ${
@@ -4367,7 +4357,98 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
 
-        <TabsContent value="analytics-insights" data-tabs-content>
+
+        <TabsContent value="calendar" data-tabs-content>
+          <div className="h-[80vh]">
+            <InteractiveCalendar 
+              entries={calendarEntries}
+              onDateSelect={handleDateSelect}
+              onEntryEdit={handleEntryEdit}
+              onEntryDelete={handleEntryDelete}
+            />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="stories" data-tabs-content>
+          <div className="h-[80vh]">
+            <AIStoryMaker 
+              entries={entries}
+              stats={stats}
+            />
+          </div>
+        </TabsContent>
+        
+        <TabsContent value="referral" data-tabs-content>
+          <div className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-gradient-to-br from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-purple-500/20"
+            >
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold text-white mb-4">🎁 Refer Friends & Earn AI Prompts!</h2>
+                <p className="text-gray-300 text-lg">Share JournOwl with friends and get 100 free AI prompts for each successful referral!</p>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="bg-gradient-to-br from-purple-800/40 to-pink-800/40 rounded-xl p-6 border border-purple-400/30">
+                  <h3 className="text-xl font-bold text-white mb-4">📤 Your Referral Link</h3>
+                  <div className="flex gap-2">
+                    <Input 
+                      value={`https://journowl.com/join?ref=${user?.id || 'demo'}`}
+                      readOnly
+                      className="bg-slate-700/50 border-purple-400/30 text-white"
+                    />
+                    <Button 
+                      onClick={() => navigator.clipboard.writeText(`https://journowl.com/join?ref=${user?.id || 'demo'}`)}
+                      className="bg-purple-500 hover:bg-purple-600"
+                    >
+                      📋 Copy
+                    </Button>
+                  </div>
+                  <p className="text-gray-400 text-sm mt-2">Share this link with friends to start earning rewards!</p>
+                </div>
+                
+                <div className="bg-gradient-to-br from-green-800/40 to-emerald-800/40 rounded-xl p-6 border border-green-400/30">
+                  <h3 className="text-xl font-bold text-white mb-4">🏆 Your Referral Stats</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Total Referrals:</span>
+                      <span className="text-white font-bold">0</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">AI Prompts Earned:</span>
+                      <span className="text-green-400 font-bold">0</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-300">Pending Referrals:</span>
+                      <span className="text-yellow-400 font-bold">0</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-8 grid md:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
+                  <div className="text-2xl mb-2">👥</div>
+                  <h4 className="font-semibold text-white mb-1">Step 1: Share</h4>
+                  <p className="text-gray-400 text-sm">Send your referral link to friends</p>
+                </div>
+                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
+                  <div className="text-2xl mb-2">✨</div>
+                  <h4 className="font-semibold text-white mb-1">Step 2: They Join</h4>
+                  <p className="text-gray-400 text-sm">Friends sign up using your link</p>
+                </div>
+                <div className="text-center p-4 bg-slate-800/50 rounded-lg border border-purple-400/20">
+                  <div className="text-2xl mb-2">🎁</div>
+                  <h4 className="font-semibold text-white mb-1">Step 3: Earn Rewards</h4>
+                  <p className="text-gray-400 text-sm">Get 100 AI prompts per referral</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </TabsContent>
+
           <div className="space-y-6">
             {/* Header Section */}
             <motion.div
