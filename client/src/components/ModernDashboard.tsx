@@ -17,7 +17,7 @@ import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
 import { SupportChatBubble } from "./SupportChatBubble";
-import NewGoalForm from "./NewGoalForm";
+// Removed import - using local NewGoalForm component instead
 
 // Typewriter hook for animated text
 const useTypewriter = (text: string, speed: number = 100) => {
@@ -90,7 +90,7 @@ interface JournalEntry {
   photos?: Array<string> | Array<{ url: string; timestamp: string }>;
   drawings?: Array<any>;
   tags?: string[];
-  date?: string;
+  date?: Date;
   wordCount?: number;
   photoAnalysis?: any;
 }
@@ -394,7 +394,7 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
       <AnimatePresence>
         {showCalendar && (
           <InteractiveCalendar
-            entries={entries as JournalEntry[]}
+            entries={entries || []}
             onClose={() => setShowCalendar(false)}
             onEntrySelect={handleEntrySelect}
           />
