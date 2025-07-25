@@ -17,6 +17,7 @@ import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
 import { SupportChatBubble } from "./SupportChatBubble";
+import NewGoalForm from "./NewGoalForm";
 
 // Typewriter hook for animated text
 const useTypewriter = (text: string, speed: number = 100) => {
@@ -173,9 +174,20 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
     setShowSmartEditor(true);
   };
 
-  const handleEntryDelete = (entryId: number) => {
-    // Entry deletion is handled within the JournalEntriesList component
-    console.log('Entry deleted:', entryId);
+  const handleEntryDelete = async (entryId: number) => {
+    try {
+      const response = await fetch(`/api/journal/entries/${entryId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        // Refresh entries after deletion
+        queryClient.invalidateQueries({ queryKey: ['/api/journal/entries'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/journal/stats'] });
+      }
+    } catch (error) {
+      console.error('Error deleting entry:', error);
+    }
   };
 
   const handleSaveEntry = (entryData: any) => {
@@ -237,18 +249,116 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center py-12">
-          <h2 className="text-2xl font-bold text-white mb-4">Modern Dashboard</h2>
-          <p className="text-gray-300">Modular dashboard components loading...</p>
-          <div className="mt-8 space-y-4">
-            <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
-              <h3 className="text-lg font-bold text-white mb-2">📊 Stats</h3>
-              <p className="text-gray-300">Total Entries: {(stats as Stats)?.totalEntries || 0}</p>
-              <p className="text-gray-300">Current Streak: {(stats as Stats)?.currentStreak || 0}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Stats Overview */}
+          <div className="lg:col-span-3">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
+                <h3 className="text-sm text-gray-400 mb-1">Total Entries</h3>
+                <p className="text-2xl font-bold text-white">{(stats as Stats)?.totalEntries || 0}</p>
+              </div>
+              <div className="bg-slate-800/60 rounded-xl p-6 border border-blue-400/20">
+                <h3 className="text-sm text-gray-400 mb-1">Current Streak</h3>
+                <p className="text-2xl font-bold text-white">{(stats as Stats)?.currentStreak || 0} days</p>
+              </div>
+              <div className="bg-slate-800/60 rounded-xl p-6 border border-green-400/20">
+                <h3 className="text-sm text-gray-400 mb-1">Total Words</h3>
+                <p className="text-2xl font-bold text-white">{(stats as Stats)?.totalWords || 0}</p>
+              </div>
+              <div className="bg-slate-800/60 rounded-xl p-6 border border-yellow-400/20">
+                <h3 className="text-sm text-gray-400 mb-1">Achievements</h3>
+                <p className="text-2xl font-bold text-white">{achievements.length}</p>
+              </div>
             </div>
-            <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
-              <h3 className="text-lg font-bold text-white mb-2">📝 Recent Entries</h3>
-              <p className="text-gray-300">Entries Count: {(entries as JournalEntry[])?.length || 0}</p>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
+            <h3 className="text-lg font-bold text-white mb-4">🚀 Quick Actions</h3>
+            <div className="space-y-3">
+              <Button 
+                onClick={handleNewEntry} 
+                className="w-full bg-purple-600 hover:bg-purple-700"
+              >
+                ✍️ Write New Entry
+              </Button>
+              <Button 
+                onClick={handleNewGoal} 
+                variant="outline" 
+                className="w-full border-purple-400 text-purple-300 hover:bg-purple-900"
+              >
+                🎯 Create New Goal
+              </Button>
+              <Button 
+                onClick={() => setShowCalendar(true)} 
+                variant="outline" 
+                className="w-full border-blue-400 text-blue-300 hover:bg-blue-900"
+              >
+                📅 View Calendar
+              </Button>
+            </div>
+          </div>
+
+          {/* Recent Entries */}
+          <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
+            <h3 className="text-lg font-bold text-white mb-4">📝 Recent Entries</h3>
+            <div className="space-y-3">
+              {entries.slice(0, 3).map((entry: JournalEntry) => (
+                <div 
+                  key={entry.id} 
+                  className="p-3 bg-slate-700/50 rounded-lg cursor-pointer hover:bg-slate-700/70 transition-colors"
+                  onClick={() => handleEntrySelect(entry)}
+                >
+                  <h4 className="font-medium text-white text-sm truncate">{entry.title}</h4>
+                  <p className="text-xs text-gray-400 mt-1">
+                    {new Date(entry.createdAt).toLocaleDateString()}
+                  </p>
+                  <div className="flex justify-between items-center mt-2">
+                    <span className="text-xs bg-purple-600/20 text-purple-300 px-2 py-1 rounded">
+                      {entry.mood}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEntryDelete(entry.id);
+                      }}
+                      className="text-xs text-red-400 hover:text-red-300"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+              {entries.length === 0 && (
+                <p className="text-gray-400 text-sm">No entries yet. Start writing!</p>
+              )}
+            </div>
+          </div>
+
+          {/* Goals Progress */}
+          <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
+            <h3 className="text-lg font-bold text-white mb-4">🎯 Active Goals</h3>
+            <div className="space-y-3">
+              {goals.slice(0, 3).map((goal: Goal) => (
+                <div key={goal.id} className="p-3 bg-slate-700/50 rounded-lg">
+                  <h4 className="font-medium text-white text-sm">{goal.title}</h4>
+                  <div className="mt-2">
+                    <div className="flex justify-between text-xs text-gray-400 mb-1">
+                      <span>{goal.currentValue}/{goal.targetValue}</span>
+                      <span>{Math.round((goal.currentValue / goal.targetValue) * 100)}%</span>
+                    </div>
+                    <div className="w-full bg-slate-600 rounded-full h-2">
+                      <div 
+                        className="bg-purple-600 h-2 rounded-full transition-all"
+                        style={{ width: `${Math.min((goal.currentValue / goal.targetValue) * 100, 100)}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {goals.length === 0 && (
+                <p className="text-gray-400 text-sm">No goals set. Create your first goal!</p>
+              )}
             </div>
           </div>
         </div>
