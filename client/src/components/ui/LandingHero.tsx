@@ -333,17 +333,6 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           >
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-2 sm:mb-4 leading-tight" 
                 style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)', lineHeight: '1.2' }}>
-              <svg className="inline-block w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 mr-2 sm:mr-3 mb-1 sm:mb-2" viewBox="0 0 100 100" fill="none">
-                <circle cx="50" cy="45" r="25" fill="#8B4513"/>
-                <circle cx="42" cy="40" r="4" fill="white"/>
-                <circle cx="58" cy="40" r="4" fill="white"/>
-                <circle cx="42" cy="40" r="2" fill="black"/>
-                <circle cx="58" cy="40" r="2" fill="black"/>
-                <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
-                <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
-                <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
-                <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
-              </svg>
               JournOwl
             </h1>
             <motion.div 
