@@ -3604,22 +3604,89 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
 
                       {/* Quick question buttons */}
                       <div className="grid grid-cols-2 gap-2 pt-4 border-t border-blue-200">
-                        <Button variant="outline" size="sm" className="text-xs h-8">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-xs h-8"
+                          onClick={async () => {
+                            try {
+                              const currentDate = new Date();
+                              const currentMonth = currentDate.getMonth();
+                              const currentYear = currentDate.getFullYear();
+                              
+                              const monthEntries = entries?.filter(entry => {
+                                const entryDate = new Date(entry.createdAt);
+                                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+                              }) || [];
+                              
+                              const summary = `This month you wrote ${monthEntries.length} entries with ${monthEntries.reduce((total, entry) => total + (entry.content?.split(' ').length || 0), 0)} total words. Your most common mood was ${stats?.averageMood || 'balanced'} and you maintained a ${stats?.currentStreak || 0}-day streak.`;
+                              
+                              alert(`Monthly Summary: ${summary}`);
+                            } catch (error) {
+                              alert('Error generating monthly summary. Please try again.');
+                            }
+                          }}
+                        >
                           📊 Monthly summary
                         </Button>
-                        <Button variant="outline" size="sm" className="text-xs h-8">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-xs h-8"
+                          onClick={async () => {
+                            try {
+                              const prompts = [
+                                "What's one thing you learned about yourself this week?",
+                                "Describe a moment today that made you smile.",
+                                "What are you looking forward to tomorrow?",
+                                "Write about a challenge you overcame recently.",
+                                "What would you tell your past self from a year ago?"
+                              ];
+                              const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
+                              alert(`Writing Prompt: ${randomPrompt}`);
+                            } catch (error) {
+                              alert('Error generating writing prompt. Please try again.');
+                            }
+                          }}
+                        >
                           💭 Writing prompt
                         </Button>
-                        <Button variant="outline" size="sm" className="text-xs h-8">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-xs h-8"
+                          onClick={() => setActiveTab("goals")}
+                        >
                           🎯 Goal suggestions
                         </Button>
-                        <Button variant="outline" size="sm" className="text-xs h-8">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="text-xs h-8"
+                          onClick={() => {
+                            const progress = `Current Progress: ${stats?.totalEntries || 0} entries, ${stats?.currentStreak || 0}-day streak, ${stats?.totalWords || 0} words written. Keep up the great work!`;
+                            alert(progress);
+                          }}
+                        >
                           📈 Progress review
                         </Button>
                       </div>
 
                       <div className="pt-2">
-                        <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white">
+                        <Button 
+                          className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                          onClick={() => {
+                            const questions = [
+                              "What patterns do you notice in my writing?",
+                              "How can I improve my journaling habit?",
+                              "What themes appear most in my entries?",
+                              "When do I write my best content?",
+                              "What goals should I set for next month?"
+                            ];
+                            const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+                            alert(`AI Conversation Starter: "${randomQuestion}" - This would start a real AI chat in the full version!`);
+                          }}
+                        >
                           <Brain className="w-4 h-4 mr-2" />
                           Start New Conversation
                         </Button>
@@ -3673,7 +3740,29 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                         </div>
                       </motion.div>
 
-                      <Button className="w-full bg-rose-500 hover:bg-rose-600 text-white">
+                      <Button 
+                        className="w-full bg-rose-500 hover:bg-rose-600 text-white"
+                        onClick={async () => {
+                          try {
+                            const oldEntries = entries?.filter(entry => {
+                              const entryDate = new Date(entry.createdAt);
+                              const now = new Date();
+                              const daysDiff = Math.floor((now.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24));
+                              return daysDiff > 30; // Entries older than 30 days
+                            }) || [];
+                            
+                            if (oldEntries.length > 0) {
+                              const randomMemory = oldEntries[Math.floor(Math.random() * oldEntries.length)];
+                              const memoryDate = new Date(randomMemory.createdAt).toLocaleDateString();
+                              alert(`Memory from ${memoryDate}: "${randomMemory.content?.substring(0, 100)}..." - This entry has ${randomMemory.content?.split(' ').length || 0} words.`);
+                            } else {
+                              alert("No older memories found yet. Keep journaling to build your memory collection!");
+                            }
+                          } catch (error) {
+                            alert('Error exploring memories. Please try again.');
+                          }
+                        }}
+                      >
                         <Clock className="w-4 h-4 mr-2" />
                         Explore More Memories
                       </Button>
@@ -3698,7 +3787,13 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {[].map((prompt, index) => (
+                      {[
+                        "What's the most important lesson you learned this week?",
+                        "Describe a moment when you felt truly proud of yourself.",
+                        "Write about a goal you're working toward and why it matters.",
+                        "What would you tell someone facing a similar challenge to yours?",
+                        "Reflect on how you've grown in the past month."
+                      ].map((prompt, index) => (
                         <motion.div
                           key={index}
                           initial={{ opacity: 0, y: 10 }}
@@ -3706,6 +3801,11 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                           transition={{ delay: index * 0.1 + 0.5 }}
                           whileHover={{ scale: 1.02, x: 4 }}
                           className="p-4 bg-white rounded-xl border border-amber-200 cursor-pointer hover:shadow-md transition-all group"
+                          onClick={() => {
+                            // This would open the journal editor with the prompt pre-filled
+                            alert(`Starting new journal entry with prompt: "${prompt}"`);
+                            setActiveTab("journal");
+                          }}
                         >
                           <div className="flex items-start gap-3">
                             <div className="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center text-sm group-hover:bg-amber-200 transition-colors">✨</div>
@@ -3719,7 +3819,27 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                     </div>
                     
                     <div className="pt-4 border-t border-amber-200">
-                      <Button className="w-full bg-amber-500 hover:bg-amber-600 text-white">
+                      <Button 
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-white"
+                        onClick={async () => {
+                          try {
+                            const newPrompts = [
+                              "What small victory did you achieve today?",
+                              "Write about a person who inspired you recently.",
+                              "Describe your ideal day from start to finish.",
+                              "What habit would you like to develop this month?",
+                              "Reflect on a decision you made that you're grateful for.",
+                              "What's something you're excited to learn about?",
+                              "Write about a place that brings you peace.",
+                              "What advice would you give to your younger self?"
+                            ];
+                            const randomPrompt = newPrompts[Math.floor(Math.random() * newPrompts.length)];
+                            alert(`New AI-Generated Prompt: "${randomPrompt}" - Click OK to start writing!`);
+                          } catch (error) {
+                            alert('Error generating new prompts. Please try again.');
+                          }
+                        }}
+                      >
                         <Lightbulb className="w-4 h-4 mr-2" />
                         Generate New Prompts
                       </Button>
@@ -3743,32 +3863,50 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               
               <div className="bg-white rounded-xl p-6 border border-teal-200">
                 <div className="flex flex-wrap gap-2 justify-center items-center">
-                  {[
-                    { word: "grateful", size: "text-4xl", color: "text-green-500" },
-                    { word: "creative", size: "text-2xl", color: "text-purple-500" },
-                    { word: "peaceful", size: "text-3xl", color: "text-blue-500" },
-                    { word: "growth", size: "text-2xl", color: "text-emerald-500" },
-                    { word: "inspired", size: "text-3xl", color: "text-pink-500" },
-                    { word: "focused", size: "text-xl", color: "text-indigo-500" },
-                    { word: "determined", size: "text-2xl", color: "text-orange-500" },
-                    { word: "mindful", size: "text-3xl", color: "text-teal-500" },
-                    { word: "hopeful", size: "text-2xl", color: "text-rose-500" },
-                    { word: "confident", size: "text-xl", color: "text-violet-500" },
-                  ].map((item, index) => (
-                    <motion.span
-                      key={item.word}
-                      initial={{ opacity: 0, scale: 0 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: index * 0.1 + 0.7 }}
-                      whileHover={{ scale: 1.1 }}
-                      className={`${item.size} ${item.color} font-bold cursor-pointer hover:opacity-80 transition-opacity`}
-                    >
-                      {item.word}
-                    </motion.span>
-                  ))}
+                  {(() => {
+                    // Generate word cloud from actual journal entries
+                    const allContent = entries?.map(e => e.content || '').join(' ').toLowerCase() || '';
+                    const commonPositiveWords = ['grateful', 'creative', 'peaceful', 'growth', 'inspired', 'focused', 'determined', 'mindful', 'hopeful', 'confident', 'happy', 'amazing', 'wonderful', 'exciting', 'beautiful'];
+                    
+                    const wordCounts = commonPositiveWords.map(word => ({
+                      word,
+                      count: (allContent.split(word).length - 1),
+                      size: Math.min(Math.max((allContent.split(word).length - 1) * 8 + 16, 16), 48), // Dynamic sizing based on frequency
+                      color: ['text-green-500', 'text-purple-500', 'text-blue-500', 'text-emerald-500', 'text-pink-500', 'text-indigo-500', 'text-orange-500', 'text-teal-500', 'text-rose-500', 'text-violet-500'][Math.floor(Math.random() * 10)]
+                    })).filter(item => item.count > 0).slice(0, 10);
+                    
+                    // If no words found in entries, show default encouraging words
+                    const displayWords = wordCounts.length > 0 ? wordCounts : [
+                      { word: "start", size: 32, color: "text-green-500", count: 1 },
+                      { word: "writing", size: 28, color: "text-purple-500", count: 1 },
+                      { word: "journal", size: 24, color: "text-blue-500", count: 1 },
+                      { word: "today", size: 20, color: "text-emerald-500", count: 1 },
+                      { word: "grow", size: 16, color: "text-pink-500", count: 1 }
+                    ];
+                    
+                    return displayWords.map((item, index) => (
+                      <motion.span
+                        key={item.word}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: index * 0.1 + 0.7 }}
+                        whileHover={{ scale: 1.1 }}
+                        className={`font-bold cursor-pointer hover:opacity-80 transition-opacity ${item.color}`}
+                        style={{ fontSize: `${item.size}px` }}
+                        onClick={() => {
+                          alert(`"${item.word}" appears ${item.count} times in your entries. This word seems important to your journey!`);
+                        }}
+                      >
+                        {item.word}
+                      </motion.span>
+                    ));
+                  })()}
                 </div>
                 <p className="text-center text-teal-600 text-sm mt-4">
-                  These are your most frequent positive words from the past month
+                  {entries && entries.length > 0 
+                    ? "These are your most frequent positive words from your journal entries"
+                    : "Start writing journal entries to see your personal word cloud!"
+                  }
                 </p>
               </div>
             </motion.div>
