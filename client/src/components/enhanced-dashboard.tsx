@@ -1083,14 +1083,27 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 3, duration: 0.8 }}
-              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mt-4 sm:mt-6"
+              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mt-4 sm:mt-6 flex-wrap"
             >
-            <div className="px-6 py-3 bg-gradient-to-r from-purple-500/80 to-pink-500/80 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-purple-300/30 hover:scale-105 transition-transform">
-              Level {user?.level || 1} - {user?.level >= 10 ? 'Expert Writer' : 'Budding Writer'} ✨
-            </div>
-            <div className="px-6 py-3 bg-gradient-to-r from-emerald-500/80 to-teal-500/80 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-emerald-300/30 hover:scale-105 transition-transform">
-              🔥 {stats?.currentStreak || 0}-day streak 🔥
-            </div>
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="bg-gradient-to-r from-white/20 to-white/30 px-4 py-2 rounded-full backdrop-blur-sm border border-white/20"
+              >
+                <span className="text-sm font-medium">🏆 Level {user?.level || 1}</span>
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="bg-gradient-to-r from-orange-400/30 to-red-400/30 px-4 py-2 rounded-full backdrop-blur-sm border border-orange-300/30"
+              >
+                <span className="text-sm font-medium">🔥 {stats?.currentStreak || 0} day streak</span>
+              </motion.div>
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                className="bg-gradient-to-r from-purple-400/30 to-pink-400/30 px-4 py-2 rounded-full backdrop-blur-sm border border-purple-300/30"
+              >
+                <span className="text-sm font-medium">📝 {stats?.totalEntries || 0} entries</span>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </div>
       </motion.div>
