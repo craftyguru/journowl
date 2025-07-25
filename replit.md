@@ -142,6 +142,8 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 - ✅ **MOBILE-RESPONSIVE TEXT**: Optimized font sizes for mobile (text-lg) to desktop (text-2xl) with proper spacing
 - ✅ **ROCK SALT FONT CONSISTENCY**: Applied Rock Salt font across ALL dashboard tab headers for unified artistic styling throughout interface
 - ✅ **COLORFUL TAB SYSTEM**: Each tab now has unique color scheme - Orange Journal, Blue Analytics, Yellow Achievements, Green Goals, Purple AI Thoughts, Indigo Insights, Teal Calendar, Emerald Stories, Pink Referral
+- ✅ **MOBILE TAB SCROLLING FIXED**: Added proper horizontal scrolling with thin purple scrollbars and touch support for mobile devices
+- ✅ **WRITING SECTION SPACING**: Added bottom margin (mb-20 on mobile, mb-6 on desktop) to prevent overlap with support chat bubble
 
 **Mobile Welcome Banner Features:**
 - **Rock Salt Typography**: Artistic handwritten font for "Welcome back" and "Start Your Daily Journal" text

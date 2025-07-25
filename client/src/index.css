@@ -109,6 +109,29 @@
     display: none;  /* Safari and Chrome */
   }
 
+  .scrollbar-thin {
+    scrollbar-width: thin;  /* Firefox */
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: rgba(71, 85, 105, 0.3);
+    border-radius: 4px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(147, 51, 234, 0.5);
+    border-radius: 4px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(147, 51, 234, 0.7);
+  }
+
   .mobile-text-sm {
     @apply text-sm sm:text-base;
   }
@@ -138,7 +161,6 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
-}
 
 /* Mobile-specific animations */
 @layer components {
@@ -322,7 +344,8 @@
     transform: scale(1);
     box-shadow: 0 0 20px rgba(239, 68, 68, 0.6), 0 0 40px rgba(239, 68, 68, 0.4), inset 0 0 15px rgba(255, 215, 0, 0.3);
   }
-  
+}
+
   .animate-slide-up {
     animation: slideUp 0.3s ease-out;
   }

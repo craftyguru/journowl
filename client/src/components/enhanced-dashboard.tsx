@@ -1315,7 +1315,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
         <div className="relative w-full">
-          <TabsList className="flex w-full overflow-x-auto bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-hide">
+          <TabsList className="flex w-full overflow-x-auto bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-thin" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
             <TabsTrigger 
               value="journal" 
               className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
@@ -1754,7 +1754,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                   )}
                 </div>
                 
-                <div className="mt-6 text-center">
+                <div className="mt-6 text-center mb-20 sm:mb-6">
                   <Button 
                     onClick={() => openUnifiedJournal()}
                     variant="outline" 
