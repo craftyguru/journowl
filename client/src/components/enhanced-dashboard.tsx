@@ -1315,7 +1315,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
         <div className="relative w-full">
-          <TabsList className="flex w-full overflow-x-auto bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)' }}>
+          <div className="overflow-x-auto">
+            <TabsList className="flex w-max bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)', paddingRight: '20px' }}>
             <TabsTrigger 
               value="journal" 
               className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] ${
@@ -1633,9 +1634,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             >
               🎁 Referral
             </TabsTrigger>
-          </TabsList>
-          
-
+            </TabsList>
+          </div>
         </div>
 
         <TabsContent value="journal" data-tabs-content>
