@@ -216,7 +216,7 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
     if (!canvasRef.current) return;
     
     try {
-      const canvasData = await canvasRef.current.exportImage("png");
+      const canvasData = canvasRef.current.toDataURL("image/png");
       const newDrawing = {
         id: Date.now(),
         data: canvasData,

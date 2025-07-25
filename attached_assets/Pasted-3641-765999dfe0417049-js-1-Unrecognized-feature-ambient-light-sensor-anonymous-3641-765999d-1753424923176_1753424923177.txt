@@ -1,0 +1,771 @@
+3641-765999dfe0417049.js:1 Unrecognized feature: 'ambient-light-sensor'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'battery'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'layout-animations'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'legacy-image-formats'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'navigation-override'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'oversized-images'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'publickey-credentials'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'speaker-selection'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'unoptimized-images'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'unsized-media'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Unrecognized feature: 'pointer-lock'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+3641-765999dfe0417049.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+n @ main-796dc64a4b12d053.js:1
+u @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ main-796dc64a4b12d053.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+navigateTo @ 3641-765999dfe0417049.js:1
+refresh @ 3641-765999dfe0417049.js:1
+(anonymous) @ 3641-765999dfe0417049.js:1
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:23
+onClick @ _app-1267f43acce5c8d0.js:23
+(anonymous) @ _app-1267f43acce5c8d0.js:28
+eB @ framework-5d19c00ed2bb2898.js:1
+eH @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+re @ framework-5d19c00ed2bb2898.js:1
+rt @ framework-5d19c00ed2bb2898.js:1
+(anonymous) @ framework-5d19c00ed2bb2898.js:1
+uT @ framework-5d19c00ed2bb2898.js:1
+eM @ framework-5d19c00ed2bb2898.js:1
+ru @ framework-5d19c00ed2bb2898.js:1
+tB @ framework-5d19c00ed2bb2898.js:1
+tD @ framework-5d19c00ed2bb2898.js:1
+n @ _app-1267f43acce5c8d0.js:18
+workspace_iframe.html:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=4IhPmDhlIpcE' failed: 
+setupWebSocket @ client:536
+(anonymous) @ client:531
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=4IhPmDhlIpcE' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)
+setupWebSocket @ client:536
+fallback @ client:509
+(anonymous) @ client:555
+App.tsx:34 App initializing - pathname: / search: 
+auth.ts:52  GET https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me 401 (Unauthorized)
+getCurrentUser @ auth.ts:52
+(anonymous) @ App.tsx:93
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=712f95db:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=712f95db:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=712f95db:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=712f95db:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=712f95db:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=712f95db:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=712f95db:19447
+(anonymous) @ chunk-RPCDYKBN.js?v=712f95db:19328
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+auth.ts:61 getCurrentUser failed: Error: Not authenticated
+    at getCurrentUser (auth.ts:57:13)
+getCurrentUser @ auth.ts:61
+await in getCurrentUser
+(anonymous) @ App.tsx:93
+commitHookEffectListMount @ chunk-RPCDYKBN.js?v=712f95db:16915
+commitPassiveMountOnFiber @ chunk-RPCDYKBN.js?v=712f95db:18156
+commitPassiveMountEffects_complete @ chunk-RPCDYKBN.js?v=712f95db:18129
+commitPassiveMountEffects_begin @ chunk-RPCDYKBN.js?v=712f95db:18119
+commitPassiveMountEffects @ chunk-RPCDYKBN.js?v=712f95db:18109
+flushPassiveEffectsImpl @ chunk-RPCDYKBN.js?v=712f95db:19490
+flushPassiveEffects @ chunk-RPCDYKBN.js?v=712f95db:19447
+(anonymous) @ chunk-RPCDYKBN.js?v=712f95db:19328
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+theme-provider.tsx:13 Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem.
+printWarning @ chunk-QCHXOAYK.js?v=862169e8:136
+error @ chunk-QCHXOAYK.js?v=862169e8:120
+resolveDispatcher @ chunk-QCHXOAYK.js?v=862169e8:1045
+useState @ chunk-QCHXOAYK.js?v=862169e8:1065
+ThemeProvider @ theme-provider.tsx:13
+renderWithHooks @ chunk-RPCDYKBN.js?v=712f95db:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=712f95db:14926
+beginWork @ chunk-RPCDYKBN.js?v=712f95db:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=712f95db:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=712f95db:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=712f95db:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=712f95db:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=712f95db:18678
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+theme-provider.tsx:13 Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem.
+printWarning @ chunk-QCHXOAYK.js?v=862169e8:136
+error @ chunk-QCHXOAYK.js?v=862169e8:120
+resolveDispatcher @ chunk-QCHXOAYK.js?v=862169e8:1045
+useState @ chunk-QCHXOAYK.js?v=862169e8:1065
+ThemeProvider @ theme-provider.tsx:13
+renderWithHooks @ chunk-RPCDYKBN.js?v=712f95db:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=712f95db:14926
+beginWork @ chunk-RPCDYKBN.js?v=712f95db:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=712f95db:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=712f95db:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=712f95db:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=712f95db:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=712f95db:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=712f95db:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=712f95db:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=712f95db:18678
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+chunk-QCHXOAYK.js?v=862169e8:1066 Uncaught TypeError: Cannot read properties of null (reading 'useState')
+    at useState (chunk-QCHXOAYK.js?v=862169e8:1066:29)
+    at ThemeProvider (theme-provider.tsx:13:29)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=712f95db:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=712f95db:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=712f95db:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=712f95db:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=712f95db:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=712f95db:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=712f95db:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=712f95db:19198:20)
+useState @ chunk-QCHXOAYK.js?v=862169e8:1066
+ThemeProvider @ theme-provider.tsx:13
+renderWithHooks @ chunk-RPCDYKBN.js?v=712f95db:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=712f95db:14926
+beginWork @ chunk-RPCDYKBN.js?v=712f95db:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=712f95db:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=712f95db:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=712f95db:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=712f95db:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=712f95db:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=712f95db:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=712f95db:19116
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=712f95db:18678
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+theme-provider.tsx:13 Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem.
+printWarning @ chunk-QCHXOAYK.js?v=862169e8:136
+error @ chunk-QCHXOAYK.js?v=862169e8:120
+resolveDispatcher @ chunk-QCHXOAYK.js?v=862169e8:1045
+useState @ chunk-QCHXOAYK.js?v=862169e8:1065
+ThemeProvider @ theme-provider.tsx:13
+renderWithHooks @ chunk-RPCDYKBN.js?v=712f95db:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=712f95db:14926
+beginWork @ chunk-RPCDYKBN.js?v=712f95db:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=712f95db:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=712f95db:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=712f95db:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=712f95db:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=712f95db:18736
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=712f95db:18684
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+theme-provider.tsx:13 Warning: Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+1. You might have mismatching versions of React and the renderer (such as React DOM)
+2. You might be breaking the Rules of Hooks
+3. You might have more than one copy of React in the same app
+See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem.
+printWarning @ chunk-QCHXOAYK.js?v=862169e8:136
+error @ chunk-QCHXOAYK.js?v=862169e8:120
+resolveDispatcher @ chunk-QCHXOAYK.js?v=862169e8:1045
+useState @ chunk-QCHXOAYK.js?v=862169e8:1065
+ThemeProvider @ theme-provider.tsx:13
+renderWithHooks @ chunk-RPCDYKBN.js?v=712f95db:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=712f95db:14926
+beginWork @ chunk-RPCDYKBN.js?v=712f95db:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=712f95db:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=712f95db:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=712f95db:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=712f95db:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=712f95db:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=712f95db:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=712f95db:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=712f95db:18736
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=712f95db:18684
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+chunk-QCHXOAYK.js?v=862169e8:1066 Uncaught TypeError: Cannot read properties of null (reading 'useState')
+    at useState (chunk-QCHXOAYK.js?v=862169e8:1066:29)
+    at ThemeProvider (theme-provider.tsx:13:29)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=712f95db:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=712f95db:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=712f95db:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-RPCDYKBN.js?v=712f95db:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-RPCDYKBN.js?v=712f95db:3699:24)
+    at invokeGuardedCallback (chunk-RPCDYKBN.js?v=712f95db:3733:39)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=712f95db:19765:15)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=712f95db:19198:20)
+useState @ chunk-QCHXOAYK.js?v=862169e8:1066
+ThemeProvider @ theme-provider.tsx:13
+renderWithHooks @ chunk-RPCDYKBN.js?v=712f95db:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=712f95db:14926
+beginWork @ chunk-RPCDYKBN.js?v=712f95db:15914
+callCallback2 @ chunk-RPCDYKBN.js?v=712f95db:3674
+invokeGuardedCallbackDev @ chunk-RPCDYKBN.js?v=712f95db:3699
+invokeGuardedCallback @ chunk-RPCDYKBN.js?v=712f95db:3733
+beginWork$1 @ chunk-RPCDYKBN.js?v=712f95db:19765
+performUnitOfWork @ chunk-RPCDYKBN.js?v=712f95db:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=712f95db:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=712f95db:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=712f95db:18736
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=712f95db:18684
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+chunk-RPCDYKBN.js?v=712f95db:14032 The above error occurred in the <ThemeProvider> component:
+
+    at ThemeProvider (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/components/theme-provider.tsx:20:33)
+    at QueryClientProvider (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=712f95db:2805:3)
+    at App (https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=WuyM48rY6yBl6MsDTWSoQ:43:41)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+logCapturedError @ chunk-RPCDYKBN.js?v=712f95db:14032
+update.callback @ chunk-RPCDYKBN.js?v=712f95db:14052
+callCallback @ chunk-RPCDYKBN.js?v=712f95db:11248
+commitUpdateQueue @ chunk-RPCDYKBN.js?v=712f95db:11265
+commitLayoutEffectOnFiber @ chunk-RPCDYKBN.js?v=712f95db:17093
+commitLayoutMountEffects_complete @ chunk-RPCDYKBN.js?v=712f95db:17980
+commitLayoutEffects_begin @ chunk-RPCDYKBN.js?v=712f95db:17969
+commitLayoutEffects @ chunk-RPCDYKBN.js?v=712f95db:17920
+commitRootImpl @ chunk-RPCDYKBN.js?v=712f95db:19353
+commitRoot @ chunk-RPCDYKBN.js?v=712f95db:19277
+finishConcurrentRender @ chunk-RPCDYKBN.js?v=712f95db:18760
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=712f95db:18718
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+chunk-RPCDYKBN.js?v=712f95db:19413 Uncaught TypeError: Cannot read properties of null (reading 'useState')
+    at useState (chunk-QCHXOAYK.js?v=862169e8:1066:29)
+    at ThemeProvider (theme-provider.tsx:13:29)
+    at renderWithHooks (chunk-RPCDYKBN.js?v=712f95db:11548:26)
+    at mountIndeterminateComponent (chunk-RPCDYKBN.js?v=712f95db:14926:21)
+    at beginWork (chunk-RPCDYKBN.js?v=712f95db:15914:22)
+    at beginWork$1 (chunk-RPCDYKBN.js?v=712f95db:19753:22)
+    at performUnitOfWork (chunk-RPCDYKBN.js?v=712f95db:19198:20)
+    at workLoopSync (chunk-RPCDYKBN.js?v=712f95db:19137:13)
+    at renderRootSync (chunk-RPCDYKBN.js?v=712f95db:19116:15)
+    at recoverFromConcurrentError (chunk-RPCDYKBN.js?v=712f95db:18736:28)
+useState @ chunk-QCHXOAYK.js?v=862169e8:1066
+ThemeProvider @ theme-provider.tsx:13
+renderWithHooks @ chunk-RPCDYKBN.js?v=712f95db:11548
+mountIndeterminateComponent @ chunk-RPCDYKBN.js?v=712f95db:14926
+beginWork @ chunk-RPCDYKBN.js?v=712f95db:15914
+beginWork$1 @ chunk-RPCDYKBN.js?v=712f95db:19753
+performUnitOfWork @ chunk-RPCDYKBN.js?v=712f95db:19198
+workLoopSync @ chunk-RPCDYKBN.js?v=712f95db:19137
+renderRootSync @ chunk-RPCDYKBN.js?v=712f95db:19116
+recoverFromConcurrentError @ chunk-RPCDYKBN.js?v=712f95db:18736
+performConcurrentWorkOnRoot @ chunk-RPCDYKBN.js?v=712f95db:18684
+workLoop @ chunk-RPCDYKBN.js?v=712f95db:197
+flushWork @ chunk-RPCDYKBN.js?v=712f95db:176
+performWorkUntilDeadline @ chunk-RPCDYKBN.js?v=712f95db:384
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:403564)
+(anonymous) @ web-client-content-script.js:2
+(index):112 PWA Debug: Checking installation eligibility...
+(index):113 PWA Debug: HTTPS: true
+(index):114 PWA Debug: Service Worker supported: true
+(index):115 PWA Debug: Manifest linked: true
+(index):64 JournOwl SW registered:  ServiceWorkerRegistration {installing: null, waiting: null, active: ServiceWorker, navigationPreload: NavigationPreloadManager, scope: 'https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/', …}
+(index):123 PWA Debug: beforeinstallprompt fired: false
+(index):124 PWA Debug: Global deferredPrompt available: false
