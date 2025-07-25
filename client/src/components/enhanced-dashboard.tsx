@@ -338,19 +338,33 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
 
   const handleEntryDelete = async (entryId: number) => {
     try {
-      await apiRequest(`/api/journal/entries/${entryId}`, {
+      console.log(`Attempting to delete entry ${entryId}`);
+      
+      const response = await fetch(`/api/journal/entries/${entryId}`, {
         method: 'DELETE',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      console.log("Delete successful:", result);
       
       // Invalidate and refetch journal entries
       queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
       queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
       
       // Show success message
-      console.log("Journal entry deleted successfully");
-    } catch (error) {
+      alert("Journal entry deleted successfully!");
+    } catch (error: any) {
       console.error("Failed to delete journal entry:", error);
-      alert("Failed to delete journal entry. Please try again.");
+      alert(`Failed to delete journal entry: ${error.message}`);
     }
   };
 

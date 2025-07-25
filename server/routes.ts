@@ -767,10 +767,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete("/api/journal/entries/:id", requireAuth, async (req: any, res) => {
     try {
       const id = parseInt(req.params.id);
+      console.log(`DELETE /api/journal/entries/${id} - User: ${req.session.userId}`);
+      
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid entry ID" });
+      }
+      
+      // Check if entry exists first
+      const existingEntry = await storage.getJournalEntry(id, req.session.userId);
+      if (!existingEntry) {
+        return res.status(404).json({ message: "Entry not found or you don't have permission to delete it" });
+      }
+      
       await storage.deleteJournalEntry(id, req.session.userId);
+      
+      // Also recalculate user stats after deletion
+      await storage.recalculateUserStats(req.session.userId);
+      
+      console.log(`DELETE /api/journal/entries/${id} - Success`);
       res.json({ message: "Entry deleted successfully" });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      console.error(`DELETE /api/journal/entries - Error:`, error);
+      res.status(500).json({ message: `Failed to delete journal entry: ${error.message}` });
     }
   });
 
