@@ -49,6 +49,16 @@
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
+          // Clear old caches first in development
+          if (window.location.hostname === 'localhost' || window.location.hostname.includes('replit')) {
+            caches.keys().then(cacheNames => {
+              cacheNames.forEach(cacheName => {
+                console.log('Clearing cache:', cacheName);
+                caches.delete(cacheName);
+              });
+            });
+          }
+          
           navigator.serviceWorker.register('/service-worker.js')
             .then((registration) => {
               console.log('JournOwl SW registered: ', registration);
