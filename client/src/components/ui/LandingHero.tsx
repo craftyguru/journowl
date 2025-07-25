@@ -246,7 +246,73 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
         </motion.div>
       </motion.div>
 
+      {/* Mobile Owls - Top Corners */}
+      {/* Top Left Mobile Owl */}
+      <motion.div
+        className="absolute top-20 left-4 z-10 md:hidden"
+        animate={{ 
+          scale: [1, 1.2, 1],
+          rotate: [0, 8, -8, 0]
+        }}
+        transition={{ 
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
+        <svg className="w-8 h-8 sm:w-12 sm:h-12" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+          <circle cx="42" cy="40" r="4" fill="white"/>
+          <circle cx="58" cy="40" r="4" fill="white"/>
+          <circle cx="42" cy="40" r="2" fill="black"/>
+          <circle cx="58" cy="40" r="2" fill="black"/>
+          <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+          <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+          <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+          <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+        </svg>
+        <motion.div
+          className="absolute -top-1 -right-1 text-xs"
+          animate={{ scale: [1, 1.3, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          ✨
+        </motion.div>
+      </motion.div>
 
+      {/* Top Right Mobile Owl */}
+      <motion.div
+        className="absolute top-20 right-4 z-10 md:hidden"
+        animate={{ 
+          scale: [1.1, 0.9, 1.1],
+          rotate: [0, -8, 8, 0]
+        }}
+        transition={{ 
+          duration: 3.5,
+          repeat: Infinity,
+          ease: "easeInOut",
+          delay: 1.5
+        }}
+      >
+        <svg className="w-8 h-8 sm:w-12 sm:h-12" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+          <circle cx="42" cy="40" r="4" fill="white"/>
+          <circle cx="58" cy="40" r="4" fill="white"/>
+          <circle cx="42" cy="40" r="2" fill="black"/>
+          <circle cx="58" cy="40" r="2" fill="black"/>
+          <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+          <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+          <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+          <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+        </svg>
+        <motion.div
+          className="absolute -bottom-1 -left-1 text-xs"
+          animate={{ scale: [1.2, 0.8, 1.2] }}
+          transition={{ duration: 2.2, repeat: Infinity, delay: 1 }}
+        >
+          💫
+        </motion.div>
+      </motion.div>
 
       {/* Main Content */}
       <div className="relative z-20 mobile-container py-8 sm:py-12 lg:py-20 pt-16 sm:pt-24 lg:pt-32">
@@ -267,6 +333,17 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
           >
             <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-2 sm:mb-4 leading-tight" 
                 style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)', lineHeight: '1.2' }}>
+              <svg className="inline-block w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 mr-2 sm:mr-3 mb-1 sm:mb-2" viewBox="0 0 100 100" fill="none">
+                <circle cx="50" cy="45" r="25" fill="#8B4513"/>
+                <circle cx="42" cy="40" r="4" fill="white"/>
+                <circle cx="58" cy="40" r="4" fill="white"/>
+                <circle cx="42" cy="40" r="2" fill="black"/>
+                <circle cx="58" cy="40" r="2" fill="black"/>
+                <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
+                <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
+                <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
+                <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
+              </svg>
               JournOwl
             </h1>
             <motion.div 
@@ -289,17 +366,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="inline-flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 lg:mb-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm"
           >
-            <svg className="inline-block w-6 h-6 sm:w-8 sm:h-8 animate-bounce" viewBox="0 0 100 100" fill="none">
-              <circle cx="50" cy="45" r="25" fill="#8B4513"/>
-              <circle cx="42" cy="40" r="4" fill="white"/>
-              <circle cx="58" cy="40" r="4" fill="white"/>
-              <circle cx="42" cy="40" r="2" fill="black"/>
-              <circle cx="58" cy="40" r="2" fill="black"/>
-              <path d="M46 48 L50 52 L54 48" stroke="#FF8C00" strokeWidth="2" fill="none"/>
-              <path d="M35 35 L25 25" stroke="#8B4513" strokeWidth="3"/>
-              <path d="M65 35 L75 25" stroke="#8B4513" strokeWidth="3"/>
-              <ellipse cx="50" cy="65" rx="15" ry="8" fill="#D2691E"/>
-            </svg>
+
             <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-semibold text-xs sm:text-sm" 
                   style={{ fontFamily: '"Rock Salt", cursive' }}>
               AI-Powered Smart Journaling
