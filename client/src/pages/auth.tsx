@@ -132,7 +132,11 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
         title: "Welcome back!",
         description: "Successfully signed in to your account.",
       });
-      window.location.href = "/dashboard";
+      // Scroll to top before redirect
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        window.location.href = "/dashboard";
+      }, 100);
     },
     onError: (error: any) => {
       if (error.message?.includes("verify your email")) {
@@ -177,7 +181,11 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
           title: "Account created!",
           description: "Welcome to JournOwl! Your account has been successfully created.",
         });
-        window.location.href = "/dashboard";
+        // Scroll to top before redirect
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 100);
       }
     },
     onError: (error: any) => {

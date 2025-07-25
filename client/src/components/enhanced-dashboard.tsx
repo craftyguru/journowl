@@ -72,6 +72,11 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
     setActiveTab(initialTab);
   }, [initialTab]);
 
+  // Scroll to top when dashboard component first mounts
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
   // Auto-scroll to top on first login and show intro tutorial
   React.useEffect(() => {
     const lastLoginTime = localStorage.getItem('lastDashboardLogin');

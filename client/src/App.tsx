@@ -79,6 +79,8 @@ function App() {
 
   const handleAuthenticated = () => {
     setIsAuthenticated(true);
+    // Scroll to top when redirecting to dashboard
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     setCurrentView("dashboard"); // Immediately redirect to dashboard after login
   };
 
@@ -93,6 +95,8 @@ function App() {
     getCurrentUser()
       .then(() => {
         setIsAuthenticated(true);
+        // Scroll to top when loading dashboard for authenticated users
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         setCurrentView("dashboard"); // Always show dashboard for authenticated users
       })
       .catch((error) => {
@@ -290,7 +294,7 @@ function App() {
                 
                 <main>
                   {selectedAccount.type === "admin" && <AdminDashboard />}
-                  {selectedAccount.type === "user" && currentView === "dashboard" && <EnhancedDashboard />}
+                  {selectedAccount.type === "user" && currentView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => {}} />}
                   {selectedAccount.type === "user" && currentView === "insights" && <InsightsPage />}
                   {selectedAccount.type === "kid" && <KidDashboard />}
                 </main>
