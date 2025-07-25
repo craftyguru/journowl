@@ -1502,6 +1502,19 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // OAuth Debug Route
+  app.get("/oauth-debug", (req, res) => {
+    const fs = require('fs');
+    const path = require('path');
+    try {
+      const htmlContent = fs.readFileSync(path.join(process.cwd(), 'oauth-debug.html'), 'utf8');
+      res.setHeader('Content-Type', 'text/html');
+      res.send(htmlContent);
+    } catch (error) {
+      res.status(404).send('OAuth Debug Tool not found');
+    }
+  });
+
   // AI-powered kid prompts endpoint
   app.post("/api/ai/kid-prompts", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {

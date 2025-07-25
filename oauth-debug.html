@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OAuth Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .button { display: inline-block; padding: 10px 20px; margin: 10px; background: #4285f4; color: white; text-decoration: none; border-radius: 5px; }
+        .facebook { background: #1877f2; }
+        .result { margin: 20px 0; padding: 20px; background: #f5f5f5; border-radius: 5px; }
+        .error { background: #ffebee; color: #c62828; }
+        .success { background: #e8f5e8; color: #2e7d32; }
+    </style>
+</head>
+<body>
+    <h1>OAuth Debug Tool for JournOwl</h1>
+    
+    <h2>Current Domain</h2>
+    <div class="result">
+        <strong>Current URL:</strong> <span id="currentUrl"></span><br>
+        <strong>Domain:</strong> <span id="domain"></span><br>
+        <strong>Expected Callback URLs:</strong><br>
+        • Google: <span id="googleCallback"></span><br>
+        • Facebook: <span id="facebookCallback"></span>
+    </div>
+    
+    <h2>Test OAuth Flows</h2>
+    <a href="/api/auth/google" class="button">Test Google Login</a>
+    <a href="/api/auth/facebook" class="button facebook">Test Facebook Login</a>
+    
+    <h2>Setup Instructions</h2>
+    <div class="result">
+        <h3>Google Cloud Console Setup:</h3>
+        <p>1. Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console → Credentials</a></p>
+        <p>2. Edit your OAuth 2.0 Client ID</p>
+        <p>3. Add this to Authorized redirect URIs: <code id="googleCallbackCopy"></code></p>
+        
+        <h3>Facebook Developers Setup:</h3>
+        <p>1. Go to <a href="https://developers.facebook.com/apps/" target="_blank">Facebook Developers</a></p>
+        <p>2. Select your app → Facebook Login → Settings</p>
+        <p>3. Add this to Valid OAuth Redirect URIs: <code id="facebookCallbackCopy"></code></p>
+        
+        <h3>Common Issues:</h3>
+        <ul>
+            <li>Make sure callback URLs match exactly (including http/https)</li>
+            <li>For localhost, use http://localhost:5000 (not 127.0.0.1)</li>
+            <li>For production, use https:// (not http://)</li>
+            <li>For Replit, use the full .replit.dev domain</li>
+        </ul>
+    </div>
+
+    <script>
+        // Get current domain info
+        const currentUrl = window.location.href;
+        const domain = window.location.protocol + '//' + window.location.host;
+        const googleCallback = domain + '/api/auth/google/callback';
+        const facebookCallback = domain + '/api/auth/facebook/callback';
+        
+        // Display info
+        document.getElementById('currentUrl').textContent = currentUrl;
+        document.getElementById('domain').textContent = domain;
+        document.getElementById('googleCallback').textContent = googleCallback;
+        document.getElementById('facebookCallback').textContent = facebookCallback;
+        document.getElementById('googleCallbackCopy').textContent = googleCallback;
+        document.getElementById('facebookCallbackCopy').textContent = facebookCallback;
+        
+        // Check for error messages in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const error = urlParams.get('error');
+        const message = urlParams.get('message');
+        
+        if (error) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'result error';
+            errorDiv.innerHTML = '<h3>OAuth Error Detected:</h3><p><strong>Error:</strong> ' + error + '</p>' + 
+                                (message ? '<p><strong>Message:</strong> ' + decodeURIComponent(message) + '</p>' : '');
+            document.body.insertBefore(errorDiv, document.querySelector('h2'));
+        }
+    </script>
+</body>
+</html>
