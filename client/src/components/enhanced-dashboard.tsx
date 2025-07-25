@@ -2921,51 +2921,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               </motion.div>
             </div>
 
-            {/* Enhanced Action Buttons Row - Mobile Optimized */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.1 }}
-              className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mt-6 mb-20 sm:mb-6"
-            >
-              <Button 
-                onClick={() => setActiveTab("calendar")}
-                className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white text-xs md:text-sm py-2 md:py-3"
-              >
-                <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">View Calendar</span>
-                <span className="sm:hidden">Calendar</span>
-              </Button>
-              
-              <Button 
-                onClick={() => setActiveTab("achievements")}
-                variant="outline"
-                className="border-amber-300 text-amber-600 hover:bg-amber-50 text-xs md:text-sm py-2 md:py-3"
-              >
-                <Trophy className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">Achievements</span>
-                <span className="sm:hidden">Awards</span>
-              </Button>
-              
-              <Button 
-                onClick={() => setActiveTab("goals")}
-                variant="outline"
-                className="border-emerald-300 text-emerald-600 hover:bg-emerald-50 text-xs md:text-sm py-2 md:py-3"
-              >
-                <Target className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                Goals
-              </Button>
-              
-              <Button 
-                onClick={() => setActiveTab("insights")}
-                variant="outline"
-                className="border-blue-300 text-blue-600 hover:bg-blue-50 text-xs md:text-sm py-2 md:py-3"
-              >
-                <Brain className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
-                <span className="hidden sm:inline">AI Insights</span>
-                <span className="sm:hidden">AI</span>
-              </Button>
-            </motion.div>
+
           </div>
         </TabsContent>
 
