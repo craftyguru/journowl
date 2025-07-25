@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import MDEditor from '@uiw/react-md-editor';
 import { HexColorPicker } from "react-colorful";
-import { ReactSketchCanvas, ReactSketchCanvasRef } from "react-sketch-canvas";
+// React Sketch Canvas removed due to version conflicts - using HTML5 Canvas instead
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -71,7 +71,7 @@ const moodOptions = [
 
 export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJournalEditorProps) {
   const { toast } = useToast();
-  const canvasRef = useRef<ReactSketchCanvasRef>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
 
@@ -242,27 +242,35 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
 
   const clearCanvas = useCallback(() => {
     if (canvasRef.current) {
-      canvasRef.current.clearCanvas();
+      const ctx = canvasRef.current.getContext('2d');
+      if (ctx) {
+        ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      }
     }
   }, []);
 
   const undoDrawing = useCallback(() => {
-    if (canvasRef.current) {
-      canvasRef.current.undo();
-    }
-  }, []);
+    // Undo functionality would require drawing history implementation
+    toast({
+      title: "Undo",
+      description: "Undo feature coming soon for HTML5 canvas!"
+    });
+  }, [toast]);
 
   const redoDrawing = useCallback(() => {
-    if (canvasRef.current) {
-      canvasRef.current.redo();
-    }
-  }, []);
+    // Redo functionality would require drawing history implementation
+    toast({
+      title: "Redo", 
+      description: "Redo feature coming soon for HTML5 canvas!"
+    });
+  }, [toast]);
 
   const downloadDrawing = useCallback(async () => {
     if (!canvasRef.current) return;
     
     try {
-      const canvasData = await canvasRef.current.exportImage("png");
+      const canvas = canvasRef.current;
+      const canvasData = canvas.toDataURL("image/png");
       const link = document.createElement('a');
       link.download = `journal-drawing-${Date.now()}.png`;
       link.href = canvasData;
@@ -625,21 +633,12 @@ export default function SmartJournalEditor({ entry, onSave, onClose }: SmartJour
 
                     {/* Drawing Canvas */}
                     <div className="flex-1 bg-slate-900 rounded-lg overflow-hidden border border-slate-700">
-                      <ReactSketchCanvas
+                      <canvas
                         ref={canvasRef}
-                        style={{
-                          border: 'none',
-                          borderRadius: '8px',
-                        }}
-                        width="100%"
-                        height="400px"
-                        strokeWidth={brushSize}
-                        strokeColor={drawingTool === 'eraser' ? canvasBackground : brushColor}
-                        canvasColor={canvasBackground}
-                        backgroundImage=""
-                        exportWithBackgroundImage={true}
-                        allowOnlyPointerType="all"
-                        svgStyle={{}}
+                        width={800}
+                        height={400}
+                        className="w-full h-full bg-white rounded-lg cursor-crosshair"
+                        style={{ touchAction: 'none' }}
                       />
                     </div>
 

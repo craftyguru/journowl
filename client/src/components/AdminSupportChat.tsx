@@ -50,7 +50,9 @@ export function AdminSupportChat() {
   useEffect(() => {
     if (currentUser?.role === 'admin' && !wsRef.current) {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `${protocol}//${window.location.host}/ws/support`;
+      const host = window.location.hostname;
+      const port = window.location.port || (protocol === "wss:" ? "443" : "80");
+      const wsUrl = `${protocol}//${host}:${port}/ws/support`;
       
       console.log('Admin connecting to support WebSocket:', wsUrl);
       wsRef.current = new WebSocket(wsUrl);
