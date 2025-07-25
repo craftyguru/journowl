@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Progress } from "@/components/ui/progress";
-import { Plus } from "lucide-react";
+import { Plus, CheckCircle } from "lucide-react";
 
 // New Goal Form Component
 export function NewGoalForm({ onClose }: { onClose: () => void }) {
@@ -195,5 +195,86 @@ export function GoalDetailsView({ goal, onClose }: { goal: any; onClose: () => v
         </Button>
       </div>
     </div>
+  );
+}
+
+// Edit Goal Form Component
+export function EditGoalForm({ goal, onClose }: { goal: any; onClose: () => void }) {
+  const [title, setTitle] = useState(goal?.title || "");
+  const [description, setDescription] = useState(goal?.description || "");
+  const [targetValue, setTargetValue] = useState(goal?.targetValue?.toString() || "");
+  const [currentValue, setCurrentValue] = useState(goal?.currentValue?.toString() || "");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically make an API call to update the goal
+    console.log("Updating goal:", { title, description, targetValue, currentValue });
+    onClose();
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-4">
+        <div>
+          <Label htmlFor="editTitle">Goal Title</Label>
+          <Input
+            id="editTitle"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </div>
+
+        <div>
+          <Label htmlFor="editDescription">Description</Label>
+          <Textarea
+            id="editDescription"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label htmlFor="editCurrentValue">Current Progress</Label>
+            <Input
+              id="editCurrentValue"
+              type="number"
+              value={currentValue}
+              onChange={(e) => setCurrentValue(e.target.value)}
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="editTargetValue">Target Value</Label>
+            <Input
+              id="editTargetValue"
+              type="number"
+              value={targetValue}
+              onChange={(e) => setTargetValue(e.target.value)}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+          <div className="text-sm text-blue-700">
+            <strong>Progress Preview:</strong> {Math.round((parseInt(currentValue) / parseInt(targetValue)) * 100)}% complete
+          </div>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button type="button" variant="outline" onClick={onClose}>
+          Cancel
+        </Button>
+        <Button type="submit" className="bg-purple-500 hover:bg-purple-600">
+          <CheckCircle className="w-4 h-4 mr-2" />
+          Update Goal
+        </Button>
+      </DialogFooter>
+    </form>
   );
 }
