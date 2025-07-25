@@ -923,9 +923,78 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           <TabsList className="flex w-full overflow-x-auto bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-hide">
             <TabsTrigger 
               value="journal" 
-              className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              className={`relative flex-shrink-0 h-10 px-4 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden ${
+                activeTab === 'journal' 
+                  ? 'bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500 text-white shadow-lg shadow-purple-500/50 scale-105' 
+                  : 'bg-gradient-to-r from-orange-400/20 via-pink-400/20 to-purple-400/20 text-orange-200 hover:from-orange-400/40 hover:via-pink-400/40 hover:to-purple-400/40 hover:text-white hover:scale-105'
+              }`}
             >
-              📖 Journal
+              <motion.div
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'journal' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'journal' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              >
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    rotate: activeTab === 'journal' ? [0, 10, -10, 0] : 0,
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: activeTab === 'journal' ? Infinity : 0,
+                    repeatType: "reverse"
+                  }}
+                >
+                  ✍️
+                </motion.span>
+                <span className="relative">
+                  Journal
+                  {activeTab === 'journal' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-yellow-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'journal' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
+              </motion.div>
+              
+              {/* Animated background effects */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 via-orange-400/30 to-pink-400/30 opacity-0"
+                animate={{
+                  opacity: activeTab === 'journal' ? [0, 0.5, 0] : 0,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'journal' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              />
             </TabsTrigger>
             <TabsTrigger 
               value="analytics" 
@@ -984,23 +1053,155 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           <div className="space-y-6">
             {/* Mobile-Optimized Smart Journal Header - Minimal on Mobile */}
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-lg sm:rounded-2xl p-1 sm:p-4 lg:p-6 shadow-xl sm:shadow-2xl border border-purple-500/20"
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="relative bg-gradient-to-r from-orange-500/90 via-pink-500/90 to-purple-600/90 backdrop-blur-lg rounded-lg sm:rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl border-2 border-yellow-400/40 overflow-hidden"
             >
-              <div className="flex flex-row items-center justify-between gap-1 sm:gap-4">
-                <div className="flex-1">
-                  <h2 className="text-xs sm:text-xl lg:text-2xl font-semibold sm:font-bold text-white mb-0 leading-tight">📝 Journal</h2>
-                  <p className="text-gray-300 text-xs sm:text-base leading-tight hidden sm:block">Your AI-powered writing companion with photo analysis and intelligent prompts</p>
-                </div>
-                <Button 
-                  onClick={() => openUnifiedJournal()}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-2 sm:px-6 lg:px-8 py-0.5 sm:py-3 text-xs sm:text-base lg:text-lg h-6 sm:h-auto rounded-md sm:rounded-lg"
+              {/* Animated background elements */}
+              <motion.div
+                className="absolute top-0 left-0 w-20 h-20 bg-yellow-300/30 rounded-full blur-xl"
+                animate={{
+                  x: [0, 50, 0],
+                  y: [0, 30, 0],
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              />
+              <motion.div
+                className="absolute bottom-0 right-0 w-16 h-16 bg-pink-300/30 rounded-full blur-xl"
+                animate={{
+                  x: [0, -30, 0],
+                  y: [0, -20, 0],
+                  scale: [1, 1.3, 1],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              />
+              
+              <div className="relative z-10 flex flex-row items-center justify-between gap-1 sm:gap-4">
+                <motion.div 
+                  className="flex-1"
+                  animate={{
+                    y: [0, -2, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
                 >
-                  <BookOpen className="w-3 h-3 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-                  <span className="hidden sm:inline">Open Journal Book</span>
-                  <span className="sm:hidden">Write</span>
-                </Button>
+                  <motion.h2 
+                    className="text-lg sm:text-2xl lg:text-3xl font-bold text-white mb-1 leading-tight flex items-center gap-2"
+                    animate={{
+                      textShadow: [
+                        "0 0 10px rgba(255,255,255,0.5)",
+                        "0 0 20px rgba(255,255,255,0.8)",
+                        "0 0 10px rgba(255,255,255,0.5)"
+                      ]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
+                  >
+                    <motion.span
+                      animate={{
+                        rotate: [0, 15, -15, 0],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    >
+                      ✍️
+                    </motion.span>
+                    Start Your Daily Journal!
+                    <motion.span
+                      className="w-3 h-3 bg-yellow-300 rounded-full"
+                      animate={{
+                        scale: [1, 1.5, 1],
+                        opacity: [0.7, 1, 0.7],
+                      }}
+                      transition={{
+                        duration: 1,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  </motion.h2>
+                  <motion.p 
+                    className="text-yellow-100 text-sm sm:text-base leading-tight font-medium"
+                    animate={{
+                      opacity: [0.8, 1, 0.8],
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      repeatType: "reverse"
+                    }}
+                  >
+                    🎯 <span className="font-bold">Today is perfect for journaling!</span> Capture your thoughts, analyze photos with AI, and unlock personalized insights
+                  </motion.p>
+                </motion.div>
+                
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <Button 
+                    onClick={() => openUnifiedJournal()}
+                    className="relative bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 text-white px-4 sm:px-8 lg:px-12 py-2 sm:py-4 text-sm sm:text-lg lg:text-xl font-bold rounded-full shadow-2xl border-2 border-white/30 overflow-hidden"
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-white/20"
+                      animate={{
+                        x: ['-100%', '100%'],
+                      }}
+                      transition={{
+                        duration: 2,
+                        repeat: Infinity,
+                        repeatType: "loop"
+                      }}
+                    />
+                    <div className="relative z-10 flex items-center gap-2">
+                      <motion.div
+                        animate={{
+                          rotate: [0, 360],
+                        }}
+                        transition={{
+                          duration: 3,
+                          repeat: Infinity,
+                          ease: "linear"
+                        }}
+                      >
+                        <BookOpen className="w-4 h-4 sm:w-6 sm:h-6" />
+                      </motion.div>
+                      <span className="hidden sm:inline">Write Now!</span>
+                      <span className="sm:hidden">Write!</span>
+                      <motion.span
+                        animate={{
+                          scale: [1, 1.3, 1],
+                        }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          repeatType: "reverse"
+                        }}
+                      >
+                        🚀
+                      </motion.span>
+                    </div>
+                  </Button>
+                </motion.div>
               </div>
             </motion.div>
 
