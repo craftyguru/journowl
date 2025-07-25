@@ -145,7 +145,28 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
   const [showIntroTutorial, setShowIntroTutorial] = useState(false);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
   
+  // Analytics Modal States
+  const [showWordCloudModal, setShowWordCloudModal] = useState(false);
+  const [showTimeHeatmapModal, setShowTimeHeatmapModal] = useState(false);
+  const [showTopicAnalysisModal, setShowTopicAnalysisModal] = useState(false);
+  const [wordCloudData, setWordCloudData] = useState<Array<{word: string, count: number}>>([]);
+  const [timeAnalysisData, setTimeAnalysisData] = useState<any>(null);
+  const [topicAnalysisData, setTopicAnalysisData] = useState<any>(null);
+  
   const queryClient = useQueryClient();
+  
+  // Helper function for theme colors
+  const getThemeColor = (theme: string) => {
+    const colors: Record<string, string> = {
+      'Personal Growth': '#10b981',  // emerald
+      'Daily Life': '#3b82f6',      // blue
+      'Relationships': '#f59e0b',   // amber
+      'Dreams & Goals': '#8b5cf6',  // violet
+      'Emotions & Feelings': '#ec4899', // pink
+      'Health & Wellness': '#06b6d4'  // cyan
+    };
+    return colors[theme] || '#6b7280';
+  };
 
   // Update active tab when initialTab prop changes
   React.useEffect(() => {
@@ -2584,17 +2605,19 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                         const words = allText.split(/\s+/).filter(w => w.length > 3);
                         const wordCounts = words.reduce((acc, word) => {
                           const clean = word.toLowerCase().replace(/[^\w]/g, '');
-                          acc[clean] = (acc[clean] || 0) + 1;
+                          if (clean.length > 0) {
+                            acc[clean] = (acc[clean] || 0) + 1;
+                          }
                           return acc;
                         }, {} as Record<string, number>);
                         
                         const topWords = Object.entries(wordCounts)
                           .sort(([,a], [,b]) => b - a)
-                          .slice(0, 50)
-                          .map(([word, count]) => `${word} (${count})`)
-                          .join(', ');
+                          .slice(0, 30)
+                          .map(([word, count]) => ({ word, count }));
                           
-                        alert(`Your Top 50 Words:\n\n${topWords || 'Start writing to generate word cloud!'}`);
+                        setWordCloudData(topWords);
+                        setShowWordCloudModal(true);
                       }}
                       className="w-full mt-3 border-pink-300 text-pink-600 hover:bg-pink-50"
                     >
@@ -2657,15 +2680,23 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                         const peakHour = Object.entries(hourCounts)
                           .sort(([,a], [,b]) => b - a)[0];
                         
-                        const timeAnalysis = `Writing Time Analysis:
+                        const dayOfWeekCounts = entries?.reduce((acc, entry) => {
+                          const day = new Date(entry.createdAt).getDay();
+                          const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                          acc[dayNames[day]] = (acc[dayNames[day]] || 0) + 1;
+                          return acc;
+                        }, {} as Record<string, number>) || {};
                         
-📊 Peak Writing Hour: ${peakHour ? `${peakHour[0]}:00 (${peakHour[1]} entries)` : 'No data yet'}
-📅 Total Writing Days: ${new Set(entries?.map(e => new Date(e.createdAt).toDateString())).size || 0}
-✍️ Most Productive Day: ${entries?.length > 0 ? 'Keep writing to find out!' : 'Start your first entry!'}
-
-${entries?.length === 0 ? 'Create more entries to unlock detailed insights!' : ''}`;
+                        const analysisData = {
+                          peakHour: peakHour ? { hour: peakHour[0], count: peakHour[1] } : null,
+                          totalDays: new Set(entries?.map(e => new Date(e.createdAt).toDateString())).size || 0,
+                          hourCounts,
+                          dayOfWeekCounts,
+                          totalEntries: entries?.length || 0
+                        };
                         
-                        alert(timeAnalysis);
+                        setTimeAnalysisData(analysisData);
+                        setShowTimeHeatmapModal(true);
                       }}
                       className="w-full mt-3 border-green-300 text-green-600 hover:bg-green-50"
                     >
@@ -2802,25 +2833,33 @@ ${entries?.length === 0 ? 'Create more entries to unlock detailed insights!' : '
                         // Analyze topics from journal entries
                         const allContent = entries?.map(e => e.content || '').join(' ') || '';
                         const themes = {
-                          'Personal Growth': ['growth', 'improve', 'better', 'learn', 'develop', 'progress', 'goals', 'achievement'],
-                          'Daily Life': ['today', 'work', 'morning', 'evening', 'routine', 'day', 'home', 'family'],
-                          'Relationships': ['friend', 'love', 'partner', 'family', 'relationship', 'social', 'together'],
-                          'Dreams & Goals': ['dream', 'future', 'plan', 'hope', 'want', 'wish', 'aspire', 'goal']
+                          'Personal Growth': ['growth', 'improve', 'better', 'learn', 'develop', 'progress', 'goals', 'achievement', 'challenge', 'succeed'],
+                          'Daily Life': ['today', 'work', 'morning', 'evening', 'routine', 'day', 'home', 'family', 'daily', 'schedule'],
+                          'Relationships': ['friend', 'love', 'partner', 'family', 'relationship', 'social', 'together', 'people', 'connect'],
+                          'Dreams & Goals': ['dream', 'future', 'plan', 'hope', 'want', 'wish', 'aspire', 'goal', 'vision', 'ambition'],
+                          'Emotions & Feelings': ['happy', 'sad', 'excited', 'worried', 'grateful', 'anxious', 'peaceful', 'angry', 'joy'],
+                          'Health & Wellness': ['exercise', 'healthy', 'tired', 'energy', 'sleep', 'wellness', 'fitness', 'meditation']
                         };
                         
                         const themeCounts = Object.entries(themes).map(([theme, keywords]) => {
                           const count = keywords.reduce((acc, keyword) => 
                             acc + (allContent.toLowerCase().split(keyword).length - 1), 0
                           );
-                          return { theme, count };
+                          return { theme, count, color: getThemeColor(theme) };
                         });
                         
                         const total = themeCounts.reduce((acc, t) => acc + t.count, 0);
-                        const analysis = themeCounts
-                          .map(t => `${t.theme}: ${total > 0 ? Math.round((t.count / total) * 100) : 0}%`)
-                          .join('\n');
+                        const analysisData = {
+                          themes: themeCounts.map(t => ({
+                            ...t,
+                            percentage: total > 0 ? Math.round((t.count / total) * 100) : 0
+                          })),
+                          totalWords: allContent.split(' ').length,
+                          totalEntries: entries?.length || 0
+                        };
                         
-                        alert(`AI Topic Analysis:\n\n${analysis || 'Start writing to discover your themes!'}`);
+                        setTopicAnalysisData(analysisData);
+                        setShowTopicAnalysisModal(true);
                       }}
                       className="w-full mt-4 border-indigo-300 text-indigo-600 hover:bg-indigo-50"
                     >
@@ -4210,6 +4249,332 @@ ${entries?.length === 0 ? 'Create more entries to unlock detailed insights!' : '
             </DialogTitle>
           </DialogHeader>
           <PromptPurchase />
+        </DialogContent>
+      </Dialog>
+
+      {/* Beautiful Word Cloud Modal */}
+      <Dialog open={showWordCloudModal} onOpenChange={setShowWordCloudModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-2 text-pink-700">
+                <Sparkles className="w-6 h-6" />
+                Your Word Cloud Analysis
+              </DialogTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowWordCloudModal(false)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </DialogHeader>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 rounded-xl p-6 border border-pink-200">
+              <div className="text-center mb-6">
+                <motion.h3 
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  className="text-2xl font-bold text-pink-800 mb-2"
+                >
+                  ✨ Your Most Powerful Words ✨
+                </motion.h3>
+                <p className="text-pink-600">Discover the words that define your journaling journey</p>
+              </div>
+              
+              {wordCloudData.length > 0 ? (
+                <div className="flex flex-wrap gap-3 justify-center">
+                  {wordCloudData.map((item, index) => (
+                    <motion.div
+                      key={item.word}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`
+                        inline-block px-4 py-2 rounded-full font-bold text-white shadow-lg
+                        ${item.count > 10 ? 'text-2xl bg-gradient-to-r from-purple-600 to-pink-600' :
+                          item.count > 5 ? 'text-xl bg-gradient-to-r from-blue-500 to-purple-500' :
+                          item.count > 3 ? 'text-lg bg-gradient-to-r from-green-500 to-blue-500' :
+                          'text-base bg-gradient-to-r from-yellow-500 to-green-500'}
+                      `}
+                      style={{
+                        fontSize: `${Math.max(0.8, Math.min(2, item.count / 5))}rem`
+                      }}
+                    >
+                      {item.word} ({item.count})
+                    </motion.div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    className="text-6xl mb-4"
+                  >
+                    ✍️
+                  </motion.div>
+                  <h4 className="text-xl font-bold text-purple-700 mb-2">Start Your Word Journey!</h4>
+                  <p className="text-purple-600">Write more journal entries to generate your personal word cloud</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="bg-white rounded-lg p-4 border border-pink-200 text-center">
+                <div className="text-2xl font-bold text-pink-600">{wordCloudData.length}</div>
+                <div className="text-sm text-gray-600">Unique Words</div>
+              </div>
+              <div className="bg-white rounded-lg p-4 border border-pink-200 text-center">
+                <div className="text-2xl font-bold text-purple-600">
+                  {wordCloudData.reduce((sum, item) => sum + item.count, 0)}
+                </div>
+                <div className="text-sm text-gray-600">Total Usage</div>
+              </div>
+            </div>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Beautiful Time Heatmap Modal */}
+      <Dialog open={showTimeHeatmapModal} onOpenChange={setShowTimeHeatmapModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-2 text-green-700">
+                <Clock className="w-6 h-6" />
+                Writing Time Analysis
+              </DialogTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTimeHeatmapModal(false)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </DialogHeader>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 rounded-xl p-6 border border-green-200">
+              <div className="text-center mb-6">
+                <motion.h3 
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  className="text-2xl font-bold text-green-800 mb-2"
+                >
+                  ⏰ Your Writing Rhythm ⏰
+                </motion.h3>
+                <p className="text-green-600">Discover when you're most creative and productive</p>
+              </div>
+              
+              {timeAnalysisData && timeAnalysisData.totalEntries > 0 ? (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="bg-white rounded-lg p-4 border border-green-200 text-center"
+                    >
+                      <div className="text-3xl mb-2">📊</div>
+                      <div className="text-xl font-bold text-green-700">
+                        {timeAnalysisData.peakHour ? `${timeAnalysisData.peakHour.hour}:00` : 'N/A'}
+                      </div>
+                      <div className="text-sm text-gray-600">Peak Writing Hour</div>
+                      {timeAnalysisData.peakHour && (
+                        <div className="text-xs text-green-600 mt-1">
+                          {timeAnalysisData.peakHour.count} entries
+                        </div>
+                      )}
+                    </motion.div>
+                    
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.1 }}
+                      className="bg-white rounded-lg p-4 border border-green-200 text-center"
+                    >
+                      <div className="text-3xl mb-2">📅</div>
+                      <div className="text-xl font-bold text-emerald-700">{timeAnalysisData.totalDays}</div>
+                      <div className="text-sm text-gray-600">Writing Days</div>
+                    </motion.div>
+                    
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="bg-white rounded-lg p-4 border border-green-200 text-center"
+                    >
+                      <div className="text-3xl mb-2">✍️</div>
+                      <div className="text-xl font-bold text-teal-700">{timeAnalysisData.totalEntries}</div>
+                      <div className="text-sm text-gray-600">Total Entries</div>
+                    </motion.div>
+                  </div>
+                  
+                  <div className="bg-white rounded-lg p-4 border border-green-200">
+                    <h4 className="font-bold text-green-800 mb-3">📈 Writing Schedule Heatmap</h4>
+                    <div className="grid grid-cols-6 gap-2">
+                      {Array.from({ length: 24 }, (_, hour) => {
+                        const count = timeAnalysisData.hourCounts[hour] || 0;
+                        const intensity = count > 0 ? Math.min(count / Math.max(...Object.values(timeAnalysisData.hourCounts)), 1) : 0;
+                        return (
+                          <motion.div
+                            key={hour}
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: hour * 0.05 }}
+                            className={`
+                              h-8 rounded flex items-center justify-center text-xs font-bold
+                              ${intensity > 0.7 ? 'bg-green-600 text-white' :
+                                intensity > 0.4 ? 'bg-green-400 text-white' :
+                                intensity > 0.1 ? 'bg-green-200 text-green-800' :
+                                'bg-gray-100 text-gray-500'}
+                            `}
+                            title={`${hour}:00 - ${count} entries`}
+                          >
+                            {hour}:00
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="text-6xl mb-4"
+                  >
+                    ⏰
+                  </motion.div>
+                  <h4 className="text-xl font-bold text-green-700 mb-2">Start Tracking Your Writing Times!</h4>
+                  <p className="text-green-600">Write more entries to discover your peak creative hours</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Beautiful Topic Analysis Modal */}
+      <Dialog open={showTopicAnalysisModal} onOpenChange={setShowTopicAnalysisModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-2 text-indigo-700">
+                <Brain className="w-6 h-6" />
+                AI Topic Analysis
+              </DialogTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowTopicAnalysisModal(false)}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </DialogHeader>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-6"
+          >
+            <div className="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 rounded-xl p-6 border border-indigo-200">
+              <div className="text-center mb-6">
+                <motion.h3 
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: 1 }}
+                  className="text-2xl font-bold text-indigo-800 mb-2"
+                >
+                  🧠 Your Journal Themes 🧠
+                </motion.h3>
+                <p className="text-indigo-600">AI-powered analysis of your writing patterns and topics</p>
+              </div>
+              
+              {topicAnalysisData && topicAnalysisData.totalEntries > 0 ? (
+                <div className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="bg-white rounded-lg p-4 border border-indigo-200 text-center">
+                      <div className="text-2xl font-bold text-indigo-700">{topicAnalysisData.totalWords}</div>
+                      <div className="text-sm text-gray-600">Words Analyzed</div>
+                    </div>
+                    <div className="bg-white rounded-lg p-4 border border-indigo-200 text-center">
+                      <div className="text-2xl font-bold text-purple-700">{topicAnalysisData.totalEntries}</div>
+                      <div className="text-sm text-gray-600">Entries Processed</div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h4 className="font-bold text-indigo-800 text-center mb-4">🎨 Theme Distribution</h4>
+                    {topicAnalysisData.themes
+                      .filter((theme: any) => theme.percentage > 0)
+                      .sort((a: any, b: any) => b.percentage - a.percentage)
+                      .map((theme: any, index: number) => (
+                        <motion.div
+                          key={theme.theme}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="bg-white rounded-lg p-4 border border-indigo-200"
+                        >
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-3">
+                              <div 
+                                className="w-4 h-4 rounded-full"
+                                style={{ backgroundColor: theme.color }}
+                              />
+                              <span className="font-medium text-gray-800">{theme.theme}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-lg" style={{ color: theme.color }}>
+                                {theme.percentage}%
+                              </span>
+                              <span className="text-sm text-gray-500">({theme.count} mentions)</span>
+                            </div>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-3">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${theme.percentage}%` }}
+                              transition={{ delay: index * 0.1 + 0.3, duration: 0.8 }}
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: theme.color }}
+                            />
+                          </div>
+                        </motion.div>
+                      ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    className="text-6xl mb-4"
+                  >
+                    🧠
+                  </motion.div>
+                  <h4 className="text-xl font-bold text-indigo-700 mb-2">Unlock Your Writing Themes!</h4>
+                  <p className="text-indigo-600">Write more journal entries to discover your unique patterns and topics</p>
+                </div>
+              )}
+            </div>
+          </motion.div>
         </DialogContent>
       </Dialog>
 
