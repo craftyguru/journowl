@@ -4449,6 +4449,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
 
+        <TabsContent value="analytics" data-tabs-content>
           <div className="space-y-6">
             {/* Header Section */}
             <motion.div
@@ -4966,7 +4967,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
                     <div className="grid grid-cols-6 gap-2">
                       {Array.from({ length: 24 }, (_, hour) => {
                         const count = timeAnalysisData.hourCounts[hour] || 0;
-                        const intensity = count > 0 ? Math.min(count / Math.max(...Object.values(timeAnalysisData.hourCounts)), 1) : 0;
+                        const intensity = count > 0 ? Math.min(count / Math.max(...Object.values(timeAnalysisData.hourCounts).map(v => Number(v) || 0)), 1) : 0;
                         return (
                           <motion.div
                             key={hour}
