@@ -166,15 +166,19 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
     staleTime: 2 * 60 * 1000,
   });
 
-  const { data: achievements = [] } = useQuery<Achievement[]>({
+  const { data: achievementsResponse } = useQuery<{ achievements: Achievement[] }>({
     queryKey: ['/api/achievements'],
     staleTime: 10 * 60 * 1000,
   });
+  
+  const achievements = achievementsResponse?.achievements || [];
 
-  const { data: goals = [] } = useQuery<Goal[]>({
+  const { data: goalsResponse } = useQuery<{ goals: Goal[] }>({
     queryKey: ['/api/goals'],
     staleTime: 5 * 60 * 1000,
   });
+  
+  const goals = goalsResponse?.goals || [];
 
   // Event handlers
   const handleNewEntry = () => {
@@ -356,7 +360,7 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
           <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
             <h3 className="text-lg font-bold text-white mb-4">🎯 Active Goals</h3>
             <div className="space-y-3">
-              {goals.slice(0, 3).map((goal: Goal) => (
+              {goals && Array.isArray(goals) && goals.slice(0, 3).map((goal: Goal) => (
                 <div key={goal.id} className="p-3 bg-slate-700/50 rounded-lg">
                   <h4 className="font-medium text-white text-sm">{goal.title}</h4>
                   <div className="mt-2">
@@ -373,7 +377,7 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
                   </div>
                 </div>
               ))}
-              {goals.length === 0 && (
+              {(!goals || goals.length === 0) && (
                 <p className="text-gray-400 text-sm">No goals set. Create your first goal!</p>
               )}
             </div>
