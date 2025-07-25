@@ -4977,8 +4977,8 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
         </TabsContent>
         
         <TabsContent value="stories" data-tabs-content>
-          <div className="h-[80vh]">
-            <AIStoryMaker 
+          <div className="h-[80vh] overflow-y-auto space-y-6">
+            <CreativeToolsSuite 
               entries={entries}
               stats={stats}
             />
@@ -5858,6 +5858,409 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
             🎤
           </motion.button>
         </div>
+      )}
+    </div>
+  );
+}
+
+// Creative Tools Suite Component
+interface CreativeToolsSuiteProps {
+  entries: any[];
+  stats: any;
+}
+
+function CreativeToolsSuite({ entries, stats }: CreativeToolsSuiteProps) {
+  const [activeCreativeTool, setActiveCreativeTool] = useState('story-maker');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedContent, setGeneratedContent] = useState('');
+  const [selectedEntries, setSelectedEntries] = useState<any[]>([]);
+  const [selectedDateRange, setSelectedDateRange] = useState('week');
+  const [customOptions, setCustomOptions] = useState({
+    storyLength: 'medium',
+    poemStyle: 'free-verse',
+    timelineStyle: 'visual',
+    moodInsight: 'detailed',
+    memoryBook: 'creative',
+    letterTone: 'encouraging'
+  });
+
+  // Filter entries based on date range
+  useEffect(() => {
+    if (!entries || entries.length === 0) return;
+
+    const now = new Date();
+    let startDate = new Date();
+    
+    switch (selectedDateRange) {
+      case 'week':
+        startDate.setDate(now.getDate() - 7);
+        break;
+      case 'month':
+        startDate.setMonth(now.getMonth() - 1);
+        break;
+      case 'year':
+        startDate.setFullYear(now.getFullYear() - 1);
+        break;
+      case 'all':
+        startDate = new Date('2020-01-01');
+        break;
+      default:
+        startDate.setDate(now.getDate() - 7);
+    }
+
+    const filtered = entries.filter(entry => 
+      new Date(entry.createdAt) >= startDate
+    );
+    setSelectedEntries(filtered);
+  }, [entries, selectedDateRange]);
+
+  const generateCreativeContent = async (toolType: string) => {
+    if (selectedEntries.length === 0) return;
+
+    setIsGenerating(true);
+    try {
+      const entrySummaries = selectedEntries.map(entry => ({
+        date: new Date(entry.createdAt).toLocaleDateString(),
+        title: entry.title,
+        content: entry.content?.substring(0, 300) || '',
+        mood: entry.mood
+      }));
+
+      let prompt = '';
+      
+      switch (toolType) {
+        case 'story-maker':
+          prompt = `Create a ${customOptions.storyLength === 'short' ? '2-3 paragraph' : customOptions.storyLength === 'medium' ? '4-6 paragraph' : '8-10 paragraph'} creative story based on these journal entries. Make it engaging and narrative-style, connecting events into one cohesive adventure. Include emotions and vivid descriptions!`;
+          break;
+        case 'poetry-generator':
+          prompt = `Transform these journal entries into a beautiful ${customOptions.poemStyle} poem. Capture the emotions, experiences, and moments described. Make it artistic and meaningful.`;
+          break;
+        case 'timeline-creator':
+          prompt = `Create a ${customOptions.timelineStyle === 'visual' ? 'visually engaging timeline with emojis and formatting' : 'detailed chronological timeline'} of these journal entries. Show the progression of events, emotions, and growth over time.`;
+          break;
+        case 'mood-insights':
+          prompt = `Analyze these journal entries and provide ${customOptions.moodInsight === 'detailed' ? 'detailed psychological insights' : 'simple mood analysis'} about emotional patterns, growth, and key themes. Be encouraging and constructive.`;
+          break;
+        case 'memory-book':
+          prompt = `Transform these journal entries into a ${customOptions.memoryBook === 'creative' ? 'creative memory book with chapters and storytelling' : 'organized memory compilation'}. Highlight special moments, growth, and meaningful experiences.`;
+          break;
+        case 'future-letter':
+          prompt = `Write an ${customOptions.letterTone} letter from the future self to the current self, based on these journal entries. Reference specific experiences and offer wisdom, encouragement, and perspective on their journey.`;
+          break;
+        default:
+          prompt = 'Create engaging content based on these journal entries.';
+      }
+
+      const fullPrompt = `${prompt}
+
+Journal entries:
+${entrySummaries.map(entry => 
+  `Date: ${entry.date}
+Title: ${entry.title}
+Content: ${entry.content}
+Mood: ${entry.mood}
+---`
+).join('\n')}`;
+
+      const response = await apiRequest('POST', '/api/ai/generate-story', {
+        prompt: fullPrompt,
+        entries: entrySummaries
+      });
+
+      setGeneratedContent((response as any).story);
+    } catch (error) {
+      console.error('Error generating creative content:', error);
+      setGeneratedContent('Unable to generate content at this time. Please try again later.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const creativeTools = [
+    {
+      id: 'story-maker',
+      title: '📚 Story Maker',
+      description: 'Transform journal entries into engaging stories',
+      icon: '✨',
+      gradient: 'from-purple-500 to-pink-500',
+      bgGradient: 'from-purple-50 to-pink-50',
+      borderColor: 'border-purple-200'
+    },
+    {
+      id: 'poetry-generator',
+      title: '🎭 Poetry Generator',
+      description: 'Create beautiful poems from your experiences',
+      icon: '🌟',
+      gradient: 'from-blue-500 to-cyan-500',
+      bgGradient: 'from-blue-50 to-cyan-50',
+      borderColor: 'border-blue-200'
+    },
+    {
+      id: 'timeline-creator',
+      title: '📅 Timeline Creator',
+      description: 'Build visual timelines of your journey',
+      icon: '🗓️',
+      gradient: 'from-green-500 to-teal-500',
+      bgGradient: 'from-green-50 to-teal-50',
+      borderColor: 'border-green-200'
+    },
+    {
+      id: 'mood-insights',
+      title: '🧠 Mood Insights',
+      description: 'Discover patterns in your emotions',
+      icon: '💡',
+      gradient: 'from-yellow-500 to-orange-500',
+      bgGradient: 'from-yellow-50 to-orange-50',
+      borderColor: 'border-yellow-200'
+    },
+    {
+      id: 'memory-book',
+      title: '📖 Memory Book',
+      description: 'Compile your favorite moments into a book',
+      icon: '💝',
+      gradient: 'from-rose-500 to-pink-500',
+      bgGradient: 'from-rose-50 to-pink-50',
+      borderColor: 'border-rose-200'
+    },
+    {
+      id: 'future-letter',
+      title: '💌 Future Letter',
+      description: 'Receive wisdom from your future self',
+      icon: '🔮',
+      gradient: 'from-indigo-500 to-purple-500',
+      bgGradient: 'from-indigo-50 to-purple-50',
+      borderColor: 'border-indigo-200'
+    }
+  ];
+
+  const activeTool = creativeTools.find(tool => tool.id === activeCreativeTool);
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <h2 className="text-4xl font-bold text-white mb-2" style={{ fontFamily: '"Rock Salt", cursive' }}>
+          🎨 Creative Tools Suite
+        </h2>
+        <p className="text-gray-300 text-lg">Transform your journal entries into amazing creative content!</p>
+      </motion.div>
+
+      {/* Creative Tools Grid */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="grid grid-cols-2 md:grid-cols-3 gap-4"
+      >
+        {creativeTools.map((tool, index) => (
+          <motion.button
+            key={tool.id}
+            onClick={() => setActiveCreativeTool(tool.id)}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className={`p-4 rounded-2xl border-2 transition-all duration-300 ${
+              activeCreativeTool === tool.id 
+                ? `bg-gradient-to-br ${tool.bgGradient} ${tool.borderColor} shadow-lg transform scale-105` 
+                : 'bg-slate-800/50 border-slate-600 hover:border-slate-500'
+            }`}
+          >
+            <div className="text-center">
+              <div className="text-3xl mb-2">{tool.icon}</div>
+              <h3 className={`font-bold text-sm mb-1 ${
+                activeCreativeTool === tool.id ? 'text-gray-800' : 'text-white'
+              }`}>
+                {tool.title}
+              </h3>
+              <p className={`text-xs ${
+                activeCreativeTool === tool.id ? 'text-gray-600' : 'text-gray-400'
+              }`}>
+                {tool.description}
+              </p>
+            </div>
+          </motion.button>
+        ))}
+      </motion.div>
+
+      {/* Active Tool Interface */}
+      {activeTool && (
+        <motion.div
+          key={activeCreativeTool}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`bg-gradient-to-br ${activeTool.bgGradient} rounded-2xl p-6 border-2 ${activeTool.borderColor} shadow-xl`}
+        >
+          <div className="flex items-center gap-3 mb-6">
+            <div className="text-4xl">{activeTool.icon}</div>
+            <div>
+              <h3 className="text-2xl font-bold text-gray-800">{activeTool.title}</h3>
+              <p className="text-gray-600">{activeTool.description}</p>
+            </div>
+          </div>
+
+          {/* Configuration Options */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {/* Date Range Selector */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">📅 Time Period</label>
+              <select 
+                value={selectedDateRange}
+                onChange={(e) => setSelectedDateRange(e.target.value)}
+                className="w-full p-3 rounded-xl border-2 border-gray-200 bg-white text-gray-800 font-medium focus:border-gray-400 focus:ring-2 focus:ring-gray-200"
+              >
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+                <option value="year">This Year</option>
+                <option value="all">All Entries</option>
+              </select>
+            </div>
+
+            {/* Tool-Specific Options */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">⚙️ Style Options</label>
+              <select 
+                value={customOptions[activeCreativeTool as keyof typeof customOptions] || 'medium'}
+                onChange={(e) => setCustomOptions(prev => ({
+                  ...prev,
+                  [activeCreativeTool]: e.target.value
+                }))}
+                className="w-full p-3 rounded-xl border-2 border-gray-200 bg-white text-gray-800 font-medium focus:border-gray-400 focus:ring-2 focus:ring-gray-200"
+              >
+                {activeCreativeTool === 'story-maker' && (
+                  <>
+                    <option value="short">Short Story</option>
+                    <option value="medium">Medium Story</option>
+                    <option value="long">Long Story</option>
+                  </>
+                )}
+                {activeCreativeTool === 'poetry-generator' && (
+                  <>
+                    <option value="free-verse">Free Verse</option>
+                    <option value="rhyming">Rhyming Poetry</option>
+                    <option value="haiku">Haiku Style</option>
+                  </>
+                )}
+                {activeCreativeTool === 'timeline-creator' && (
+                  <>
+                    <option value="visual">Visual Timeline</option>
+                    <option value="detailed">Detailed Timeline</option>
+                    <option value="minimal">Minimal Timeline</option>
+                  </>
+                )}
+                {activeCreativeTool === 'mood-insights' && (
+                  <>
+                    <option value="detailed">Detailed Analysis</option>
+                    <option value="simple">Simple Overview</option>
+                    <option value="patterns">Pattern Focus</option>
+                  </>
+                )}
+                {activeCreativeTool === 'memory-book' && (
+                  <>
+                    <option value="creative">Creative Book</option>
+                    <option value="organized">Organized Format</option>
+                    <option value="scrapbook">Scrapbook Style</option>
+                  </>
+                )}
+                {activeCreativeTool === 'future-letter' && (
+                  <>
+                    <option value="encouraging">Encouraging Tone</option>
+                    <option value="wisdom">Wisdom Focus</option>
+                    <option value="motivational">Motivational</option>
+                  </>
+                )}
+              </select>
+            </div>
+
+            {/* Entry Count Display */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">📊 Entries Found</label>
+              <div className="bg-white rounded-xl p-3 border-2 border-gray-200">
+                <div className="text-2xl font-bold text-gray-800">{selectedEntries.length}</div>
+                <div className="text-sm text-gray-600">
+                  {selectedEntries.length === 0 ? 'No entries found' : 
+                   selectedEntries.length === 1 ? 'entry to process' : 'entries to process'}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Generate Button */}
+          <motion.div className="text-center mb-6">
+            <motion.button
+              onClick={() => generateCreativeContent(activeCreativeTool)}
+              disabled={selectedEntries.length === 0 || isGenerating}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`bg-gradient-to-r ${activeTool.gradient} hover:shadow-lg text-white font-bold py-4 px-8 rounded-2xl shadow-md text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {isGenerating ? (
+                <>
+                  <div className="animate-spin w-5 h-5 mr-2 border-2 border-white border-t-transparent rounded-full inline-block"></div>
+                  Creating Magic... ✨
+                </>
+              ) : (
+                <>
+                  {activeTool.icon} Generate {activeTool.title.replace(/^\w+ /, '')}
+                </>
+              )}
+            </motion.button>
+          </motion.div>
+
+          {/* Generated Content Display */}
+          {generatedContent && !isGenerating && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white rounded-2xl p-6 border-2 border-gray-300 shadow-lg"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <h4 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+                  {activeTool.icon} Your {activeTool.title.replace(/^\w+ /, '')}
+                </h4>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => navigator.clipboard.writeText(generatedContent)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                  >
+                    📋 Copy
+                  </button>
+                  <button
+                    onClick={() => setGeneratedContent('')}
+                    className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm transition-colors"
+                  >
+                    ✖️ Clear
+                  </button>
+                </div>
+              </div>
+              <div className="prose max-w-none">
+                <pre className="whitespace-pre-wrap text-gray-700 font-sans leading-relaxed">
+                  {generatedContent}
+                </pre>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Empty State */}
+          {selectedEntries.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-8"
+            >
+              <div className="text-6xl mb-4">📝</div>
+              <h4 className="text-xl font-bold text-gray-600 mb-2">No Journal Entries Found</h4>
+              <p className="text-gray-500">
+                Write some journal entries first, then come back to create amazing content with your stories!
+              </p>
+            </motion.div>
+          )}
+        </motion.div>
       )}
     </div>
   );
