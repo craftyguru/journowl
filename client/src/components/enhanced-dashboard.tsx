@@ -1348,7 +1348,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                 >
                   ✍️
                 </motion.span>
-                <span className="relative">
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
                   Journal
                   {activeTab === 'journal' && (
                     <motion.div
@@ -1423,7 +1423,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                 >
                   📊
                 </motion.span>
-                <span className="relative">
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
                   Analytics
                   {activeTab === 'analytics' && (
                     <motion.div
@@ -1486,7 +1486,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                 >
                   🏆
                 </motion.span>
-                <span className="relative">
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
                   Achievements
                   {activeTab === 'achievements' && (
                     <motion.div
@@ -1548,7 +1548,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                 >
                   🎯
                 </motion.span>
-                <span className="relative">
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
                   Goals
                   {activeTab === 'goals' && (
                     <motion.div
@@ -1581,30 +1581,35 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             <TabsTrigger 
               value="insights" 
               className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              style={{ fontFamily: '"Rock Salt", cursive' }}
             >
               🤖 AI Thoughts
             </TabsTrigger>
             <TabsTrigger 
               value="analytics-insights" 
               className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              style={{ fontFamily: '"Rock Salt", cursive' }}
             >
               📈 Insights
             </TabsTrigger>
             <TabsTrigger 
               value="calendar" 
               className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              style={{ fontFamily: '"Rock Salt", cursive' }}
             >
               📅 Memory Calendar
             </TabsTrigger>
             <TabsTrigger 
               value="stories" 
               className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              style={{ fontFamily: '"Rock Salt", cursive' }}
             >
               📚 AI Stories
             </TabsTrigger>
             <TabsTrigger 
               value="referral" 
               className="flex-shrink-0 h-8 px-2 py-1 text-xs font-medium rounded-md data-[state=active]:bg-purple-500 data-[state=active]:text-white text-gray-300 hover:text-white hover:bg-purple-500/20 transition-all duration-200 whitespace-nowrap"
+              style={{ fontFamily: '"Rock Salt", cursive' }}
             >
               🎁 Referral
             </TabsTrigger>
