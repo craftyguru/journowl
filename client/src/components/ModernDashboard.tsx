@@ -129,8 +129,8 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
   const [showCalendar, setShowCalendar] = useState(false);
   const [showNewGoalModal, setShowNewGoalModal] = useState(false);
 
-  // Fetch data from API endpoints
-  const { data: user } = useQuery({
+  // Fetch data from API endpoints with proper typing
+  const { data: user } = useQuery<User>({
     queryKey: ['/api/auth/me'],
     refetchInterval: false,
     refetchOnWindowFocus: false,
@@ -138,22 +138,22 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
     retry: false,
   });
 
-  const { data: stats } = useQuery({
+  const { data: stats } = useQuery<Stats>({
     queryKey: ['/api/journal/stats'],
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: entries = [] } = useQuery({
+  const { data: entries = [] } = useQuery<JournalEntry[]>({
     queryKey: ['/api/journal/entries'],
     staleTime: 2 * 60 * 1000,
   });
 
-  const { data: achievements = [] } = useQuery({
+  const { data: achievements = [] } = useQuery<Achievement[]>({
     queryKey: ['/api/achievements'],
     staleTime: 10 * 60 * 1000,
   });
 
-  const { data: goals = [] } = useQuery({
+  const { data: goals = [] } = useQuery<Goal[]>({
     queryKey: ['/api/goals'],
     staleTime: 5 * 60 * 1000,
   });
@@ -243,12 +243,12 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
           <div className="mt-8 space-y-4">
             <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
               <h3 className="text-lg font-bold text-white mb-2">📊 Stats</h3>
-              <p className="text-gray-300">Total Entries: {stats?.totalEntries || 0}</p>
-              <p className="text-gray-300">Current Streak: {stats?.currentStreak || 0}</p>
+              <p className="text-gray-300">Total Entries: {(stats as Stats)?.totalEntries || 0}</p>
+              <p className="text-gray-300">Current Streak: {(stats as Stats)?.currentStreak || 0}</p>
             </div>
             <div className="bg-slate-800/60 rounded-xl p-6 border border-purple-400/20">
               <h3 className="text-lg font-bold text-white mb-2">📝 Recent Entries</h3>
-              <p className="text-gray-300">Entries Count: {entries?.length || 0}</p>
+              <p className="text-gray-300">Entries Count: {(entries as JournalEntry[])?.length || 0}</p>
             </div>
           </div>
         </div>
@@ -284,7 +284,7 @@ export default function ModernDashboard({ onNavigate }: ModernDashboardProps) {
       <AnimatePresence>
         {showCalendar && (
           <InteractiveCalendar
-            entries={entries}
+            entries={entries as JournalEntry[]}
             onClose={() => setShowCalendar(false)}
             onEntrySelect={handleEntrySelect}
           />
