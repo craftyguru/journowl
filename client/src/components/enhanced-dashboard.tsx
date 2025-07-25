@@ -24,6 +24,46 @@ import UsageMeters from "./UsageMeters";
 import { AIStoryMaker } from "./kid-dashboard";
 import { SupportChatBubble } from "./SupportChatBubble";
 
+// Typewriter hook for animated text
+const useTypewriter = (text: string, speed: number = 100) => {
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  React.useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prevText => prevText + text[currentIndex]);
+        setCurrentIndex(prevIndex => prevIndex + 1);
+      }, speed);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text, speed]);
+
+  return displayText;
+};
+
+// TypewriterTitle component
+const TypewriterTitle = ({ text }: { text: string }) => {
+  const displayText = useTypewriter(text, 80);
+  const [showCursor, setShowCursor] = useState(true);
+
+  React.useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 500);
+
+    return () => clearInterval(cursorInterval);
+  }, []);
+
+  return (
+    <span>
+      {displayText}
+      {showCursor && <span className="animate-pulse text-yellow-300">|</span>}
+    </span>
+  );
+};
+
 // All data now fetched from API endpoints instead of hardcoded values
 
 // Type definitions for API responses
@@ -909,39 +949,142 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           </CardContent>
         </Card>
       </motion.div>
-      {/* Welcome Header */}
+      {/* Enhanced Welcome Section with Flying Owls */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="relative text-center bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-purple-500/20 overflow-hidden"
+        className="relative text-center bg-gradient-to-r from-slate-800/90 via-purple-900/80 to-pink-900/80 backdrop-blur-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 shadow-2xl border border-purple-500/20 overflow-hidden min-h-[280px]"
       >
-        {/* Animated border effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-3xl blur-sm animate-pulse"></div>
-        <div className="relative z-10">
-          <motion.h1 
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-2 sm:mb-3"
-          >
-            Welcome back to JournOwl, {user?.username || 'User'}! 🦉✨
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-gray-300 text-sm sm:text-base lg:text-lg"
-          >
-            Ready to gain wisdom through your journaling journey? 🦉
-          </motion.p>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
+        {/* Animated Background Elements */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-pink-500/20 to-orange-400/20"></div>
+        
+        {/* Flying Animated Owls */}
+        <motion.div
+          animate={{ 
+            x: [0, 300, 0], 
+            y: [0, -20, -40, -20, 0],
+            rotate: [0, 5, -5, 0]
+          }}
+          transition={{ 
+            duration: 12, 
+            repeat: Infinity, 
+            ease: "easeInOut" 
+          }}
+          className="absolute top-8 left-4 text-4xl z-20"
+        >
+          🦉
+        </motion.div>
+        
+        <motion.div
+          animate={{ 
+            x: [400, 0, 400], 
+            y: [0, -30, -60, -30, 0],
+            rotate: [0, -5, 5, 0]
+          }}
+          transition={{ 
+            duration: 15, 
+            repeat: Infinity, 
+            ease: "easeInOut",
+            delay: 3
+          }}
+          className="absolute top-12 right-8 text-3xl z-20"
+        >
+          🦉
+        </motion.div>
+        
+        <motion.div
+          animate={{ 
+            x: [0, 150, 300, 150, 0], 
+            y: [100, 80, 60, 80, 100],
+            rotate: [0, 10, -10, 0]
+          }}
+          transition={{ 
+            duration: 18, 
+            repeat: Infinity, 
+            ease: "easeInOut",
+            delay: 6
+          }}
+          className="absolute bottom-16 left-12 text-2xl z-20"
+        >
+          🦉
+        </motion.div>
+        
+        {/* Floating Magical Elements */}
+        <motion.div
+          animate={{ 
+            y: [0, -15, 0],
+            rotate: [0, 360],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ 
+            duration: 4, 
+            repeat: Infinity, 
+            ease: "easeInOut" 
+          }}
+          className="absolute top-16 right-20 text-2xl z-10"
+        >
+          ✨
+        </motion.div>
+        
+        <motion.div
+          animate={{ 
+            y: [0, -10, 0],
+            x: [0, 5, 0],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ 
+            duration: 3, 
+            repeat: Infinity, 
+            ease: "easeInOut",
+            delay: 1
+          }}
+          className="absolute bottom-20 right-16 text-xl z-10"
+        >
+          🌟
+        </motion.div>
+        
+        <motion.div
+          animate={{ 
+            y: [0, -12, 0],
+            rotate: [0, 180, 360],
+            opacity: [0.7, 1, 0.7]
+          }}
+          transition={{ 
+            duration: 5, 
+            repeat: Infinity, 
+            ease: "easeInOut",
+            delay: 2
+          }}
+          className="absolute top-24 left-32 text-lg z-10"
+        >
+          💫
+        </motion.div>
+
+        <div className="relative z-30">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mt-4 sm:mt-6"
+            transition={{ duration: 0.8 }}
           >
+            <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent mb-2 sm:mb-3 leading-tight">
+              <TypewriterTitle text={`🦉 Welcome back, ${user?.username || 'Wise Writer'}!`} />
+            </h1>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2, duration: 1 }}
+              className="text-gray-300 text-sm sm:text-base lg:text-lg mb-6"
+            >
+              Your wise JournOwl companion is ready to help capture today's thoughts and memories! ✨
+            </motion.p>
+            
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 3, duration: 0.8 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mt-4 sm:mt-6"
+            >
             <div className="px-6 py-3 bg-gradient-to-r from-purple-500/80 to-pink-500/80 text-white rounded-full text-sm font-medium backdrop-blur-sm border border-purple-300/30 hover:scale-105 transition-transform">
               Level {user?.level || 1} - {user?.level >= 10 ? 'Expert Writer' : 'Budding Writer'} ✨
             </div>
