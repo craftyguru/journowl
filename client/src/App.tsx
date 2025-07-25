@@ -12,7 +12,7 @@ import InsightsPage from "@/pages/insights";
 import Navbar from "@/components/navbar";
 import AccountSelector from "@/components/account-selector";
 import AdminDashboard from "@/components/admin-dashboard";
-import EnhancedDashboard from "@/components/enhanced-dashboard";
+import ModernDashboard from "@/components/ModernDashboard";
 import KidDashboard from "@/components/kid-dashboard";
 import ReferralPage from "@/components/referral-page";
 import LandingHero from "@/components/ui/LandingHero";
@@ -290,7 +290,7 @@ function App() {
                 
                 <main>
                   {selectedAccount.type === "admin" && <AdminDashboard />}
-                  {selectedAccount.type === "user" && currentView === "dashboard" && <EnhancedDashboard />}
+                  {selectedAccount.type === "user" && currentView === "dashboard" && <ModernDashboard />}
                   {selectedAccount.type === "user" && currentView === "insights" && <InsightsPage />}
                   {selectedAccount.type === "kid" && <KidDashboard />}
                 </main>
@@ -377,7 +377,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
           <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
         ) : (
           <>
-            {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} initialTab={activeTab} />}
+            {validView === "dashboard" && <ModernDashboard onNavigate={onNavigate} />}
             {validView === "insights" && <InsightsPage />}
             {validView === "referral" && <ReferralPage />}
           </>
