@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { LogIn, UserPlus, FileText, Shield, Palette } from "lucide-react";
 import { ThemeSelector } from "@/components/theme-selector";
 import { useTheme } from "@/components/theme-provider";
+import { PrivacyModal } from "@/components/PrivacyModal";
+import { TermsModal } from "@/components/TermsModal";
 
 interface LandingHeaderProps {
   onSignIn: () => void;
@@ -11,6 +14,8 @@ interface LandingHeaderProps {
 
 export default function LandingHeader({ onSignIn, onSignUp }: LandingHeaderProps) {
   const { colorScheme, toggleColorScheme } = useTheme();
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
 
   return (
     <motion.header
@@ -42,24 +47,20 @@ export default function LandingHeader({ onSignIn, onSignUp }: LandingHeaderProps
 
           {/* Navigation Links - Desktop */}
           <nav className="hidden md:flex items-center gap-6">
-            <a 
-              href="/privacy-policy" 
-              target="_blank"
-              rel="noopener noreferrer"
+            <button 
+              onClick={() => setShowPrivacyModal(true)}
               className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-sm"
             >
               <Shield className="w-4 h-4" />
               Privacy
-            </a>
-            <a 
-              href="/terms" 
-              target="_blank"
-              rel="noopener noreferrer"
+            </button>
+            <button 
+              onClick={() => setShowTermsModal(true)}
               className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-sm"
             >
               <FileText className="w-4 h-4" />
               Terms
-            </a>
+            </button>
           </nav>
 
           {/* Action Buttons */}
@@ -102,24 +103,20 @@ export default function LandingHeader({ onSignIn, onSignUp }: LandingHeaderProps
 
         {/* Mobile Navigation */}
         <div className="md:hidden pb-3 border-t border-white/10 mt-3 pt-3 flex items-center justify-center gap-4">
-          <a 
-            href="/privacy-policy" 
-            target="_blank"
-            rel="noopener noreferrer"
+          <button 
+            onClick={() => setShowPrivacyModal(true)}
             className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-xs"
           >
             <Shield className="w-3 h-3" />
             Privacy
-          </a>
-          <a 
-            href="/terms" 
-            target="_blank"
-            rel="noopener noreferrer"
+          </button>
+          <button 
+            onClick={() => setShowTermsModal(true)}
             className="flex items-center gap-2 text-gray-300 hover:text-white transition-colors text-xs"
           >
             <FileText className="w-3 h-3" />
             Terms
-          </a>
+          </button>
           <div className="flex items-center gap-2">
             <ThemeSelector />
             <Button
@@ -134,6 +131,16 @@ export default function LandingHeader({ onSignIn, onSignUp }: LandingHeaderProps
           </div>
         </div>
       </div>
+
+      {/* Privacy and Terms Modals */}
+      <PrivacyModal 
+        isOpen={showPrivacyModal} 
+        onClose={() => setShowPrivacyModal(false)} 
+      />
+      <TermsModal 
+        isOpen={showTermsModal} 
+        onClose={() => setShowTermsModal(false)} 
+      />
     </motion.header>
   );
 }

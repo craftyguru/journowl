@@ -12,6 +12,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { PWAMobilePrompt } from "@/components/PWAManager";
 import LandingHeader from "@/components/LandingHeader";
+import { PrivacyModal } from "@/components/PrivacyModal";
+import { TermsModal } from "@/components/TermsModal";
 
 interface LandingHeroProps {
   onGetStarted: () => void;
@@ -92,6 +94,8 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
   const [currentFeature, setCurrentFeature] = useState(0);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -1316,16 +1320,16 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   </a>
                 </li>
                 <li>
-                  <a href="/terms" target="_blank" className="flex items-center gap-2 hover:text-white transition-colors">
+                  <button onClick={() => setShowTermsModal(true)} className="flex items-center gap-2 hover:text-white transition-colors">
                     <FileText className="w-3 h-3" />
                     Terms of Service
-                  </a>
+                  </button>
                 </li>
                 <li>
-                  <a href="/privacy-policy" target="_blank" className="flex items-center gap-2 hover:text-white transition-colors">
+                  <button onClick={() => setShowPrivacyModal(true)} className="flex items-center gap-2 hover:text-white transition-colors">
                     <Shield className="w-3 h-3" />
                     Privacy Policy
-                  </a>
+                  </button>
                 </li>
                 <li>
                   <a href="/faq" className="flex items-center gap-2 hover:text-white transition-colors">
@@ -1380,6 +1384,16 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
 
       {/* PWA Install Prompt for Mobile Users */}
       <PWAMobilePrompt />
+
+      {/* Privacy and Terms Modals */}
+      <PrivacyModal 
+        isOpen={showPrivacyModal} 
+        onClose={() => setShowPrivacyModal(false)} 
+      />
+      <TermsModal 
+        isOpen={showTermsModal} 
+        onClose={() => setShowTermsModal(false)} 
+      />
     </div>
   );
 }
