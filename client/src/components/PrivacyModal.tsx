@@ -245,7 +245,7 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className="fixed inset-4 md:inset-8 bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
+            className="fixed top-4 left-4 right-4 bottom-4 md:top-8 md:left-8 md:right-8 md:bottom-8 lg:top-16 lg:left-1/2 lg:right-auto lg:bottom-16 lg:transform lg:-translate-x-1/2 lg:w-5/6 lg:max-w-5xl bg-white dark:bg-gray-900 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-500 via-pink-500 to-indigo-500 text-white">
@@ -269,24 +269,24 @@ export function PrivacyModal({ isOpen, onClose }: PrivacyModalProps) {
               </Button>
             </div>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
               {/* Sidebar */}
-              <div className="w-64 bg-gray-50 dark:bg-gray-800 p-4 overflow-y-auto">
-                <nav className="space-y-2">
+              <div className="w-full md:w-64 bg-gray-50 dark:bg-gray-800 p-4 overflow-y-auto border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-700">
+                <nav className="space-y-2 grid grid-cols-3 md:grid-cols-1 gap-2 md:gap-0">
                   {sections.map((section) => {
                     const Icon = section.icon;
                     return (
                       <button
                         key={section.id}
                         onClick={() => setCurrentSection(section.id)}
-                        className={`w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg transition-all duration-200 ${
+                        className={`w-full flex items-center gap-2 md:gap-3 px-2 md:px-3 py-2 text-left rounded-lg transition-all duration-200 ${
                           currentSection === section.id
                             ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300'
                             : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700'
                         }`}
                       >
-                        <Icon className="w-4 h-4" />
-                        <span className="text-sm font-medium">{section.title}</span>
+                        <Icon className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                        <span className="text-xs md:text-sm font-medium truncate">{section.title}</span>
                       </button>
                     );
                   })}
