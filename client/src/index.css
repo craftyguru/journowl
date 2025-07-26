@@ -37,11 +37,63 @@
     font-family: 'Rock Salt', cursive;
   }
 
+  /* Professional theme uses clean system fonts */
+  .professional .rock-salt {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-weight: 600;
+  }
+
   /* Gradient shift animation for colorful backgrounds */
   @keyframes gradientShift {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+  }
+
+  /* Professional theme color variables */
+  .professional {
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 94%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 92%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221 83% 53%;
+    --radius: 0.5rem;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+  }
+
+  .professional.dark {
+    --primary: 217 91% 60%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217 32.6% 17.5%;
+    --input: 217 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
   }
 
   /* Mobile-friendly scrollbars */
@@ -169,6 +221,61 @@
   .hide-scrollbar::-webkit-scrollbar {
     display: none;
   }
+
+  /* Professional theme adjustments */
+  .professional .gradient-bg {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  }
+
+  .professional .gradient-text {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--muted-foreground)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Professional animations - more subtle */
+  .professional .animate-pulse {
+    animation: professional-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes professional-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  /* Professional theme removes or reduces animations */
+  .professional .animate-bounce,
+  .professional .animate-spin {
+    animation: none;
+  }
+
+  .professional .animate-float {
+    animation: professional-float 3s ease-in-out infinite;
+  }
+
+  @keyframes professional-float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+
+  /* Professional shadows - more subtle */
+  .professional .shadow-lg {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  .professional .shadow-xl {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
 
 /* Mobile-specific animations */
 @layer components {
@@ -470,4 +577,3 @@
     background: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-}

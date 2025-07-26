@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
 import { useState } from "react";
 import { PWAInstallButton } from "@/components/PWAManager";
+import { ThemeSelector } from "./theme-selector";
 
 
 interface NavbarProps {
@@ -15,7 +16,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ currentView, activeTab, onNavigate }: NavbarProps) {
-  const { theme, toggleTheme } = useTheme();
+  const { colorScheme, toggleColorScheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const { data: userResponse } = useQuery({
@@ -66,13 +67,16 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             
             <PWAInstallButton />
             
+            <ThemeSelector />
+            
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleTheme}
+              onClick={toggleColorScheme}
               className="rounded-lg"
+              title="Toggle Dark/Light Mode"
             >
-              {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+              {colorScheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
             
             {user && (

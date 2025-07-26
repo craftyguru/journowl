@@ -1,34 +1,70 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-type Theme = "light" | "dark";
+type ColorScheme = "light" | "dark";
+type VisualStyle = "creative" | "professional";
 
 interface ThemeContextType {
-  theme: Theme;
-  toggleTheme: () => void;
+  colorScheme: ColorScheme;
+  visualStyle: VisualStyle;
+  toggleColorScheme: () => void;
+  toggleVisualStyle: () => void;
+  setTheme: (colorScheme: ColorScheme, visualStyle: VisualStyle) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [colorScheme, setColorScheme] = useState<ColorScheme>("light");
+  const [visualStyle, setVisualStyle] = useState<VisualStyle>("creative");
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme;
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.className = savedTheme;
+    const savedColorScheme = localStorage.getItem("colorScheme") as ColorScheme;
+    const savedVisualStyle = localStorage.getItem("visualStyle") as VisualStyle;
+    
+    if (savedColorScheme) {
+      setColorScheme(savedColorScheme);
     }
+    if (savedVisualStyle) {
+      setVisualStyle(savedVisualStyle);
+    }
+    
+    updateDocumentClasses(savedColorScheme || "light", savedVisualStyle || "creative");
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-    document.documentElement.className = newTheme;
+  const updateDocumentClasses = (newColorScheme: ColorScheme, newVisualStyle: VisualStyle) => {
+    document.documentElement.className = `${newColorScheme} ${newVisualStyle}`;
+  };
+
+  const toggleColorScheme = () => {
+    const newColorScheme = colorScheme === "light" ? "dark" : "light";
+    setColorScheme(newColorScheme);
+    localStorage.setItem("colorScheme", newColorScheme);
+    updateDocumentClasses(newColorScheme, visualStyle);
+  };
+
+  const toggleVisualStyle = () => {
+    const newVisualStyle = visualStyle === "creative" ? "professional" : "creative";
+    setVisualStyle(newVisualStyle);
+    localStorage.setItem("visualStyle", newVisualStyle);
+    updateDocumentClasses(colorScheme, newVisualStyle);
+  };
+
+  const setTheme = (newColorScheme: ColorScheme, newVisualStyle: VisualStyle) => {
+    setColorScheme(newColorScheme);
+    setVisualStyle(newVisualStyle);
+    localStorage.setItem("colorScheme", newColorScheme);
+    localStorage.setItem("visualStyle", newVisualStyle);
+    updateDocumentClasses(newColorScheme, newVisualStyle);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ 
+      colorScheme, 
+      visualStyle, 
+      toggleColorScheme, 
+      toggleVisualStyle, 
+      setTheme 
+    }}>
       {children}
     </ThemeContext.Provider>
   );
