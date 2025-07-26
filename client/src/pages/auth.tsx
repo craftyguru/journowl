@@ -63,6 +63,15 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
   const [verificationEmail, setVerificationEmail] = useState("");
   const [showPasswordLogin, setShowPasswordLogin] = useState(false);
   const [showPasswordRegister, setShowPasswordRegister] = useState(false);
+  
+  // Determine initial tab based on URL
+  const getInitialTab = () => {
+    const path = window.location.pathname;
+    if (path === '/register' || path === '/signup') return 'register';
+    return 'login'; // Default to login for /login, /signin, /auth
+  };
+  
+  const [activeTab, setActiveTab] = useState(getInitialTab());
 
   // Check for verification success and welcome tutorial trigger
   useEffect(() => {
@@ -423,7 +432,7 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
               <p className="text-gray-300 mt-2">Your Wise Writing Companion</p>
             </CardHeader>
             <CardContent>
-              <Tabs defaultValue="login" className="w-full">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-white/10 border-white/20">
                   <TabsTrigger value="login" className="text-gray-300 data-[state=active]:bg-white/20 data-[state=active]:text-white">
                     Sign In

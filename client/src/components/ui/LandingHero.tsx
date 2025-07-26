@@ -6,10 +6,12 @@ import {
   Sparkles, Heart, TrendingUp, Zap, BookOpen, Brain, 
   Camera, Palette, Calendar, Lock, Trophy, Star,
   PenTool, BarChart3, Users, Smile, Target, Award,
-  ArrowRight, Play, CheckCircle, Globe, Lightbulb
+  ArrowRight, Play, CheckCircle, Globe, Lightbulb,
+  Mail, Github, Twitter, FileText, Shield, Download, Bookmark, HelpCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PWAMobilePrompt } from "@/components/PWAManager";
+import LandingHeader from "@/components/LandingHeader";
 
 interface LandingHeroProps {
   onGetStarted: () => void;
@@ -127,11 +129,25 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
     window.location.href = url.toString();
   };
 
+  const handleSignIn = () => {
+    const url = new URL(window.location.href);
+    url.pathname = '/login';
+    window.location.href = url.toString();
+  };
+
+  const handleSignUp = () => {
+    const url = new URL(window.location.href);
+    url.pathname = '/register';
+    window.location.href = url.toString();
+  };
+
   return (
     <div 
       ref={heroRef}
       className="relative min-h-screen overflow-hidden"
     >
+      {/* Landing Header */}
+      <LandingHeader onSignIn={handleSignIn} onSignUp={handleSignUp} />
       
       {/* Subtle overlay for better text readability */}
       <div className="absolute inset-0 bg-black/20 z-0" />
@@ -1232,6 +1248,136 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
         </motion.div>
       </div>
       
+      {/* Landing Footer */}
+      <motion.footer
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8, delay: 10 }}
+        className="relative bg-black/40 backdrop-blur-sm border-t border-white/10 mt-16 sm:mt-20 z-20"
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 sm:gap-8">
+            {/* Brand Column */}
+            <div className="col-span-1 md:col-span-1">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="text-2xl">🦉</div>
+                <div>
+                  <h3 
+                    className="text-lg sm:text-xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent"
+                    style={{ fontFamily: '"Rock Salt", cursive' }}
+                  >
+                    JournOwl
+                  </h3>
+                  <p className="text-xs text-gray-400">
+                    Your Wise Writing Companion
+                  </p>
+                </div>
+              </div>
+              <p className="text-sm text-gray-300 leading-relaxed">
+                AI-powered journaling platform that helps you capture thoughts, analyze emotions, and unlock insights from your daily experiences.
+              </p>
+            </div>
+
+            {/* Features Column */}
+            <div className="col-span-1">
+              <h4 className="font-semibold text-white mb-3 sm:mb-4">Features</h4>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li className="flex items-center gap-2">
+                  <Brain className="w-3 h-3" />
+                  AI Writing Assistant
+                </li>
+                <li className="flex items-center gap-2">
+                  <BarChart3 className="w-3 h-3" />
+                  Smart Analytics
+                </li>
+                <li className="flex items-center gap-2">
+                  <Trophy className="w-3 h-3" />
+                  Achievement System
+                </li>
+                <li className="flex items-center gap-2">
+                  <Camera className="w-3 h-3" />
+                  Photo Analysis
+                </li>
+                <li className="flex items-center gap-2">
+                  <Download className="w-3 h-3" />
+                  Export Options
+                </li>
+              </ul>
+            </div>
+
+            {/* Resources Column */}
+            <div className="col-span-1">
+              <h4 className="font-semibold text-white mb-3 sm:mb-4">Resources</h4>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li>
+                  <a href="#" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <HelpCircle className="w-3 h-3" />
+                    FAQ & Help
+                  </a>
+                </li>
+                <li>
+                  <a href="/terms" target="_blank" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <FileText className="w-3 h-3" />
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a href="/privacy-policy" target="_blank" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <Shield className="w-3 h-3" />
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="flex items-center gap-2 hover:text-white transition-colors">
+                    <Bookmark className="w-3 h-3" />
+                    Knowledge Base
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Connect Column */}
+            <div className="col-span-1">
+              <h4 className="font-semibold text-white mb-3 sm:mb-4">Connect</h4>
+              <div className="space-y-3">
+                <a 
+                  href="mailto:support@journowl.app" 
+                  className="flex items-center gap-2 text-sm text-gray-300 hover:text-white transition-colors"
+                >
+                  <Mail className="w-3 h-3" />
+                  support@journowl.app
+                </a>
+                <div className="flex gap-3">
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    <Twitter className="w-4 h-4" />
+                  </a>
+                  <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                    <Github className="w-4 h-4" />
+                  </a>
+                </div>
+                <div className="pt-2">
+                  <Badge variant="secondary" className="text-xs">
+                    Available as PWA
+                  </Badge>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="border-t border-white/10 mt-8 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-gray-400 text-center sm:text-left">
+              © 2025 JournOwl. All rights reserved. Built with wisdom and care.
+            </p>
+            <div className="flex items-center gap-4 text-xs text-gray-400">
+              <span>Made with ❤️ for writers</span>
+              <span className="hidden sm:inline">•</span>
+              <span>Version 2.0</span>
+            </div>
+          </div>
+        </div>
+      </motion.footer>
+
       {/* PWA Install Prompt for Mobile Users */}
       <PWAMobilePrompt />
     </div>

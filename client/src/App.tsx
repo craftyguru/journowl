@@ -34,6 +34,8 @@ function App() {
     console.log('App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
     if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
+    if (window.location.pathname === '/login' || window.location.pathname === '/signin' || window.location.pathname === '/auth') return 'auth';
+    if (window.location.pathname === '/register' || window.location.pathname === '/signup') return 'auth';
     if (window.location.pathname === '/import') return 'import';
     if (window.location.pathname === '/share') return 'share';
     if (window.location.pathname === '/privacy-policy') return 'privacy-policy';
