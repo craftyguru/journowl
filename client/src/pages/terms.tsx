@@ -44,9 +44,14 @@ export default function TermsOfService() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <Button asChild variant="outline" className="mb-6">
-            <Link href="/">← Back to Home</Link>
-          </Button>
+          <div className="flex gap-3 mb-6">
+            <Button asChild variant="outline">
+              <Link href="/">← Back to Home</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/auth">Sign In</Link>
+            </Button>
+          </div>
         </motion.div>
 
         {/* Content */}

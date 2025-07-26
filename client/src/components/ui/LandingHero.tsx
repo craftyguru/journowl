@@ -1310,7 +1310,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               <h4 className="font-semibold text-white mb-3 sm:mb-4">Resources</h4>
               <ul className="space-y-2 text-sm text-gray-300">
                 <li>
-                  <a href="#" className="flex items-center gap-2 hover:text-white transition-colors">
+                  <a href="/faq" className="flex items-center gap-2 hover:text-white transition-colors">
                     <HelpCircle className="w-3 h-3" />
                     FAQ & Help
                   </a>
@@ -1328,7 +1328,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="flex items-center gap-2 hover:text-white transition-colors">
+                  <a href="/faq" className="flex items-center gap-2 hover:text-white transition-colors">
                     <Bookmark className="w-3 h-3" />
                     Knowledge Base
                   </a>

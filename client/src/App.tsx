@@ -25,11 +25,12 @@ import ImportPage from "@/pages/ImportPage";
 import SharePage from "@/pages/SharePage";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms";
+import { FAQ } from "@/components/FAQ";
 // PWA install functionality disabled by user request
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
@@ -40,6 +41,7 @@ function App() {
     if (window.location.pathname === '/share') return 'share';
     if (window.location.pathname === '/privacy-policy') return 'privacy-policy';
     if (window.location.pathname === '/terms') return 'terms';
+    if (window.location.pathname === '/faq' || window.location.pathname === '/help') return 'faq';
     if (window.location.pathname === '/email-verified' || urlParams.get('success') === '1' || urlParams.get('success') === '0' || urlParams.get('verified') === 'true') {
       console.log('Email verified view detected');
       return 'email-verified';
@@ -56,7 +58,7 @@ function App() {
     if (tabOptions.includes(view)) {
       setActiveTab(view);
       setCurrentView("dashboard");
-    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms") {
+    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "faq") {
       setCurrentView(view);
       if (view === "dashboard") setActiveTab("journal");
     }
@@ -137,6 +139,20 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <TermsOfService />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  // FAQ page (no auth required)
+  if (currentView === "faq") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <FAQ />
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>

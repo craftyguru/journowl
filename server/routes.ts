@@ -3037,6 +3037,14 @@ Your story shows how every day brings new experiences and emotions, creating the
     res.sendFile(path.join(path.dirname(new URL(import.meta.url).pathname), '../dist/public/index.html'));
   });
 
+  app.get('/faq', (req, res) => {
+    res.sendFile(path.join(path.dirname(new URL(import.meta.url).pathname), '../dist/public/index.html'));
+  });
+  
+  app.get('/help', (req, res) => {
+    res.sendFile(path.join(path.dirname(new URL(import.meta.url).pathname), '../dist/public/index.html'));
+  });
+
   // Traditional authentication URL routes
   app.get('/login', (req, res) => {
     res.sendFile(path.join(path.dirname(new URL(import.meta.url).pathname), '../dist/public/index.html'));

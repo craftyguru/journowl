@@ -16,7 +16,12 @@ export function ThemeSelector() {
       visualStyle: "creative" as const,
       description: "Colorful, animated, and playful design",
       icon: <Palette className="w-4 h-4" />,
-      preview: "bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600"
+      preview: "bg-gradient-to-br from-pink-400 via-purple-500 to-indigo-600",
+      previewElements: (
+        <div className="absolute inset-2 bg-white/10 backdrop-blur-sm rounded border border-white/20 flex items-center justify-center">
+          <div className="text-xs font-bold text-white">🎨 Colorful</div>
+        </div>
+      )
     },
     {
       name: "Creative Dark", 
@@ -24,7 +29,12 @@ export function ThemeSelector() {
       visualStyle: "creative" as const,
       description: "Dark mode with vibrant accents",
       icon: <Palette className="w-4 h-4" />,
-      preview: "bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900"
+      preview: "bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900",
+      previewElements: (
+        <div className="absolute inset-2 bg-white/5 backdrop-blur-sm rounded border border-white/10 flex items-center justify-center">
+          <div className="text-xs font-bold text-white">🌙 Dark</div>
+        </div>
+      )
     },
     {
       name: "Professional Light",
@@ -32,7 +42,12 @@ export function ThemeSelector() {
       visualStyle: "professional" as const,
       description: "Clean, minimal, and accessible",
       icon: <Briefcase className="w-4 h-4" />,
-      preview: "bg-gradient-to-br from-blue-50 via-white to-blue-100"
+      preview: "bg-gradient-to-br from-blue-50 via-white to-blue-100 border border-blue-200",
+      previewElements: (
+        <div className="absolute inset-2 bg-blue-50/80 backdrop-blur-sm rounded border border-blue-200 flex items-center justify-center">
+          <div className="text-xs font-semibold text-blue-800">💼 Clean</div>
+        </div>
+      )
     },
     {
       name: "Professional Dark",
@@ -40,7 +55,12 @@ export function ThemeSelector() {
       visualStyle: "professional" as const,
       description: "Dark mode with subtle contrast",
       icon: <Briefcase className="w-4 h-4" />,
-      preview: "bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800"
+      preview: "bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800 border border-slate-700",
+      previewElements: (
+        <div className="absolute inset-2 bg-slate-800/50 backdrop-blur-sm rounded border border-slate-600 flex items-center justify-center">
+          <div className="text-xs font-semibold text-slate-200">🌑 Pro</div>
+        </div>
+      )
     }
   ];
 
@@ -113,12 +133,8 @@ export function ThemeSelector() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <div className={`h-16 rounded-lg ${theme.preview} border border-border/50`}>
-                      <div className="h-full flex items-center justify-center">
-                        <div className="text-xs font-medium text-white/90 bg-black/20 px-2 py-1 rounded">
-                          Preview
-                        </div>
-                      </div>
+                    <div className={`h-16 rounded-lg ${theme.preview} relative overflow-hidden`}>
+                      {theme.previewElements}
                     </div>
                   </CardContent>
                 </Card>
