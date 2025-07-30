@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getCurrentUser } from "@/lib/auth";
+import { checkForPWAUpdate, clearPWACache } from "@/lib/pwa-utils";
 import { apiRequest } from "@/lib/queryClient";
 import AuthPage from "@/pages/auth";
 import Dashboard from "@/pages/dashboard";
@@ -19,6 +20,7 @@ import LandingHero from "@/components/ui/LandingHero";
 import { HelpBubble } from "@/components/HelpBubble";
 import { SupportChatBubble } from "@/components/SupportChatBubble";
 import { StarryBackground } from "@/components/starry-background";
+import { PWAUpdateBanner } from "@/components/PWAUpdateBanner";
 import { EmailConfirmation } from "@/pages/email-confirmation";
 import EmailVerified from "@/pages/email-verified";
 import ImportPage from "@/pages/ImportPage";
@@ -93,6 +95,9 @@ function App() {
   useEffect(() => {
     console.log('🔧 useEffect triggered - currentView:', currentView, 'isAuthenticated:', isAuthenticated);
     
+    // Initialize PWA auto-update system
+    checkForPWAUpdate();
+    
     // Don't override email-verified view with auth check
     if (currentView === "email-verified") {
       console.log('🔧 Skipping auth check for email-verified view');
@@ -114,7 +119,7 @@ function App() {
     }
     
     // Skip auth check if we just redirected to dashboard (prevents immediate re-check)
-    if (currentView === "dashboard" && isAuthenticated === true) {
+    if (currentView === "dashboard" && isAuthenticated) {
       console.log('🔧 Already on dashboard and authenticated, skipping auth check');
       return;
     }
@@ -369,6 +374,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <TooltipProvider>
+          <PWAUpdateBanner />
           <Toaster />
           <AuthenticatedApp currentView={currentView} activeTab={activeTab} onNavigate={handleNavigate} />
         </TooltipProvider>

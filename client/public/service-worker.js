@@ -9,7 +9,7 @@ const urlsToCache = [
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
-  console.log('[ServiceWorker] Install');
+  console.log('[ServiceWorker] Install - Cache version:', CACHE_NAME);
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
@@ -17,10 +17,18 @@ self.addEventListener('install', (event) => {
         return cache.addAll(urlsToCache);
       })
       .then(() => {
-        console.log('[ServiceWorker] Skip waiting');
+        console.log('[ServiceWorker] Skip waiting - forcing immediate activation');
         return self.skipWaiting();
       })
   );
+});
+
+// Listen for skipWaiting message from client
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.action === 'skipWaiting') {
+    console.log('[ServiceWorker] Received skipWaiting message');
+    self.skipWaiting();
+  }
 });
 
 // Activate event - cleanup old caches

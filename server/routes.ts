@@ -3238,5 +3238,15 @@ Your story shows how every day brings new experiences and emotions, creating the
     });
   });
   
+  // Version endpoint for PWA auto-updates
+  app.get("/api/version", (req, res) => {
+    res.json({ 
+      version: "1.5.0",
+      buildTimestamp: new Date().toISOString(),
+      features: ["session-auth", "ai-services", "pwa-auto-update"],
+      cacheVersion: "journowl-cache-v1.5.0"
+    });
+  });
+
   return httpServer;
 }
