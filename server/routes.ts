@@ -105,7 +105,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     cookie: {
       secure: false, // set to true in production with HTTPS
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7 // 7 days
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      sameSite: 'lax' // Allow cross-site requests for better compatibility
     }
   }));
 
@@ -114,8 +115,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Auth middleware - cleaned up to reduce console spam
+  // Auth middleware - enhanced debugging
   const requireAuth = (req: any, res: any, next: any) => {
+    console.log('Auth check - Session:', req.session ? 'exists' : 'missing', 'UserId:', req.session?.userId);
     if (!req.session?.userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
