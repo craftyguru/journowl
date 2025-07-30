@@ -82,6 +82,7 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Check auth status on load
 
   const handleAuthenticated = () => {
+    console.log('🔧 handleAuthenticated called - setting isAuthenticated to true and currentView to dashboard');
     setIsAuthenticated(true);
     // Scroll to top when redirecting to dashboard
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -90,25 +91,38 @@ function App() {
 
   // Check authentication status on app load
   useEffect(() => {
+    console.log('🔧 useEffect triggered - currentView:', currentView, 'isAuthenticated:', isAuthenticated);
+    
     // Don't override email-verified view with auth check
     if (currentView === "email-verified") {
+      console.log('🔧 Skipping auth check for email-verified view');
       setIsAuthenticated(false); // Allow page to display regardless of auth status
       return;
     }
     
     // Don't check auth for auth page - let it render
     if (currentView === "auth") {
+      console.log('🔧 Skipping auth check for auth page');
       setIsAuthenticated(false);
       return;
     }
     
     // Skip auth check if user is already authenticated (prevents loop)
     if (isAuthenticated === true) {
+      console.log('🔧 User already authenticated, skipping auth check');
       return;
     }
     
+    // Skip auth check if we just redirected to dashboard (prevents immediate re-check)
+    if (currentView === "dashboard" && isAuthenticated === true) {
+      console.log('🔧 Already on dashboard and authenticated, skipping auth check');
+      return;
+    }
+    
+    console.log('🔧 Running getCurrentUser check...');
     getCurrentUser()
       .then(() => {
+        console.log('🔧 getCurrentUser success - setting authenticated and redirecting to dashboard');
         setIsAuthenticated(true);
         // Only redirect to dashboard if not already there
         if (currentView !== "dashboard") {
@@ -119,9 +133,10 @@ function App() {
       })
       .catch((error) => {
         // Silent fail for unauthenticated users - this is expected behavior
+        console.log('🔧 getCurrentUser failed - setting authenticated to false');
         setIsAuthenticated(false);
       });
-  }, [currentView, isAuthenticated]);
+  }, [currentView]);
 
   if (isAuthenticated === null) {
     return (

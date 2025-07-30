@@ -103,11 +103,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production', // Enable secure cookies in production
+      secure: false, // Temporarily disable secure for debugging
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Allow cross-site for production
-      domain: process.env.NODE_ENV === 'production' ? '.journowl.app' : undefined // Set domain for production
+      sameSite: 'lax', // Use lax for better compatibility
+      domain: undefined // Remove domain restriction for debugging
     }
   }));
 
@@ -423,7 +423,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       req.session.userId = user.id;
-      console.log('✅ Login successful, session userId set to:', user.id);
+      console.log('✅ Login successful, setting session userId to:', user.id);
+      console.log('🔧 Session before save:', { 
+        sessionId: req.sessionID, 
+        userId: req.session.userId,
+        sessionExists: !!req.session 
+      });
       
       // Force session save to ensure it persists
       req.session.save((err: any) => {
@@ -431,7 +436,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error('❌ Session save error:', err);
           return res.status(500).json({ message: "Session save failed" });
         } else {
-          console.log('✅ Session saved successfully for user:', user.id);
+          console.log('✅ Session saved successfully');
+          console.log('🔧 Session after save:', { 
+            sessionId: req.sessionID, 
+            userId: req.session.userId,
+            sessionExists: !!req.session
+          });
+          
           res.json({ 
             user: { 
               id: user.id, 

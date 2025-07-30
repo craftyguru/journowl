@@ -145,7 +145,10 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
       // Call authentication callback instead of forcing page reload
       if (onAuthenticated) {
         console.log('✅ Login successful, calling onAuthenticated callback');
-        onAuthenticated();
+        // Add a small delay to ensure session is saved on server
+        setTimeout(() => {
+          onAuthenticated();
+        }, 250);
       } else {
         console.log('⚠️ onAuthenticated callback not provided, falling back to page redirect');
         // Fallback to page redirect if callback not provided
