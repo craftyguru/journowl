@@ -102,18 +102,26 @@ function App() {
       return;
     }
     
+    // Skip auth check if user is already authenticated (prevents loop)
+    if (isAuthenticated === true) {
+      return;
+    }
+    
     getCurrentUser()
       .then(() => {
         setIsAuthenticated(true);
-        // Scroll to top when loading dashboard for authenticated users
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        setCurrentView("dashboard"); // Always show dashboard for authenticated users
+        // Only redirect to dashboard if not already there
+        if (currentView !== "dashboard") {
+          // Scroll to top when loading dashboard for authenticated users
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          setCurrentView("dashboard"); // Always show dashboard for authenticated users
+        }
       })
       .catch((error) => {
         // Silent fail for unauthenticated users - this is expected behavior
         setIsAuthenticated(false);
       });
-  }, [currentView]);
+  }, [currentView, isAuthenticated]);
 
   if (isAuthenticated === null) {
     return (
@@ -236,14 +244,18 @@ function App() {
                   ← Back to Home
                 </button>
               </div>
-              <AuthPage setShowAuth={() => setCurrentView("landing")} onRegistrationSuccess={(email, username) => {
-                // Redirect to email confirmation page
-                const params = new URLSearchParams();
-                if (email) params.set('email', email);
-                if (username) params.set('username', username);
-                window.history.pushState({}, '', `/?${params.toString()}`);
-                setCurrentView("email-confirmation");
-              }} />
+              <AuthPage 
+                setShowAuth={() => setCurrentView("landing")} 
+                onRegistrationSuccess={(email, username) => {
+                  // Redirect to email confirmation page
+                  const params = new URLSearchParams();
+                  if (email) params.set('email', email);
+                  if (username) params.set('username', username);
+                  window.history.pushState({}, '', `/?${params.toString()}`);
+                  setCurrentView("email-confirmation");
+                }}
+                onAuthenticated={handleAuthenticated}
+              />
             </div>
 
           </TooltipProvider>

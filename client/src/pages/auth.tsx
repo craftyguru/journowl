@@ -53,9 +53,10 @@ const AnimatedBackground = () => {
 interface AuthPageProps {
   setShowAuth: (show: boolean) => void;
   onRegistrationSuccess?: (email: string, username: string) => void;
+  onAuthenticated?: () => void;
 }
 
-export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPageProps) {
+export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthenticated }: AuthPageProps) {
   const { toast } = useToast();
   const [showWelcomeTutorial, setShowWelcomeTutorial] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
@@ -141,11 +142,18 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess }: AuthPag
         title: "Welcome back!",
         description: "Successfully signed in to your account.",
       });
-      // Scroll to top before redirect
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 100);
+      // Call authentication callback instead of forcing page reload
+      if (onAuthenticated) {
+        console.log('✅ Login successful, calling onAuthenticated callback');
+        onAuthenticated();
+      } else {
+        console.log('⚠️ onAuthenticated callback not provided, falling back to page redirect');
+        // Fallback to page redirect if callback not provided
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 100);
+      }
     },
     onError: (error: any) => {
       if (error.message?.includes("verify your email")) {
