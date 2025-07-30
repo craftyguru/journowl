@@ -849,13 +849,6 @@ Current journal context:
 
 Respond naturally and helpfully. Ask follow-up questions, suggest writing prompts, or help them reflect on their experiences. Keep responses under 150 words.`;
 
-      // Check if OpenAI API key is available
-      if (!process.env.OPENAI_API_KEY) {
-        return res.json({ 
-          reply: "I'm sorry, but I need an OpenAI API key to provide intelligent responses. Please contact the administrator to set up the API key, or I can help you with basic writing prompts!" 
-        });
-      }
-
       // Track AI prompt usage before making OpenAI call
       await storage.incrementPromptUsage(req.session.userId);
       
@@ -920,12 +913,7 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
         return res.status(400).json({ message: "No journal entries provided for story generation" });
       }
 
-      // Check if OpenAI API key is available
-      if (!process.env.OPENAI_API_KEY) {
-        return res.json({ 
-          story: "I'm sorry, but I need an OpenAI API key to generate your amazing story. Please contact the administrator to set up the API key!" 
-        });
-      }
+
 
       // Track AI prompt usage before making OpenAI call
       await storage.incrementPromptUsage(req.session.userId);
