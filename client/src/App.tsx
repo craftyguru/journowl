@@ -96,6 +96,12 @@ function App() {
       return;
     }
     
+    // Don't check auth for auth page - let it render
+    if (currentView === "auth") {
+      setIsAuthenticated(false);
+      return;
+    }
+    
     getCurrentUser()
       .then(() => {
         setIsAuthenticated(true);
@@ -214,6 +220,7 @@ function App() {
 
   // Authentication page
   if (!isAuthenticated && currentView === "auth") {
+    console.log('Rendering auth page - isAuthenticated:', isAuthenticated, 'currentView:', currentView);
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
