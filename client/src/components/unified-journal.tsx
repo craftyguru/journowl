@@ -599,13 +599,31 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           message: reply
         }]);
       } else {
-        throw new Error('AI service unavailable');
+        // Handle specific error types
+        const errorData = await response.json().catch(() => ({}));
+        console.error('AI chat error:', response.status, errorData);
+        
+        let errorMessage = 'I had trouble processing that. Can you try again?';
+        
+        if (response.status === 429 && errorData.promptsExhausted) {
+          errorMessage = errorData.reply || '🚫 You\'ve used all your AI prompts! You need to purchase more prompts or upgrade your subscription to continue chatting with me. Check your subscription status in the dashboard.';
+        } else if (response.status === 401) {
+          errorMessage = '🔐 Please log in to use the AI Writing Assistant. You need to be authenticated to access AI features.';
+        } else if (errorData.reply) {
+          errorMessage = errorData.reply;
+        }
+        
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: errorMessage
+        }]);
+        return; // Exit early to avoid the catch block
       }
     } catch (error) {
-      console.error('AI chat error:', error);
+      console.error('AI chat network error:', error);
       setAiMessages(prev => [...prev, {
         type: 'ai',
-        message: 'I had trouble processing that. Can you try again? Make sure you\'re logged in and have an active internet connection.'
+        message: 'I had trouble connecting to the AI service. Please check your internet connection and try again.ernet connection.'
       }]);
     } finally {
       setAiAnalyzing(false);

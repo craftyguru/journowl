@@ -130,6 +130,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.session.userId;
       const user = await storage.getUser(userId);
       
+      console.log(`AI Prompt Check - User: ${userId}, Found: ${!!user}, Prompts: ${user?.promptsRemaining || 'undefined'}`);
+      
       if (!user) {
         return res.status(401).json({ 
           message: "User not found",
@@ -140,8 +142,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const promptsRemaining = user.promptsRemaining || 0;
       
       if (promptsRemaining <= 0) {
+        console.log(`AI Chat blocked - User ${userId} (${user.email}) has ${promptsRemaining} prompts remaining`);
         return res.status(429).json({ 
-          message: "You've used all your AI prompts! Upgrade your subscription or purchase more prompts to continue using AI features.",
+          reply: "🚫 You've used all your AI prompts! You need to purchase more prompts or upgrade your subscription to continue chatting with me. Check your subscription status in the dashboard.",
           promptsExhausted: true,
           promptsRemaining: 0,
           upgradeRequired: true,
@@ -171,11 +174,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userId: userId
       };
       
+      console.log(`AI Chat allowed - User ${userId} has ${promptsRemaining} prompts remaining`);
       next();
     } catch (error) {
       console.error("Error checking AI prompts:", error);
       return res.status(500).json({ 
-        message: "Error checking AI prompt availability",
+        reply: "I'm having trouble checking your AI prompt usage right now. Please try again in a moment.",
         promptsExhausted: true
       });
     }
