@@ -1,4 +1,4 @@
-const CACHE_NAME = 'journowl-cache-v1.4.0';
+const CACHE_NAME = 'journowl-cache-v1.5.0';
 const urlsToCache = [
   '/',
   '/manifest.json',
@@ -69,30 +69,31 @@ async function doBackgroundSync() {
   }
 }
 
-// Enhanced fetch with background sync and offline support
+// Enhanced fetch with cache invalidation for API calls
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   
-  // Handle API requests with background sync
+  // Force no-cache for all API calls to prevent stale authentication issues
   if (request.url.includes('/api/')) {
     event.respondWith(
-      fetch(request).catch(() => {
-        // Store failed requests for background sync
-        console.log('[ServiceWorker] API request failed, will retry with background sync');
-        
-        // Register for background sync
-        if (self.registration.sync) {
-          self.registration.sync.register('background-sync-journal');
+      fetch(request, {
+        cache: 'no-cache',
+        headers: {
+          ...Object.fromEntries(request.headers.entries()),
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
         }
-        
+      }).catch(() => {
+        // If offline, return error response instead of cached data for API calls
         return new Response(
-          JSON.stringify({ message: 'Request saved for background sync' }),
-          { status: 202, headers: { 'Content-Type': 'application/json' } }
+          JSON.stringify({ error: 'Network unavailable', offline: true }),
+          { status: 503, headers: { 'Content-Type': 'application/json' } }
         );
       })
     );
     return;
   }
+
   
   // Handle other requests with cache-first strategy
   event.respondWith(

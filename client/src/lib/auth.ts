@@ -51,7 +51,12 @@ export async function getCurrentUser(): Promise<AuthResponse> {
   try {
     const response = await fetch("/api/auth/me", {
       method: "GET",
-      credentials: "include"
+      credentials: "include",
+      cache: "no-cache",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        "Pragma": "no-cache"
+      }
     });
     if (!response.ok) {
       throw new Error("Not authenticated");
