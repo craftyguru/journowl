@@ -103,10 +103,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // set to true in production with HTTPS
+      secure: process.env.NODE_ENV === 'production', // Enable secure cookies in production
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      sameSite: 'lax' // Allow cross-site requests for better compatibility
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // Allow cross-site for production
+      domain: process.env.NODE_ENV === 'production' ? '.journowl.app' : undefined // Set domain for production
     }
   }));
 
@@ -117,10 +118,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Auth middleware - enhanced debugging
   const requireAuth = (req: any, res: any, next: any) => {
-    console.log('Auth check - Session:', req.session ? 'exists' : 'missing', 'UserId:', req.session?.userId);
+    console.log('Auth check - Session:', req.session ? 'exists' : 'missing', 'UserId:', req.session?.userId, 'Session ID:', req.sessionID);
+    console.log('Session data:', req.session);
+    
     if (!req.session?.userId) {
-      return res.status(401).json({ message: "Authentication required" });
+      console.log('❌ Authentication failed - no userId in session');
+      return res.status(401).json({ 
+        message: "Authentication required",
+        debug: {
+          sessionExists: !!req.session,
+          sessionId: req.sessionID,
+          userId: req.session?.userId
+        }
+      });
     }
+    
+    console.log('✅ Authentication successful for user:', req.session.userId);
     next();
   };
 
@@ -184,6 +197,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     }
   };
+
+  // Debug endpoint for troubleshooting deployed site issues
+  app.get("/api/debug/session", (req: any, res) => {
+    res.json({
+      sessionExists: !!req.session,
+      sessionId: req.sessionID,
+      userId: req.session?.userId,
+      cookies: req.headers.cookie || 'none',
+      userAgent: req.headers['user-agent'],
+      host: req.headers.host,
+      environment: process.env.NODE_ENV || 'development',
+      sessionData: req.session
+    });
+  });
 
   // Auth routes
   // Special admin upgrade endpoint
@@ -396,8 +423,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       req.session.userId = user.id;
-      console.log('Login successful, session userId set to:', user.id);
-      res.json({ user: { id: user.id, email: user.email, username: user.username, level: user.level, xp: user.xp, role: user.role } });
+      console.log('✅ Login successful, session userId set to:', user.id);
+      
+      // Force session save to ensure it persists
+      req.session.save((err: any) => {
+        if (err) {
+          console.error('❌ Session save error:', err);
+          return res.status(500).json({ message: "Session save failed" });
+        } else {
+          console.log('✅ Session saved successfully for user:', user.id);
+          res.json({ 
+            user: { 
+              id: user.id, 
+              email: user.email, 
+              username: user.username, 
+              level: user.level, 
+              xp: user.xp, 
+              role: user.role 
+            } 
+          });
+        }
+      });
     } catch (error: any) {
       console.log('Login failed:', error.message);
       res.status(400).json({ message: error.message });
@@ -833,21 +879,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/ai/chat", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const { message, context } = req.body;
+      const userId = req.session.userId;
+      
+      console.log(`🤖 AI Chat Request - User: ${userId}, Message: "${message?.substring(0, 50)}...", Context: ${!!context}`);
+      
+      // Check OpenAI API key configuration
+      if (!process.env.OPENAI_API_KEY) {
+        console.error('❌ OPENAI_API_KEY not configured');
+        return res.json({ 
+          reply: "⚙️ AI service is not configured properly on this server. Please contact support." 
+        });
+      }
+      
+      console.log(`✅ OpenAI API key configured, length: ${process.env.OPENAI_API_KEY.length}`);
       
       // Build context for AI
       let systemPrompt = `You are an AI writing assistant helping someone with their personal journal. Be supportive, insightful, and encouraging. Help them explore their thoughts and feelings deeper.
 
 Current journal context:
-- Title: ${context.title || 'Untitled'}
-- Mood: ${context.mood}
-- Current content: ${context.currentContent || 'No content yet'}`;
+- Title: ${context?.title || 'Untitled'}
+- Mood: ${context?.mood || 'neutral'}
+- Current content: ${context?.currentContent || 'No content yet'}`;
 
-      if (context.photos && context.photos.length > 0) {
+      if (context?.photos && context.photos.length > 0) {
         systemPrompt += `\n- Photos analyzed: ${context.photos.map((p: any) => p.description).join(', ')}`;
       }
 
       // Add full conversation history for context
-      if (context.conversationHistory) {
+      if (context?.conversationHistory) {
         systemPrompt += `\n\nFull conversation history:\n${context.conversationHistory}`;
       }
 
@@ -856,7 +915,9 @@ Current journal context:
 Respond naturally and helpfully. Ask follow-up questions, suggest writing prompts, or help them reflect on their experiences. Keep responses under 150 words.`;
 
       // Track AI prompt usage before making OpenAI call
+      console.log(`💰 Incrementing prompt usage for user ${userId}...`);
       await storage.incrementPromptUsage(req.session.userId);
+      console.log(`📤 Making OpenAI API call...`);
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -877,7 +938,25 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
 
       if (!response.ok) {
         const errorData = await response.text();
-        console.error(`OpenAI API error: ${response.status} - ${errorData}`);
+        console.error(`❌ OpenAI API error: ${response.status} - ${errorData}`);
+        
+        // Handle specific OpenAI errors
+        if (response.status === 401) {
+          console.error('🔑 OpenAI API authentication failed - check API key');
+          return res.json({ 
+            reply: "🔑 AI service authentication failed. The API key may be invalid or expired. Please contact support." 
+          });
+        } else if (response.status === 429) {
+          console.error('⏰ OpenAI API rate limit exceeded');
+          return res.json({ 
+            reply: "⏰ AI service is currently busy due to high demand. Please try again in a few minutes." 
+          });
+        } else if (response.status === 500) {
+          console.error('🛠️ OpenAI API server error');
+          return res.json({ 
+            reply: "🛠️ AI service is experiencing technical difficulties. Please try again shortly." 
+          });
+        }
         
         // Provide helpful fallback responses based on the message
         const fallbackResponses = {
@@ -900,13 +979,17 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
         return res.json({ reply: fallback });
       }
 
+      console.log(`✅ OpenAI API call successful, processing response...`);
       const data = await response.json();
       const reply = data.choices[0].message.content;
+      console.log(`📝 AI Response length: ${reply?.length} characters`);
 
       res.json({ reply });
     } catch (error: any) {
-      console.error("Error in AI chat:", error);
-      res.status(500).json({ message: "Failed to get AI response" });
+      console.error("❌ Error in AI chat:", error);
+      res.status(500).json({ 
+        reply: "I encountered an unexpected error while processing your message. Please try again in a moment."
+      });
     }
   });
 
