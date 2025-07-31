@@ -50,7 +50,8 @@ function App() {
       console.log('Email verified view detected');
       return 'email-verified';
     }
-    return 'landing';
+    // Default to dashboard for root path - auth will handle redirects if needed
+    return window.location.pathname === '/' ? 'dashboard' : 'landing';
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   const [activeTab, setActiveTab] = useState("journal");
@@ -120,28 +121,24 @@ function App() {
       return;
     }
     
-    // Skip auth check if we just redirected to dashboard (prevents immediate re-check)
-    if (currentView === "dashboard" && isAuthenticated) {
-      console.log('🔧 Already on dashboard and authenticated, skipping auth check');
-      return;
-    }
-    
     console.log('🔧 Running getCurrentUser check...');
     getCurrentUser()
       .then(() => {
         console.log('🔧 getCurrentUser success - setting authenticated and redirecting to dashboard');
         setIsAuthenticated(true);
-        // Only redirect to dashboard if not already there
+        // Always ensure authenticated users are on dashboard
         if (currentView !== "dashboard") {
-          // Scroll to top when loading dashboard for authenticated users
           window.scrollTo({ top: 0, behavior: 'smooth' });
-          setCurrentView("dashboard"); // Always show dashboard for authenticated users
+          setCurrentView("dashboard");
         }
       })
       .catch((error) => {
-        // Silent fail for unauthenticated users - this is expected behavior
-        console.log('🔧 getCurrentUser failed - setting authenticated to false');
+        console.log('🔧 getCurrentUser failed - user not authenticated');
         setIsAuthenticated(false);
+        // Redirect to landing if not on allowed pages
+        if (currentView !== "auth" && currentView !== "landing" && currentView !== "email-confirmation" && currentView !== "email-verified" && currentView !== "import" && currentView !== "share" && currentView !== "privacy-policy" && currentView !== "terms" && currentView !== "faq" && currentView !== "demo") {
+          setCurrentView("landing");
+        }
       });
   }, [currentView]);
 
