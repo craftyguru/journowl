@@ -101,6 +101,8 @@ export interface IStorage {
 
   updateUserSubscription(userId: number, subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }): Promise<void>;
   updateStorageUsage(userId: number, additionalMB: number): Promise<void>;
+  calculateActualStorageUsage(userId: number): Promise<number>;
+  refreshUserStorageUsage(userId: number): Promise<number>;
 
   getUserByReferralCode(referralCode: string): Promise<User | undefined>;
   addUserPrompts(userId: number, promptsToAdd: number): Promise<void>;
@@ -725,6 +727,78 @@ export class DatabaseStorage implements IStorage {
 
     const newUsage = (user.storageUsedMB || 0) + additionalMB;
     await db.update(users).set({ storageUsedMB: newUsage } as any).where(eq(users.id, userId));
+  }
+
+  async calculateActualStorageUsage(userId: number): Promise<number> {
+    try {
+      // Get user data
+      const user = await this.getUser(userId);
+      if (!user) return 0;
+      
+      // Calculate storage usage from journal entries
+      const entries = await db.select().from(journalEntries).where(eq(journalEntries.userId, userId));
+      
+      let totalBytes = 0;
+      
+      for (const entry of entries) {
+        // Count text content
+        totalBytes += Buffer.byteLength(entry.content || '', 'utf8');
+        totalBytes += Buffer.byteLength(entry.title || '', 'utf8');
+        
+        // Count photo data (if stored as base64 or binary)
+        if (entry.photos) {
+          const photos = Array.isArray(entry.photos) ? entry.photos : [];
+          photos.forEach((photo: any) => {
+            if (photo.data) {
+              // Estimate photo size from base64 data
+              totalBytes += Math.floor(photo.data.length * 0.75); // base64 is ~33% larger
+            }
+            if (photo.analysis) {
+              totalBytes += Buffer.byteLength(JSON.stringify(photo.analysis), 'utf8');
+            }
+          });
+        }
+        
+        // Count drawing data
+        if (entry.drawings) {
+          const drawings = Array.isArray(entry.drawings) ? entry.drawings : [];
+          drawings.forEach((drawing: any) => {
+            totalBytes += Buffer.byteLength(JSON.stringify(drawing), 'utf8');
+          });
+        }
+        
+        // Count AI insights
+        if (entry.aiInsights) {
+          totalBytes += Buffer.byteLength(JSON.stringify(entry.aiInsights), 'utf8');
+        }
+        
+        // Count tags
+        if (entry.tags) {
+          totalBytes += Buffer.byteLength(JSON.stringify(entry.tags), 'utf8');
+        }
+      }
+      
+      // Calculate user profile storage (using avatar field instead of profilePicture)
+      if (user.avatar && user.avatar.startsWith('data:image/')) {
+        totalBytes += Math.floor(user.avatar.length * 0.75); // Estimate if base64
+      }
+      
+      // Convert bytes to KB (since storageUsedMB field is integer, we'll store KB and convert to MB for display)
+      const totalKB = Math.ceil(totalBytes / 1024);
+      
+      return totalKB;
+    } catch (error) {
+      console.error(`Error calculating storage for user ${userId}:`, error);
+      return 0;
+    }
+  }
+
+  async refreshUserStorageUsage(userId: number): Promise<number> {
+    const actualUsageKB = await this.calculateActualStorageUsage(userId);
+    const actualUsageMB = Math.ceil(actualUsageKB / 1024); // Convert to whole MB and round up
+    await db.update(users).set({ storageUsedMB: actualUsageMB } as any).where(eq(users.id, userId));
+    // Return MB for display purposes
+    return actualUsageMB;
   }
 
   async getUserByReferralCode(referralCode: string): Promise<User | undefined> {

@@ -797,6 +797,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.error("Achievement tracking error:", achievementError);
         // Continue without achievement tracking if it fails
       }
+
+      // Update storage usage after creating entry (simple word-based calculation)
+      try {
+        const entries = await storage.getJournalEntries(req.session.userId, 1000);
+        const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
+        const newStorageUsed = Math.max(1, Math.ceil(totalWords / 1000));
+        const user = await storage.getUser(req.session.userId);
+        await storage.updateStorageUsage(req.session.userId, newStorageUsed - (user?.storageUsedMB || 0));
+      } catch (storageError) {
+        console.error("Storage tracking error:", storageError);
+        // Continue without storage tracking if it fails
+      }
       
       console.log("POST /api/journal/entries - Success, returning entry");
       res.json(entry);
@@ -951,6 +963,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const id = parseInt(req.params.id);
       const entryData = insertJournalEntrySchema.partial().parse(req.body);
       await storage.updateJournalEntry(id, req.session.userId, entryData);
+      
+      // Update storage usage after updating entry (simple word-based calculation)
+      try {
+        const entries = await storage.getJournalEntries(req.session.userId, 1000);
+        const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
+        const newStorageUsed = Math.max(1, Math.ceil(totalWords / 1000));
+        const user = await storage.getUser(req.session.userId);
+        await storage.updateStorageUsage(req.session.userId, newStorageUsed - (user?.storageUsedMB || 0));
+      } catch (storageError) {
+        console.error("Storage tracking error:", storageError);
+        // Continue without storage tracking if it fails
+      }
+      
       res.json({ message: "Entry updated successfully" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -976,6 +1001,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Also recalculate user stats after deletion
       await storage.recalculateUserStats(req.session.userId);
+      
+      // Update storage usage after deleting entry (simple word-based calculation)
+      try {
+        const entries = await storage.getJournalEntries(req.session.userId, 1000);
+        const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
+        const newStorageUsed = Math.max(1, Math.ceil(totalWords / 1000));
+        const user = await storage.getUser(req.session.userId);
+        await storage.updateStorageUsage(req.session.userId, newStorageUsed - (user?.storageUsedMB || 0));
+      } catch (storageError) {
+        console.error("Storage tracking error:", storageError);
+        // Continue without storage tracking if it fails
+      }
       
       console.log(`DELETE /api/journal/entries/${id} - Success`);
       res.json({ message: "Entry deleted successfully" });
@@ -1900,6 +1937,49 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Storage usage calculation endpoint
+  app.get("/api/storage/usage", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Simple storage calculation - just use current stored value or calculate safely
+      let storageUsed = user.storageUsedMB || 0;
+      
+      // If it's 0 or very low, calculate basic usage from entry count
+      if (storageUsed < 1) {
+        const entries = await storage.getJournalEntries(userId, 1000); // Get all entries
+        const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
+        storageUsed = Math.max(1, Math.ceil(totalWords / 1000)); // Rough estimate: 1MB per 1000 words
+        
+        // Update the user's storage safely with integer value
+        await storage.updateStorageUsage(userId, storageUsed - (user.storageUsedMB || 0));
+      }
+      
+      // Determine storage limit based on plan
+      let storageLimit = 100; // Free tier default
+      if (user.currentPlan === 'premium') {
+        storageLimit = 1024; // 1GB
+      } else if (user.currentPlan === 'pro') {
+        storageLimit = 10240; // 10GB
+      }
+      
+      res.json({
+        storageUsed: storageUsed,
+        storageLimit: storageLimit,
+        storagePercentage: Math.round((storageUsed / storageLimit) * 100),
+        plan: user.currentPlan || 'free'
+      });
+    } catch (error: any) {
+      console.error("Error fetching storage usage:", error);
+      res.status(500).json({ message: "Failed to fetch storage usage" });
+    }
+  });
+
   // Subscription management routes
   app.get("/api/subscription", requireAuth, async (req: any, res) => {
     try {
@@ -1913,13 +1993,30 @@ Your story shows how every day brings new experiences and emotions, creating the
       // Get prompt usage data
       const promptUsage = await storage.getUserPromptUsage(userId);
       
+      // Use simple, safe storage calculation
+      let storageUsed = user.storageUsedMB || 0;
+      if (storageUsed < 1) {
+        const entries = await storage.getJournalEntries(userId, 1000);
+        const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
+        storageUsed = Math.max(1, Math.ceil(totalWords / 1000));
+        await storage.updateStorageUsage(userId, storageUsed - (user.storageUsedMB || 0));
+      }
+      
+      // Determine storage limit based on plan
+      let storageLimit = 100; // Free tier default
+      if (user.currentPlan === 'premium') {
+        storageLimit = 1024; // 1GB
+      } else if (user.currentPlan === 'pro') {
+        storageLimit = 10240; // 10GB
+      }
+      
       res.json({
         tier: user.currentPlan || 'free',
         status: 'active',
         expiresAt: null,
         promptsRemaining: promptUsage.promptsRemaining,
-        storageUsed: user.storageUsedMB || 0,
-        storageLimit: 100
+        storageUsed: storageUsed,
+        storageLimit: storageLimit
       });
     } catch (error: any) {
       console.error("Error fetching subscription:", error);
