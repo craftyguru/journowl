@@ -100,14 +100,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       pruneSessionInterval: false
     }),
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
-    resave: false,
-    saveUninitialized: false,
+    resave: true, // Force session resave to ensure changes persist
+    saveUninitialized: true, // Save new sessions immediately
     cookie: {
-      secure: false, // Temporarily disable secure for debugging
+      secure: false,
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      sameSite: 'lax', // Use lax for better compatibility
-      domain: undefined // Remove domain restriction for debugging
+      sameSite: 'lax',
+      domain: undefined
     }
   }));
 
@@ -227,6 +227,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: error.message });
     }
   });
+
+
 
 
 
