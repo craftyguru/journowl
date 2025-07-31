@@ -894,11 +894,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`🤖 AI Chat Request - User: ${userId}, Message: "${message?.substring(0, 50)}...", Context: ${!!context}`);
       
-      // Check OpenAI API key configuration
+      // Verify OpenAI API key configuration
       if (!process.env.OPENAI_API_KEY) {
         console.error('❌ OPENAI_API_KEY not configured');
-        return res.json({ 
-          reply: "⚙️ AI service is not configured properly on this server. Please contact support." 
+        return res.status(500).json({ 
+          error: "OpenAI API key not configured",
+          reply: "I'm having trouble connecting to the AI service. Please make sure the OpenAI API key is configured properly." 
         });
       }
       
@@ -3241,10 +3242,10 @@ Your story shows how every day brings new experiences and emotions, creating the
   // Version endpoint for PWA auto-updates
   app.get("/api/version", (req, res) => {
     res.json({ 
-      version: "1.5.1",
+      version: "1.5.2",
       buildTimestamp: new Date().toISOString(),
       features: ["session-auth", "ai-services", "pwa-auto-update", "force-cache-clear"],
-      cacheVersion: "journowl-cache-v1.5.1"
+      cacheVersion: "journowl-cache-v1.5.2"
     });
   });
 

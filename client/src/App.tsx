@@ -22,6 +22,7 @@ import { SupportChatBubble } from "@/components/SupportChatBubble";
 import { StarryBackground } from "@/components/starry-background";
 import { PWAUpdateBanner } from "@/components/PWAUpdateBanner";
 import { PWACacheClear } from "@/components/PWACacheClear";
+import { ForceAppUpdate } from "@/components/ForceAppUpdate";
 import { EmailConfirmation } from "@/pages/email-confirmation";
 import EmailVerified from "@/pages/email-verified";
 import ImportPage from "@/pages/ImportPage";
@@ -377,6 +378,7 @@ function App() {
         <TooltipProvider>
           <PWAUpdateBanner />
           <PWACacheClear />
+          <ForceAppUpdate />
           <Toaster />
           <AuthenticatedApp currentView={currentView} activeTab={activeTab} onNavigate={handleNavigate} />
         </TooltipProvider>
