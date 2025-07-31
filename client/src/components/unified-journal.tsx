@@ -325,283 +325,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   };
 
-  // Enhanced camera function that works with AI chat
-  const capturePhotoForAI = async () => {
-    console.log('📸 Starting AI photo capture...');
-    try {
-      // Add loading message to AI chat
-      if (showAiChat) {
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '📸 Opening camera for AI photo analysis...'
-        }]);
-      }
 
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' }, 
-        audio: false 
-      });
-      console.log('✅ Camera stream obtained');
-      
-      const video = document.createElement('video');
-      video.srcObject = stream;
-      video.autoplay = true;
-      video.playsInline = true;
-      video.muted = true; // Required for autoplay on some browsers
-      
-      // Wait for video to load
-      await new Promise((resolve) => {
-        video.onloadedmetadata = () => {
-          console.log('✅ Video metadata loaded, dimensions:', video.videoWidth, 'x', video.videoHeight);
-          resolve(true);
-        };
-      });
-      
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      
-      let capturedPhotoUrl: string | null = null;
-      
-      const cameraOverlay = document.createElement('div');
-      cameraOverlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%);
-        z-index: 9999;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        font-family: system-ui, -apple-system, sans-serif;
-      `;
-      
-      const title = document.createElement('div');
-      title.innerHTML = '📸 AI Photo Analysis';
-      title.style.cssText = `
-        color: white;
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        text-align: center;
-      `;
-      
-      const mediaContainer = document.createElement('div');
-      mediaContainer.style.cssText = `
-        position: relative;
-        width: 90%;
-        max-width: 400px;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        margin-bottom: 30px;
-        border: 3px solid rgba(255,255,255,0.2);
-      `;
-      
-      video.style.cssText = `
-        width: 100%;
-        height: auto;
-        display: block;
-      `;
-      
-      const captureButton = document.createElement('button');
-      captureButton.innerHTML = '📸 Capture & Analyze';
-      captureButton.style.cssText = `
-        padding: 15px 25px;
-        font-size: 18px;
-        background: linear-gradient(45deg, #10b981, #059669);
-        color: white;
-        border: none;
-        border-radius: 15px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-        transition: all 0.3s;
-        margin-right: 15px;
-      `;
-      
-      const closeButton = document.createElement('button');
-      closeButton.innerHTML = '❌ Cancel';
-      closeButton.style.cssText = `
-        padding: 15px 25px;
-        font-size: 18px;
-        background: linear-gradient(45deg, #ef4444, #dc2626);
-        color: white;
-        border: none;
-        border-radius: 15px;
-        cursor: pointer;
-        font-weight: bold;
-        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
-        transition: all 0.3s;
-      `;
-      
-      const controlsContainer = document.createElement('div');
-      controlsContainer.style.cssText = `
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-      `;
-      
-      mediaContainer.appendChild(video);
-      controlsContainer.appendChild(captureButton);
-      controlsContainer.appendChild(closeButton);
-      
-      // Add loading indicator initially
-      const loadingIndicator = document.createElement('div');
-      loadingIndicator.innerHTML = '📷 Loading camera...';
-      loadingIndicator.style.cssText = `
-        color: white;
-        font-size: 18px;
-        margin-bottom: 20px;
-        animation: pulse 2s infinite;
-      `;
-      
-      cameraOverlay.appendChild(title);
-      cameraOverlay.appendChild(loadingIndicator);
-      cameraOverlay.appendChild(mediaContainer);
-      cameraOverlay.appendChild(controlsContainer);
-      document.body.appendChild(cameraOverlay);
-      
-      // Hide loading indicator once video is ready
-      video.oncanplay = () => {
-        console.log('✅ Video can play, removing loading indicator');
-        loadingIndicator.style.display = 'none';
-      };
-      
-      const cleanup = () => {
-        stream.getTracks().forEach(track => track.stop());
-        document.body.removeChild(cameraOverlay);
-        if (capturedPhotoUrl) {
-          URL.revokeObjectURL(capturedPhotoUrl);
-        }
-      };
-      
-      captureButton.onclick = () => {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        if (context) {
-          context.drawImage(video, 0, 0);
-        }
-        
-        canvas.toBlob(async (blob) => {
-          if (blob) {
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-              const base64 = e.target?.result as string;
-              cleanup();
-              
-              // Add photo to journal photos
-              const newPhoto = {
-                src: base64,
-                timestamp: new Date(),
-                analysis: null
-              };
-              setPhotos(prev => [...prev, newPhoto]);
-              
-              // If AI chat is open, analyze the photo and add to chat
-              if (showAiChat) {
-                setAiMessages(prev => [...prev, {
-                  type: 'user',
-                  message: '📸 I just took a photo! Please analyze it and tell me what you see.'
-                }]);
-                
-                setAiMessages(prev => [...prev, {
-                  type: 'ai',
-                  message: '🔍 Analyzing your photo... This will help me suggest better writing prompts!'
-                }]);
-
-                try {
-                  const response = await fetch('/api/ai/analyze-photo', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify({ 
-                      base64Image: base64.split(',')[1],
-                      currentMood: mood 
-                    })
-                  });
-
-                  if (response.ok) {
-                    const analysis = await response.json();
-                    setPhotos(prev => prev.map(p => 
-                      p.src === base64 ? { ...p, analysis } : p
-                    ));
-                    
-                    const analysisMessage = `✨ Photo Analysis Complete!
-
-📝 **Description:** ${analysis.description}
-
-🎭 **Emotions I see:** ${analysis.emotions?.join(', ') || 'No specific emotions detected'}
-
-👥 **People:** ${analysis.people?.length > 0 ? analysis.people.join(', ') : 'No people detected'}
-
-🏷️ **Objects:** ${analysis.objects?.join(', ') || 'Various objects'}
-
-📍 **Activities:** ${analysis.activities?.join(', ') || 'Peaceful moment'}
-
-🌟 **Journal Prompts for you:**
-${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${prompt}`).join('\n') || '1. What story does this image tell?\n2. How did this moment make you feel?\n3. What memories does this photo bring back?'}
-
-💭 Would you like me to help you write about this photo?`;
-
-                    setAiMessages(prev => [...prev, {
-                      type: 'ai',
-                      message: analysisMessage
-                    }]);
-
-                    // Add AI-generated tags
-                    if (analysis.tags) {
-                      setTags(prev => [...new Set([...prev, ...analysis.tags])]);
-                    }
-                  } else {
-                    setAiMessages(prev => [...prev, {
-                      type: 'ai',
-                      message: '😅 I had trouble analyzing your photo, but it looks great! Would you like to tell me about it instead?'
-                    }]);
-                  }
-                } catch (error) {
-                  console.error('Photo analysis failed:', error);
-                  setAiMessages(prev => [...prev, {
-                    type: 'ai',
-                    message: '📸 Photo captured! I had a small hiccup analyzing it, but I can see you took a great shot! Tell me about what you captured.'
-                  }]);
-                }
-              }
-            };
-            reader.readAsDataURL(blob);
-          }
-        }, 'image/jpeg', 0.8);
-      };
-      
-      closeButton.onclick = cleanup;
-      
-    } catch (error) {
-      console.error('Camera access failed:', error);
-      let errorMessage = '📷 Camera access failed. ';
-      
-      if (error instanceof Error) {
-        if (error.name === 'NotAllowedError') {
-          errorMessage += 'Please allow camera permissions and try again!';
-        } else if (error.name === 'NotFoundError') {
-          errorMessage += 'No camera found on this device.';
-        } else if (error.name === 'NotReadableError') {
-          errorMessage += 'Camera is already in use by another application.';
-        } else {
-          errorMessage += 'Please check camera permissions and try again.';
-        }
-      }
-      
-      if (showAiChat) {
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: errorMessage
-        }]);
-      }
-    }
-  };
 
   // Enhanced audio recording that feeds into AI chat
   const startAudioRecordingForAI = async () => {
@@ -775,42 +499,235 @@ What would you like to explore about your recording?`
     }
   }, [audioChunks, isRecordingAudio, recordingDuration]);
 
-  // Camera capture functions
-  const takeCameraPhoto = async () => {
+  // Unified camera function with live preview
+  const takeCameraPhoto = () => {
+    openCameraPreview(false);
+  };
+
+  // Enhanced camera function for AI
+  const capturePhotoForAI = () => {
+    openCameraPreview(true);
+  };
+
+  // Create camera preview with live video feed
+  const openCameraPreview = async (enableAiAnalysis: boolean = false) => {
+    console.log(`📸 Opening camera preview, AI: ${enableAiAnalysis}`);
+    
+    if (!navigator.mediaDevices?.getUserMedia) {
+      console.error('❌ Camera not supported');
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } // Use back camera on mobile
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }, 
+        audio: false 
       });
       
+      // Create full-screen camera overlay
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui;
+      `;
+      
+      // Title
+      const title = document.createElement('div');
+      title.innerHTML = enableAiAnalysis ? '🤖 AI Photo Analysis' : '📸 Take Photo';
+      title.style.cssText = `
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      `;
+      
+      // Video element with live preview
       const video = document.createElement('video');
       video.srcObject = stream;
-      video.play();
+      video.autoplay = true;
+      video.playsInline = true;
+      video.muted = true;
+      video.style.cssText = `
+        width: 90%;
+        max-width: 400px;
+        border-radius: 15px;
+        border: 3px solid white;
+        margin-bottom: 20px;
+      `;
       
-      video.onloadedmetadata = () => {
+      // Buttons
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = 'display: flex; gap: 20px;';
+      
+      const captureBtn = document.createElement('button');
+      captureBtn.innerHTML = '📸 Capture';
+      captureBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      const cancelBtn = document.createElement('button');
+      cancelBtn.innerHTML = '❌ Cancel';
+      cancelBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      // Handle capture
+      captureBtn.onclick = () => {
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        ctx?.drawImage(video, 0, 0);
         
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            setPhotos(prev => [...prev, { url, file: blob }]);
-            setVideoRecordings(prev => [...prev, {
-              url,
-              duration: 0,
-              timestamp: new Date(),
-              type: 'photo'
-            }]);
-          }
-        });
-        
+        const context = canvas.getContext('2d');
+        if (context) {
+          context.drawImage(video, 0, 0);
+          
+          canvas.toBlob(async (blob) => {
+            if (blob) {
+              const reader = new FileReader();
+              reader.onload = async (e) => {
+                const base64 = e.target?.result as string;
+                
+                // Add photo to journal
+                const newPhoto = {
+                  src: base64,
+                  timestamp: new Date(),
+                  analysis: null
+                };
+                setPhotos(prev => [...prev, newPhoto]);
+                
+                // AI analysis if enabled
+                if (enableAiAnalysis && showAiChat) {
+                  handlePhotoAiAnalysis(base64);
+                }
+                
+                // Cleanup
+                stream.getTracks().forEach(track => track.stop());
+                document.body.removeChild(overlay);
+                setShowCameraModal(false);
+              };
+              reader.readAsDataURL(blob);
+            }
+          }, 'image/jpeg', 0.8);
+        }
+      };
+      
+      // Handle cancel
+      cancelBtn.onclick = () => {
         stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(overlay);
         setShowCameraModal(false);
       };
+      
+      // Build UI
+      buttonContainer.appendChild(captureBtn);
+      buttonContainer.appendChild(cancelBtn);
+      overlay.appendChild(title);
+      overlay.appendChild(video);
+      overlay.appendChild(buttonContainer);
+      document.body.appendChild(overlay);
+      
+      console.log('✅ Camera preview opened');
+      
     } catch (error) {
-      console.error('Error accessing camera:', error);
+      console.error('Camera failed:', error);
+      if (enableAiAnalysis && showAiChat) {
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '📷 Camera access failed. Please allow camera permissions and try again!'
+        }]);
+      }
+    }
+  };
+
+  // Handle AI photo analysis
+  const handlePhotoAiAnalysis = async (base64: string) => {
+    setAiMessages(prev => [...prev, {
+      type: 'user',
+      message: '📸 I just took a photo! Please analyze it.'
+    }]);
+    
+    setAiMessages(prev => [...prev, {
+      type: 'ai',
+      message: '🔍 Analyzing your photo...'
+    }]);
+
+    try {
+      const response = await fetch('/api/ai/analyze-photo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          base64Image: base64.split(',')[1],
+          currentMood: mood 
+        })
+      });
+
+      if (response.ok) {
+        const analysis = await response.json();
+        setPhotos(prev => prev.map(p => 
+          p.src === base64 ? { ...p, analysis } : p
+        ));
+        
+        const analysisMessage = `✨ Photo Analysis Complete!
+
+📝 **Description:** ${analysis.description}
+🎭 **Emotions:** ${analysis.emotions?.join(', ') || 'Peaceful'}
+👥 **People:** ${analysis.people?.length > 0 ? analysis.people.join(', ') : 'None detected'}
+🏷️ **Objects:** ${analysis.objects?.join(', ') || 'Various objects'}
+
+🌟 **Journal Prompts:**
+${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${prompt}`).join('\n') || '1. What story does this image tell?'}
+
+💭 Would you like me to help you write about this photo?`;
+
+        setAiMessages(prev => [...prev.slice(0, -1), {
+          type: 'ai',
+          message: analysisMessage
+        }]);
+
+        if (analysis.tags) {
+          setTags(prev => [...new Set([...prev, ...analysis.tags])]);
+        }
+      } else {
+        setAiMessages(prev => [...prev.slice(0, -1), {
+          type: 'ai',
+          message: '😅 I had trouble analyzing your photo, but it looks great! Tell me about it.'
+        }]);
+      }
+    } catch (error) {
+      console.error('Photo analysis failed:', error);
+      setAiMessages(prev => [...prev.slice(0, -1), {
+        type: 'ai',
+        message: '📸 Photo captured! I had a small issue analyzing it, but I can see you took a great shot!'
+      }]);
     }
   };
 
