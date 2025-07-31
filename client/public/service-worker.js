@@ -1,4 +1,4 @@
-const CACHE_NAME = 'journowl-cache-v1.5.5';
+const CACHE_NAME = 'journowl-cache-v1.5.6';
 const urlsToCache = [
   '/',
   '/manifest.json',
