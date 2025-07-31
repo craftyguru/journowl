@@ -1960,7 +1960,7 @@ What would you like to explore about your recording?`
         </div>
 
         {/* Floating Action Buttons - Evenly Spaced */}
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-40">
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-[60]">
             
             {/* Voice-to-Text Button */}
             <motion.div
@@ -1975,8 +1975,10 @@ What would you like to explore about your recording?`
                   className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
                     isListening 
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                      : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
-                  } transition-all duration-300 hover:scale-110`}
+                      : showAiChat 
+                        ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
+                        : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
+                  } transition-all duration-300 hover:scale-110 ${showAiChat ? 'ring-2 ring-purple-300 ring-opacity-50' : ''}`}
                 >
                   {isListening ? (
                     <MicOff className="w-6 h-6 text-white" />
@@ -2011,8 +2013,10 @@ What would you like to explore about your recording?`
                   className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
                     isRecordingAudio 
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                      : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
-                  } transition-all duration-300 hover:scale-110`}
+                      : showAiChat
+                        ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600'
+                        : 'bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700'
+                  } transition-all duration-300 hover:scale-110 ${showAiChat ? 'ring-2 ring-emerald-300 ring-opacity-50' : ''}`}
                 >
                   {isRecordingAudio ? (
                     <div className="w-4 h-4 bg-white rounded-sm" />
@@ -2049,7 +2053,11 @@ What would you like to explore about your recording?`
               <div className="relative">
                 <Button
                   onClick={showAiChat ? capturePhotoForAI : () => setShowCameraModal(true)}
-                  className="w-14 h-14 rounded-full shadow-2xl border-4 border-white bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300 hover:scale-110"
+                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                    showAiChat
+                      ? 'bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600'
+                      : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700'
+                  } transition-all duration-300 hover:scale-110 ${showAiChat ? 'ring-2 ring-orange-300 ring-opacity-50' : ''}`}
                 >
                   <Camera className="w-6 h-6 text-white" />
                 </Button>
