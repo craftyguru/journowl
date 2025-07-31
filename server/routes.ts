@@ -887,7 +887,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/ai/chat", requireAuth, requireAIPrompts, async (req: any, res) => {
+  app.post("/api/ai/chat", requireAuth, async (req: any, res) => {
     try {
       const { message, context } = req.body;
       const userId = req.session.userId;
@@ -926,9 +926,14 @@ Current journal context:
 
 Respond naturally and helpfully. Ask follow-up questions, suggest writing prompts, or help them reflect on their experiences. Keep responses under 150 words.`;
 
-      // Track AI prompt usage before making OpenAI call
-      console.log(`💰 Incrementing prompt usage for user ${userId}...`);
-      await storage.incrementPromptUsage(req.session.userId);
+      // Track AI prompt usage before making OpenAI call  
+      console.log(`💰 Tracking prompt usage for authenticated user ${userId}...`);
+      try {
+        await storage.incrementPromptUsage(userId);
+      } catch (error) {
+        console.error('Failed to track prompt usage:', error);
+        // Continue anyway - don't break AI service for tracking failures
+      }
       console.log(`📤 Making OpenAI API call...`);
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -3242,10 +3247,10 @@ Your story shows how every day brings new experiences and emotions, creating the
   // Version endpoint for PWA auto-updates
   app.get("/api/version", (req, res) => {
     res.json({ 
-      version: "1.5.3",
+      version: "1.5.5",
       buildTimestamp: new Date().toISOString(),
       features: ["session-auth", "ai-services", "pwa-auto-update", "force-cache-clear"],
-      cacheVersion: "journowl-cache-v1.5.3"
+      cacheVersion: "journowl-cache-v1.5.5"
     });
   });
 
