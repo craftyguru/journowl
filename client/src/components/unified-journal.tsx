@@ -327,16 +327,35 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
   // Enhanced camera function that works with AI chat
   const capturePhotoForAI = async () => {
+    console.log('📸 Starting AI photo capture...');
     try {
+      // Add loading message to AI chat
+      if (showAiChat) {
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '📸 Opening camera for AI photo analysis...'
+        }]);
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' }, 
         audio: false 
       });
+      console.log('✅ Camera stream obtained');
       
       const video = document.createElement('video');
       video.srcObject = stream;
       video.autoplay = true;
       video.playsInline = true;
+      video.muted = true; // Required for autoplay on some browsers
+      
+      // Wait for video to load
+      await new Promise((resolve) => {
+        video.onloadedmetadata = () => {
+          console.log('✅ Video metadata loaded, dimensions:', video.videoWidth, 'x', video.videoHeight);
+          resolve(true);
+        };
+      });
       
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
@@ -430,10 +449,27 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       controlsContainer.appendChild(captureButton);
       controlsContainer.appendChild(closeButton);
       
+      // Add loading indicator initially
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.innerHTML = '📷 Loading camera...';
+      loadingIndicator.style.cssText = `
+        color: white;
+        font-size: 18px;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+      `;
+      
       cameraOverlay.appendChild(title);
+      cameraOverlay.appendChild(loadingIndicator);
       cameraOverlay.appendChild(mediaContainer);
       cameraOverlay.appendChild(controlsContainer);
       document.body.appendChild(cameraOverlay);
+      
+      // Hide loading indicator once video is ready
+      video.oncanplay = () => {
+        console.log('✅ Video can play, removing loading indicator');
+        loadingIndicator.style.display = 'none';
+      };
       
       const cleanup = () => {
         stream.getTracks().forEach(track => track.stop());
@@ -544,10 +580,24 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
       
     } catch (error) {
       console.error('Camera access failed:', error);
+      let errorMessage = '📷 Camera access failed. ';
+      
+      if (error instanceof Error) {
+        if (error.name === 'NotAllowedError') {
+          errorMessage += 'Please allow camera permissions and try again!';
+        } else if (error.name === 'NotFoundError') {
+          errorMessage += 'No camera found on this device.';
+        } else if (error.name === 'NotReadableError') {
+          errorMessage += 'Camera is already in use by another application.';
+        } else {
+          errorMessage += 'Please check camera permissions and try again.';
+        }
+      }
+      
       if (showAiChat) {
         setAiMessages(prev => [...prev, {
           type: 'ai',
-          message: '📷 I need camera permission to analyze photos for you. Please allow camera access and try again!'
+          message: errorMessage
         }]);
       }
     }
