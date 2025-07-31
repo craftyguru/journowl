@@ -71,6 +71,7 @@ try {
 declare module 'express-session' {
   interface SessionData {
     userId: number;
+    intentionalLogout?: boolean;
   }
 }
 
@@ -123,7 +124,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     if (!req.session?.userId) {
       // CRITICAL FIX: Check if this is djfluent user and populate session
-      if (req.session && req.sessionID) {
+      // Skip auto-recovery if user intentionally logged out
+      if (req.session && req.sessionID && !req.session.intentionalLogout) {
         try {
           console.log('🔍 Attempting session recovery for potential djfluent user...');
           
@@ -577,6 +579,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Support both GET and POST for logout
   const handleLogout = (req: any, res: any) => {
     console.log('Logout request received');
+    
+    // Mark session as intentionally logged out to prevent auto-recovery
+    req.session.intentionalLogout = true;
+    
     req.session.destroy((err: any) => {
       if (err) {
         console.error('Logout error:', err);
@@ -586,6 +592,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.redirect('/');
       }
       console.log('Session destroyed successfully');
+      
+      // Clear the session cookie
+      res.clearCookie('connect.sid');
+      
       if (req.method === 'POST') {
         return res.json({ success: true });
       }
