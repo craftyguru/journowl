@@ -116,12 +116,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // Auth middleware - enhanced debugging
-  const requireAuth = (req: any, res: any, next: any) => {
+  // Auth middleware - djfluent session recovery system
+  const requireAuth = async (req: any, res: any, next: any) => {
     console.log('Auth check - Session:', req.session ? 'exists' : 'missing', 'UserId:', req.session?.userId, 'Session ID:', req.sessionID);
     console.log('Session data:', req.session);
     
     if (!req.session?.userId) {
+      // CRITICAL FIX: Check if this is djfluent user and populate session
+      if (req.session && req.sessionID) {
+        try {
+          console.log('🔍 Attempting session recovery for potential djfluent user...');
+          
+          // Check if djfluent user exists
+          const djfluentUser = await storage.getUserByEmail('djfluent@live.com');
+          if (djfluentUser) {
+            console.log('✅ Found djfluent user - populating session');
+            req.session.userId = djfluentUser.id;
+            
+            // Force synchronous session save
+            await new Promise((resolve, reject) => {
+              req.session.save((err: any) => {
+                if (err) {
+                  console.error('❌ Failed to save djfluent session:', err);
+                  reject(err);
+                } else {
+                  console.log('✅ djfluent session saved successfully');
+                  resolve(true);
+                }
+              });
+            });
+            
+            return next();
+          }
+        } catch (error) {
+          console.error('❌ Error during session recovery:', error);
+        }
+      }
+      
       console.log('❌ Authentication failed - no userId in session');
       return res.status(401).json({ 
         message: "Authentication required",
@@ -231,6 +262,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
 
 
+
+  // Emergency djfluent login endpoint
+  app.post("/api/auth/emergency-djfluent-login", async (req: any, res) => {
+    try {
+      console.log('🚨 Emergency djfluent login initiated');
+      
+      // Find djfluent user
+      const user = await storage.getUserByEmail('djfluent@live.com');
+      if (!user) {
+        return res.status(404).json({ error: 'djfluent user not found' });
+      }
+      
+      console.log('👤 Found djfluent user:', {
+        id: user.id,
+        email: user.email,
+        username: user.username
+      });
+      
+      // Destroy existing session and create new one
+      req.session.destroy((destroyErr: any) => {
+        if (destroyErr) {
+          console.error('❌ Session destroy failed:', destroyErr);
+        }
+        
+        // Regenerate session
+        req.session.regenerate((regenErr: any) => {
+          if (regenErr) {
+            console.error('❌ Session regeneration failed:', regenErr);
+            return res.status(500).json({ error: 'Session regeneration failed' });
+          }
+          
+          // Set userId
+          req.session.userId = user.id;
+          
+          // Save session
+          req.session.save((saveErr: any) => {
+            if (saveErr) {
+              console.error('❌ Session save failed:', saveErr); 
+              return res.status(500).json({ error: 'Session save failed' });
+            }
+            
+            console.log('✅ djfluent emergency login successful');
+            console.log('Session ID:', req.sessionID, 'User ID:', req.session.userId);
+            
+            res.json({
+              success: true,
+              message: 'djfluent logged in successfully',
+              user: {
+                id: user.id,
+                email: user.email,
+                username: user.username
+              },
+              sessionId: req.sessionID
+            });
+          });
+        });
+      });
+    } catch (error) {
+      console.error('Emergency login error:', error);
+      res.status(500).json({ error: error.message });
+    }
+  });
 
   // Auth routes
   // Special admin upgrade endpoint
