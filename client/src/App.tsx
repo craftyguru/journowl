@@ -21,6 +21,7 @@ import { HelpBubble } from "@/components/HelpBubble";
 import { SupportChatBubble } from "@/components/SupportChatBubble";
 import { StarryBackground } from "@/components/starry-background";
 import { PWAUpdateBanner } from "@/components/PWAUpdateBanner";
+import { PWAMobilePrompt } from "@/components/PWAManager";
 
 import { EmailConfirmation } from "@/pages/email-confirmation";
 import EmailVerified from "@/pages/email-verified";
@@ -29,7 +30,6 @@ import SharePage from "@/pages/SharePage";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms";
 import { FAQ } from "@/components/FAQ";
-// PWA install functionality disabled by user request
 
 function App() {
   // Check if demo mode is requested from URL params
@@ -373,6 +373,7 @@ function App() {
       <ThemeProvider>
         <TooltipProvider>
           <PWAUpdateBanner />
+          <PWAMobilePrompt />
           <Toaster />
           <AuthenticatedApp currentView={currentView} activeTab={activeTab} onNavigate={handleNavigate} />
         </TooltipProvider>

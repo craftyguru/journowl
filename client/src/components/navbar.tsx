@@ -85,8 +85,17 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    fetch('/api/auth/logout', { method: 'POST' })
-                      .then(() => window.location.href = '/');
+                    fetch('/api/auth/logout', { 
+                      method: 'POST',
+                      credentials: 'include'
+                    })
+                      .then(() => {
+                        // Clear any local storage
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        // Force reload to clear cache
+                        window.location.href = '/';
+                      });
                   }}
                   className="hidden sm:inline-flex text-sm"
                 >
@@ -215,8 +224,13 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 variant="outline"
                 className="w-full justify-start border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 sm:hidden"
                 onClick={() => {
-                  fetch('/api/auth/logout', { method: 'POST' })
+                  fetch('/api/auth/logout', { 
+                    method: 'POST',
+                    credentials: 'include'
+                  })
                     .then(() => {
+                      localStorage.clear();
+                      sessionStorage.clear();
                       setMobileMenuOpen(false);
                       window.location.href = '/';
                     });
