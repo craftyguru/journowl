@@ -1,4 +1,6 @@
-const CACHE_NAME = 'journowl-cache-v1.5.7';
+// Dynamic cache version based on build timestamp
+const BUILD_TIMESTAMP = '2025-07-31T23:19:01.533Z'; // Updated automatically on build // Updated automatically on build
+const CACHE_NAME = `journowl-cache-v${BUILD_TIMESTAMP}`;
 const urlsToCache = [
   '/',
   '/manifest.json',
@@ -6,6 +8,9 @@ const urlsToCache = [
   '/icons/icon-512x512.png',
   '/offline.html'
 ];
+
+// Force update check interval (15 minutes for aggressive updates)
+const UPDATE_CHECK_INTERVAL = 15 * 60 * 1000;
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
@@ -158,6 +163,8 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('periodicsync', (event) => {
   if (event.tag === 'update-journal-data') {
     event.waitUntil(updateJournalData());
+  } else if (event.tag === 'check-app-version') {
+    event.waitUntil(checkForAppUpdate());
   }
 });
 
@@ -165,3 +172,50 @@ async function updateJournalData() {
   console.log('[ServiceWorker] Periodic sync: updating journal data');
   // Implement periodic data updates here
 }
+
+// Force app version checking and updates
+async function checkForAppUpdate() {
+  try {
+    console.log('[ServiceWorker] Checking for app updates...');
+    
+    // Fetch current server version
+    const response = await fetch('/api/version', { 
+      cache: 'no-cache',
+      headers: { 'Cache-Control': 'no-cache' }
+    });
+    
+    if (response.ok) {
+      const serverVersion = await response.json();
+      const currentTimestamp = BUILD_TIMESTAMP;
+      
+      // Compare build timestamps
+      if (serverVersion.buildTimestamp && serverVersion.buildTimestamp !== currentTimestamp) {
+        console.log('[ServiceWorker] New version detected, forcing update...');
+        
+        // Clear all caches
+        const cacheNames = await caches.keys();
+        await Promise.all(cacheNames.map(name => caches.delete(name)));
+        
+        // Force all clients to reload
+        const clients = await self.clients.matchAll();
+        clients.forEach(client => {
+          client.postMessage({
+            type: 'FORCE_UPDATE',
+            payload: {
+              currentVersion: currentTimestamp,
+              newVersion: serverVersion.buildTimestamp
+            }
+          });
+        });
+        
+        // Skip waiting and immediately activate
+        self.skipWaiting();
+      }
+    }
+  } catch (error) {
+    console.error('[ServiceWorker] Version check failed:', error);
+  }
+}
+
+// Auto-check for updates every 15 minutes
+setInterval(checkForAppUpdate, UPDATE_CHECK_INTERVAL);

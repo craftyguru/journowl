@@ -1,6 +1,6 @@
 {
   "name": "rest-express",
-  "version": "1.0.0",
+  "version": "1.0.3941",
   "type": "module",
   "license": "MIT",
   "scripts": {
@@ -127,5 +127,6 @@
   },
   "optionalDependencies": {
     "bufferutil": "^4.0.8"
-  }
+  },
+  "buildTimestamp": "2025-07-31T23:19:01.533Z"
 }
