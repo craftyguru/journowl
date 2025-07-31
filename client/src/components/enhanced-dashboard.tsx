@@ -1237,9 +1237,36 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
 
 
       {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 pb-8 lg:pb-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
         <div className="relative w-full">
+          {/* Left scroll indicator */}
+          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-900/80 to-transparent z-10 pointer-events-none lg:hidden flex items-center justify-start pl-1">
+            <motion.div
+              animate={{ x: [-2, 2, -2] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-purple-400 text-xs"
+            >
+              ←
+            </motion.div>
+          </div>
+          
+          {/* Right scroll indicator */}
+          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900/80 to-transparent z-10 pointer-events-none lg:hidden flex items-center justify-end pr-1">
+            <motion.div
+              animate={{ x: [2, -2, 2] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="text-purple-400 text-xs"
+            >
+              →
+            </motion.div>
+          </div>
+          
+          {/* Scroll hint text */}
+          <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-purple-400/60 lg:hidden">
+            Swipe to see all tabs
+          </div>
+          
           <div className="overflow-x-auto lg:overflow-x-visible">
             <TabsList className="flex w-max lg:w-full lg:justify-center bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)', paddingRight: '20px' }}>
             <TabsTrigger 
