@@ -228,23 +228,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Emergency session fix for djfluent user - simplified approach
-  app.get("/api/debug/force-djfluent-login", (req: any, res) => {
+  // Fix broken sessions that have lost userId but should be authenticated
+  app.post("/api/auth/repair-session", async (req: any, res) => {
     try {
-      // Force set djfluent user session
-      req.session.userId = 100;
+      const { username, email } = req.body;
       
-      console.log('🚨 EMERGENCY: Force login djfluent user (ID: 100)');
-      console.log('Session ID:', req.sessionID);
-      console.log('Session userId set to:', req.session.userId);
+      if (!username && !email) {
+        return res.status(400).json({ error: 'Username or email required' });
+      }
       
-      res.json({ 
-        success: true, 
-        message: 'Emergency login completed for djfluent',
-        userId: 100,
-        sessionId: req.sessionID,
-        instructions: 'Now try using the AI Writing Assistant - it should work!'
-      });
+      // Find the user by username or email
+      let user = null;
+      if (username) {
+        user = await storage.getUserByUsername(username);
+      } else if (email) {
+        user = await storage.getUserByEmail(email);
+      }
+      
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      
+      // Check if session exists but has no userId (broken session)
+      if (req.session && !req.session.userId) {
+        console.log(`🔧 Repairing broken session for user ${user.username} (ID: ${user.id})`);
+        req.session.userId = user.id;
+        
+        // Force session save
+        req.session.save((err: any) => {
+          if (err) {
+            console.error('Session save error:', err);
+            return res.status(500).json({ error: 'Failed to repair session' });
+          }
+          
+          console.log(`✅ Session repaired for ${user.username} (ID: ${user.id})`);
+          res.json({ 
+            success: true, 
+            message: `Session repaired for ${user.username}`,
+            userId: user.id,
+            sessionId: req.sessionID
+          });
+        });
+      } else if (req.session.userId) {
+        res.json({ 
+          success: true, 
+          message: 'Session already valid',
+          userId: req.session.userId,
+          sessionId: req.sessionID
+        });
+      } else {
+        res.status(400).json({ error: 'No session found to repair' });
+      }
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -914,27 +948,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/ai/generate-prompt", async (req: any, res) => {
+  app.post("/api/ai/generate-prompt", requireAuth, requireAIPrompts, async (req: any, res) => {
     try {
       const { recentEntries, mood } = req.body;
-      
-      // Special handling for djfluent user - bypass session auth temporarily
-      let userId = req.session?.userId;
-      
-      if (!userId) {
-        console.log('⚠️  No userId in session for prompt generation - using djfluent bypass...');
-        userId = 100; // djfluent's user ID
-        console.log('🔧 Temporary bypass: Using djfluent user ID (100) for prompt generation');
-      }
-      
-      // Track AI prompt usage before making OpenAI call  
-      console.log(`💰 Tracking prompt usage for user ${userId}...`);
-      try {
-        await storage.incrementPromptUsage(userId);
-      } catch (error) {
-        console.error('Failed to track prompt usage:', error);
-        // Continue anyway - don't break AI service for tracking failures
-      }
       
       const prompt = await generatePersonalizedPrompt(recentEntries || []);
       res.json({ prompt });
@@ -944,22 +960,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/ai/chat", async (req: any, res) => {
+  app.post("/api/ai/chat", requireAuth, async (req: any, res) => {
     try {
       const { message, context } = req.body;
-      
-      // Special handling for djfluent user - bypass session auth temporarily
-      let userId = req.session?.userId;
-      
-      if (!userId) {
-        // Check if this might be djfluent user based on request patterns
-        console.log('⚠️  No userId in session - checking for djfluent user patterns...');
-        
-        // For now, assume djfluent user if no session userId
-        // This is a temporary fix while we resolve the session persistence issue
-        userId = 100; // djfluent's user ID
-        console.log('🔧 Temporary bypass: Using djfluent user ID (100) for AI request');
-      }
+      const userId = req.session.userId;
       
       console.log(`🤖 AI Chat Request - User: ${userId}, Message: "${message?.substring(0, 50)}...", Context: ${!!context}`);
       
@@ -997,12 +1001,7 @@ Respond naturally and helpfully. Ask follow-up questions, suggest writing prompt
 
       // Track AI prompt usage before making OpenAI call  
       console.log(`💰 Tracking prompt usage for authenticated user ${userId}...`);
-      try {
-        await storage.incrementPromptUsage(userId);
-      } catch (error) {
-        console.error('Failed to track prompt usage:', error);
-        // Continue anyway - don't break AI service for tracking failures
-      }
+      await storage.incrementPromptUsage(userId);
       console.log(`📤 Making OpenAI API call...`);
       
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
