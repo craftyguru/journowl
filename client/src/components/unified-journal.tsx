@@ -577,6 +577,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Include cookies for session authentication
         body: JSON.stringify({ 
           message,
           context: {
@@ -669,6 +670,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           const response = await fetch('/api/ai/analyze-photo', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include', // Include cookies for session authentication
             body: JSON.stringify({ 
               base64Image: base64.split(',')[1],
               currentMood: mood 

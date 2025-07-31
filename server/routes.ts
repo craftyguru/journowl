@@ -3242,10 +3242,10 @@ Your story shows how every day brings new experiences and emotions, creating the
   // Version endpoint for PWA auto-updates
   app.get("/api/version", (req, res) => {
     res.json({ 
-      version: "1.5.2",
+      version: "1.5.3",
       buildTimestamp: new Date().toISOString(),
       features: ["session-auth", "ai-services", "pwa-auto-update", "force-cache-clear"],
-      cacheVersion: "journowl-cache-v1.5.2"
+      cacheVersion: "journowl-cache-v1.5.3"
     });
   });
 
