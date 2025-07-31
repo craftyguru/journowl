@@ -228,63 +228,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Emergency session repair for users with broken sessions
-  app.post("/api/auth/emergency-session-repair", (req: any, res) => {
-    try {
-      console.log('🚨 EMERGENCY SESSION REPAIR requested');
-      console.log('Current session before repair:', {
-        sessionId: req.sessionID,
-        userId: req.session?.userId,
-        hasSession: !!req.session,
-        cookies: req.headers.cookie
-      });
-      
-      // Check if this session already has valid auth
-      if (req.session?.userId) {
-        return res.json({ 
-          success: true, 
-          message: 'Session already has valid userId',
-          userId: req.session.userId,
-          sessionId: req.sessionID
-        });
-      }
-      
-      // For djfluent's specific session issue - temporary fix
-      // Check if this looks like djfluent's session (has session but no userId)
-      if (req.session && !req.session.userId) {
-        console.log('🔧 Detected broken session - assuming djfluent user');
-        req.session.userId = 100; // djfluent's user ID
-        
-        // Force session save with callback
-        req.session.save((err: any) => {
-          if (err) {
-            console.error('❌ Emergency session save failed:', err);
-            return res.status(500).json({ error: 'Emergency session repair failed' });
-          }
-          
-          console.log('✅ EMERGENCY SESSION REPAIR SUCCESS');
-          console.log('Session after repair:', {
-            sessionId: req.sessionID,
-            userId: req.session.userId,
-            hasSession: !!req.session
-          });
-          
-          res.json({ 
-            success: true, 
-            message: 'Emergency session repair successful',
-            userId: 100,
-            sessionId: req.sessionID,
-            instructions: 'AI Writing Assistant should now work! Try it immediately.'
-          });
-        });
-      } else {
-        res.status(400).json({ error: 'No session found to repair' });
-      }
-    } catch (error) {
-      console.error('Emergency session repair error:', error);
-      res.status(500).json({ error: error.message });
-    }
-  });
+
 
   // Auth routes
   // Special admin upgrade endpoint
