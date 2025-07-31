@@ -153,11 +153,20 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           }
         }
         if (finalTranscript) {
-          setContent(prev => prev + ' ' + finalTranscript);
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: `Great! I heard: "${finalTranscript}". Keep talking or let me suggest what to write next!`
-          }]);
+          if (showAiChat) {
+            // If AI chat is open, send the speech to AI for analysis
+            setAiInput(finalTranscript);
+            setTimeout(() => {
+              sendToAi(finalTranscript);
+            }, 500);
+          } else {
+            // Regular journal transcription
+            setContent(prev => prev + ' ' + finalTranscript);
+            setAiMessages(prev => [...prev, {
+              type: 'ai',
+              message: `Great! I heard: "${finalTranscript}". Keep talking or let me suggest what to write next!`
+            }]);
+          }
         }
       };
 
@@ -286,7 +295,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   }, [content, mood, photos, title]);
 
-  // Start/stop voice recording for journal
+  // Enhanced voice recording that feeds into AI chat when open
   const toggleVoiceRecording = () => {
     if (recognition) {
       if (isListening) {
@@ -295,16 +304,335 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       } else {
         recognition.start();
         setIsListening(true);
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '🎤 Listening... Start speaking and I\'ll transcribe your thoughts!'
-        }]);
+        
+        if (showAiChat) {
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '🎤 Listening... Start speaking and I\'ll help you with whatever you say!'
+          }]);
+        } else {
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '🎤 Listening... Start speaking and I\'ll transcribe your thoughts!'
+          }]);
+        }
       }
     } else {
       setAiMessages(prev => [...prev, {
         type: 'ai',
         message: 'Sorry, voice recognition is not supported in your browser. Try using Chrome or Edge!'
       }]);
+    }
+  };
+
+  // Enhanced camera function that works with AI chat
+  const capturePhotoForAI = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' }, 
+        audio: false 
+      });
+      
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.playsInline = true;
+      
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      
+      let capturedPhotoUrl: string | null = null;
+      
+      const cameraOverlay = document.createElement('div');
+      cameraOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        font-family: system-ui, -apple-system, sans-serif;
+      `;
+      
+      const title = document.createElement('div');
+      title.innerHTML = '📸 AI Photo Analysis';
+      title.style.cssText = `
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+      `;
+      
+      const mediaContainer = document.createElement('div');
+      mediaContainer.style.cssText = `
+        position: relative;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        margin-bottom: 30px;
+        border: 3px solid rgba(255,255,255,0.2);
+      `;
+      
+      video.style.cssText = `
+        width: 100%;
+        height: auto;
+        display: block;
+      `;
+      
+      const captureButton = document.createElement('button');
+      captureButton.innerHTML = '📸 Capture & Analyze';
+      captureButton.style.cssText = `
+        padding: 15px 25px;
+        font-size: 18px;
+        background: linear-gradient(45deg, #10b981, #059669);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s;
+        margin-right: 15px;
+      `;
+      
+      const closeButton = document.createElement('button');
+      closeButton.innerHTML = '❌ Cancel';
+      closeButton.style.cssText = `
+        padding: 15px 25px;
+        font-size: 18px;
+        background: linear-gradient(45deg, #ef4444, #dc2626);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        transition: all 0.3s;
+      `;
+      
+      const controlsContainer = document.createElement('div');
+      controlsContainer.style.cssText = `
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+      `;
+      
+      mediaContainer.appendChild(video);
+      controlsContainer.appendChild(captureButton);
+      controlsContainer.appendChild(closeButton);
+      
+      cameraOverlay.appendChild(title);
+      cameraOverlay.appendChild(mediaContainer);
+      cameraOverlay.appendChild(controlsContainer);
+      document.body.appendChild(cameraOverlay);
+      
+      const cleanup = () => {
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(cameraOverlay);
+        if (capturedPhotoUrl) {
+          URL.revokeObjectURL(capturedPhotoUrl);
+        }
+      };
+      
+      captureButton.onclick = () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        if (context) {
+          context.drawImage(video, 0, 0);
+        }
+        
+        canvas.toBlob(async (blob) => {
+          if (blob) {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+              const base64 = e.target?.result as string;
+              cleanup();
+              
+              // Add photo to journal photos
+              const newPhoto = {
+                src: base64,
+                timestamp: new Date(),
+                analysis: null
+              };
+              setPhotos(prev => [...prev, newPhoto]);
+              
+              // If AI chat is open, analyze the photo and add to chat
+              if (showAiChat) {
+                setAiMessages(prev => [...prev, {
+                  type: 'user',
+                  message: '📸 I just took a photo! Please analyze it and tell me what you see.'
+                }]);
+                
+                setAiMessages(prev => [...prev, {
+                  type: 'ai',
+                  message: '🔍 Analyzing your photo... This will help me suggest better writing prompts!'
+                }]);
+
+                try {
+                  const response = await fetch('/api/ai/analyze-photo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ 
+                      base64Image: base64.split(',')[1],
+                      currentMood: mood 
+                    })
+                  });
+
+                  if (response.ok) {
+                    const analysis = await response.json();
+                    setPhotos(prev => prev.map(p => 
+                      p.src === base64 ? { ...p, analysis } : p
+                    ));
+                    
+                    const analysisMessage = `✨ Photo Analysis Complete!
+
+📝 **Description:** ${analysis.description}
+
+🎭 **Emotions I see:** ${analysis.emotions?.join(', ') || 'No specific emotions detected'}
+
+👥 **People:** ${analysis.people?.length > 0 ? analysis.people.join(', ') : 'No people detected'}
+
+🏷️ **Objects:** ${analysis.objects?.join(', ') || 'Various objects'}
+
+📍 **Activities:** ${analysis.activities?.join(', ') || 'Peaceful moment'}
+
+🌟 **Journal Prompts for you:**
+${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${prompt}`).join('\n') || '1. What story does this image tell?\n2. How did this moment make you feel?\n3. What memories does this photo bring back?'}
+
+💭 Would you like me to help you write about this photo?`;
+
+                    setAiMessages(prev => [...prev, {
+                      type: 'ai',
+                      message: analysisMessage
+                    }]);
+
+                    // Add AI-generated tags
+                    if (analysis.tags) {
+                      setTags(prev => [...new Set([...prev, ...analysis.tags])]);
+                    }
+                  } else {
+                    setAiMessages(prev => [...prev, {
+                      type: 'ai',
+                      message: '😅 I had trouble analyzing your photo, but it looks great! Would you like to tell me about it instead?'
+                    }]);
+                  }
+                } catch (error) {
+                  console.error('Photo analysis failed:', error);
+                  setAiMessages(prev => [...prev, {
+                    type: 'ai',
+                    message: '📸 Photo captured! I had a small hiccup analyzing it, but I can see you took a great shot! Tell me about what you captured.'
+                  }]);
+                }
+              }
+            };
+            reader.readAsDataURL(blob);
+          }
+        }, 'image/jpeg', 0.8);
+      };
+      
+      closeButton.onclick = cleanup;
+      
+    } catch (error) {
+      console.error('Camera access failed:', error);
+      if (showAiChat) {
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '📷 I need camera permission to analyze photos for you. Please allow camera access and try again!'
+        }]);
+      }
+    }
+  };
+
+  // Enhanced audio recording that feeds into AI chat
+  const startAudioRecordingForAI = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+      
+      if (showAiChat) {
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '🎵 Recording audio... I\'ll analyze it when you\'re done!'
+        }]);
+      }
+      
+      recorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunks.push(event.data);
+        }
+      };
+
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        // Add to audio recordings
+        setAudioRecordings(prev => [...prev, {
+          url: audioUrl,
+          duration: recordingDuration,
+          timestamp: new Date()
+        }]);
+        
+        if (showAiChat) {
+          setAiMessages(prev => [...prev, {
+            type: 'user',
+            message: '🎵 I just recorded an audio note!'
+          }]);
+          
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: `✅ Audio recorded successfully! (${Math.floor(recordingDuration / 60)}:${(recordingDuration % 60).toString().padStart(2, '0')})
+
+I can see you recorded ${recordingDuration} seconds of audio. While I can't analyze the audio content directly yet, I can help you:
+
+📝 Write about what you recorded
+🎭 Explore the emotions you expressed  
+💭 Turn your voice notes into journal entries
+🌟 Suggest writing prompts based on voice journaling
+
+What would you like to explore about your recording?`
+          }]);
+        }
+        
+        stream.getTracks().forEach(track => track.stop());
+        setIsRecordingAudio(false);
+        setRecordingTimer(0);
+      };
+
+      setMediaRecorder(recorder);
+      setIsRecordingAudio(true);
+      setRecordingStartTime(Date.now());
+      
+      let timer = 0;
+      const interval = setInterval(() => {
+        timer++;
+        setRecordingTimer(timer);
+        if (timer >= 60) { // Max 60 seconds
+          recorder.stop();
+          clearInterval(interval);
+        }
+      }, 1000);
+
+      recorder.start();
+    } catch (error) {
+      console.error('Audio recording failed:', error);
+      if (showAiChat) {
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '🎤 I need microphone permission to help with audio recording. Please allow microphone access and try again!'
+        }]);
+      }
     }
   };
 
@@ -1663,14 +1991,14 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
-                    <span>🎤 Voice to Text</span>
-                    <span className="text-xs opacity-75">Convert speech</span>
+                    <span>{showAiChat ? '🤖 AI Voice' : '🎤 Voice to Text'}</span>
+                    <span className="text-xs opacity-75">{showAiChat ? 'Talk & Analyze' : 'Convert speech'}</span>
                   </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* Audio Recording Button */}
+            {/* Audio Recording Button - Enhanced for AI */}
             <motion.div
               className="group"
               initial={{ scale: 0.8, opacity: 0 }}
@@ -1679,7 +2007,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             >
               <div className="relative">
                 <Button
-                  onClick={isRecordingAudio ? stopAudioRecording : startAudioRecording}
+                  onClick={isRecordingAudio ? stopAudioRecording : (showAiChat ? startAudioRecordingForAI : startAudioRecording)}
                   className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
                     isRecordingAudio 
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
@@ -1704,14 +2032,14 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
-                    <span>🎵 Audio Record</span>
-                    <span className="text-xs opacity-75">Save voice notes</span>
+                    <span>{showAiChat ? '🤖 AI Audio' : '🎵 Audio Record'}</span>
+                    <span className="text-xs opacity-75">{showAiChat ? 'Record & Chat' : 'Save voice notes'}</span>
                   </div>
                 </div>
               </div>
             </motion.div>
 
-            {/* Camera Button */}
+            {/* Camera Button - Enhanced for AI */}
             <motion.div
               className="group"
               initial={{ scale: 0.8, opacity: 0 }}
@@ -1720,7 +2048,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             >
               <div className="relative">
                 <Button
-                  onClick={() => setShowCameraModal(true)}
+                  onClick={showAiChat ? capturePhotoForAI : () => setShowCameraModal(true)}
                   className="w-14 h-14 rounded-full shadow-2xl border-4 border-white bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 transition-all duration-300 hover:scale-110"
                 >
                   <Camera className="w-6 h-6 text-white" />
@@ -1728,8 +2056,8 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                 
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
-                    <span>📷 Camera</span>
-                    <span className="text-xs opacity-75">Photo & Video</span>
+                    <span>{showAiChat ? '🤖 AI Photo' : '📷 Camera'}</span>
+                    <span className="text-xs opacity-75">{showAiChat ? 'Analyze & Chat' : 'Photo & Video'}</span>
                   </div>
                 </div>
               </div>
@@ -1820,15 +2148,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
                   }}
                   disabled={isAiListening}
                 />
-                <Button 
-                  onClick={handleVoiceRecord}
-                  size="sm"
-                  variant={isAiListening ? "default" : "outline"}
-                  className={`${isAiListening ? "bg-red-500 hover:bg-red-600 text-white animate-pulse" : "bg-gray-800 hover:bg-gray-900 text-white"}`}
-                  title={isAiListening ? "Recording... Click to stop and send" : "Record voice message"}
-                >
-                  {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                </Button>
+
                 <Button 
                   onClick={handleEnableConversation}
                   size="sm"
