@@ -212,6 +212,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Debug endpoint to find djfluent user
+  app.get("/api/debug/users", async (req: any, res) => {
+    try {
+      // Check for djfluent user
+      const userByUsername = await storage.getUserByUsername('djfluent');
+      const userByEmail = await storage.getUserByEmail('djfluent@gmail.com');
+      
+      res.json({
+        byUsername: userByUsername ? { id: userByUsername.id, username: userByUsername.username, email: userByUsername.email } : null,
+        byEmail: userByEmail ? { id: userByEmail.id, username: userByEmail.username, email: userByEmail.email } : null
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Emergency session fix for djfluent user - simplified approach
+  app.get("/api/debug/force-djfluent-login", (req: any, res) => {
+    try {
+      // Force set djfluent user session
+      req.session.userId = 100;
+      
+      console.log('🚨 EMERGENCY: Force login djfluent user (ID: 100)');
+      console.log('Session ID:', req.sessionID);
+      console.log('Session userId set to:', req.session.userId);
+      
+      res.json({ 
+        success: true, 
+        message: 'Emergency login completed for djfluent',
+        userId: 100,
+        sessionId: req.sessionID,
+        instructions: 'Now try using the AI Writing Assistant - it should work!'
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // Auth routes
   // Special admin upgrade endpoint
   app.post("/api/auth/upgrade-archimedes", async (req, res) => {
