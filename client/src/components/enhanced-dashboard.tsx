@@ -432,7 +432,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
     }
   };
 
-  // Camera and Media Capture Functions
+  // Enhanced Camera and Media Capture Functions
   const capturePhoto = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -448,6 +448,9 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
       
+      let capturedPhotoUrl: string | null = null;
+      let isPreviewMode = false;
+      
       const cameraOverlay = document.createElement('div');
       cameraOverlay.style.cssText = `
         position: fixed;
@@ -455,55 +458,179 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: black;
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e40af 100%);
         z-index: 9999;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        padding: 20px;
+        font-family: system-ui, -apple-system, sans-serif;
+      `;
+      
+      const title = document.createElement('div');
+      title.innerHTML = '📸 Camera';
+      title.style.cssText = `
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        text-align: center;
+      `;
+      
+      const mediaContainer = document.createElement('div');
+      mediaContainer.style.cssText = `
+        position: relative;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        margin-bottom: 30px;
+        border: 3px solid rgba(255,255,255,0.2);
       `;
       
       video.style.cssText = `
         width: 100%;
-        max-width: 400px;
         height: auto;
-        border-radius: 10px;
+        display: block;
+      `;
+      
+      const previewImg = document.createElement('img');
+      previewImg.style.cssText = `
+        width: 100%;
+        height: auto;
+        display: none;
+      `;
+      
+      const controlsContainer = document.createElement('div');
+      controlsContainer.style.cssText = `
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        flex-wrap: wrap;
       `;
       
       const captureButton = document.createElement('button');
       captureButton.innerHTML = '📸 Take Photo';
       captureButton.style.cssText = `
-        margin-top: 20px;
-        padding: 15px 30px;
+        padding: 15px 25px;
         font-size: 18px;
-        background: #3b82f6;
+        background: linear-gradient(45deg, #10b981, #059669);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 15px;
         cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        transition: all 0.3s;
+      `;
+      
+      const retakeButton = document.createElement('button');
+      retakeButton.innerHTML = '🔄 Retake';
+      retakeButton.style.cssText = `
+        padding: 15px 25px;
+        font-size: 18px;
+        background: linear-gradient(45deg, #f59e0b, #d97706);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        transition: all 0.3s;
+        display: none;
+      `;
+      
+      const usePhotoButton = document.createElement('button');
+      usePhotoButton.innerHTML = '✅ Use Photo';
+      usePhotoButton.style.cssText = `
+        padding: 15px 25px;
+        font-size: 18px;
+        background: linear-gradient(45deg, #3b82f6, #2563eb);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        transition: all 0.3s;
+        display: none;
       `;
       
       const closeButton = document.createElement('button');
-      closeButton.innerHTML = '❌ Close';
+      closeButton.innerHTML = '❌ Cancel';
       closeButton.style.cssText = `
-        margin-top: 10px;
-        padding: 10px 20px;
-        font-size: 16px;
-        background: #ef4444;
+        padding: 15px 25px;
+        font-size: 18px;
+        background: linear-gradient(45deg, #ef4444, #dc2626);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 15px;
         cursor: pointer;
+        font-weight: bold;
+        box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        transition: all 0.3s;
       `;
       
-      cameraOverlay.appendChild(video);
-      cameraOverlay.appendChild(captureButton);
-      cameraOverlay.appendChild(closeButton);
+      [captureButton, retakeButton, usePhotoButton, closeButton].forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+          btn.style.transform = 'translateY(-2px) scale(1.05)';
+        });
+        btn.addEventListener('mouseleave', () => {
+          btn.style.transform = 'translateY(0) scale(1)';
+        });
+      });
+      
+      mediaContainer.appendChild(video);
+      mediaContainer.appendChild(previewImg);
+      controlsContainer.appendChild(captureButton);
+      controlsContainer.appendChild(retakeButton);
+      controlsContainer.appendChild(usePhotoButton);
+      controlsContainer.appendChild(closeButton);
+      
+      cameraOverlay.appendChild(title);
+      cameraOverlay.appendChild(mediaContainer);
+      cameraOverlay.appendChild(controlsContainer);
       document.body.appendChild(cameraOverlay);
       
       const cleanup = () => {
         stream.getTracks().forEach(track => track.stop());
         document.body.removeChild(cameraOverlay);
+        if (capturedPhotoUrl) {
+          URL.revokeObjectURL(capturedPhotoUrl);
+        }
+      };
+      
+      const showPreview = (photoUrl: string) => {
+        isPreviewMode = true;
+        capturedPhotoUrl = photoUrl;
+        
+        video.style.display = 'none';
+        previewImg.src = photoUrl;
+        previewImg.style.display = 'block';
+        
+        captureButton.style.display = 'none';
+        retakeButton.style.display = 'inline-block';
+        usePhotoButton.style.display = 'inline-block';
+        title.innerHTML = '📸 Photo Preview';
+      };
+      
+      const showCamera = () => {
+        isPreviewMode = false;
+        
+        video.style.display = 'block';
+        previewImg.style.display = 'none';
+        
+        captureButton.style.display = 'inline-block';
+        retakeButton.style.display = 'none';
+        usePhotoButton.style.display = 'none';
+        title.innerHTML = '📸 Camera';
+        
+        if (capturedPhotoUrl) {
+          URL.revokeObjectURL(capturedPhotoUrl);
+          capturedPhotoUrl = null;
+        }
       };
       
       captureButton.onclick = () => {
@@ -516,6 +643,15 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
         canvas.toBlob((blob) => {
           if (blob) {
             const url = URL.createObjectURL(blob);
+            showPreview(url);
+          }
+        }, 'image/jpeg', 0.8);
+      };
+      
+      retakeButton.onclick = showCamera;
+      
+      usePhotoButton.onclick = () => {
+        if (capturedPhotoUrl) {
           const today = new Date().toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
@@ -525,11 +661,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
           
           cleanup();
           
-          // Create proper entry object for UnifiedJournal
           const entryWithPhoto = {
             title: `📸 Photo Story - ${today}`,
             content: "Here's what I captured today! Let me tell you about this amazing moment...\n\n",
-            photos: [{ url: url, timestamp: new Date() }],
+            photos: [{ url: capturedPhotoUrl, timestamp: new Date() }],
             videoRecordings: [],
             audioRecordings: [],
             mood: '😊',
@@ -541,8 +676,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             isPrivate: false
           };
           openUnifiedJournal(entryWithPhoto);
-          }
-        }, 'image/jpeg', 0.8);
+        }
       };
       
       closeButton.onclick = cleanup;
