@@ -49,8 +49,8 @@ function App() {
       console.log('Email verified view detected');
       return 'email-verified';
     }
-    // Default to dashboard for root path - auth will handle redirects if needed
-    return window.location.pathname === '/' ? 'dashboard' : 'landing';
+    // Default to landing page for new users
+    return 'landing';
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   const [activeTab, setActiveTab] = useState("journal");
@@ -125,8 +125,8 @@ function App() {
       .then(() => {
         console.log('🔧 getCurrentUser success - setting authenticated and redirecting to dashboard');
         setIsAuthenticated(true);
-        // Always ensure authenticated users are on dashboard
-        if (currentView !== "dashboard") {
+        // Only redirect authenticated users to dashboard if they're on landing page
+        if (currentView === "landing") {
           window.scrollTo({ top: 0, behavior: 'smooth' });
           setCurrentView("dashboard");
         }
