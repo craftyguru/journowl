@@ -87,16 +87,41 @@ Return only valid JSON in this format:
       throw new Error('No analysis response received');
     }
 
+    // Log the raw response for debugging
+    console.log('🔍 Raw OpenAI response:', analysisText);
+
     // Clean the response - remove markdown code blocks if present
     let cleanedText = analysisText.trim();
-    if (cleanedText.startsWith('```json')) {
-      cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
-    } else if (cleanedText.startsWith('```')) {
-      cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    
+    // Handle multiple code block formats
+    if (cleanedText.includes('```json')) {
+      cleanedText = cleanedText.replace(/```json\s*/g, '').replace(/\s*```/g, '');
+    } else if (cleanedText.includes('```')) {
+      cleanedText = cleanedText.replace(/```\s*/g, '').replace(/\s*```/g, '');
     }
+    
+    // Remove any remaining backticks
+    cleanedText = cleanedText.replace(/`/g, '');
+    
+    console.log('🧹 Cleaned text for parsing:', cleanedText);
 
-    // Parse the JSON response
-    const analysis = JSON.parse(cleanedText);
+    // Parse the JSON response with error handling
+    let analysis;
+    try {
+      analysis = JSON.parse(cleanedText);
+    } catch (parseError) {
+      console.error('❌ JSON Parse Error:', parseError);
+      console.error('🔍 Failed to parse text:', cleanedText);
+      
+      // Try to extract JSON from the text using regex
+      const jsonMatch = cleanedText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        console.log('🔧 Attempting regex extraction:', jsonMatch[0]);
+        analysis = JSON.parse(jsonMatch[0]);
+      } else {
+        throw new Error('Could not extract valid JSON from OpenAI response');
+      }
+    }
 
     // Calculate approximate duration (rough estimate: 150-200 words per minute)
     const avgWordsPerMinute = 175;
