@@ -9,8 +9,8 @@ const urlsToCache = [
   '/offline.html'
 ];
 
-// Force update check interval (15 minutes for aggressive updates)
-const UPDATE_CHECK_INTERVAL = 15 * 60 * 1000;
+// Force update check interval (24 hours for stable updates)
+const UPDATE_CHECK_INTERVAL = 24 * 60 * 60 * 1000;
 
 // Install event - cache resources
 self.addEventListener('install', (event) => {
@@ -188,9 +188,21 @@ async function checkForAppUpdate() {
       const serverVersion = await response.json();
       const currentTimestamp = BUILD_TIMESTAMP;
       
-      // Compare build timestamps
+      // Compare build timestamps with throttling to prevent infinite loops
+      const lastUpdateCheck = await getLastUpdateCheckTime();
+      const now = Date.now();
+      
+      // Only check for updates once per hour minimum
+      if (now - lastUpdateCheck < 60 * 60 * 1000) {
+        console.log('[ServiceWorker] Skipping update check - too recent');
+        return;
+      }
+      
       if (serverVersion.buildTimestamp && serverVersion.buildTimestamp !== currentTimestamp) {
-        console.log('[ServiceWorker] New version detected, forcing update...');
+        console.log('[ServiceWorker] New version detected, scheduling update...');
+        
+        // Store update check time to prevent rapid cycles
+        await setLastUpdateCheckTime(now);
         
         // Clear all caches
         const cacheNames = await caches.keys();
@@ -217,5 +229,30 @@ async function checkForAppUpdate() {
   }
 }
 
-// Auto-check for updates every 15 minutes
-setInterval(checkForAppUpdate, UPDATE_CHECK_INTERVAL);
+// Helper functions for update throttling
+async function getLastUpdateCheckTime() {
+  try {
+    const cache = await caches.open('update-cache');
+    const response = await cache.match('last-update-check');
+    if (response) {
+      const data = await response.json();
+      return data.timestamp || 0;
+    }
+  } catch (error) {
+    console.error('[ServiceWorker] Error getting last update check time:', error);
+  }
+  return 0;
+}
+
+async function setLastUpdateCheckTime(timestamp) {
+  try {
+    const cache = await caches.open('update-cache');
+    await cache.put('last-update-check', new Response(JSON.stringify({ timestamp })));
+  } catch (error) {
+    console.error('[ServiceWorker] Error setting last update check time:', error);
+  }
+}
+
+// DISABLED: Auto-check for updates to prevent infinite loops
+// Only manual update checks through app UI
+// setInterval(checkForAppUpdate, UPDATE_CHECK_INTERVAL);
