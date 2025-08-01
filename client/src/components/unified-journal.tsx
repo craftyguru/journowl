@@ -892,20 +892,38 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
     }
   };
 
-  // Simple voice message recording with mobile optimization
-  const handleVoiceRecord = () => {
-    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-    if (isAiListening) {
-      // Stop recording
-      console.log('Stopping voice recording...');
-      if (aiRecognition) {
-        aiRecognition.stop();
+  // Hold-to-talk voice recording for mobile optimization
+  const handleVoiceStart = () => {
+    console.log('Voice recording started (hold-to-talk)');
+    if (aiRecognition && !isAiListening) {
+      setAiInput('');
+      setLastFinalTranscript('');
+      try {
+        aiRecognition.start();
+        setIsAiListening(true);
+        
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '🎤 Hold the button and speak... Release when done!'
+        }]);
+      } catch (error) {
+        console.error('Error starting voice recording:', error);
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: '🎤 I need microphone permission. Please allow microphone access and try again!'
+        }]);
       }
+    }
+  };
+
+  const handleVoiceEnd = () => {
+    console.log('Voice recording ended (hold-to-talk)');
+    if (aiRecognition && isAiListening) {
+      aiRecognition.stop();
       setIsAiListening(false);
       
-      if (!isMobile) {
-        // On desktop, manually send the message when user stops recording
+      // Process the final transcript
+      setTimeout(() => {
         const finalInput = lastFinalTranscript || aiInput;
         if (finalInput.trim()) {
           console.log('Sending voice message to AI:', finalInput);
@@ -918,46 +936,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
             message: '🤔 I didn\'t catch that. Please try again or type your message.'
           }]);
         }
-      }
-      // On mobile, the message is auto-sent in the onresult handler
-    } else {
-      // Start recording
-      console.log('Starting voice recording...');
-      if (aiRecognition) {
-        setAiInput('');
-        setLastFinalTranscript('');
-        try {
-          aiRecognition.start();
-          setIsAiListening(true);
-          
-          if (isMobile) {
-            setAiMessages(prev => [...prev, {
-              type: 'ai',
-              message: '🎤 Recording... Speak now, I\'ll process your message when you finish!'
-            }]);
-            
-            // Auto-stop after 10 seconds on mobile to prevent hanging
-            setTimeout(() => {
-              if (isAiListening && aiRecognition) {
-                console.log('Mobile: Auto-stopping speech recognition after timeout');
-                aiRecognition.stop();
-                setIsAiListening(false);
-              }
-            }, 10000);
-          } else {
-            setAiMessages(prev => [...prev, {
-              type: 'ai',
-              message: '🎤 Recording... Click the mic again when finished!'
-            }]);
-          }
-        } catch (error) {
-          console.error('Error starting voice recording:', error);
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '❌ Speech recognition error. Please try typing your message instead.'
-          }]);
-        }
-      }
+      }, 500); // Small delay to ensure final transcript is captured
     }
   };
 
@@ -2296,6 +2275,24 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                   }}
                   disabled={isAiListening}
                 />
+
+                {/* Hold-to-Talk Microphone Button */}
+                <Button 
+                  onMouseDown={handleVoiceStart}
+                  onMouseUp={handleVoiceEnd}
+                  onTouchStart={handleVoiceStart}
+                  onTouchEnd={handleVoiceEnd}
+                  size="sm"
+                  variant="outline"
+                  className={`${
+                    isAiListening 
+                      ? 'bg-red-500 hover:bg-red-600 text-white border-red-500 animate-pulse' 
+                      : 'bg-purple-600 hover:bg-purple-700 text-white border-purple-600'
+                  } transition-all duration-200`}
+                  title="Hold to talk - Release to send"
+                >
+                  {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </Button>
 
                 <Button 
                   onClick={handleEnableConversation}
