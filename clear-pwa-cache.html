@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear PWA Cache - JournOwl</title>
+    <style>
+        body { 
+            font-family: system-ui, sans-serif; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        button { 
+            background: #10b981; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover { background: #059669; }
+        .status { 
+            margin: 20px 0; 
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🦉 JournOwl - PWA Cache Reset</h1>
+        <p>Use this tool to completely clear PWA caches and stop infinite update loops.</p>
+        
+        <button onclick="clearAllCaches()">Clear All Caches</button>
+        <button onclick="unregisterServiceWorker()">Unregister Service Worker</button>
+        <button onclick="fullReset()">Complete PWA Reset</button>
+        
+        <div id="status" class="status">Ready to clear caches...</div>
+        
+        <script>
+            async function clearAllCaches() {
+                const status = document.getElementById('status');
+                status.innerHTML = 'Clearing all caches...';
+                
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    status.innerHTML = `✅ Cleared ${cacheNames.length} caches: ${cacheNames.join(', ')}`;
+                } else {
+                    status.innerHTML = '❌ Cache API not supported';
+                }
+            }
+            
+            async function unregisterServiceWorker() {
+                const status = document.getElementById('status');
+                status.innerHTML = 'Unregistering service workers...';
+                
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(registrations.map(reg => reg.unregister()));
+                    status.innerHTML = `✅ Unregistered ${registrations.length} service workers`;
+                } else {
+                    status.innerHTML = '❌ Service Worker not supported';
+                }
+            }
+            
+            async function fullReset() {
+                const status = document.getElementById('status');
+                status.innerHTML = 'Performing complete PWA reset...';
+                
+                // Clear localStorage
+                localStorage.clear();
+                
+                // Clear sessionStorage  
+                sessionStorage.clear();
+                
+                // Clear all caches
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                }
+                
+                // Unregister service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(registrations.map(reg => reg.unregister()));
+                }
+                
+                status.innerHTML = '✅ Complete PWA reset completed! You can now close this tab and return to JournOwl.';
+            }
+        </script>
+    </div>
+</body>
+</html>

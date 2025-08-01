@@ -41,43 +41,38 @@ export function checkForPWAUpdate() {
       }
     });
     
-    // Listen for service worker updates
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('[PWA] Service worker updated, reloading...');
-      window.location.reload();
-    });
+    // DISABLED: Service worker controllerchange auto-reload to prevent infinite loops
+    // navigator.serviceWorker.addEventListener('controllerchange', () => {
+    //   console.log('[PWA] Service worker updated, reloading...');
+    //   window.location.reload();
+    // });
     
     navigator.serviceWorker.ready.then(registration => {
-      // Aggressive update checking every 10 minutes for Railway deployments
-      setInterval(() => {
-        console.log('[PWA] Checking for updates...');
-        registration.update();
-        checkServerVersion(); // Also check server version
-      }, 10 * 60 * 1000);
+      // DISABLED: All automatic update checking to prevent infinite loops
+      // Manual update checking only through app UI
+      console.log('[PWA] Service worker ready, automatic updates disabled');
       
+      // Only listen for manual update events, no automatic checking
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         if (newWorker) {
-          console.log('[PWA] New version found, installing...');
+          console.log('[PWA] Manual update found, installing...');
           newWorker.addEventListener('statechange', () => {
             if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('[PWA] New version installed, activating...');
-              // Show update notification
+              console.log('[PWA] New version ready for manual activation');
+              // Only show notification, don't auto-activate
               showUpdateNotification();
-              // Skip waiting to activate immediately
-              newWorker.postMessage({ action: 'skipWaiting' });
             }
           });
         }
       });
       
-      // Initial update check
-      registration.update();
+      // NO automatic update checks - prevents infinite loops
     });
     
-    // Check for app version updates from server immediately and periodically
-    checkServerVersion();
-    setInterval(checkServerVersion, 5 * 60 * 1000); // Every 5 minutes
+    // DISABLED: Automatic server version checking to prevent infinite loops
+    // checkServerVersion();
+    // setInterval(checkServerVersion, 5 * 60 * 1000);
   }
 }
 
@@ -175,83 +170,10 @@ function showForceUpdateNotification(payload: any) {
   }, 5000);
 }
 
+// DISABLED: checkServerVersion function to prevent infinite update loops
 async function checkServerVersion() {
-  try {
-    const response = await fetch('/api/version', { 
-      cache: 'no-cache',
-      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
-    });
-    
-    if (response.ok) {
-      const serverVersion = await response.json();
-      const currentVersion = localStorage.getItem('app-version');
-      const currentBuildTimestamp = localStorage.getItem('app-build-timestamp');
-      
-      // Check both version and build timestamp for updates
-      const versionChanged = currentVersion && currentVersion !== serverVersion.version;
-      const buildChanged = currentBuildTimestamp && 
-                          serverVersion.buildTimestamp && 
-                          currentBuildTimestamp !== serverVersion.buildTimestamp;
-      
-      if (versionChanged || buildChanged) {
-        console.log(`[PWA] App updated detected:`);
-        console.log(`  Version: ${currentVersion} → ${serverVersion.version}`);
-        console.log(`  Build: ${currentBuildTimestamp} → ${serverVersion.buildTimestamp}`);
-        
-        // Update stored versions
-        localStorage.setItem('app-version', serverVersion.version);
-        if (serverVersion.buildTimestamp) {
-          localStorage.setItem('app-build-timestamp', serverVersion.buildTimestamp);
-        }
-        
-        // Show update notification
-        showForceUpdateNotification({
-          currentVersion,
-          newVersion: serverVersion.version,
-          currentBuild: currentBuildTimestamp,
-          newBuild: serverVersion.buildTimestamp
-        });
-        
-        // Force service worker update and cache clear
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(registrations => {
-            registrations.forEach(registration => {
-              console.log('[PWA] Forcing service worker update...');
-              registration.update();
-              // Force immediate activation
-              if (registration.waiting) {
-                registration.waiting.postMessage({ action: 'skipWaiting' });
-              }
-            });
-          });
-          
-          // Clear all caches to force fresh content
-          if ('caches' in window) {
-            caches.keys().then(cacheNames => {
-              cacheNames.forEach(cacheName => {
-                console.log('[PWA] Clearing cache:', cacheName);
-                caches.delete(cacheName);
-              });
-            });
-          }
-          
-          // Force reload after clearing caches
-          setTimeout(() => {
-            console.log('[PWA] Reloading app with new version...');
-            window.location.reload();
-          }, 3000);
-        }
-      } else if (!currentVersion) {
-        // First time setup
-        localStorage.setItem('app-version', serverVersion.version);
-        if (serverVersion.buildTimestamp) {
-          localStorage.setItem('app-build-timestamp', serverVersion.buildTimestamp);
-        }
-      }
-    }
-  } catch (error) {
-    console.log('[PWA] Could not check server version:', error);
-  }
+  console.log('[PWA] Automatic server version checking is permanently disabled to prevent infinite loops');
+  return; // Exit early - no automatic version checks
 }
 
 export function clearPWACache() {

@@ -159,22 +159,28 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
-// Periodic background sync for updates
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'update-journal-data') {
-    event.waitUntil(updateJournalData());
-  } else if (event.tag === 'check-app-version') {
-    event.waitUntil(checkForAppUpdate());
-  }
-});
+// DISABLED: Periodic background sync for updates to prevent infinite loops
+// self.addEventListener('periodicsync', (event) => {
+//   if (event.tag === 'update-journal-data') {
+//     event.waitUntil(updateJournalData());
+//   } else if (event.tag === 'check-app-version') {
+//     event.waitUntil(checkForAppUpdate());
+//   }
+// });
 
 async function updateJournalData() {
   console.log('[ServiceWorker] Periodic sync: updating journal data');
   // Implement periodic data updates here
 }
 
-// Force app version checking and updates
+// DISABLED: Force app version checking to prevent infinite update loops
+// This function is now only called manually through app UI, not automatically
 async function checkForAppUpdate() {
+  console.log('[ServiceWorker] Automatic update checking is disabled to prevent infinite loops');
+  return; // Exit early - no automatic updates
+  
+  // Original function remains commented out for manual use if needed
+  /*
   try {
     console.log('[ServiceWorker] Checking for app updates...');
     
@@ -188,45 +194,26 @@ async function checkForAppUpdate() {
       const serverVersion = await response.json();
       const currentTimestamp = BUILD_TIMESTAMP;
       
-      // Compare build timestamps with throttling to prevent infinite loops
-      const lastUpdateCheck = await getLastUpdateCheckTime();
-      const now = Date.now();
-      
-      // Only check for updates once per hour minimum
-      if (now - lastUpdateCheck < 60 * 60 * 1000) {
-        console.log('[ServiceWorker] Skipping update check - too recent');
-        return;
-      }
-      
       if (serverVersion.buildTimestamp && serverVersion.buildTimestamp !== currentTimestamp) {
-        console.log('[ServiceWorker] New version detected, scheduling update...');
+        console.log('[ServiceWorker] New version detected, manual update required');
         
-        // Store update check time to prevent rapid cycles
-        await setLastUpdateCheckTime(now);
-        
-        // Clear all caches
-        const cacheNames = await caches.keys();
-        await Promise.all(cacheNames.map(name => caches.delete(name)));
-        
-        // Force all clients to reload
+        // Only notify, don't auto-update
         const clients = await self.clients.matchAll();
         clients.forEach(client => {
           client.postMessage({
-            type: 'FORCE_UPDATE',
+            type: 'UPDATE_AVAILABLE',
             payload: {
               currentVersion: currentTimestamp,
               newVersion: serverVersion.buildTimestamp
             }
           });
         });
-        
-        // Skip waiting and immediately activate
-        self.skipWaiting();
       }
     }
   } catch (error) {
     console.error('[ServiceWorker] Version check failed:', error);
   }
+  */
 }
 
 // Helper functions for update throttling
