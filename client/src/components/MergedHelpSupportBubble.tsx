@@ -193,13 +193,13 @@ export function MergedHelpSupportBubble() {
     }
   };
 
-  // Send support message
+  // Send support message - Fallback to HTTP API if WebSocket fails
   const sendMessage = async () => {
     if (!message.trim() || !currentUser) return;
     
     console.log('Attempting to send message. WebSocket state:', wsRef.current?.readyState);
-    console.log('WebSocket OPEN constant:', WebSocket.OPEN);
     
+    // Try WebSocket first
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       const messageData = {
         type: 'chat_message',
@@ -209,12 +209,36 @@ export function MergedHelpSupportBubble() {
         createdAt: new Date().toISOString()
       };
       
-      console.log('Sending message:', messageData);
+      console.log('Sending message via WebSocket:', messageData);
       wsRef.current.send(JSON.stringify(messageData));
       setMessage('');
     } else {
-      console.log('WebSocket not ready. Attempting to reconnect...');
-      connectWebSocket();
+      // Fallback to HTTP API
+      console.log('WebSocket not available, using HTTP API fallback...');
+      try {
+        const response = await fetch('/api/support/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({
+            message: message.trim(),
+            sender: 'user'
+          })
+        });
+        
+        if (response.ok) {
+          const newMessage = await response.json();
+          setMessages(prev => [...prev, newMessage]);
+          setMessage('');
+          console.log('Message sent via HTTP API');
+        } else {
+          console.error('Failed to send message via HTTP API');
+        }
+      } catch (error) {
+        console.error('Error sending message via HTTP API:', error);
+      }
     }
   };
 
@@ -409,9 +433,9 @@ export function MergedHelpSupportBubble() {
             <TabsContent value="support" className="flex-1 flex flex-col p-4 pt-2">
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-red-500'}`} />
+                  <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-500' : 'bg-blue-500'}`} />
                   <span className="text-sm text-gray-600">
-                    {isConnected ? 'Connected' : 'Connecting...'}
+                    {isConnected ? 'Real-time Chat' : 'Ready to Chat'}
                   </span>
                 </div>
               </div>
@@ -533,7 +557,6 @@ export function MergedHelpSupportBubble() {
                         }
                       }}
                       className="flex-1"
-                      disabled={!isConnected}
                     />
                     <input
                       ref={fileInputRef}
@@ -546,7 +569,7 @@ export function MergedHelpSupportBubble() {
                       onClick={() => fileInputRef.current?.click()}
                       size="sm"
                       variant="outline"
-                      disabled={!isConnected}
+
                       title="Attach file"
                     >
                       <Paperclip className="w-4 h-4" />
@@ -554,7 +577,7 @@ export function MergedHelpSupportBubble() {
                   </div>
                   <Button 
                     onClick={selectedFile ? sendMessageWithFile : sendMessage} 
-                    disabled={(!message.trim() && !selectedFile) || !isConnected}
+                    disabled={!message.trim() && !selectedFile}
                     size="sm"
                     className="bg-blue-500 hover:bg-blue-600"
                   >
