@@ -2079,10 +2079,10 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
           </PanelGroup>
         </div>
 
-        {/* Professional Floating Action Buttons - 4 Evenly Spaced */}
+        {/* Professional Floating Action Buttons - 5 Evenly Spaced */}
         <div className="fixed bottom-4 left-0 right-0 z-[60]">
           <div className="flex justify-center items-center w-full px-4">
-            <div className="flex justify-between items-center w-full max-w-lg space-x-6">
+            <div className="flex justify-between items-center w-full max-w-2xl space-x-4">
             
             {/* 1. Voice/Microphone Button */}
             <motion.div
@@ -2237,6 +2237,25 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                   <div className="flex flex-col items-center gap-1">
                     <span>{showAiChat ? '❌ Close AI' : '🧠 AI Writing Assistant'}</span>
                     <span className="text-xs opacity-75">{showAiChat ? 'Close chat' : 'Writing help & analysis'}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* 5. Help & Support Button */}
+            <motion.div
+              className="group"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="relative">
+                <MergedHelpSupportBubble />
+                
+                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                  <div className="flex flex-col items-center gap-1">
+                    <span>🆘 Help & Support</span>
+                    <span className="text-xs opacity-75">Tour & Live Chat</span>
                   </div>
                 </div>
               </div>

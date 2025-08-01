@@ -308,15 +308,11 @@ export function MergedHelpSupportBubble() {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white p-4 rounded-full shadow-lg z-40 transition-all duration-300"
+          <Button
+            className="w-14 h-14 rounded-full shadow-2xl border-4 border-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-300 hover:scale-110"
           >
-            <div className="flex items-center justify-center">
-              <HelpCircle className="w-6 h-6" />
-            </div>
-          </motion.button>
+            <HelpCircle className="w-6 h-6 text-white" />
+          </Button>
         </DialogTrigger>
         
         <DialogContent className="max-w-md h-[600px] p-0 flex flex-col">
