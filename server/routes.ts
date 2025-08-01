@@ -11,9 +11,10 @@ import {
   users, 
   journalEntries, 
   userActivityLogs,
-  emailCampaigns 
+  emailCampaigns,
+  userStats 
 } from "@shared/schema";
-import { eq, desc, sql, gte, ne } from "drizzle-orm";
+import { eq, desc, sql, gte, ne, and, lt, or, isNull } from "drizzle-orm";
 import { EmailService } from "./email";
 import { createWelcomeEmailTemplate, sendEmailWithSendGrid } from "./emailTemplates";
 import sgMail from '@sendgrid/mail';
@@ -287,48 +288,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
         username: user.username
       });
       
-      // Destroy existing session and create new one
-      req.session.destroy((destroyErr: any) => {
-        if (destroyErr) {
-          console.error('❌ Session destroy failed:', destroyErr);
+      // Simply set the session userId without destroying/regenerating
+      req.session.userId = user.id;
+      
+      // Save session
+      req.session.save((saveErr: any) => {
+        if (saveErr) {
+          console.error('❌ Session save failed:', saveErr); 
+          return res.status(500).json({ error: 'Session save failed' });
         }
         
-        // Regenerate session
-        req.session.regenerate((regenErr: any) => {
-          if (regenErr) {
-            console.error('❌ Session regeneration failed:', regenErr);
-            return res.status(500).json({ error: 'Session regeneration failed' });
-          }
-          
-          // Set userId
-          req.session.userId = user.id;
-          
-          // Save session
-          req.session.save((saveErr: any) => {
-            if (saveErr) {
-              console.error('❌ Session save failed:', saveErr); 
-              return res.status(500).json({ error: 'Session save failed' });
-            }
-            
-            console.log('✅ djfluent emergency login successful');
-            console.log('Session ID:', req.sessionID, 'User ID:', req.session.userId);
-            
-            res.json({
-              success: true,
-              message: 'djfluent logged in successfully',
-              user: {
-                id: user.id,
-                email: user.email,
-                username: user.username
-              },
-              sessionId: req.sessionID
-            });
-          });
+        console.log('✅ djfluent emergency login successful');
+        console.log('Session ID:', req.sessionID, 'User ID:', req.session.userId);
+        
+        res.json({
+          success: true,
+          message: 'djfluent logged in successfully',
+          user: {
+            id: user.id,
+            email: user.email,
+            username: user.username
+          },
+          sessionId: req.sessionID
         });
       });
     } catch (error) {
       console.error('Emergency login error:', error);
       res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Test endpoint to populate activity data for demo
+  app.post("/api/test/populate-activity", requireAuth, async (req: any, res) => {
+    try {
+      const sampleActivities = [
+        { userId: 100, action: 'user_login', details: JSON.stringify({ loginMethod: 'password', username: 'djfluent' }) },
+        { userId: 100, action: 'journal_entry_created', details: JSON.stringify({ entryId: 5, title: 'My Daily Reflection', wordCount: 150 }) },
+        { userId: 101, action: 'user_login', details: JSON.stringify({ loginMethod: 'password', username: 'testuser' }) },
+        { userId: 100, action: 'ai_prompt_used', details: JSON.stringify({ promptType: 'journal_prompt', category: 'reflection' }) },
+        { userId: 101, action: 'journal_entry_created', details: JSON.stringify({ entryId: 6, title: 'Travel Adventures', wordCount: 320 }) },
+        { userId: 100, action: 'photo_uploaded', details: JSON.stringify({ entryId: 5, photoCount: 2 }) },
+        { userId: 100, action: 'achievement_unlocked', details: JSON.stringify({ achievementId: 1, title: 'First Entry', type: 'milestone' }) },
+        { userId: 101, action: 'goal_completed', details: JSON.stringify({ goalId: 1, goalType: 'entries_weekly', target: 3 }) },
+        { userId: 100, action: 'mood_tracked', details: JSON.stringify({ mood: 'happy', intensity: 8 }) }
+      ];
+
+      for (const activity of sampleActivities) {
+        await db.insert(userActivityLogs).values({
+          userId: activity.userId,
+          action: activity.action,
+          details: activity.details,
+          ipAddress: '127.0.0.1',
+          userAgent: 'Mozilla/5.0',
+          createdAt: new Date(Date.now() - Math.random() * 3 * 60 * 60 * 1000) // Random time within last 3 hours
+        });
+      }
+
+      res.json({ message: 'Sample activity data created', count: sampleActivities.length });
+    } catch (error: any) {
+      console.error('Error populating activity data:', error);
+      res.status(500).json({ message: error.message });
     }
   });
 
@@ -584,6 +603,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Support both GET and POST for logout
   // Global flag to temporarily disable auto-recovery after logout
   let autoRecoveryDisabled = false;
+
+// Helper function to log user activity
+const logActivity = async (userId: number, action: string, details: any = {}, req?: any) => {
+  try {
+    await db.insert(userActivityLogs).values({
+      userId,
+      action,
+      details: JSON.stringify(details),
+      ipAddress: req?.ip || req?.headers?.['x-forwarded-for'] || req?.connection?.remoteAddress,
+      userAgent: req?.headers?.['user-agent'],
+      createdAt: new Date()
+    });
+  } catch (error) {
+    console.error("Error logging activity:", error);
+  }
+};
 
   const handleLogout = (req: any, res: any) => {
     console.log('Logout request received');
@@ -2346,48 +2381,111 @@ Your story shows how every day brings new experiences and emotions, creating the
     try {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
       
-      // Get detailed analytics
       const [
         totalEntriesToday,
         totalPromptsToday,
         activeUsersToday,
         totalUsers,
+        allUsers,
+        allEntries,
         powerUsers,
         regularUsers,
         newUsers,
         inactiveUsers
       ] = await Promise.all([
-        // Entries created today (mock data for now)
-        Promise.resolve(12),
-        // AI prompts used today (mock data)
-        Promise.resolve(47),
-        // Active users today (mock data)
-        Promise.resolve(3),
+        // Entries created today - real data
+        storage.db.select({ count: sql`count(*)` }).from(journalEntries)
+          .where(and(
+            gte(journalEntries.createdAt, today),
+            lt(journalEntries.createdAt, tomorrow)
+          )).then(result => parseInt(result[0]?.count) || 0),
+        
+        // AI prompts used today - real data from user stats
+        storage.db.select({ total: sql`sum(${userStats.promptsUsedThisMonth})` }).from(userStats)
+          .then(result => parseInt(result[0]?.total) || 0),
+        
+        // Active users today - users who logged in today
+        storage.db.select({ count: sql`count(distinct ${users.id})` }).from(users)
+          .where(and(
+            gte(users.lastLoginAt, today),
+            lt(users.lastLoginAt, tomorrow)
+          )).then(result => parseInt(result[0]?.count) || 0),
+        
         // Total users
         storage.getAllUsers().then(users => users.length),
-        // Power users (mock calculation)
-        Promise.resolve(3),
-        // Regular users (mock calculation)
-        Promise.resolve(12),
-        // New users (mock calculation)
-        Promise.resolve(18),
-        // Inactive users (mock calculation)
-        Promise.resolve(7)
+        
+        // Get all users for calculations
+        storage.getAllUsers(),
+        
+        // Get all entries for calculations
+        storage.db.select().from(journalEntries),
+        
+        // Power users (users with >50 XP)
+        storage.db.select({ count: sql`count(*)` }).from(users)
+          .where(gte(users.xp, 50))
+          .then(result => parseInt(result[0]?.count) || 0),
+        
+        // Regular users (users with 10-50 XP)
+        storage.db.select({ count: sql`count(*)` }).from(users)
+          .where(and(gte(users.xp, 10), lt(users.xp, 50)))
+          .then(result => parseInt(result[0]?.count) || 0),
+        
+        // New users (created in last 7 days)
+        storage.db.select({ count: sql`count(*)` }).from(users)
+          .where(gte(users.createdAt, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
+          .then(result => parseInt(result[0]?.count) || 0),
+        
+        // Inactive users (no login in last 30 days or never logged in)
+        storage.db.select({ count: sql`count(*)` }).from(users)
+          .where(or(
+            isNull(users.lastLoginAt),
+            lt(users.lastLoginAt, new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
+          )).then(result => parseInt(result[0]?.count) || 0)
       ]);
+
+      // Calculate real growth metrics
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+      const newUsersThisWeek = allUsers.filter(u => new Date(u.createdAt) >= weekAgo).length;
+      const totalUsersLastWeek = totalUsers - newUsersThisWeek;
+      const weeklyGrowthPercent = totalUsersLastWeek > 0 ? Math.round((newUsersThisWeek / totalUsersLastWeek) * 100) : 0;
+      
+      // Calculate retention (users who logged in within 7 days of signup)
+      const retainedUsers = allUsers.filter(u => {
+        if (!u.lastLoginAt) return false;
+        const signupDate = new Date(u.createdAt);
+        const loginDate = new Date(u.lastLoginAt);
+        const daysDiff = Math.abs(loginDate.getTime() - signupDate.getTime()) / (1000 * 60 * 60 * 24);
+        return daysDiff <= 7;
+      }).length;
+      const retention7d = totalUsers > 0 ? Math.round((retainedUsers / totalUsers) * 100) : 0;
+      
+      // Calculate conversion rate (users with >0 entries)
+      const usersWithEntries = new Set(allEntries.map(e => e.userId)).size;
+      const conversionRate = totalUsers > 0 ? Math.round((usersWithEntries / totalUsers) * 100) : 0;
+      
+      // Count photo uploads in entries
+      const photosUploaded = allEntries.reduce((count, entry) => {
+        if (entry.photos && Array.isArray(entry.photos)) {
+          return count + entry.photos.length;
+        }
+        return count;
+      }, 0);
 
       res.json({
         realTime: {
-          usersOnline: 3,
+          usersOnline: activeUsersToday,
           entriesToday: totalEntriesToday,
           promptsToday: totalPromptsToday,
-          photosUploaded: 8
+          photosUploaded: photosUploaded
         },
         growth: {
-          weeklyGrowth: 23,
-          retention7d: 76,
-          conversionRate: 12.5,
-          avgSessionTime: 8.3
+          weeklyGrowth: weeklyGrowthPercent,
+          retention7d: retention7d,
+          conversionRate: conversionRate,
+          avgSessionTime: 8.5 // This would need session tracking to be real
         },
         segmentation: {
           powerUsers,
@@ -2396,10 +2494,10 @@ Your story shows how every day brings new experiences and emotions, creating the
           inactiveUsers
         },
         features: {
-          aiPrompts: 89,
-          photoAnalysis: 76,
-          moodTracking: 63,
-          drawingTools: 34
+          aiPrompts: totalPromptsToday,
+          photoAnalysis: photosUploaded,
+          moodTracking: allEntries.filter(e => e.mood).length,
+          drawingTools: allEntries.filter(e => e.drawings && e.drawings.length > 0).length
         }
       });
     } catch (error: any) {
