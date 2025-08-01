@@ -1030,7 +1030,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const kidMoodEmojis = ["😊", "😄", "🤔", "😐", "😔", "🌈", "🎉", "😴"];
 
   return (
-    <div className="p-3 md:p-6 space-y-4 md:space-y-6 bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen relative overflow-hidden">
+    <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 min-h-screen relative overflow-hidden max-w-full">
       {/* Floating Animated Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -1143,10 +1143,10 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
       >
         <Card className="bg-gradient-to-br from-purple-200 to-purple-300 border-purple-300 shadow-lg">
-          <CardContent className="p-3 md:p-6 text-center">
+          <CardContent className="p-4 md:p-6 text-center">
             <div className="text-4xl mb-2">📝</div>
             <h3 className="text-2xl font-bold text-purple-800">{stats.totalEntries || 0}</h3>
             <p className="text-purple-600">Stories Written</p>
@@ -1157,7 +1157,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         </Card>
 
         <Card className="bg-gradient-to-br from-pink-200 to-pink-300 border-pink-300 shadow-lg relative overflow-visible">
-          <CardContent className="p-3 md:p-6 text-center">
+          <CardContent className="p-4 md:p-6 text-center">
             <div className="text-3xl md:text-4xl mb-2">🔥</div>
             <h3 className="text-xl md:text-2xl font-bold text-pink-800">{stats.currentStreak || 0} Day Streak!</h3>
             <p className="text-sm md:text-base text-pink-600">Keep writing every day to grow your streak!</p>
@@ -1169,8 +1169,8 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-amber-200 to-amber-300 border-amber-300 shadow-lg col-span-2 md:col-span-1">
-          <CardContent className="p-3 md:p-6 text-center">
+        <Card className="bg-gradient-to-br from-amber-200 to-amber-300 border-amber-300 shadow-lg sm:col-span-1 lg:col-span-1">
+          <CardContent className="p-4 md:p-6 text-center">
             <div className="text-4xl mb-2">⭐</div>
             <h3 className="text-2xl font-bold text-amber-800">Level {currentLevel}</h3>
             <p className="text-amber-600">Super Writer</p>
@@ -1257,7 +1257,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
 
           {/* Write Tab */}
           <TabsContent value="write" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
               {/* Super Fun Writing Section */}
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
@@ -1569,7 +1569,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {achievements.slice(0, showAllAchievements ? achievements.length : 6).map((achievement, index) => (
                       <motion.div
                         key={achievement.id}
