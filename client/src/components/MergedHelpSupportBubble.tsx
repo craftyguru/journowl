@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Send, HelpCircle, MessageCircle, User, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Send, HelpCircle, MessageCircle, User, ChevronLeft, ChevronRight, X, Paperclip, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SupportMessage {
@@ -65,6 +65,7 @@ export function MergedHelpSupportBubble() {
   const [isLoading, setIsLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const queryClient = useQueryClient();
@@ -109,7 +110,7 @@ export function MergedHelpSupportBubble() {
     try {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const host = window.location.host;
-      const wsUrl = `${protocol}//${host}/api/support/ws?userId=${currentUser.id}`;
+      const wsUrl = `${protocol}//${host}/ws/support`;
       
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;
@@ -117,6 +118,12 @@ export function MergedHelpSupportBubble() {
       ws.onopen = () => {
         console.log('Support WebSocket connected');
         setIsConnected(true);
+        // Authenticate user immediately on connection
+        ws.send(JSON.stringify({
+          type: 'auth',
+          userId: currentUser.id,
+          isAdmin: false
+        }));
       };
 
       ws.onmessage = (event) => {
@@ -124,8 +131,8 @@ export function MergedHelpSupportBubble() {
           const data = JSON.parse(event.data);
           console.log('Received support message:', data);
           
-          if (data.type === 'message') {
-            setMessages(prev => [...prev, data]);
+          if (data.type === 'new_message') {
+            setMessages(prev => [...prev, data.message]);
           } else if (data.type === 'typing') {
             setIsTyping(data.isTyping);
           }
@@ -192,7 +199,7 @@ export function MergedHelpSupportBubble() {
     
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       const messageData = {
-        type: 'message',
+        type: 'chat_message',
         userId: currentUser.id,
         message: message.trim(),
         sender: 'user',
@@ -208,6 +215,85 @@ export function MergedHelpSupportBubble() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
+    }
+  };
+
+  // File upload handlers
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const maxSize = 5 * 1024 * 1024; // 5MB
+      if (file.size > maxSize) {
+        alert('File size must be less than 5MB');
+        return;
+      }
+      setSelectedFile(file);
+    }
+  };
+
+  const removeSelectedFile = () => {
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const uploadFile = async (file: File): Promise<string | null> => {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data.url;
+      } else {
+        console.error('Upload failed:', response.statusText);
+        return null;
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      return null;
+    }
+  };
+
+  const sendMessageWithFile = async () => {
+    if (!currentUser || (!message.trim() && !selectedFile)) return;
+    
+    let attachmentUrl = null;
+    let attachmentType = null;
+    
+    if (selectedFile) {
+      attachmentUrl = await uploadFile(selectedFile);
+      if (!attachmentUrl) {
+        alert('Failed to upload file. Please try again.');
+        return;
+      }
+      attachmentType = selectedFile.type.startsWith('image/') ? 'image' : 'file';
+    }
+    
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+      const messageData = {
+        type: 'chat_message',
+        userId: currentUser.id,
+        message: message.trim() || `Sent ${selectedFile?.name}`,
+        sender: 'user',
+        attachmentUrl,
+        attachmentType,
+        createdAt: new Date().toISOString()
+      };
+      
+      wsRef.current.send(JSON.stringify(messageData));
+      setMessage('');
+      setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -364,6 +450,27 @@ export function MergedHelpSupportBubble() {
                             </div>
                           )}
                           <p className="text-sm">{msg.message}</p>
+                          {msg.attachmentUrl && (
+                            <div className="mt-2">
+                              {msg.attachmentType === 'image' ? (
+                                <img 
+                                  src={msg.attachmentUrl} 
+                                  alt="Attachment" 
+                                  className="max-w-full h-auto rounded-lg border border-white/20"
+                                />
+                              ) : (
+                                <a 
+                                  href={msg.attachmentUrl} 
+                                  target="_blank" 
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-2 text-xs underline hover:opacity-80"
+                                >
+                                  <Paperclip className="w-3 h-3" />
+                                  View File
+                                </a>
+                              )}
+                            </div>
+                          )}
                           <div className={`text-xs mt-1 opacity-70 ${
                             msg.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                           }`}>
@@ -394,18 +501,57 @@ export function MergedHelpSupportBubble() {
               </ScrollArea>
 
               <div className="mt-4 space-y-2">
+                {/* File upload preview */}
+                {selectedFile && (
+                  <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg border">
+                    <Paperclip className="w-4 h-4 text-gray-500" />
+                    <span className="text-sm text-gray-700 flex-1">{selectedFile.name}</span>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={removeSelectedFile}
+                      className="h-6 w-6 p-0"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+                
                 <div className="flex gap-2">
-                  <Input
-                    placeholder="Type your message..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    className="flex-1"
-                    disabled={!isConnected}
-                  />
+                  <div className="flex-1 flex gap-2">
+                    <Input
+                      placeholder="Type your message..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          selectedFile ? sendMessageWithFile() : sendMessage();
+                        }
+                      }}
+                      className="flex-1"
+                      disabled={!isConnected}
+                    />
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      onChange={handleFileSelect}
+                      accept="image/*,.pdf,.doc,.docx,.txt"
+                      className="hidden"
+                    />
+                    <Button
+                      onClick={() => fileInputRef.current?.click()}
+                      size="sm"
+                      variant="outline"
+                      disabled={!isConnected}
+                      title="Attach file"
+                    >
+                      <Paperclip className="w-4 h-4" />
+                    </Button>
+                  </div>
                   <Button 
-                    onClick={sendMessage} 
-                    disabled={!message.trim() || !isConnected}
+                    onClick={selectedFile ? sendMessageWithFile : sendMessage} 
+                    disabled={(!message.trim() && !selectedFile) || !isConnected}
                     size="sm"
                     className="bg-blue-500 hover:bg-blue-600"
                   >
