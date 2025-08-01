@@ -98,7 +98,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
   const [recordingStartTime, setRecordingStartTime] = useState<number>(0);
   const [recordingDuration, setRecordingDuration] = useState<number>(0);
-  const [audioRecordings, setAudioRecordings] = useState<{url: string, duration: number, timestamp: Date}[]>(entry?.audioRecordings || []);
+  const [audioRecordings, setAudioRecordings] = useState<{url: string, duration: number, timestamp: Date, blob?: Blob, analysis?: any}[]>(entry?.audioRecordings || []);
   const [recordingTimer, setRecordingTimer] = useState<number>(0);
   const [showCameraModal, setShowCameraModal] = useState(false);
   const [isVideoMode, setIsVideoMode] = useState(false);
@@ -407,11 +407,13 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         const audioUrl = URL.createObjectURL(audioBlob);
         
         // Add to audio recordings
-        setAudioRecordings(prev => [...prev, {
+        const newAudioRecording = {
           url: audioUrl,
           duration: recordingDuration,
-          timestamp: new Date()
-        }]);
+          timestamp: new Date(),
+          blob: audioBlob
+        };
+        setAudioRecordings(prev => [...prev, newAudioRecording]);
         
         if (showAiChat) {
           setAiMessages(prev => [...prev, {
@@ -421,17 +423,11 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           
           setAiMessages(prev => [...prev, {
             type: 'ai',
-            message: `✅ Audio recorded successfully! (${Math.floor(recordingDuration / 60)}:${(recordingDuration % 60).toString().padStart(2, '0')})
-
-I can see you recorded ${recordingDuration} seconds of audio. While I can't analyze the audio content directly yet, I can help you:
-
-📝 Write about what you recorded
-🎭 Explore the emotions you expressed  
-💭 Turn your voice notes into journal entries
-🌟 Suggest writing prompts based on voice journaling
-
-What would you like to explore about your recording?`
+            message: `✅ Audio recorded! Analyzing your voice message with AI...`
           }]);
+
+          // Analyze the audio with AI
+          analyzeAudioWithAI(audioBlob, recordingDuration);
         }
         
         stream.getTracks().forEach(track => track.stop());
@@ -538,6 +534,74 @@ What would you like to explore about your recording?`
     }
   };
 
+  // AI Audio Analysis Function
+  const analyzeAudioWithAI = async (audioBlob: Blob, duration: number) => {
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'recording.wav');
+
+      const response = await fetch('/api/ai/analyze-audio', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+      });
+
+      if (response.ok) {
+        const analysis = await response.json();
+        
+        // Update the most recent audio recording with analysis
+        setAudioRecordings(prev => {
+          const updated = [...prev];
+          if (updated.length > 0) {
+            updated[updated.length - 1].analysis = analysis;
+          }
+          return updated;
+        });
+
+        // Display comprehensive analysis in AI chat
+        const analysisMessage = `🎵 **Audio Analysis Complete!**
+
+📝 **Transcription:** "${analysis.transcription}"
+
+📊 **Summary:** ${analysis.summary}
+
+🎭 **Emotions Detected:** ${analysis.emotions.join(', ')}
+📋 **Key Topics:** ${analysis.keyTopics.join(', ')}
+😊 **Overall Mood:** ${analysis.mood}
+⏱️ **Duration:** ${analysis.duration}
+📝 **Word Count:** ${analysis.wordCount} words
+
+💡 **Journal Prompts:**
+${analysis.journalPrompts.map((prompt: string, i: number) => `${i + 1}. ${prompt}`).join('\n')}
+
+🔍 **Insights:**
+${analysis.insights.map((insight: string, i: number) => `• ${insight}`).join('\n')}
+
+Would you like me to help you turn this into a journal entry or explore any of these themes further?`;
+
+        setAiMessages(prev => [...prev.slice(0, -1), {
+          type: 'ai',
+          message: analysisMessage
+        }]);
+
+        // Auto-add interesting insights to journal content
+        if (analysis.transcription && analysis.transcription.length > 10) {
+          const autoContent = `\n\n🎵 **Voice Note (${new Date().toLocaleTimeString()}):**\n"${analysis.transcription}"\n\n*Key themes: ${analysis.keyTopics.join(', ')} | Mood: ${analysis.mood}*\n`;
+          setContent(prev => prev + autoContent);
+        }
+        
+      } else {
+        throw new Error('Failed to analyze audio');
+      }
+    } catch (error) {
+      console.error('Audio analysis failed:', error);
+      setAiMessages(prev => [...prev.slice(0, -1), {
+        type: 'ai',
+        message: '🎵 Audio recorded successfully! I had trouble analyzing it, but the recording is saved. You can still tell me about what you recorded!'
+      }]);
+    }
+  };
+
   // Handle recording completion
   useEffect(() => {
     if (audioChunks.length > 0 && !isRecordingAudio) {
@@ -547,7 +611,8 @@ What would you like to explore about your recording?`
       setAudioRecordings(prev => [...prev, {
         url: audioUrl,
         duration: recordingDuration,
-        timestamp: new Date()
+        timestamp: new Date(),
+        blob: audioBlob
       }]);
       
       setAudioChunks([]);
@@ -1954,11 +2019,15 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                             <div className="flex items-center justify-between mb-2">
                               <span className="text-xs text-gray-500">
                                 Recording {index + 1} • {recording.duration}s
+                                {recording.analysis && (
+                                  <span className="ml-2 text-purple-600 font-medium">🤖 AI Analyzed</span>
+                                )}
                               </span>
                               <span className="text-xs text-gray-400">
                                 {recording.timestamp.toLocaleTimeString()}
                               </span>
                             </div>
+                            
                             <audio 
                               controls 
                               className="w-full h-8"
@@ -1966,6 +2035,19 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                             >
                               Your browser does not support audio playback.
                             </audio>
+                            
+                            {recording.analysis && (
+                              <div className="mt-2 p-2 bg-purple-50 border border-purple-200 rounded text-xs">
+                                <div className="font-medium text-purple-700 mb-1">AI Analysis:</div>
+                                <div className="text-gray-700">
+                                  <strong>Transcription:</strong> "{recording.analysis.transcription}"
+                                  <br />
+                                  <strong>Mood:</strong> {recording.analysis.mood} | <strong>Topics:</strong> {recording.analysis.keyTopics?.join(', ') || 'General'}
+                                  <br />
+                                  <strong>Words:</strong> {recording.analysis.wordCount} words
+                                </div>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>

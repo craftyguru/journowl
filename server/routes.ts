@@ -32,7 +32,7 @@ const upload = multer({
     fileSize: 5 * 1024 * 1024, // 5MB limit
   },
   fileFilter: (req, file, cb) => {
-    // Allow text files, images, and JSON
+    // Allow text files, images, audio, and JSON
     const allowedMimes = [
       'text/plain',
       'text/markdown',
@@ -40,7 +40,12 @@ const upload = multer({
       'image/jpeg',
       'image/jpg',
       'image/png',
-      'image/gif'
+      'image/gif',
+      'audio/wav',
+      'audio/mp3',
+      'audio/webm',
+      'audio/ogg',
+      'audio/mpeg'
     ];
     
     if (allowedMimes.includes(file.mimetype)) {
@@ -1262,6 +1267,22 @@ Your story shows how every day brings new experiences and emotions, creating the
     } catch (error: any) {
       console.error("Error analyzing photo:", error);
       res.status(500).json({ error: "Failed to analyze photo" });
+    }
+  });
+
+  // Audio AI routes
+  app.post("/api/ai/analyze-audio", requireAuth, requireAIPrompts, upload.single('audio'), async (req: any, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "Audio file required" });
+      }
+
+      const { transcribeAndAnalyzeAudio } = await import("./services/audio-ai");
+      const analysis = await transcribeAndAnalyzeAudio(req.file.buffer, req.file.originalname);
+      res.json(analysis);
+    } catch (error: any) {
+      console.error("Error analyzing audio:", error);
+      res.status(500).json({ error: "Failed to analyze audio" });
     }
   });
 
