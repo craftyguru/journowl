@@ -2083,7 +2083,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
         {/* Professional Floating Action Buttons - 4 Evenly Spaced */}
         <div className="fixed bottom-4 left-0 right-0 z-[70]">
           <div className="flex justify-center items-center w-full px-1 sm:px-4">
-            <div className="flex justify-between items-center w-full max-w-sm sm:max-w-xl gap-1 sm:gap-2">
+            <div className="flex justify-between items-center w-full max-w-md sm:max-w-xl gap-2 sm:gap-4">
             
             {/* 1. Voice/Microphone Button */}
             <motion.div
