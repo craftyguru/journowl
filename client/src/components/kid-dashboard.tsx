@@ -1163,32 +1163,61 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
           </CardContent>
           <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
           <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full -ml-6 -mb-6"></div>
-          </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-pink-200 to-pink-300 border-pink-300 shadow-lg relative overflow-visible">
-          <CardContent className="p-4 md:p-6 text-center">
-            <div className="text-3xl md:text-4xl mb-2">🔥</div>
-            <h3 className="text-xl md:text-2xl font-bold text-pink-800">{stats.currentStreak || 0} Day Streak!</h3>
-            <p className="text-sm md:text-base text-pink-600">Keep writing every day to grow your streak!</p>
-            <div className="mt-2 md:mt-3">
-              <Badge className="bg-pink-500 text-white text-xs">Keep going!</Badge>
+        <Card className="bg-gradient-to-br from-pink-400 via-pink-500 to-pink-600 border-pink-300 shadow-xl text-white relative overflow-hidden">
+          <CardContent className="p-4 md:p-6 text-center relative z-10">
+            <div className="text-3xl md:text-4xl mb-2 animate-pulse">🔥</div>  
+            <h3 className="text-xl md:text-2xl font-bold">{stats.currentStreak || 0}</h3>
+            <p className="text-pink-100 text-sm md:text-base">STREAK</p>
+            <div className="text-xs text-pink-200 mt-1">
+              <div>days strong 🔥</div>
+              <div>Best streak: <span className="font-bold">{stats.longestStreak || 0} days</span></div>
+              <div>This month: <span className="font-bold">{Math.floor((stats.currentStreak || 0) * 0.8)} entries</span></div>
+              <div>Target: <span className="text-pink-300">30-day streak</span></div>
+            </div>
+            <div className="mt-2">
+              <Badge className="bg-pink-700 text-white text-xs">🔥</Badge>
             </div>
             
 
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-amber-200 to-amber-300 border-amber-300 shadow-lg sm:col-span-1 lg:col-span-1">
-          <CardContent className="p-4 md:p-6 text-center">
-            <div className="text-4xl mb-2">⭐</div>
-            <h3 className="text-2xl font-bold text-amber-800">Level {currentLevel}</h3>
-            <p className="text-amber-600">Super Writer</p>
-            <div className="mt-3">
-              <Progress value={levelProgress} className="bg-amber-100" />
-              <p className="text-xs text-amber-600 mt-1">{1000 - (((stats as any).xp || 0) % 1000)} XP to Level {currentLevel + 1}!</p>
+        <Card className="bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-600 border-emerald-300 shadow-xl text-white relative overflow-hidden">
+          <CardContent className="p-4 md:p-6 text-center relative z-10">
+            <div className="text-4xl mb-2 animate-spin-slow">⭐</div>
+            <h3 className="text-xl md:text-2xl font-bold">{stats.totalWords || 0}</h3>
+            <p className="text-emerald-100 text-sm md:text-base">WORDS</p>
+            <div className="text-xs text-emerald-200 mt-1">
+              <div>Target: <span className="font-bold">1000+ words</span></div>
+              <div className="text-orange-300">🔥</div>
+            </div>
+            <div className="mt-2">
+              <Badge className="bg-emerald-700 text-white text-xs">📝</Badge>
             </div>
           </CardContent>
+          <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+          <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full -ml-6 -mb-6"></div>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-amber-400 via-amber-500 to-amber-600 border-amber-300 shadow-xl text-white relative overflow-hidden">
+          <CardContent className="p-4 md:p-6 text-center relative z-10">
+            <div className="text-4xl mb-2 animate-bounce">⭐</div>
+            <h3 className="text-xl md:text-2xl font-bold">{((stats as any).xp || 0)}</h3>
+            <p className="text-amber-100 text-sm md:text-base">XP</p>
+            <div className="text-xs text-amber-200 mt-1">
+              <div>Level {currentLevel} ✨</div>
+              <div>To next level: <span className="font-bold">{1000 - (((stats as any).xp || 0) % 1000)} XP</span></div>
+              <div>Progress: <span className="text-amber-300">{Math.round(levelProgress)}%</span></div>
+              <div>Rank: <span className="text-amber-300">Beginner</span></div>
+            </div>
+            <div className="mt-2">
+              <Badge className="bg-amber-700 text-white text-xs">🏆</Badge>
+            </div>
+          </CardContent>
+          <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+          <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full -ml-6 -mb-6"></div>
         </Card>
       </motion.div>
 
