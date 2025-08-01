@@ -1,0 +1,283 @@
+analytics.tiktok.com/i18n/pixel/events.js?sdkid=D004GE3C77U8PIVDSDJG&lib=ttq:1  Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+_app-887b064411aad558.js:13 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-887b064411aad558.js:13 [LaunchDarkly] LaunchDarkly client initialized
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:403564)
+JournOwl:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0C02A005C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A04062005C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0202B005C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0502B005C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A08077025C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0B077025C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'battery'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+framework-2bd9a0e07d0728ae.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-2bd9a0e07d0728ae.js:1
+stallwart.build.js:1 stallwart: failed ping 1
+attached_assets/image_1752836665742.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1752836460017.png:1  Failed to load resource: the server responded with a status of 404 ()
+stallwart.build.js:1 stallwart: failed ping 2
+stallwart.build.js:1 stallwart: failed ping 3
+stallwart.build.js:1 stallwart: failed ping 4
+stallwart.build.js:1 stallwart: failed ping 1
+stallwart.build.js:1 stallwart: failed ping 2
+attached_assets/image_1754023563555.png:1  Failed to load resource: the server responded with a status of 404 ()
+attached_assets/image_1754023367584.png:1  Failed to load resource: the server responded with a status of 404 ()
+stallwart.build.js:1 stallwart: failed ping 3
+stallwart.build.js:1 stallwart: failed ping 1
+attached_assets/image_1754023993831.png:1  Failed to load resource: the server responded with a status of 404 ()
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0202B005C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0C02A005C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@vite/client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=DnJlgKpvAInM' failed: 
+setupWebSocket @ e9204149-ed5d-4c26-b…ev/@vite/client:536
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@vite/client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=DnJlgKpvAInM' is invalid.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=-Qaq7mQdVQfXlYe5zabXx:47 App initializing - pathname: / search: 
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=-Qaq7mQdVQfXlYe5zabXx:95 🔧 useEffect triggered - currentView: landing isAuthenticated: null
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=-Qaq7mQdVQfXlYe5zabXx:111 🔧 Running getCurrentUser check...
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/lib/pwa-utils.ts:32 [PWA] Service worker ready, automatic updates disabled
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=-Qaq7mQdVQfXlYe5zabXx:113 🔧 getCurrentUser success - setting authenticated and redirecting to dashboard
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=-Qaq7mQdVQfXlYe5zabXx:95 🔧 useEffect triggered - currentView: dashboard isAuthenticated: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?v=-Qaq7mQdVQfXlYe5zabXx:108 🔧 User already authenticated, skipping auth check
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/lib/pwa-utils.ts:32 [PWA] Service worker ready, automatic updates disabled
+chrome-extension://hdokiejnpimakedhajhdlcegeplioahd/web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:122 PWA Debug: Checking installation eligibility...
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:123 PWA Debug: HTTPS: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:124 PWA Debug: Service Worker supported: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:125 PWA Debug: Manifest linked: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:74 JournOwl SW registered:  [object ServiceWorkerRegistration]
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:133 PWA Debug: beforeinstallprompt fired: false
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:134 PWA Debug: Global deferredPrompt available: false
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@vite/client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=DnJlgKpvAInM' failed: 
+setupWebSocket @ e9204149-ed5d-4c26-b…ev/@vite/client:536
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/@vite/client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=DnJlgKpvAInM' is invalid.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?t=1754024244561&v=JLJk1HGEp28HPvEGdpw11:47 App initializing - pathname: / search: 
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?t=1754024244561&v=JLJk1HGEp28HPvEGdpw11:102 🔧 useEffect triggered - currentView: landing isAuthenticated: null
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?t=1754024244561&v=JLJk1HGEp28HPvEGdpw11:118 🔧 Running getCurrentUser check...
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/lib/pwa-utils.ts:32 [PWA] Service worker ready, automatic updates disabled
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me:1  Failed to load resource: the server responded with a status of 401 (Unauthorized)
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/lib/auth.ts:49 getCurrentUser failed: Error: Not authenticated
+getCurrentUser @ e9204149-ed5d-4c26-b…/src/lib/auth.ts:49
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/src/App.tsx?t=1754024244561&v=JLJk1HGEp28HPvEGdpw11:127 🔧 getCurrentUser failed - user not authenticated
+chrome-extension://hdokiejnpimakedhajhdlcegeplioahd/web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:122 PWA Debug: Checking installation eligibility...
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:123 PWA Debug: HTTPS: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:124 PWA Debug: Service Worker supported: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:125 PWA Debug: Manifest linked: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:74 JournOwl SW registered:  [object ServiceWorkerRegistration]
+index-_esZFW--.js:1 Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
+login:113 PWA Debug: Checking installation eligibility...
+login:114 PWA Debug: HTTPS: true
+login:115 PWA Debug: Service Worker supported: true
+login:116 PWA Debug: Manifest linked: true
+login:65 JournOwl SW registered:  ServiceWorkerRegistration
+login:124 PWA Debug: beforeinstallprompt fired: false
+login:125 PWA Debug: Global deferredPrompt available: false
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0202B005C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A08077025C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=33KtuaNMUqRH' failed: 
+setupWebSocket @ VM1193 client:536
+(anonymous) @ VM1193 client:531
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=33KtuaNMUqRH' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)
+setupWebSocket @ VM1193 client:536
+fallback @ VM1193 client:509
+(anonymous) @ VM1193 client:555
+App.tsx:47 App initializing - pathname: / search: 
+App.tsx:102 🔧 useEffect triggered - currentView: landing isAuthenticated: null
+App.tsx:118 🔧 Running getCurrentUser check...
+pwa-utils.ts:32 [PWA] Service worker ready, automatic updates disabled
+auth.ts:35  GET https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me 401 (Unauthorized)
+getCurrentUser @ VM1231 auth.ts:35
+(anonymous) @ VM1194 App.tsx:119
+commitHookEffectListMount @ VM1189 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM1189 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM1189 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM1189 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM1189 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM1189 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM1189 chunk-RPCDYKBN.js:19447
+(anonymous) @ VM1189 chunk-RPCDYKBN.js:19328
+workLoop @ VM1189 chunk-RPCDYKBN.js:197
+flushWork @ VM1189 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM1189 chunk-RPCDYKBN.js:384
+auth.ts:49 getCurrentUser failed: Error: Not authenticated
+    at getCurrentUser (auth.ts:45:13)
+getCurrentUser @ VM1231 auth.ts:49
+await in getCurrentUser
+(anonymous) @ VM1194 App.tsx:119
+commitHookEffectListMount @ VM1189 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM1189 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM1189 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM1189 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM1189 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM1189 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM1189 chunk-RPCDYKBN.js:19447
+(anonymous) @ VM1189 chunk-RPCDYKBN.js:19328
+workLoop @ VM1189 chunk-RPCDYKBN.js:197
+flushWork @ VM1189 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM1189 chunk-RPCDYKBN.js:384
+App.tsx:127 🔧 getCurrentUser failed - user not authenticated Error: Not authenticated
+    at getCurrentUser (auth.ts:45:13)
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:403564)
+(anonymous) @ VM1322 web-client-content-script.js:2
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:122 PWA Debug: Checking installation eligibility...
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:123 PWA Debug: HTTPS: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:124 PWA Debug: Service Worker supported: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:125 PWA Debug: Manifest linked: true
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:74 JournOwl SW registered:  ServiceWorkerRegistration {installing: null, waiting: null, active: ServiceWorker, navigationPreload: NavigationPreloadManager, scope: 'https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/', …}
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A01078025C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0B077025C560000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+workspace_iframe.html:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html:32 Unrecognized feature: 'battery'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+VM1345 client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=dvfk08YeW3TP' failed: 
+setupWebSocket @ VM1345 client:536
+(anonymous) @ VM1345 client:531
+VM1345 client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=dvfk08YeW3TP' is invalid.
+    at setupWebSocket (VM1345 client:536:19)
+    at fallback (VM1345 client:509:16)
+    at WebSocket.<anonymous> (VM1345 client:555:7)
+setupWebSocket @ VM1345 client:536
+fallback @ VM1345 client:509
+(anonymous) @ VM1345 client:555
+VM1359 App.tsx:47 App initializing - pathname: / search: 
+VM1359 App.tsx:102 🔧 useEffect triggered - currentView: landing isAuthenticated: null
+VM1359 App.tsx:118 🔧 Running getCurrentUser check...
+VM1382 pwa-utils.ts:32 [PWA] Service worker ready, automatic updates disabled
+VM1369 auth.ts:35  GET https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/api/auth/me 401 (Unauthorized)
+getCurrentUser @ VM1369 auth.ts:35
+(anonymous) @ VM1359 App.tsx:119
+commitHookEffectListMount @ VM1356 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM1356 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM1356 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM1356 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM1356 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM1356 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM1356 chunk-RPCDYKBN.js:19447
+(anonymous) @ VM1356 chunk-RPCDYKBN.js:19328
+workLoop @ VM1356 chunk-RPCDYKBN.js:197
+flushWork @ VM1356 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM1356 chunk-RPCDYKBN.js:384
+VM1369 auth.ts:49 getCurrentUser failed: Error: Not authenticated
+    at getCurrentUser (VM1369 auth.ts:45:13)
+getCurrentUser @ VM1369 auth.ts:49
+await in getCurrentUser
+(anonymous) @ VM1359 App.tsx:119
+commitHookEffectListMount @ VM1356 chunk-RPCDYKBN.js:16915
+commitPassiveMountOnFiber @ VM1356 chunk-RPCDYKBN.js:18156
+commitPassiveMountEffects_complete @ VM1356 chunk-RPCDYKBN.js:18129
+commitPassiveMountEffects_begin @ VM1356 chunk-RPCDYKBN.js:18119
+commitPassiveMountEffects @ VM1356 chunk-RPCDYKBN.js:18109
+flushPassiveEffectsImpl @ VM1356 chunk-RPCDYKBN.js:19490
+flushPassiveEffects @ VM1356 chunk-RPCDYKBN.js:19447
+(anonymous) @ VM1356 chunk-RPCDYKBN.js:19328
+workLoop @ VM1356 chunk-RPCDYKBN.js:197
+flushWork @ VM1356 chunk-RPCDYKBN.js:176
+performWorkUntilDeadline @ VM1356 chunk-RPCDYKBN.js:384
+VM1359 App.tsx:127 🔧 getCurrentUser failed - user not authenticated Error: Not authenticated
+    at getCurrentUser (VM1369 auth.ts:45:13)
+web-client-content-script.js:2 Uncaught 
+(anonymous) @ web-client-content-script.js:2
+ PWA Debug: Checking installation eligibility...
+ PWA Debug: HTTPS: true
+ PWA Debug: Service Worker supported: true
+ PWA Debug: Manifest linked: true
+ JournOwl SW registered:  ServiceWorkerRegistration {installing: null, waiting: null, active: ServiceWorker, navigationPreload: NavigationPreloadManager, scope: 'https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/', …}
+index-_esZFW--.js:1 Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html". Strict MIME type checking is enforced for module scripts per HTML spec.
+ PWA Debug: Checking installation eligibility...
+ PWA Debug: HTTPS: true
+ PWA Debug: Service Worker supported: true
+ PWA Debug: Manifest linked: true
+ JournOwl SW registered:  ServiceWorkerRegistration {installing: null, waiting: null, active: ServiceWorker, navigationPreload: NavigationPreloadManager, scope: 'https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/', …}
+ PWA Debug: beforeinstallprompt fired: false
+ PWA Debug: Global deferredPrompt available: false
