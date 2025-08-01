@@ -31,7 +31,7 @@ import type { User, Stats, JournalEntry, Achievement, Goal, APIResponse, Enhance
 
 // All data now fetched from API endpoints instead of hardcoded values
 
-function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
+function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalStateChange }: EnhancedDashboardProps & { onJournalStateChange?: (unified: boolean, smart: boolean) => void }) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
@@ -71,6 +71,11 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
   React.useEffect(() => {
     setActiveTab(initialTab);
   }, [initialTab]);
+
+  // Notify parent component about journal state changes
+  React.useEffect(() => {
+    onJournalStateChange?.(showUnifiedJournal, showSmartEditor);
+  }, [showUnifiedJournal, showSmartEditor, onJournalStateChange]);
 
   // Scroll to top when dashboard component first mounts
   React.useEffect(() => {
@@ -6486,14 +6491,26 @@ Mood: ${entry.mood}
 
 // Main Enhanced Dashboard Export with Merged Help & Support
 export default function EnhancedDashboardWithSupport({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
+  const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
+  const [showSmartEditor, setShowSmartEditor] = useState(false);
+
   return (
     <div className="relative">
-      <EnhancedDashboard onSwitchToKid={onSwitchToKid} initialTab={initialTab} />
+      <EnhancedDashboard 
+        onSwitchToKid={onSwitchToKid} 
+        initialTab={initialTab}
+        onJournalStateChange={(unified, smart) => {
+          setShowUnifiedJournal(unified);
+          setShowSmartEditor(smart);
+        }}
+      />
       
-      {/* Fixed positioned support bubble in bottom right */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <MergedHelpSupportBubble />
-      </div>
+      {/* Fixed positioned support bubble in bottom right - hidden when journal is open */}
+      {!showSmartEditor && !showUnifiedJournal && (
+        <div className="fixed bottom-6 right-6 z-50">
+          <MergedHelpSupportBubble />
+        </div>
+      )}
     </div>
   );
 }
