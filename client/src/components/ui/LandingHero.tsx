@@ -134,15 +134,11 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
   };
 
   const handleSignIn = () => {
-    const url = new URL(window.location.href);
-    url.pathname = '/login';
-    window.location.href = url.toString();
+    onGetStarted(); // Use the callback to navigate to auth page
   };
 
   const handleSignUp = () => {
-    const url = new URL(window.location.href);
-    url.pathname = '/register';
-    window.location.href = url.toString();
+    onGetStarted(); // Use the callback to navigate to auth page
   };
 
   return (
