@@ -71,7 +71,9 @@ function EnhancedDashboard({
   const { user, stats, entries, achievements, goals, insights, subscription, promptUsage } = useDashboardData();
 
   // Process achievements with real-time unlock checking
-  const processedAchievements = (achievements || defaultAchievements).map((achievement: any) => {
+  const achievementsArray = Array.isArray(achievements) ? achievements : 
+                           Array.isArray(defaultAchievements) ? defaultAchievements : [];
+  const processedAchievements = achievementsArray.map((achievement: any) => {
     const shouldUnlock = 
       (achievement.title === "First Steps" && (stats?.totalEntries || 0) >= 1) ||
       (achievement.title === "Daily Writer" && (stats?.currentStreak || 0) >= 3) ||
@@ -269,7 +271,8 @@ function EnhancedDashboard({
     setShowWordCloudModal(true);
     // Generate word cloud data from entries
     const words: Record<string, number> = {};
-    entries.forEach(entry => {
+    const entriesArray = Array.isArray(entries) ? entries : [];
+    entriesArray.forEach(entry => {
       const content = entry.content || '';
       const cleanWords = content.toLowerCase()
         .replace(/[^\w\s]/g, ' ')
@@ -314,7 +317,7 @@ function EnhancedDashboard({
       case 'analytics':
         return (
           <AnalyticsSection
-            entries={entries}
+            entries={Array.isArray(entries) ? entries : []}
             stats={stats || {}}
             onWordCloudClick={handleWordCloudClick}
             onTimeHeatmapClick={handleTimeHeatmapClick}
@@ -330,7 +333,7 @@ function EnhancedDashboard({
       case 'goals':
         return (
           <GoalsSection
-            goals={goals || []}
+            goals={Array.isArray(goals) ? goals : []}
             onCreateGoal={handleGoalCreate}
             onEditGoal={handleGoalEdit}
             onDeleteGoal={handleGoalDelete}
@@ -359,7 +362,7 @@ function EnhancedDashboard({
         return (
           <div className="space-y-6">
             <AIStoryMaker 
-              entries={entries} 
+              entries={Array.isArray(entries) ? entries : []} 
               stats={stats || {}}
             />
           </div>
