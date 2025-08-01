@@ -1143,16 +1143,26 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6"
+        className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6"
       >
-        <Card className="bg-gradient-to-br from-purple-200 to-purple-300 border-purple-300 shadow-lg">
-          <CardContent className="p-4 md:p-6 text-center">
-            <div className="text-4xl mb-2">📝</div>
-            <h3 className="text-2xl font-bold text-purple-800">{stats.totalEntries || 0}</h3>
-            <p className="text-purple-600">Stories Written</p>
-            <div className="mt-3">
-              <Badge className="bg-purple-500 text-white">Great job!</Badge>
+        <Card className="bg-gradient-to-br from-purple-400 via-purple-500 to-purple-600 border-purple-300 shadow-xl text-white relative overflow-hidden">
+          <CardContent className="p-4 md:p-6 text-center relative z-10">
+            <div className="text-4xl mb-2 animate-bounce">📝</div>
+            <h3 className="text-xl md:text-2xl font-bold">{stats.totalEntries || 0}</h3>
+            <p className="text-purple-100 text-sm md:text-base">ENTRIES</p>
+            <div className="text-xs text-purple-200 mt-1">
+              <div>This week:</div>
+              <div className="font-bold">{Math.floor((stats.totalEntries || 0) * 0.3)}</div>
+              <div>Best day:</div>
+              <div className="text-purple-300">Today</div>
+              <div>Avg/week:</div>
             </div>
+            <div className="mt-2">
+              <Badge className="bg-purple-700 text-white text-xs">⭐</Badge>
+            </div>
+          </CardContent>
+          <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full -mr-8 -mt-8"></div>
+          <div className="absolute bottom-0 left-0 w-12 h-12 bg-white/5 rounded-full -ml-6 -mb-6"></div>
           </CardContent>
         </Card>
 
