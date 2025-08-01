@@ -1,2 +1,2 @@
-// Import the new modular Enhanced Dashboard
-export { default } from "./dashboard/EnhancedDashboard";
+// Temporarily use test component to debug white screen
+export { default } from "./enhanced-dashboard-test";
