@@ -88,6 +88,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [recognition, setRecognition] = useState<any>(null);
   const [aiAnalyzing, setAiAnalyzing] = useState(false);
   const [lastFinalTranscript, setLastFinalTranscript] = useState('');
+  const [isConversationMode, setIsConversationMode] = useState(false);
   const [showUsageWarning, setShowUsageWarning] = useState(false);
   const [isHoldingMic, setIsHoldingMic] = useState(false);
   const [holdTimeout, setHoldTimeout] = useState<NodeJS.Timeout | null>(null);
@@ -221,10 +222,23 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
             setLastFinalTranscript(finalTranscript.trim());
             
             // Auto-send on mobile after getting final result
-            setTimeout(() => {
-              sendToAi(finalTranscript.trim());
+            setTimeout(async () => {
+              await sendToAi(finalTranscript.trim());
               setAiInput('');
               setLastFinalTranscript('');
+              
+              // In conversation mode, restart recognition for continuous chat
+              if (isConversationMode && aiRecognitionInstance) {
+                console.log('Mobile: Restarting recognition for conversation mode');
+                setTimeout(() => {
+                  try {
+                    aiRecognitionInstance.start();
+                    setIsAiListening(true);
+                  } catch (error) {
+                    console.log('Could not restart conversation mode:', error);
+                  }
+                }, 2000); // Wait 2 seconds before restarting
+              }
             }, 100);
           }
         } else {
@@ -889,18 +903,30 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
     setShowUsageWarning(true);
   };
 
-  // Start full conversation mode after warning confirmation
+  // Start full conversation mode after warning confirmation with mobile optimization
   const startConversationMode = () => {
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     if (aiRecognition && !isAiListening) {
       setAiInput('');
       setLastFinalTranscript('');
+      setIsConversationMode(true); // Enable conversation mode
+      
       try {
         aiRecognition.start();
         setIsAiListening(true);
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '🎤 Conversation mode active! I\'m listening and will respond to everything you say.'
-        }]);
+        
+        if (isMobile) {
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '🎤 Conversation mode active! On mobile, speak and I\'ll respond after each message. The mic will automatically restart for continuous conversation.'
+          }]);
+        } else {
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '🎤 Conversation mode active! I\'m listening and will respond to everything you say.'
+          }]);
+        }
       } catch (error) {
         console.error('Error starting AI speech recognition:', error);
       }
@@ -914,11 +940,13 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
       try {
         aiRecognition.stop();
         setIsAiListening(false);
+        setIsConversationMode(false); // Disable conversation mode
         setAiInput('');
         setLastFinalTranscript('');
       } catch (error) {
         console.error('Error stopping AI speech recognition:', error);
         setIsAiListening(false);
+        setIsConversationMode(false);
       }
     }
   };
@@ -2283,6 +2311,24 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
             <div className="flex items-center gap-2">
               <Mic className="w-4 h-4" />
               <span className="text-sm font-medium">Recording... Speak now!</span>
+            </div>
+          </div>
+        )}
+
+        {/* Conversation Mode Status */}
+        {isConversationMode && (
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-full shadow-lg z-50">
+            <div className="flex items-center gap-3">
+              <div className="w-3 h-3 bg-white rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">Conversation Mode Active</span>
+              <Button
+                onClick={stopVoiceInput}
+                size="sm"
+                variant="outline"
+                className="text-white border-white hover:bg-white hover:text-purple-500 h-6 px-2 text-xs"
+              >
+                Stop
+              </Button>
             </div>
           </div>
         )}
