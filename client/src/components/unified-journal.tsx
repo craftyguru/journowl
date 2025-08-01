@@ -1301,10 +1301,10 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
             </button>
             <Button 
               onClick={onClose}
-              variant="outline"
-              className="border-white/20 text-white hover:bg-white/10 h-6 sm:h-auto px-1 sm:px-4"
+              variant="ghost"
+              className="bg-red-500/80 hover:bg-red-600 text-white border border-red-400 h-8 w-8 p-0 rounded-full flex items-center justify-center shadow-lg"
             >
-              <X className="w-3 h-3 sm:w-4 sm:h-4" />
+              <X className="w-4 h-4" />
             </Button>
           </div>
         </div>
