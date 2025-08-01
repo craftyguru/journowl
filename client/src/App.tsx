@@ -131,11 +131,21 @@ function App() {
     }
   }, [currentView]);
 
-  if (isAuthenticated === null) {
+  // Show landing page immediately if not authenticated
+  if (isAuthenticated === null || isAuthenticated === false) {
+    console.log('Showing landing page - isAuthenticated:', isAuthenticated);
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-white"></div>
-      </div>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <StarryBackground />
+            <Toaster />
+            <LandingHero 
+              onGetStarted={() => setCurrentView("auth")} 
+            />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
     );
   }
 
