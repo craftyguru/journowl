@@ -2080,8 +2080,9 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
         </div>
 
         {/* Professional Floating Action Buttons - 4 Evenly Spaced */}
-        <div className="fixed bottom-4 left-0 right-0 flex items-center justify-center z-[60]">
-          <div className="w-full max-w-lg px-8 grid grid-cols-4 gap-4 place-items-center">
+        <div className="fixed bottom-4 left-0 right-0 z-[60]">
+          <div className="flex justify-center items-center w-full px-4">
+            <div className="flex justify-between items-center w-full max-w-lg space-x-6">
             
             {/* 1. Voice/Microphone Button */}
             <motion.div
@@ -2241,6 +2242,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
               </div>
             </motion.div>
 
+            </div>
           </div>
         </div>
 

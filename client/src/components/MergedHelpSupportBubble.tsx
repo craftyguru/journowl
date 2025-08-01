@@ -197,6 +197,9 @@ export function MergedHelpSupportBubble() {
   const sendMessage = async () => {
     if (!message.trim() || !currentUser) return;
     
+    console.log('Attempting to send message. WebSocket state:', wsRef.current?.readyState);
+    console.log('WebSocket OPEN constant:', WebSocket.OPEN);
+    
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
       const messageData = {
         type: 'chat_message',
@@ -206,8 +209,12 @@ export function MergedHelpSupportBubble() {
         createdAt: new Date().toISOString()
       };
       
+      console.log('Sending message:', messageData);
       wsRef.current.send(JSON.stringify(messageData));
       setMessage('');
+    } else {
+      console.log('WebSocket not ready. Attempting to reconnect...');
+      connectWebSocket();
     }
   };
 
