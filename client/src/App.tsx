@@ -17,8 +17,7 @@ import EnhancedDashboard from "@/components/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
 import ReferralPage from "@/components/referral-page";
 import LandingHero from "@/components/ui/LandingHero";
-import { HelpBubble } from "@/components/HelpBubble";
-import { SupportChatBubble } from "@/components/SupportChatBubble";
+
 import { StarryBackground } from "@/components/starry-background";
 import { PWAUpdateBanner } from "@/components/PWAUpdateBanner";
 import { PWAMobilePrompt } from "@/components/PWAManager";
@@ -444,9 +443,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
           </>
         )}
       </main>
-      {/* Help and Support Bubbles */}
-      <HelpBubble />
-      <SupportChatBubble />
+
       {/* PWA install functionality is now handled by PWAInstallButton in navbar */}
     </div>
   );
