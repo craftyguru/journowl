@@ -1396,10 +1396,48 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </motion.div>
           </div>
           
-          {/* Scroll hint text */}
-          <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 text-xs text-purple-400/60 lg:hidden">
-            Swipe to see all tabs
-          </div>
+          {/* Bright Neon Red Swipe Indicator with Zoom Effects */}
+          <motion.div 
+            className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 lg:hidden z-20"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              textShadow: [
+                '0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 30px #ff0040',
+                '0 0 15px #ff0040, 0 0 25px #ff0040, 0 0 40px #ff0040', 
+                '0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 30px #ff0040'
+              ]
+            }}
+            transition={{ 
+              duration: 2, 
+              repeat: Infinity, 
+              repeatType: "reverse" 
+            }}
+          >
+            <div className="flex items-center gap-2 bg-black/80 backdrop-blur-sm px-4 py-2 rounded-full border-2 border-red-500 shadow-lg shadow-red-500/50">
+              <motion.span 
+                className="text-lg text-red-400"
+                animate={{ x: [-3, 3, -3] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                style={{ filter: 'drop-shadow(0 0 8px #ff0040)' }}
+              >
+                ←
+              </motion.span>
+              <span className="text-sm font-bold text-red-400" style={{ 
+                textShadow: '0 0 10px #ff0040, 0 0 20px #ff0040',
+                filter: 'brightness(1.3)'
+              }}>
+                SWIPE
+              </span>
+              <motion.span 
+                className="text-lg text-red-400"
+                animate={{ x: [3, -3, 3] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                style={{ filter: 'drop-shadow(0 0 8px #ff0040)' }}
+              >
+                →
+              </motion.span>
+            </div>
+          </motion.div>
           
           <div className="overflow-x-auto lg:overflow-x-visible">
             <TabsList className="flex w-max lg:w-full lg:justify-center bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)', paddingRight: '20px' }}>
