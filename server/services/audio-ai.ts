@@ -87,8 +87,16 @@ Return only valid JSON in this format:
       throw new Error('No analysis response received');
     }
 
+    // Clean the response - remove markdown code blocks if present
+    let cleanedText = analysisText.trim();
+    if (cleanedText.startsWith('```json')) {
+      cleanedText = cleanedText.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+    } else if (cleanedText.startsWith('```')) {
+      cleanedText = cleanedText.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    }
+
     // Parse the JSON response
-    const analysis = JSON.parse(analysisText);
+    const analysis = JSON.parse(cleanedText);
 
     // Calculate approximate duration (rough estimate: 150-200 words per minute)
     const avgWordsPerMinute = 175;
