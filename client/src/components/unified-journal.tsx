@@ -2079,19 +2079,19 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
           </PanelGroup>
         </div>
 
-        {/* Professional Floating Action Buttons - 5 Evenly Spaced */}
+        {/* Professional Floating Action Buttons - 4 Evenly Spaced */}
         <div className="fixed bottom-4 left-0 right-0 z-[60]">
-          <div className="flex justify-center items-center w-full px-4">
-            <div className="flex justify-between items-center w-full max-w-2xl space-x-4">
+          <div className="flex justify-center items-center w-full px-2 sm:px-4">
+            <div className="flex justify-between items-center w-full max-w-md sm:max-w-2xl gap-2 sm:gap-4">
             
             {/* 1. Voice/Microphone Button */}
             <motion.div
-              className="group"
+              className="group flex-1"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1 }}
             >
-              <div className="relative">
+              <div className="relative flex justify-center">
                 <Button
                   onClick={!showAiChat ? toggleVoiceRecording : undefined}
                   onMouseDown={showAiChat ? handleVoiceStart : undefined}
@@ -2100,7 +2100,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                   onTouchEnd={showAiChat ? handleVoiceEnd : undefined}
                   onMouseLeave={showAiChat ? handleVoiceEnd : undefined}
                   onTouchCancel={showAiChat ? handleVoiceEnd : undefined}
-                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-2xl border-2 sm:border-4 border-white ${
                     isListening || isAiListening
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse scale-110' 
                       : showAiChat 
@@ -2130,15 +2130,15 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
 
             {/* 2. Audio Recording Button */}
             <motion.div
-              className="group"
+              className="group flex-1"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <div className="relative">
+              <div className="relative flex justify-center">
                 <Button
                   onClick={isRecordingAudio ? stopAudioRecording : (showAiChat ? startAudioRecordingForAI : startAudioRecording)}
-                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-2xl border-2 sm:border-4 border-white ${
                     isRecordingAudio 
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
                       : showAiChat
@@ -2173,12 +2173,12 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
 
             {/* 3. Camera/Upload Button (Merged) */}
             <motion.div
-              className="group"
+              className="group flex-1"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              <div className="relative">
+              <div className="relative flex justify-center">
                 <Button
                   onClick={showAiChat ? capturePhotoForAI : () => {
                     // Show options menu for camera or upload
@@ -2189,7 +2189,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                       fileInputRef.current?.click();
                     }
                   }}
-                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-2xl border-2 sm:border-4 border-white ${
                     showAiChat
                       ? 'bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600'
                       : 'bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700'
@@ -2212,15 +2212,15 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
 
             {/* 4. AI Chat Button - Improved Interface */}
             <motion.div
-              className="group"
+              className="group flex-1"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              <div className="relative">
+              <div className="relative flex justify-center">
                 <Button
                   onClick={() => setShowAiChat(!showAiChat)}
-                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-2xl border-2 sm:border-4 border-white ${
                     showAiChat 
                       ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 scale-90' 
                       : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 animate-bounce'
