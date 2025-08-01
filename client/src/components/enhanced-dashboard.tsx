@@ -6489,9 +6489,6 @@ export default function EnhancedDashboardWithSupport({ onSwitchToKid, initialTab
   return (
     <div className="relative">
       <EnhancedDashboard onSwitchToKid={onSwitchToKid} initialTab={initialTab} />
-      <div className="fixed bottom-6 right-6 z-50">
-        <MergedHelpSupportBubble />
-      </div>
     </div>
   );
 }
