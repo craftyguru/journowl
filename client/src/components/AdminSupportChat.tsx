@@ -41,13 +41,16 @@ export function AdminSupportChat() {
   const queryClient = useQueryClient();
 
   // Get current admin user
-  const { data: currentUser } = useQuery({
+  const { data: userResponse } = useQuery({
     queryKey: ['/api/auth/me'],
     retry: false
   }) as { data: any };
+  
+  const currentUser = userResponse?.user || userResponse;
 
   // Initialize WebSocket connection for admin
   useEffect(() => {
+    console.log('AdminSupportChat: Current user:', currentUser);
     if (currentUser?.role === 'admin' && !wsRef.current) {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       const wsUrl = `${protocol}//${window.location.host}/ws/support`;
@@ -116,6 +119,7 @@ export function AdminSupportChat() {
 
   // Load chat sessions and messages
   useEffect(() => {
+    console.log('AdminSupportChat: Loading messages for admin user:', currentUser);
     if (currentUser?.role === 'admin') {
       // Fetch all support messages for admin view
       fetch('/api/admin/support/messages', {
@@ -194,8 +198,28 @@ export function AdminSupportChat() {
     return messages.filter(msg => msg.userId === selectedUser);
   };
 
+  console.log('AdminSupportChat: Render check - user role:', currentUser?.role);
+  
+  if (!currentUser) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+          <p>Loading admin interface...</p>
+        </div>
+      </div>
+    );
+  }
+  
   if (currentUser?.role !== 'admin') {
-    return null;
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center text-red-600">
+          <p>Access denied. Admin privileges required.</p>
+          <p className="text-sm text-gray-500">Current role: {currentUser?.role || 'unknown'}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
