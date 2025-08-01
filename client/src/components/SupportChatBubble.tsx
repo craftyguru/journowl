@@ -39,23 +39,25 @@ export function SupportChatBubble() {
 
   // Initialize WebSocket connection when chat opens
   useEffect(() => {
-    if (open && currentUser && !wsRef.current) {
+    if (open && currentUser?.id && !wsRef.current) {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       const wsUrl = `${protocol}//${window.location.host}/ws/support`;
       
-      console.log('Connecting to support WebSocket:', wsUrl);
+      console.log('Connecting to support WebSocket:', wsUrl, 'for user:', currentUser.id);
       wsRef.current = new WebSocket(wsUrl);
       
       wsRef.current.onopen = () => {
-        console.log('Support WebSocket connected');
+        console.log('Support WebSocket connected for user:', currentUser.id);
         setIsConnected(true);
         
-        // Authenticate user
-        wsRef.current?.send(JSON.stringify({
+        // Authenticate user immediately on connection
+        const authMessage = {
           type: 'auth',
           userId: currentUser.id,
           isAdmin: false
-        }));
+        };
+        console.log('Sending auth message:', authMessage);
+        wsRef.current?.send(JSON.stringify(authMessage));
       };
       
       wsRef.current.onmessage = (event) => {
@@ -108,7 +110,8 @@ export function SupportChatBubble() {
 
   // Send message via WebSocket
   const sendMessage = async (messageData: { message: string; attachmentUrl?: string; attachmentType?: string }) => {
-    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && currentUser) {
+    if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && currentUser?.id) {
+      console.log('Sending WebSocket message from user:', currentUser.id);
       wsRef.current.send(JSON.stringify({
         type: 'chat_message',
         userId: currentUser.id,
@@ -119,6 +122,7 @@ export function SupportChatBubble() {
       }));
       setMessage("");
     } else {
+      console.log('Falling back to HTTP API for message');
       // Fallback to HTTP if WebSocket not available
       await fetch('/api/support/messages', {
         method: 'POST',
