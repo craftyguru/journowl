@@ -2080,10 +2080,10 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
           </PanelGroup>
         </div>
 
-        {/* Professional Floating Action Buttons - 4 Evenly Spaced */}
+        {/* Professional Floating Action Buttons - 5 Evenly Spaced */}
         <div className="fixed bottom-4 left-0 right-0 z-[70]">
           <div className="flex justify-center items-center w-full px-1 sm:px-4">
-            <div className="flex justify-between items-center w-full max-w-sm sm:max-w-xl gap-1 sm:gap-2">
+            <div className="flex justify-between items-center w-full max-w-lg sm:max-w-2xl gap-1 sm:gap-2">
             
             {/* 1. Voice/Microphone Button */}
             <motion.div
@@ -2243,7 +2243,29 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
               </div>
             </motion.div>
 
-
+            {/* 5. Save Entry Button */}
+            <motion.div
+              className="group flex-1"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="relative flex justify-center">
+                <Button
+                  onClick={handleSave}
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-2xl border-2 sm:border-4 border-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 transition-all duration-300 hover:scale-110"
+                >
+                  <Save className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+                </Button>
+                
+                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                  <div className="flex flex-col items-center gap-1">
+                    <span>💾 Save Entry</span>
+                    <span className="text-xs opacity-75">Save journal</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
 
             </div>
           </div>
