@@ -134,10 +134,12 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
   };
 
   const handleSignIn = () => {
+    console.log('Sign In clicked - calling onGetStarted');
     onGetStarted(); // Use the callback to navigate to auth page
   };
 
   const handleSignUp = () => {
+    console.log('Sign Up clicked - calling onGetStarted');
     onGetStarted(); // Use the callback to navigate to auth page
   };
 

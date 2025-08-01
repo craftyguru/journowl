@@ -245,7 +245,7 @@ function App() {
   }
 
   // Authentication page
-  if (!isAuthenticated && currentView === "auth") {
+  if (currentView === "auth") {
     console.log('Rendering auth page - isAuthenticated:', isAuthenticated, 'currentView:', currentView);
     return (
       <QueryClientProvider client={queryClient}>
