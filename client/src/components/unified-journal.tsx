@@ -2081,7 +2081,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
         {/* Floating Action Buttons - Evenly Spaced */}
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-[60]">
             
-            {/* Voice-to-Text Button */}
+            {/* Voice-to-Text Button - Hold-to-Talk when AI Chat is open */}
             <motion.div
               className="group"
               initial={{ scale: 0.8, opacity: 0 }}
@@ -2090,16 +2090,22 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
             >
               <div className="relative">
                 <Button
-                  onClick={toggleVoiceRecording}
+                  onClick={!showAiChat ? toggleVoiceRecording : undefined}
+                  onMouseDown={showAiChat ? handleVoiceStart : undefined}
+                  onMouseUp={showAiChat ? handleVoiceEnd : undefined}
+                  onTouchStart={showAiChat ? handleVoiceStart : undefined}
+                  onTouchEnd={showAiChat ? handleVoiceEnd : undefined}
+                  onMouseLeave={showAiChat ? handleVoiceEnd : undefined}
+                  onTouchCancel={showAiChat ? handleVoiceEnd : undefined}
                   className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
-                    isListening 
-                      ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
+                    isListening || isAiListening
+                      ? 'bg-red-500 hover:bg-red-600 animate-pulse scale-110' 
                       : showAiChat 
                         ? 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600'
                         : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
                   } transition-all duration-300 hover:scale-110 ${showAiChat ? 'ring-2 ring-purple-300 ring-opacity-50' : ''}`}
                 >
-                  {isListening ? (
+                  {(isListening || isAiListening) ? (
                     <MicOff className="w-6 h-6 text-white" />
                   ) : (
                     <Mic className="w-6 h-6 text-white" />
@@ -2112,8 +2118,8 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                 
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
-                    <span>{showAiChat ? '🤖 AI Voice' : '🎤 Voice to Text'}</span>
-                    <span className="text-xs opacity-75">{showAiChat ? 'Talk & Analyze' : 'Convert speech'}</span>
+                    <span>{showAiChat ? '🎤 Hold to Talk' : '🎤 Voice to Text'}</span>
+                    <span className="text-xs opacity-75">{showAiChat ? 'Press & hold to speak' : 'Convert speech'}</span>
                   </div>
                 </div>
               </div>
@@ -2276,23 +2282,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                   disabled={isAiListening}
                 />
 
-                {/* Hold-to-Talk Microphone Button */}
-                <Button 
-                  onMouseDown={handleVoiceStart}
-                  onMouseUp={handleVoiceEnd}
-                  onTouchStart={handleVoiceStart}
-                  onTouchEnd={handleVoiceEnd}
-                  size="sm"
-                  variant="outline"
-                  className={`${
-                    isAiListening 
-                      ? 'bg-red-500 hover:bg-red-600 text-white border-red-500 animate-pulse' 
-                      : 'bg-purple-600 hover:bg-purple-700 text-white border-purple-600'
-                  } transition-all duration-200`}
-                  title="Hold to talk - Release to send"
-                >
-                  {isAiListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                </Button>
+
 
                 <Button 
                   onClick={handleEnableConversation}
