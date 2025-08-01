@@ -63,5 +63,4 @@ export interface EnhancedDashboardProps {
   onSwitchToKid: () => void;
   initialTab?: string;
   isJournalOpen?: boolean;
-  onJournalStateChange?: (isOpen: boolean) => void;
 }
