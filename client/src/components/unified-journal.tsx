@@ -2078,15 +2078,16 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
           </PanelGroup>
         </div>
 
-        {/* Floating Action Buttons - Evenly Spaced */}
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-6 z-[60]">
+        {/* Professional Floating Action Buttons - 5 Evenly Spaced */}
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center justify-center w-full max-w-md px-4 z-[60]">
+          <div className="flex items-center justify-between w-full">
             
-            {/* Voice-to-Text Button - Hold-to-Talk when AI Chat is open */}
+            {/* 1. Voice/Microphone Button */}
             <motion.div
               className="group"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.1 }}
             >
               <div className="relative">
                 <Button
@@ -2125,12 +2126,12 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
               </div>
             </motion.div>
 
-            {/* Audio Recording Button - Enhanced for AI */}
+            {/* 2. Audio Recording Button */}
             <motion.div
               className="group"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.2 }}
             >
               <div className="relative">
                 <Button
@@ -2168,12 +2169,12 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
               </div>
             </motion.div>
 
-            {/* Camera Button - Enhanced for AI */}
+            {/* 3. Camera Button */}
             <motion.div
               className="group"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.3 }}
             >
               <div className="relative">
                 <Button
@@ -2196,6 +2197,67 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
               </div>
             </motion.div>
 
+            {/* 4. Upload Button */}
+            <motion.div
+              className="group"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="relative">
+                <Button
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                    showAiChat
+                      ? 'bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-500 hover:to-blue-600'
+                      : 'bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700'
+                  } transition-all duration-300 hover:scale-110 ${showAiChat ? 'ring-2 ring-cyan-300 ring-opacity-50' : ''}`}
+                >
+                  <Upload className="w-6 h-6 text-white" />
+                </Button>
+                
+                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                  <div className="flex flex-col items-center gap-1">
+                    <span>📁 Upload photos</span>
+                    <span className="text-xs opacity-75">Gallery & Files</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* 5. AI/Help Button - Merged Professional Interface */}
+            <motion.div
+              className="group"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              <div className="relative">
+                <Button
+                  onClick={() => setShowAiChat(!showAiChat)}
+                  className={`w-14 h-14 rounded-full shadow-2xl border-4 border-white ${
+                    showAiChat 
+                      ? 'bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 scale-90' 
+                      : 'bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 animate-bounce'
+                  } transition-all duration-300 hover:scale-110`}
+                >
+                  {showAiChat ? (
+                    <X className="w-6 h-6 text-white" />
+                  ) : (
+                    <Brain className="w-6 h-6 text-white" />
+                  )}
+                </Button>
+                
+                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                  <div className="flex flex-col items-center gap-1">
+                    <span>{showAiChat ? '❌ Close AI' : '🧠 AI Assistant'}</span>
+                    <span className="text-xs opacity-75">{showAiChat ? 'Close chat' : 'Chat & Help'}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
         </div>
 
         {/* AI Sidekick - Centered */}
@@ -2350,25 +2412,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
           )}
         </AnimatePresence>
 
-        {/* AI Sidekick Toggle - Right Side, Above Support Chat */}
-        <div className="fixed bottom-20 right-4 z-40 group">
-          <Button
-            onClick={() => setShowAiChat(!showAiChat)}
-            className={`bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-full w-12 h-12 shadow-2xl ${
-              showAiChat ? 'scale-90' : 'animate-bounce'
-            }`}
-          >
-            {showAiChat ? <X className="w-5 h-5" /> : <Brain className="w-5 h-5" />}
-          </Button>
-          
-          {/* Custom Tooltip */}
-          <div className="absolute bottom-full right-0 mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-            <div className="bg-gray-900 text-white text-xs rounded-lg px-3 py-2 whitespace-nowrap shadow-lg">
-              🧠 AI Assistant
-              <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-            </div>
-          </div>
-        </div>
+
 
         {/* Voice Recording Status */}
         {isListening && (
