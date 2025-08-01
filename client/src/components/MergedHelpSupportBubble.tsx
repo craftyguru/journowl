@@ -56,7 +56,11 @@ const tourSteps = [
   }
 ];
 
-export function MergedHelpSupportBubble() {
+interface MergedHelpSupportBubbleProps {
+  hideWhenJournalOpen?: boolean;
+}
+
+export function MergedHelpSupportBubble({ hideWhenJournalOpen = false }: MergedHelpSupportBubbleProps) {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("help");
   const [message, setMessage] = useState("");
@@ -327,6 +331,11 @@ export function MergedHelpSupportBubble() {
       }
     }
   };
+
+  // Hide the component when journal is open
+  if (hideWhenJournalOpen) {
+    return null;
+  }
 
   return (
     <>

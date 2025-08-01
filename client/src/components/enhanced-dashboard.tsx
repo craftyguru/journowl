@@ -31,7 +31,7 @@ import type { User, Stats, JournalEntry, Achievement, Goal, APIResponse, Enhance
 
 // All data now fetched from API endpoints instead of hardcoded values
 
-function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
+function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalStateChange }: EnhancedDashboardProps & { onJournalStateChange?: (isOpen: boolean) => void }) {
   const [activeTab, setActiveTab] = useState(initialTab);
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
@@ -53,6 +53,11 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
   const [topicAnalysisData, setTopicAnalysisData] = useState<any>(null);
   
   const queryClient = useQueryClient();
+  
+  // Notify parent about journal state changes
+  useEffect(() => {
+    onJournalStateChange?.(showUnifiedJournal);
+  }, [showUnifiedJournal, onJournalStateChange]);
   
   // Helper function for theme colors
   const getThemeColor = (theme: string) => {
@@ -6485,14 +6490,24 @@ Mood: ${entry.mood}
 }
 
 // Main Enhanced Dashboard Export with Merged Help & Support
-export default function EnhancedDashboardWithSupport({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
+export default function EnhancedDashboardWithSupport({ onSwitchToKid, initialTab = "journal", isJournalOpen = false }: EnhancedDashboardProps) {
+  const [journalOpen, setJournalOpen] = useState(isJournalOpen);
+
+  const handleJournalStateChange = (isOpen: boolean) => {
+    setJournalOpen(isOpen);
+  };
+
   return (
     <div className="relative">
-      <EnhancedDashboard onSwitchToKid={onSwitchToKid} initialTab={initialTab} />
+      <EnhancedDashboard 
+        onSwitchToKid={onSwitchToKid} 
+        initialTab={initialTab} 
+        onJournalStateChange={handleJournalStateChange} 
+      />
       
       {/* Fixed positioned support bubble in bottom right */}
       <div className="fixed bottom-6 right-6 z-50">
-        <MergedHelpSupportBubble />
+        <MergedHelpSupportBubble hideWhenJournalOpen={journalOpen} />
       </div>
     </div>
   );

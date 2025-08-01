@@ -62,4 +62,5 @@ export interface APIResponse<T> {
 export interface EnhancedDashboardProps {
   onSwitchToKid: () => void;
   initialTab?: string;
+  isJournalOpen?: boolean;
 }
