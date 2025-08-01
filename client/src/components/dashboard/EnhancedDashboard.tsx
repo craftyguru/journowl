@@ -40,7 +40,7 @@ function EnhancedDashboard({
   onSwitchToKid, 
   initialTab = "journal", 
   onJournalStateChange 
-}: EnhancedDashboardProps & { onJournalStateChange?: (isOpen: boolean) => void }) {
+}: EnhancedDashboardProps) {
   
   // State management
   const [activeTab, setActiveTab] = useState(initialTab);
