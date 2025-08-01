@@ -131,9 +131,9 @@ function App() {
     }
   }, [currentView]);
 
-  // Show landing page immediately if not authenticated
-  if (isAuthenticated === null || isAuthenticated === false) {
-    console.log('Showing landing page - isAuthenticated:', isAuthenticated);
+  // Show landing page only if not authenticated AND not on auth page
+  if ((isAuthenticated === null || isAuthenticated === false) && currentView !== "auth") {
+    console.log('Showing landing page - isAuthenticated:', isAuthenticated, 'currentView:', currentView);
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
@@ -141,7 +141,10 @@ function App() {
             <StarryBackground />
             <Toaster />
             <LandingHero 
-              onGetStarted={() => setCurrentView("auth")} 
+              onGetStarted={() => {
+                console.log('Get Started clicked - navigating to auth');
+                setCurrentView("auth");
+              }} 
             />
           </TooltipProvider>
         </ThemeProvider>
