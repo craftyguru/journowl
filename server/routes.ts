@@ -3397,6 +3397,8 @@ Your story shows how every day brings new experiences and emotions, creating the
   
   wss.on('connection', (ws, req) => {
     console.log('WebSocket connection established for support chat');
+    let connectedUserId: number | null = null;
+    let isAdminConnection = false;
     
     ws.on('message', async (data) => {
       try {
@@ -3409,15 +3411,27 @@ Your story shows how every day brings new experiences and emotions, creating the
           
           if (isAdmin) {
             adminConnections.add(ws);
+            isAdminConnection = true;
             console.log(`Admin connected to support chat`);
           } else {
             activeConnections.set(userId, ws);
+            connectedUserId = userId;
             console.log(`User ${userId} connected to support chat`);
           }
         } else if (message.type === 'chat_message') {
+          // Use stored userId if message.userId is null
+          const actualUserId = message.userId || connectedUserId;
+          
+          if (!actualUserId) {
+            console.error('No user ID available for chat message');
+            return;
+          }
+          
+          console.log(`Creating support message for user ${actualUserId}: "${message.message}"`);
+          
           // Store message in database and broadcast to relevant connections
           const supportMessage = await storage.createSupportMessage({
-            userId: message.userId,
+            userId: actualUserId,
             message: message.message,
             sender: message.sender,
             attachmentUrl: message.attachmentUrl,
@@ -3432,7 +3446,7 @@ Your story shows how every day brings new experiences and emotions, creating the
           });
           
           // Send to specific user
-          const userWs = activeConnections.get(message.userId);
+          const userWs = activeConnections.get(actualUserId);
           if (userWs && userWs.readyState === WebSocket.OPEN) {
             userWs.send(broadcastData);
           }
