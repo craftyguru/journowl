@@ -304,7 +304,7 @@ export function MergedHelpSupportBubble() {
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white p-4 rounded-full shadow-lg z-50 transition-all duration-300"
+            className="fixed bottom-6 right-6 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white p-4 rounded-full shadow-lg z-40 transition-all duration-300"
           >
             <div className="flex items-center justify-center">
               <HelpCircle className="w-6 h-6" />

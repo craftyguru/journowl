@@ -2079,9 +2079,9 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
           </PanelGroup>
         </div>
 
-        {/* Professional Floating Action Buttons - 5 Evenly Spaced */}
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center justify-center w-full max-w-md px-4 z-[60]">
-          <div className="flex items-center justify-between w-full">
+        {/* Professional Floating Action Buttons - 4 Evenly Spaced */}
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex items-center justify-center w-full max-w-xs px-2 z-[60]">
+          <div className="flex items-center justify-evenly w-full">
             
             {/* 1. Voice/Microphone Button */}
             <motion.div
