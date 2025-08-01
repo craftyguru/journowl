@@ -2234,7 +2234,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                   )}
                 </Button>
                 
-                <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
+                <div className="absolute bottom-16 right-0 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
                     <span>{showAiChat ? '❌ Close AI' : '🧠 AI Writing Assistant'}</span>
                     <span className="text-xs opacity-75">{showAiChat ? 'Close chat' : 'Writing help & analysis'}</span>
