@@ -6039,43 +6039,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
         </DialogContent>
       </Dialog>
 
-      {/* Journal Button - Left Corner */}
-      {!showSmartEditor && !showUnifiedJournal && (
-        <motion.button
-          onClick={() => setShowUnifiedJournal(true)}
-          whileHover={{ scale: 1.1, rotate: 5 }}
-          whileTap={{ scale: 0.95 }}
-          className="fixed bottom-6 left-6 w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 rounded-full shadow-xl flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200 z-50"
-          title="Open Journal"
-        >
-          📝
-        </motion.button>
-      )}
 
-      {/* Floating Action Bubbles - Voice and Camera Only */}
-      {!showSmartEditor && !showUnifiedJournal && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
-          <motion.button
-            onClick={capturePhoto}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Take Photo"
-          >
-            📸
-          </motion.button>
-          
-          <motion.button
-            onClick={recordAudio}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Record Audio"
-          >
-            🎤
-          </motion.button>
-        </div>
-      )}
 
     </div>
   );
