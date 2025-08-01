@@ -363,20 +363,20 @@ export default function AdminDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-3">
-                        <div className="text-sm font-medium text-purple-800 dark:text-purple-200">🎯 User Growth Prediction</div>
-                        <div className="text-2xl font-bold text-purple-700">+{advancedAnalytics.predictive?.userGrowthPrediction || 47}%</div>
-                        <div className="text-xs text-purple-600">Next 30 days (confidence: {advancedAnalytics.predictive?.predictionConfidence || 87}%)</div>
+                      <div className="bg-purple-800/30 dark:bg-purple-900/30 rounded-lg p-3">
+                        <div className="text-sm font-medium text-purple-300 dark:text-purple-200">🎯 User Growth Prediction</div>
+                        <div className="text-2xl font-bold text-purple-200">+{advancedAnalytics.predictive?.userGrowthPrediction || 48}%</div>
+                        <div className="text-xs text-purple-400">Next 30 days (confidence: {advancedAnalytics.predictive?.predictionConfidence || 95}%)</div>
                       </div>
-                      <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3">
-                        <div className="text-sm font-medium text-blue-800 dark:text-blue-200">💰 Revenue Forecast</div>
-                        <div className="text-2xl font-bold text-blue-700">${advancedAnalytics.predictive?.revenueForecast || 2340}</div>
-                        <div className="text-xs text-blue-600">Expected monthly revenue</div>
+                      <div className="bg-blue-800/30 dark:bg-blue-900/30 rounded-lg p-3">
+                        <div className="text-sm font-medium text-blue-300 dark:text-blue-200">💰 Revenue Forecast</div>
+                        <div className="text-2xl font-bold text-blue-200">${advancedAnalytics.predictive?.revenueForecast || 50}</div>
+                        <div className="text-xs text-blue-400">Expected monthly revenue</div>
                       </div>
-                      <div className="bg-green-100 dark:bg-green-900/30 rounded-lg p-3">
+                      <div className="bg-green-800/30 dark:bg-green-900/30 rounded-lg p-3">
                         <div className="text-sm font-medium text-green-800 dark:text-green-200">📈 Churn Risk</div>
-                        <div className="text-2xl font-bold text-green-700">Low ({advancedAnalytics.predictive?.churnRisk || 3.2}%)</div>
-                        <div className="text-xs text-green-600">{Math.max(1, Math.round((advancedAnalytics.predictive?.churnRisk || 3.2) / 100 * (analytics.totalUsers || 100)))} users at risk this month</div>
+                        <div className="text-2xl font-bold text-green-300">Low ({advancedAnalytics.predictive?.churnRisk || 3.2}%)</div>
+                        <div className="text-xs text-green-400">{Math.max(1, Math.round((advancedAnalytics.predictive?.churnRisk || 3.2) / 100 * (analytics.totalUsers || 100)))} users at risk this month</div>
                       </div>
                     </div>
                   </CardContent>
@@ -393,20 +393,20 @@ export default function AdminDashboard() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3">
-                        <div className="text-sm font-medium text-blue-800 dark:text-blue-200">🔥 Peak Activity Window</div>
-                        <div className="text-lg font-bold text-blue-700">{advancedAnalytics.predictive?.peakActivityWindow || '7:30-9:15 PM'}</div>
-                        <div className="text-xs text-blue-600">{advancedAnalytics.predictive?.peakActivityPercentage || 73}% of daily journal entries</div>
+                      <div className="bg-blue-800/30 dark:bg-blue-900/30 rounded-lg p-3">
+                        <div className="text-sm font-medium text-blue-300 dark:text-blue-200">🔥 Peak Activity Window</div>
+                        <div className="text-lg font-bold text-blue-200">{advancedAnalytics.predictive?.peakActivityWindow || '4:00-6:00'}</div>
+                        <div className="text-xs text-blue-400">{advancedAnalytics.predictive?.peakActivityPercentage || 73}% of daily journal entries</div>
                       </div>
-                      <div className="bg-orange-100 dark:bg-orange-900/30 rounded-lg p-3">
-                        <div className="text-sm font-medium text-orange-800 dark:text-orange-200">⭐ Feature Champion</div>
-                        <div className="text-lg font-bold text-orange-700">Photo AI Analysis</div>
-                        <div className="text-xs text-orange-600">91% adoption rate</div>
+                      <div className="bg-orange-800/30 dark:bg-orange-900/30 rounded-lg p-3">
+                        <div className="text-sm font-medium text-orange-300 dark:text-orange-200">⭐ Feature Champion</div>
+                        <div className="text-lg font-bold text-orange-200">Photo AI Analysis</div>
+                        <div className="text-xs text-orange-400">{advancedAnalytics.predictive?.photoAnalysisRate || 91}% adoption rate</div>
                       </div>
-                      <div className="bg-green-100 dark:bg-green-900/30 rounded-lg p-3">
-                        <div className="text-sm font-medium text-green-800 dark:text-green-200">🎨 Trending Content</div>
-                        <div className="text-lg font-bold text-green-700">Travel & Food</div>
-                        <div className="text-xs text-green-600">43% of recent entries</div>
+                      <div className="bg-green-800/30 dark:bg-green-900/30 rounded-lg p-3">
+                        <div className="text-sm font-medium text-green-300 dark:text-green-200">🎨 Trending Content</div>
+                        <div className="text-lg font-bold text-green-200">Travel & Food</div>
+                        <div className="text-xs text-green-400">43% of recent entries</div>
                       </div>
                     </div>
                   </CardContent>
@@ -504,15 +504,15 @@ export default function AdminDashboard() {
                         <div className="grid grid-cols-4 gap-2 text-xs">
                           <div className="bg-red-800/70 p-2 rounded text-center">
                             <div className="font-bold text-red-200">AI Prompts</div>
-                            <div className="text-red-100">{Math.min(100, Math.round((advancedAnalytics.features?.aiPrompts || 0) / Math.max(1, analytics.totalUsers || 1) * 100)) || 91}%</div>
+                            <div className="text-red-100">{advancedAnalytics.predictive?.aiPromptsRate || 90}%</div>
                           </div>
                           <div className="bg-orange-800/70 p-2 rounded text-center">
                             <div className="font-bold text-orange-200">Photos</div>
-                            <div className="text-orange-100">{Math.min(100, Math.round((advancedAnalytics.features?.photoAnalysis || 0) / Math.max(1, analytics.totalEntries || 1) * 100)) || 76}%</div>
+                            <div className="text-orange-100">{advancedAnalytics.predictive?.photoAnalysisRate || 76}%</div>
                           </div>
                           <div className="bg-yellow-800/70 p-2 rounded text-center">
                             <div className="font-bold text-yellow-200">Mood</div>
-                            <div className="text-yellow-100">{Math.min(100, Math.round((advancedAnalytics.features?.moodTracking || 0) / Math.max(1, analytics.totalEntries || 1) * 100)) || 63}%</div>
+                            <div className="text-yellow-100">{advancedAnalytics.predictive?.moodTrackingRate || 63}%</div>
                           </div>
                           <div className="bg-blue-800/70 p-2 rounded text-center">
                             <div className="font-bold text-blue-200">Drawing</div>
@@ -529,19 +529,19 @@ export default function AdminDashboard() {
                         <div className="space-y-2 text-sm">
                           <div className="flex justify-between">
                             <span className="text-gray-300">🔥 Power Journalers (Daily)</span>
-                            <span className="font-bold text-purple-300">23%</span>
+                            <span className="font-bold text-purple-300">{Math.round((advancedAnalytics.segments?.powerUsers || 1) / Math.max(1, analytics.totalUsers || 1) * 100)}%</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-300">📷 Visual Storytellers</span>
-                            <span className="font-bold text-purple-300">31%</span>
+                            <span className="font-bold text-purple-300">{Math.round((advancedAnalytics.features?.photoAnalysis || 0) / Math.max(1, analytics.totalEntries || 1) * 100)}%</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-300">🎨 Creative Writers</span>
-                            <span className="font-bold text-purple-300">18%</span>
+                            <span className="font-bold text-purple-300">{Math.round((advancedAnalytics.segments?.regularUsers || 1) / Math.max(1, analytics.totalUsers || 1) * 100)}%</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-gray-300">😴 Casual Users</span>
-                            <span className="font-bold text-purple-300">28%</span>
+                            <span className="font-bold text-purple-300">{Math.round((advancedAnalytics.segments?.inactiveUsers || 1) / Math.max(1, analytics.totalUsers || 1) * 100)}%</span>
                           </div>
                         </div>
                       </div>
