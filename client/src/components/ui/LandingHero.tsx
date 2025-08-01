@@ -149,7 +149,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
       className="relative min-h-screen overflow-hidden"
     >
       {/* Landing Header */}
-      <LandingHeader onSignIn={handleSignIn} onSignUp={handleSignUp} />
+      <LandingHeader onGetStarted={onGetStarted} />
       
       {/* Subtle overlay for better text readability */}
       <div className="absolute inset-0 bg-black/20 z-0" />

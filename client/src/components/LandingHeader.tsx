@@ -8,11 +8,10 @@ import { PrivacyModal } from "@/components/PrivacyModal";
 import { TermsModal } from "@/components/TermsModal";
 
 interface LandingHeaderProps {
-  onSignIn: () => void;
-  onSignUp: () => void;
+  onGetStarted: () => void;
 }
 
-export default function LandingHeader({ onSignIn, onSignUp }: LandingHeaderProps) {
+export default function LandingHeader({ onGetStarted }: LandingHeaderProps) {
   const { colorScheme, toggleColorScheme } = useTheme();
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
@@ -79,24 +78,13 @@ export default function LandingHeader({ onSignIn, onSignUp }: LandingHeaderProps
               </Button>
             </div>
 
-            {/* Authentication Buttons */}
+            {/* Single Authentication Button */}
             <Button
-              variant="ghost"
-              onClick={onSignIn}
-              className="text-white hover:bg-white/10 text-sm sm:text-base px-3 sm:px-4 py-2 rounded-lg border border-white/20 hover:border-white/40 transition-all"
+              onClick={onGetStarted}
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-sm sm:text-base px-4 sm:px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all border-0"
             >
               <LogIn className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Sign In</span>
-              <span className="sm:hidden">In</span>
-            </Button>
-            
-            <Button
-              onClick={onSignUp}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-sm sm:text-base px-3 sm:px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all border-0"
-            >
-              <UserPlus className="w-4 h-4 mr-2" />
-              <span className="hidden sm:inline">Sign Up</span>
-              <span className="sm:hidden">Up</span>
+              <span>Get Started</span>
             </Button>
           </div>
         </div>
