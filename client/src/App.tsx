@@ -102,7 +102,7 @@ function App() {
     queryClient.clear();
   };
 
-  // Check authentication status on app load
+  // Check authentication status on app load (DISABLED AUTO-RECOVERY)
   useEffect(() => {
     console.log('🔧 useEffect triggered - currentView:', currentView, 'isAuthenticated:', isAuthenticated);
     
@@ -112,7 +112,7 @@ function App() {
     // Don't override email-verified view with auth check
     if (currentView === "email-verified") {
       console.log('🔧 Skipping auth check for email-verified view');
-      setIsAuthenticated(false); // Allow page to display regardless of auth status
+      setIsAuthenticated(false);
       return;
     }
     
@@ -123,31 +123,12 @@ function App() {
       return;
     }
     
-    // Skip auth check if user is already authenticated (prevents loop)
-    if (isAuthenticated === true) {
-      console.log('🔧 User already authenticated, skipping auth check');
-      return;
+    // AUTO-RECOVERY DISABLED - Don't automatically check authentication
+    // User must manually log in
+    if (isAuthenticated === null) {
+      console.log('🔧 Auto-recovery disabled - setting as not authenticated');
+      setIsAuthenticated(false);
     }
-    
-    console.log('🔧 Running getCurrentUser check...');
-    getCurrentUser()
-      .then(() => {
-        console.log('🔧 getCurrentUser success - setting authenticated and redirecting to dashboard');
-        setIsAuthenticated(true);
-        // Only redirect authenticated users to dashboard if they're on landing page
-        if (currentView === "landing") {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          setCurrentView("dashboard");
-        }
-      })
-      .catch((error) => {
-        console.log('🔧 getCurrentUser failed - user not authenticated', error);
-        setIsAuthenticated(false);
-        // Default to auth page for unauthenticated users
-        if (currentView === "dashboard" || currentView === "insights") {
-          setCurrentView("auth");
-        }
-      });
   }, [currentView]);
 
   if (isAuthenticated === null) {
