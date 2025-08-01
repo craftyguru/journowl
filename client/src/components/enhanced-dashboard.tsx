@@ -1396,11 +1396,11 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
             </motion.div>
           </div>
           
-          {/* Bright Neon Red Swipe Indicator with Zoom Effects */}
+          {/* Bright Neon Red Swipe Indicator Across Screen */}
           <motion.div 
-            className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 lg:hidden z-20"
+            className="absolute -bottom-6 left-0 right-0 lg:hidden z-20 px-4"
             animate={{ 
-              scale: [1, 1.2, 1],
+              scale: [1, 1.05, 1],
               textShadow: [
                 '0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 30px #ff0040',
                 '0 0 15px #ff0040, 0 0 25px #ff0040, 0 0 40px #ff0040', 
@@ -1413,7 +1413,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               repeatType: "reverse" 
             }}
           >
-            <div className="flex items-center gap-4 bg-black/80 backdrop-blur-sm px-8 py-1 rounded-full border-2 border-red-500 shadow-lg shadow-red-500/50">
+            <div className="flex items-center justify-between bg-black/80 backdrop-blur-sm px-6 py-0.5 rounded-full border-2 border-red-500 shadow-lg shadow-red-500/50 w-full max-w-md mx-auto">
               <motion.span 
                 className="text-lg text-red-400"
                 animate={{ x: [-4, 4, -4] }}
@@ -1422,7 +1422,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               >
                 ←
               </motion.span>
-              <span className="text-xs font-bold text-red-400 tracking-widest" style={{ 
+              <span className="text-xs font-bold text-red-400 tracking-widest flex-1 text-center" style={{ 
                 textShadow: '0 0 10px #ff0040, 0 0 20px #ff0040',
                 filter: 'brightness(1.3)'
               }}>
