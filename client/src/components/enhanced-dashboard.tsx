@@ -1413,16 +1413,16 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               repeatType: "reverse" 
             }}
           >
-            <div className="flex items-center gap-2 bg-black/80 backdrop-blur-sm px-4 py-2 rounded-full border-2 border-red-500 shadow-lg shadow-red-500/50">
+            <div className="flex items-center gap-4 bg-black/80 backdrop-blur-sm px-8 py-1 rounded-full border-2 border-red-500 shadow-lg shadow-red-500/50">
               <motion.span 
                 className="text-lg text-red-400"
-                animate={{ x: [-3, 3, -3] }}
+                animate={{ x: [-4, 4, -4] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
                 style={{ filter: 'drop-shadow(0 0 8px #ff0040)' }}
               >
                 ←
               </motion.span>
-              <span className="text-sm font-bold text-red-400" style={{ 
+              <span className="text-xs font-bold text-red-400 tracking-widest" style={{ 
                 textShadow: '0 0 10px #ff0040, 0 0 20px #ff0040',
                 filter: 'brightness(1.3)'
               }}>
@@ -1430,7 +1430,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
               </span>
               <motion.span 
                 className="text-lg text-red-400"
-                animate={{ x: [3, -3, 3] }}
+                animate={{ x: [4, -4, 4] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
                 style={{ filter: 'drop-shadow(0 0 8px #ff0040)' }}
               >
