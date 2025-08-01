@@ -2410,6 +2410,25 @@ Your story shows how every day brings new experiences and emotions, creating the
 
   // Enhanced Admin User Management Endpoints
   
+  // Get single user details (for admin)
+  app.get("/api/admin/users/:userId", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await storage.getUser(parseInt(userId));
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Return user without sensitive data
+      const { password, ...safeUser } = user;
+      res.json(safeUser);
+    } catch (error: any) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
   // Ban/Unban User
   app.post("/api/admin/users/:userId/ban", requireAuth, requireAdmin, async (req: any, res) => {
     try {

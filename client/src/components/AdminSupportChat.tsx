@@ -129,29 +129,48 @@ export function AdminSupportChat() {
       .then(data => {
         setMessages(data || []);
         
-        // Create chat sessions from messages
+        // Create chat sessions from messages and fetch user details
         const sessionsMap = new Map<number, ChatSession>();
-        (data || []).forEach((msg: SupportMessage) => {
-          if (!sessionsMap.has(msg.userId)) {
-            sessionsMap.set(msg.userId, {
-              userId: msg.userId,
-              username: `User ${msg.userId}`,
-              email: '',
-              lastMessage: msg.message.substring(0, 50) + '...',
-              unreadCount: msg.sender === 'user' ? 1 : 0,
-              lastActivity: msg.createdAt
-            });
-          } else {
-            const session = sessionsMap.get(msg.userId)!;
-            session.lastMessage = msg.message.substring(0, 50) + '...';
-            session.lastActivity = msg.createdAt;
-            if (msg.sender === 'user') {
-              session.unreadCount += 1;
-            }
-          }
-        });
+        const userIds = [...new Set((data || []).map((msg: SupportMessage) => msg.userId))];
         
-        setChatSessions(Array.from(sessionsMap.values()));
+        // Fetch user details for all unique user IDs
+        Promise.all(
+          userIds.map(userId => 
+            fetch(`/api/admin/users/${userId}`, { credentials: 'include' })
+              .then(res => res.ok ? res.json() : null)
+              .catch(() => null)
+          )
+        ).then(userDetails => {
+          const userMap = new Map();
+          userDetails.forEach((user, index) => {
+            if (user) {
+              userMap.set(userIds[index], user);
+            }
+          });
+          
+          (data || []).forEach((msg: SupportMessage) => {
+            const user = userMap.get(msg.userId);
+            if (!sessionsMap.has(msg.userId)) {
+              sessionsMap.set(msg.userId, {
+                userId: msg.userId,
+                username: user?.username || user?.email?.split('@')[0] || `User ${msg.userId}`,
+                email: user?.email || '',
+                lastMessage: msg.message.length > 50 ? msg.message.substring(0, 50) + '...' : msg.message,
+                unreadCount: msg.sender === 'user' ? 1 : 0,
+                lastActivity: msg.createdAt
+              });
+            } else {
+              const session = sessionsMap.get(msg.userId)!;
+              session.lastMessage = msg.message.length > 50 ? msg.message.substring(0, 50) + '...' : msg.message;
+              session.lastActivity = msg.createdAt;
+              if (msg.sender === 'user') {
+                session.unreadCount += 1;
+              }
+            }
+          });
+          
+          setChatSessions(Array.from(sessionsMap.values()));
+        });
       })
       .catch(error => {
         console.error('Error fetching admin support messages:', error);
@@ -296,7 +315,10 @@ export function AdminSupportChat() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageCircle className="w-5 h-5" />
-            {selectedUser ? `Chat with User ${selectedUser}` : 'Select a chat session'}
+            {selectedUser ? 
+              `Chat with ${chatSessions.find(s => s.userId === selectedUser)?.username || `User ${selectedUser}`}` : 
+              'Select a chat session'
+            }
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">

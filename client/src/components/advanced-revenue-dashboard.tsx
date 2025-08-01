@@ -62,9 +62,17 @@ export default function AdvancedRevenueDashboard() {
     churnRate: 0
   });
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
   useEffect(() => {
     loadRevenueData();
+    
+    // Set up real-time updates every 30 seconds
+    const interval = setInterval(() => {
+      loadRevenueData();
+    }, 30000);
+    
+    return () => clearInterval(interval);
   }, []);
 
   const loadRevenueData = async () => {
@@ -74,6 +82,7 @@ export default function AdvancedRevenueDashboard() {
       if (response.ok) {
         const data = await response.json();
         setRevenueData(data);
+        setLastUpdated(new Date());
       }
     } catch (error) {
       console.error('Error loading revenue data:', error);
@@ -125,6 +134,19 @@ export default function AdvancedRevenueDashboard() {
   }
   return (
     <div className="space-y-6">
+      {/* Real-time Status Indicator */}
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+          <span className="text-sm text-gray-600">
+            Live data • Last updated: {lastUpdated.toLocaleTimeString()}
+          </span>
+        </div>
+        <Button variant="outline" size="sm" onClick={loadRevenueData}>
+          Refresh
+        </Button>
+      </div>
+      
       {/* Revenue Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200">
