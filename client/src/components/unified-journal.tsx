@@ -2116,7 +2116,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                 </Button>
                 
                 {isListening && (
-                  <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+                  <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping z-20"></div>
                 )}
                 
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
@@ -2155,8 +2155,8 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                 
                 {isRecordingAudio && (
                   <>
-                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-mono">
+                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-red-500 rounded-full animate-ping z-20"></div>
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-mono z-20">
                       {Math.floor(recordingTimer / 60)}:{(recordingTimer % 60).toString().padStart(2, '0')}
                     </div>
                   </>
