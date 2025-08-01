@@ -2242,7 +2242,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
               </div>
             </motion.div>
 
-            {/* 5. Help & Support Button */}
+            {/* 5. AI Assistant Button */}
             <motion.div
               className="group"
               initial={{ scale: 0.8, opacity: 0 }}
@@ -2250,12 +2250,17 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
               transition={{ delay: 0.5 }}
             >
               <div className="relative">
-                <MergedHelpSupportBubble />
+                <Button
+                  onClick={() => setShowAiChat(true)}
+                  className="w-14 h-14 rounded-full shadow-2xl border-4 border-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 hover:scale-110 transition-all duration-300"
+                >
+                  <Brain className="w-6 h-6 text-white" />
+                </Button>
                 
                 <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-black/80 text-white text-xs px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10">
                   <div className="flex flex-col items-center gap-1">
-                    <span>🆘 Help & Support</span>
-                    <span className="text-xs opacity-75">Tour & Live Chat</span>
+                    <span>🤖 AI Assistant</span>
+                    <span className="text-xs opacity-75">Smart writing help</span>
                   </div>
                 </div>
               </div>
