@@ -334,14 +334,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
 
       for (const activity of sampleActivities) {
-        await db.insert(userActivityLogs).values({
-          userId: activity.userId,
-          action: activity.action,
-          details: activity.details,
-          ipAddress: '127.0.0.1',
-          userAgent: 'Mozilla/5.0',
-          createdAt: new Date(Date.now() - Math.random() * 3 * 60 * 60 * 1000) // Random time within last 3 hours
-        });
+        await storage.logUserActivity(
+          activity.userId,
+          activity.action,
+          JSON.parse(activity.details),
+          '127.0.0.1',
+          'Mozilla/5.0'
+        );
       }
 
       res.json({ message: 'Sample activity data created', count: sampleActivities.length });
@@ -607,14 +606,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 // Helper function to log user activity
 const logActivity = async (userId: number, action: string, details: any = {}, req?: any) => {
   try {
-    await db.insert(userActivityLogs).values({
+    await storage.logUserActivity(
       userId,
       action,
-      details: JSON.stringify(details),
-      ipAddress: req?.ip || req?.headers?.['x-forwarded-for'] || req?.connection?.remoteAddress,
-      userAgent: req?.headers?.['user-agent'],
-      createdAt: new Date()
-    });
+      details,
+      req?.ip || req?.headers?.['x-forwarded-for'] || req?.connection?.remoteAddress,
+      req?.headers?.['user-agent']
+    );
   } catch (error) {
     console.error("Error logging activity:", error);
   }
@@ -2397,18 +2395,18 @@ Your story shows how every day brings new experiences and emotions, creating the
         inactiveUsers
       ] = await Promise.all([
         // Entries created today - real data
-        storage.db.select({ count: sql`count(*)` }).from(journalEntries)
+        db.select({ count: sql`count(*)` }).from(journalEntries)
           .where(and(
             gte(journalEntries.createdAt, today),
             lt(journalEntries.createdAt, tomorrow)
           )).then(result => parseInt(result[0]?.count) || 0),
         
-        // AI prompts used today - real data from user stats
-        storage.db.select({ total: sql`sum(${userStats.promptsUsedThisMonth})` }).from(userStats)
+        // AI prompts used today - calculate from all users
+        db.select({ total: sql`sum(prompts_used_this_month)` }).from(userStats)
           .then(result => parseInt(result[0]?.total) || 0),
         
         // Active users today - users who logged in today
-        storage.db.select({ count: sql`count(distinct ${users.id})` }).from(users)
+        db.select({ count: sql`count(distinct ${users.id})` }).from(users)
           .where(and(
             gte(users.lastLoginAt, today),
             lt(users.lastLoginAt, tomorrow)
@@ -2421,25 +2419,25 @@ Your story shows how every day brings new experiences and emotions, creating the
         storage.getAllUsers(),
         
         // Get all entries for calculations
-        storage.db.select().from(journalEntries),
+        db.select().from(journalEntries),
         
         // Power users (users with >50 XP)
-        storage.db.select({ count: sql`count(*)` }).from(users)
+        db.select({ count: sql`count(*)` }).from(users)
           .where(gte(users.xp, 50))
           .then(result => parseInt(result[0]?.count) || 0),
         
         // Regular users (users with 10-50 XP)
-        storage.db.select({ count: sql`count(*)` }).from(users)
+        db.select({ count: sql`count(*)` }).from(users)
           .where(and(gte(users.xp, 10), lt(users.xp, 50)))
           .then(result => parseInt(result[0]?.count) || 0),
         
         // New users (created in last 7 days)
-        storage.db.select({ count: sql`count(*)` }).from(users)
+        db.select({ count: sql`count(*)` }).from(users)
           .where(gte(users.createdAt, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
           .then(result => parseInt(result[0]?.count) || 0),
         
         // Inactive users (no login in last 30 days or never logged in)
-        storage.db.select({ count: sql`count(*)` }).from(users)
+        db.select({ count: sql`count(*)` }).from(users)
           .where(or(
             isNull(users.lastLoginAt),
             lt(users.lastLoginAt, new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
