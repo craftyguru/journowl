@@ -131,7 +131,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (!req.session?.userId) {
       // CRITICAL FIX: Check if this is djfluent user and populate session
       // Skip auto-recovery if disabled (after logout)
-      if (req.session && req.sessionID && !autoRecoveryDisabled) {
+      if (req.session && req.sessionID && false) { // Auto-recovery disabled
         try {
           console.log('🔍 Attempting session recovery for potential djfluent user...');
           
@@ -600,8 +600,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Support both GET and POST for logout
-  // Global flag to temporarily disable auto-recovery after logout
-  let autoRecoveryDisabled = false;
+  // Global flag to permanently disable auto-recovery 
+  let autoRecoveryDisabled = true;
 
 // Helper function to log user activity
 const logActivity = async (userId: number, action: string, details: any = {}, req?: any) => {

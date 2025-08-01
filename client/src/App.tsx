@@ -87,9 +87,19 @@ function App() {
   const handleAuthenticated = () => {
     console.log('🔧 handleAuthenticated called - setting isAuthenticated to true and currentView to dashboard');
     setIsAuthenticated(true);
+    // Clear any cached auth status
+    queryClient.invalidateQueries({ queryKey: ['/api/auth/me'] });
     // Scroll to top when redirecting to dashboard
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setCurrentView("dashboard"); // Immediately redirect to dashboard after login
+  };
+
+  const handleLogout = () => {
+    console.log('🔧 Logout triggered - clearing auth state');
+    setIsAuthenticated(false);
+    setCurrentView("auth");
+    // Clear all cached data
+    queryClient.clear();
   };
 
   // Check authentication status on app load
@@ -131,11 +141,11 @@ function App() {
         }
       })
       .catch((error) => {
-        console.log('🔧 getCurrentUser failed - user not authenticated');
+        console.log('🔧 getCurrentUser failed - user not authenticated', error);
         setIsAuthenticated(false);
-        // Redirect to landing if not on allowed pages
-        if (currentView !== "auth" && currentView !== "landing" && currentView !== "email-confirmation" && currentView !== "email-verified" && currentView !== "import" && currentView !== "share" && currentView !== "privacy-policy" && currentView !== "terms" && currentView !== "faq" && currentView !== "demo") {
-          setCurrentView("landing");
+        // Default to auth page for unauthenticated users
+        if (currentView === "dashboard" || currentView === "insights") {
+          setCurrentView("auth");
         }
       });
   }, [currentView]);
