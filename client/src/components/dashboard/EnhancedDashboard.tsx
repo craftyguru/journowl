@@ -33,6 +33,7 @@ import PromptPurchase from "../PromptPurchase";
 import UsageMeters from "../UsageMeters";
 import { AIStoryMaker } from "../kid-dashboard";
 import { MergedHelpSupportBubble } from "../MergedHelpSupportBubble";
+import ErrorBoundary from "../ErrorBoundary";
 
 import type { EnhancedDashboardProps, JournalEntry } from "./types";
 
@@ -521,17 +522,19 @@ export default function EnhancedDashboardWithSupport({
   };
 
   return (
-    <div className="relative">
-      <EnhancedDashboard 
-        onSwitchToKid={onSwitchToKid} 
-        initialTab={initialTab} 
-        onJournalStateChange={handleJournalStateChange} 
-      />
-      
-      {/* Fixed positioned support bubble in bottom right */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <MergedHelpSupportBubble hideWhenJournalOpen={journalOpen} />
+    <ErrorBoundary>
+      <div className="relative">
+        <EnhancedDashboard 
+          onSwitchToKid={onSwitchToKid} 
+          initialTab={initialTab} 
+          onJournalStateChange={handleJournalStateChange} 
+        />
+        
+        {/* Fixed positioned support bubble in bottom right */}
+        <div className="fixed bottom-6 right-6 z-50">
+          <MergedHelpSupportBubble hideWhenJournalOpen={journalOpen} />
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }
