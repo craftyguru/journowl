@@ -181,10 +181,23 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
       setRecognition(recognitionInstance);
 
-      // Initialize separate speech recognition for AI chat
+      // Initialize separate speech recognition for AI chat with mobile optimization
       const aiRecognitionInstance = new SpeechRecognition();
-      aiRecognitionInstance.continuous = true;
-      aiRecognitionInstance.interimResults = true;
+      
+      // Detect if user is on mobile device
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      
+      if (isMobile) {
+        // Mobile-optimized settings to prevent multiple partial messages
+        aiRecognitionInstance.continuous = false;  // Single result mode for mobile
+        aiRecognitionInstance.interimResults = false;  // No interim results on mobile
+        aiRecognitionInstance.maxAlternatives = 1;
+      } else {
+        // Desktop settings with interim results
+        aiRecognitionInstance.continuous = true;
+        aiRecognitionInstance.interimResults = true;
+      }
+      
       aiRecognitionInstance.lang = 'en-US';
 
       aiRecognitionInstance.onresult = (event) => {
@@ -194,23 +207,35 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         for (let i = event.resultIndex; i < event.results.length; i++) {
           if (event.results[i].isFinal) {
             finalTranscript += event.results[i][0].transcript;
-          } else {
+          } else if (!isMobile) {
+            // Only show interim results on desktop
             interimTranscript += event.results[i][0].transcript;
           }
         }
         
-        // Show interim results in the input field
-        setAiInput(lastFinalTranscript + finalTranscript + interimTranscript);
-        
-        // When we get final transcript, send it to AI for interactive response
-        if (finalTranscript && finalTranscript !== lastFinalTranscript) {
-          const newContent = lastFinalTranscript + finalTranscript;
-          setLastFinalTranscript(newContent);
+        if (isMobile) {
+          // On mobile, only process final results and send immediately
+          if (finalTranscript.trim()) {
+            console.log('Mobile AI Recognition final:', finalTranscript);
+            setAiInput(finalTranscript.trim());
+            setLastFinalTranscript(finalTranscript.trim());
+            
+            // Auto-send on mobile after getting final result
+            setTimeout(() => {
+              sendToAi(finalTranscript.trim());
+              setAiInput('');
+              setLastFinalTranscript('');
+            }, 100);
+          }
+        } else {
+          // Desktop behavior with interim results
+          setAiInput(lastFinalTranscript + finalTranscript + interimTranscript);
           
-          console.log('AI Recognition received:', newContent);
-          
-          // For click-and-hold mode, wait for user to release button
-          // The message will be sent when mouse is released
+          if (finalTranscript && finalTranscript !== lastFinalTranscript) {
+            const newContent = lastFinalTranscript + finalTranscript;
+            setLastFinalTranscript(newContent);
+            console.log('Desktop AI Recognition received:', newContent);
+          }
         }
       };
 
@@ -220,7 +245,23 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       };
 
       aiRecognitionInstance.onend = () => {
+        console.log('AI speech recognition ended');
         setIsAiListening(false);
+        
+        // On mobile, restart if no final transcript was received and still listening
+        if (isMobile && isAiListening && !lastFinalTranscript) {
+          console.log('Mobile: Restarting speech recognition for better results');
+          setTimeout(() => {
+            if (!isAiListening) {
+              try {
+                aiRecognitionInstance.start();
+                setIsAiListening(true);
+              } catch (error) {
+                console.log('Could not restart speech recognition:', error);
+              }
+            }
+          }, 100);
+        }
       };
 
       setAiRecognition(aiRecognitionInstance);
@@ -772,8 +813,10 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
     }
   };
 
-  // Simple voice message recording
+  // Simple voice message recording with mobile optimization
   const handleVoiceRecord = () => {
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     if (isAiListening) {
       // Stop recording
       console.log('Stopping voice recording...');
@@ -782,19 +825,22 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
       }
       setIsAiListening(false);
       
-      // Send the captured speech to AI if we have content
-      const finalInput = lastFinalTranscript || aiInput;
-      if (finalInput.trim()) {
-        console.log('Sending voice message to AI:', finalInput);
-        sendToAi(finalInput.trim());
-        setAiInput('');
-        setLastFinalTranscript('');
-      } else {
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '🤔 I didn\'t catch that. Please try again or type your message.'
-        }]);
+      if (!isMobile) {
+        // On desktop, manually send the message when user stops recording
+        const finalInput = lastFinalTranscript || aiInput;
+        if (finalInput.trim()) {
+          console.log('Sending voice message to AI:', finalInput);
+          sendToAi(finalInput.trim());
+          setAiInput('');
+          setLastFinalTranscript('');
+        } else {
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '🤔 I didn\'t catch that. Please try again or type your message.'
+          }]);
+        }
       }
+      // On mobile, the message is auto-sent in the onresult handler
     } else {
       // Start recording
       console.log('Starting voice recording...');
@@ -804,10 +850,27 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
         try {
           aiRecognition.start();
           setIsAiListening(true);
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '🎤 Recording... Click the mic again when finished!'
-          }]);
+          
+          if (isMobile) {
+            setAiMessages(prev => [...prev, {
+              type: 'ai',
+              message: '🎤 Recording... Speak now, I\'ll process your message when you finish!'
+            }]);
+            
+            // Auto-stop after 10 seconds on mobile to prevent hanging
+            setTimeout(() => {
+              if (isAiListening && aiRecognition) {
+                console.log('Mobile: Auto-stopping speech recognition after timeout');
+                aiRecognition.stop();
+                setIsAiListening(false);
+              }
+            }, 10000);
+          } else {
+            setAiMessages(prev => [...prev, {
+              type: 'ai',
+              message: '🎤 Recording... Click the mic again when finished!'
+            }]);
+          }
         } catch (error) {
           console.error('Error starting voice recording:', error);
           setAiMessages(prev => [...prev, {
