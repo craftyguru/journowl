@@ -22,7 +22,7 @@ import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
 import { AIStoryMaker } from "./kid-dashboard";
-import { SupportChatBubble } from "./SupportChatBubble";
+import { MergedHelpSupportBubble } from "./MergedHelpSupportBubble";
 import { TypewriterTitle } from "./dashboard/TypewriterComponents";
 import { NewGoalForm, GoalDetailsView, EditGoalForm } from "./dashboard/GoalComponents";
 import type { User, Stats, JournalEntry, Achievement, Goal, APIResponse, EnhancedDashboardProps } from "./dashboard/types";
@@ -1835,9 +1835,9 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal" }: EnhancedDa
                           <div>
                             <h4 className="font-semibold text-white group-hover:text-purple-300 transition-colors">{entry.title}</h4>
                             <div className="flex items-center gap-2 text-sm text-gray-300">
-                              <span>{entry.date}</span>
+                              <span>{new Date(entry.createdAt).toLocaleDateString()}</span>
                               <span>•</span>
-                              <span>{entry.wordCount} words</span>
+                              <span>{entry.wordCount || 0} words</span>
                               <span>•</span>
                               <span className="text-purple-400">AI Enhanced</span>
                             </div>
@@ -6470,12 +6470,12 @@ Mood: ${entry.mood}
   );
 }
 
-// Main Enhanced Dashboard Export with Support Chat
+// Main Enhanced Dashboard Export with Merged Help & Support
 export default function EnhancedDashboardWithSupport({ onSwitchToKid, initialTab = "journal" }: EnhancedDashboardProps) {
   return (
     <div className="relative">
       <EnhancedDashboard onSwitchToKid={onSwitchToKid} initialTab={initialTab} />
-      <SupportChatBubble />
+      <MergedHelpSupportBubble />
     </div>
   );
 }
