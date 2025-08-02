@@ -34,8 +34,12 @@ function App() {
   // Check if demo mode is requested from URL params
   const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq">(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    console.log('App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
-    if (urlParams.get('demo') === 'true') return 'demo';
+    console.log('🔧 App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
+    console.log('🔧 Demo param detected:', urlParams.get('demo'));
+    if (urlParams.get('demo') === 'true') {
+      console.log('🔧 Setting currentView to demo');
+      return 'demo';
+    }
     if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
     if (window.location.pathname === '/login' || window.location.pathname === '/signin' || window.location.pathname === '/auth') return 'auth';
     if (window.location.pathname === '/register' || window.location.pathname === '/signup') return 'auth';
@@ -109,6 +113,13 @@ function App() {
     // Initialize PWA auto-update system
     checkForPWAUpdate();
     
+    // Don't override demo mode with auth check
+    if (currentView === "demo") {
+      console.log('🔧 Skipping auth check for demo mode');
+      setIsAuthenticated(false);
+      return;
+    }
+    
     // Don't override email-verified view with auth check
     if (currentView === "email-verified") {
       console.log('🔧 Skipping auth check for email-verified view');
@@ -134,7 +145,7 @@ function App() {
   // Show landing page only if not authenticated AND not on special pages
   const specialViews = ["auth", "demo", "privacy-policy", "terms", "faq", "email-confirmation", "email-verified", "import", "share"];
   if ((isAuthenticated === null || isAuthenticated === false) && !specialViews.includes(currentView)) {
-    console.log('Showing landing page - isAuthenticated:', isAuthenticated, 'currentView:', currentView);
+    console.log('🔧 Showing landing page - isAuthenticated:', isAuthenticated, 'currentView:', currentView, 'specialViews includes currentView:', specialViews.includes(currentView));
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
@@ -287,7 +298,8 @@ function App() {
   }
 
   // Demo mode - show account selector or demo dashboards
-  if (!isAuthenticated && currentView === "demo" && !selectedAccount) {
+  if ((isAuthenticated === false || isAuthenticated === null) && currentView === "demo" && !selectedAccount) {
+    console.log('🔧 Rendering demo AccountSelector');
     return (
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
@@ -310,7 +322,8 @@ function App() {
     );
   }
 
-  if (!isAuthenticated && selectedAccount) {
+  if ((isAuthenticated === false || isAuthenticated === null) && selectedAccount) {
+    console.log('🔧 Rendering demo dashboard for account:', selectedAccount);
       return (
         <QueryClientProvider client={queryClient}>
           <ThemeProvider>
