@@ -131,8 +131,9 @@ function App() {
     }
   }, [currentView]);
 
-  // Show landing page only if not authenticated AND not on auth page
-  if ((isAuthenticated === null || isAuthenticated === false) && currentView !== "auth") {
+  // Show landing page only if not authenticated AND not on special pages
+  const specialViews = ["auth", "demo", "privacy-policy", "terms", "faq", "email-confirmation", "email-verified", "import", "share"];
+  if ((isAuthenticated === null || isAuthenticated === false) && !specialViews.includes(currentView)) {
     console.log('Showing landing page - isAuthenticated:', isAuthenticated, 'currentView:', currentView);
     return (
       <QueryClientProvider client={queryClient}>
