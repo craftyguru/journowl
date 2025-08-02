@@ -64,8 +64,8 @@ export default function LandingHeader({ onGetStarted }: LandingHeaderProps) {
 
           {/* Action Buttons */}
           <div className="flex items-center gap-2 sm:gap-4">
-            {/* Theme Controls */}
-            <div className="hidden sm:flex items-center gap-2">
+            {/* Theme Controls - Desktop Only */}
+            <div className="hidden md:flex items-center gap-2">
               <ThemeSelector />
               <Button
                 variant="ghost"
