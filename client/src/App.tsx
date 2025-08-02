@@ -134,11 +134,25 @@ function App() {
       return;
     }
     
-    // AUTO-RECOVERY DISABLED - Don't automatically check authentication
-    // User must manually log in
+    // Check authentication status for legitimate sessions (like demo login)
     if (isAuthenticated === null) {
-      console.log('🔧 Auto-recovery disabled - setting as not authenticated');
-      setIsAuthenticated(false);
+      console.log('🔧 Checking authentication status...');
+      fetch('/api/auth/me')
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('Not authenticated');
+        })
+        .then(data => {
+          console.log('🔧 User is authenticated:', data.user.username);
+          setIsAuthenticated(true);
+          setCurrentView("dashboard");
+        })
+        .catch(() => {
+          console.log('🔧 User is not authenticated');
+          setIsAuthenticated(false);
+        });
     }
   }, [currentView]);
 
