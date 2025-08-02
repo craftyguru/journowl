@@ -144,6 +144,7 @@ function App() {
 
   // Show landing page only if not authenticated AND not on special pages
   const specialViews = ["auth", "demo", "privacy-policy", "terms", "faq", "email-confirmation", "email-verified", "import", "share"];
+  console.log('🔧 Landing check - isAuthenticated:', isAuthenticated, 'currentView:', currentView, 'specialViews:', specialViews, 'includes demo:', specialViews.includes("demo"), 'includes currentView:', specialViews.includes(currentView));
   if ((isAuthenticated === null || isAuthenticated === false) && !specialViews.includes(currentView)) {
     console.log('🔧 Showing landing page - isAuthenticated:', isAuthenticated, 'currentView:', currentView, 'specialViews includes currentView:', specialViews.includes(currentView));
     return (

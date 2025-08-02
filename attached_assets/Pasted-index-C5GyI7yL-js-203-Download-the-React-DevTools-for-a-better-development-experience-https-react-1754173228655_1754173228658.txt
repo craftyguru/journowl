@@ -1,0 +1,25 @@
+index-C5GyI7yL.js:203 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+index-C5GyI7yL.js:2400 App initializing - pathname: / search: ?demo=true
+index-C5GyI7yL.js:2400 Showing landing page - isAuthenticated: null currentView: demo
+index-C5GyI7yL.js:2400 🔧 useEffect triggered - currentView: demo isAuthenticated: null
+index-C5GyI7yL.js:2400 🔧 Auto-recovery disabled - setting as not authenticated
+index-C5GyI7yL.js:780 [PWA] Service worker ready, automatic updates disabled
+index-C5GyI7yL.js:2400 Showing landing page - isAuthenticated: false currentView: demo
+?demo=true:113 PWA Debug: Checking installation eligibility...
+?demo=true:114 PWA Debug: HTTPS: true
+?demo=true:115 PWA Debug: Service Worker supported: true
+?demo=true:116 PWA Debug: Manifest linked: true
+?demo=true:65 JournOwl SW registered:  ServiceWorkerRegistration
+journowl.app/:1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+?demo=true:124 PWA Debug: beforeinstallprompt fired: false
+?demo=true:125 PWA Debug: Global deferredPrompt available: false
+index-C5GyI7yL.js:2400 Get Started clicked - navigating to auth
+index-C5GyI7yL.js:2400 Rendering auth page - isAuthenticated: false currentView: auth
+index-C5GyI7yL.js:2400 🔧 useEffect triggered - currentView: auth isAuthenticated: false
+index-C5GyI7yL.js:2400 🔧 Skipping auth check for auth page
+index-C5GyI7yL.js:780 [PWA] Service worker ready, automatic updates disabled
+index-C5GyI7yL.js:2400 Rendering auth page - isAuthenticated: false currentView: auth
+/api/auth/login:1  Failed to load resource: the server responded with a status of 400 ()
+index-C5GyI7yL.js:2400 Showing landing page - isAuthenticated: false currentView: landing
+index-C5GyI7yL.js:2400 🔧 useEffect triggered - currentView: landing isAuthenticated: false
+index-C5GyI7yL.js:780 [PWA] Service worker ready, automatic updates disabled
