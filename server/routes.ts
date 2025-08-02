@@ -535,6 +535,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Setup demo account endpoint (development only)
+  app.post("/api/setup-demo", async (req, res) => {
+    try {
+      // Check if demo account already exists
+      const [existingUser] = await db.select()
+        .from(users)
+        .where(or(eq(users.email, 'demo@journowl.app'), eq(users.username, 'demo_user')));
+
+      if (existingUser) {
+        return res.json({ message: "Demo account already exists" });
+      }
+
+      // Create demo user
+      const demoUser = await createUser({
+        email: 'demo@journowl.app',
+        username: 'demo_user',
+        password: 'demo123',
+        emailVerified: true,
+        xp: 1500,
+        level: 5,
+        streakCount: 15,
+        streakFrozen: false,
+        profilePicture: 'https://api.dicebear.com/7.x/avataaars/svg?seed=demo',
+        bio: 'Welcome to my demo journal! This is a test account where you can explore all the features of JournOwl.'
+      });
+
+      console.log('Created demo user with ID:', demoUser.id);
+
+      // Add sample journal entries
+      const sampleEntries = [
+        {
+          userId: demoUser.id,
+          title: "My First Journal Entry",
+          content: "Welcome to JournOwl! This is a sample journal entry to show you how the app works. You can write about your thoughts, experiences, and memories here. The AI can help analyze your writing and provide insights.",
+          mood: "😊",
+          tags: JSON.stringify(["welcome", "first-entry", "demo"]),
+          wordCount: 45,
+          readingTime: 1
+        },
+        {
+          userId: demoUser.id,
+          title: "A Productive Day",
+          content: "Today was really productive! I accomplished several tasks on my to-do list and felt a great sense of achievement. The weather was perfect for a walk in the park, and I took some time to reflect on my goals.",
+          mood: "🎯",
+          tags: JSON.stringify(["productivity", "achievement", "goals"]),
+          wordCount: 40,
+          readingTime: 1
+        },
+        {
+          userId: demoUser.id,
+          title: "Reflecting on Growth",
+          content: "It's amazing how much I've grown over the past few months. Journaling has really helped me understand my thoughts and emotions better. I'm grateful for this journey of self-discovery.",
+          mood: "🌱",
+          tags: JSON.stringify(["growth", "reflection", "gratitude"]),
+          wordCount: 35,
+          readingTime: 1
+        }
+      ];
+
+      for (const entry of sampleEntries) {
+        await db.insert(journalEntries).values({
+          ...entry,
+          createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000),
+          updatedAt: new Date()
+        } as any);
+      }
+
+      res.json({ 
+        message: "Demo account created successfully",
+        credentials: {
+          email: 'demo@journowl.app',
+          username: 'demo_user',
+          password: 'demo123'
+        }
+      });
+    } catch (error: any) {
+      console.error('Error creating demo account:', error);
+      res.status(500).json({ message: "Failed to create demo account" });
+    }
+  });
+
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { identifier, email, password } = req.body;

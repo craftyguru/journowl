@@ -127,10 +127,41 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
     return () => document.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
-  const handleDemo = () => {
-    const url = new URL(window.location.href);
-    url.searchParams.set("demo", "true");
-    window.location.href = url.toString();
+  const handleDemo = async () => {
+    try {
+      console.log('Setting up demo account...');
+      
+      // First, ensure demo account exists
+      await fetch('/api/setup-demo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      console.log('Auto-logging in with demo account...');
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          identifier: 'demo@journowl.app',
+          password: 'demo123'
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Demo login successful, reloading page...');
+        window.location.href = '/';
+      } else {
+        console.log('Demo login failed, redirecting to auth page...');
+        onGetStarted(); // Fall back to normal auth flow
+      }
+    } catch (error) {
+      console.error('Demo setup/login failed:', error);
+      onGetStarted(); // Fall back to normal auth flow
+    }
   };
 
   const handleSignIn = () => {
@@ -523,7 +554,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 >
                   <Play className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 animate-bounce" />
                   <span className="text-lg sm:text-xl font-bold tracking-wide">
-                    ✨ VIEW LIVE DEMO 🎬
+                    ✨ TRY WITH TEST ACCOUNT 🎬
                   </span>
                 </motion.div>
               </Button>
@@ -1197,7 +1228,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                       className="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white border-0 rounded-xl sm:rounded-2xl text-sm sm:text-base lg:text-lg font-bold shadow-2xl shadow-purple-500/30 transition-all duration-300 font-inter"
                     >
                       <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                      🎯 Try Full Interactive Demo
+                      🎯 Try With Test Account
                     </Button>
                   </motion.div>
                   
