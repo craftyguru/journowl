@@ -48,11 +48,21 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="journal"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   } else {
                     // Fallback: scroll to dashboard content area
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (dashboard) {
+                      const elementRect = dashboard.getBoundingClientRect();
+                      const elementTop = elementRect.top + window.pageYOffset;
+                      const viewportHeight = window.innerHeight;
+                      const offsetTop = elementTop - (viewportHeight / 3);
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
                   }
                 }, 200);
               }}
@@ -68,10 +78,20 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="analytics"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (dashboard) {
+                      const elementRect = dashboard.getBoundingClientRect();
+                      const elementTop = elementRect.top + window.pageYOffset;
+                      const viewportHeight = window.innerHeight;
+                      const offsetTop = elementTop - (viewportHeight / 3);
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
                   }
                 }, 200);
               }}
@@ -87,10 +107,20 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="achievements"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (dashboard) {
+                      const elementRect = dashboard.getBoundingClientRect();
+                      const elementTop = elementRect.top + window.pageYOffset;
+                      const viewportHeight = window.innerHeight;
+                      const offsetTop = elementTop - (viewportHeight / 3);
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
                   }
                 }, 200);
               }}
@@ -106,10 +136,20 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="goals"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (dashboard) {
+                      const elementRect = dashboard.getBoundingClientRect();
+                      const elementTop = elementRect.top + window.pageYOffset;
+                      const viewportHeight = window.innerHeight;
+                      const offsetTop = elementTop - (viewportHeight / 3);
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
                   }
                 }, 200);
               }}
@@ -125,10 +165,20 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="insights"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (dashboard) {
+                      const elementRect = dashboard.getBoundingClientRect();
+                      const elementTop = elementRect.top + window.pageYOffset;
+                      const viewportHeight = window.innerHeight;
+                      const offsetTop = elementTop - (viewportHeight / 3);
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
                   }
                 }, 200);
               }}
@@ -144,10 +194,20 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="calendar"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (dashboard) {
+                      const elementRect = dashboard.getBoundingClientRect();
+                      const elementTop = elementRect.top + window.pageYOffset;
+                      const viewportHeight = window.innerHeight;
+                      const offsetTop = elementTop - (viewportHeight / 3);
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
                   }
                 }, 200);
               }}
@@ -163,10 +223,20 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="stories"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (dashboard) {
+                      const elementRect = dashboard.getBoundingClientRect();
+                      const elementTop = elementRect.top + window.pageYOffset;
+                      const viewportHeight = window.innerHeight;
+                      const offsetTop = elementTop - (viewportHeight / 3);
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
                   }
                 }, 200);
               }}
@@ -182,10 +252,20 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="referral"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    if (dashboard) {
+                      const elementRect = dashboard.getBoundingClientRect();
+                      const elementTop = elementRect.top + window.pageYOffset;
+                      const viewportHeight = window.innerHeight;
+                      const offsetTop = elementTop - (viewportHeight / 3);
+                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                    }
                   }
                 }, 200);
               }}
@@ -270,7 +350,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="journal"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   }
                 }, 100);
               }}
@@ -286,7 +370,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="analytics"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   }
                 }, 100);
               }}
@@ -307,7 +395,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="achievements"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   }
                 }, 100);
               }}
@@ -323,7 +415,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="goals"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   }
                 }, 100);
               }}
@@ -344,7 +440,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="insights"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   }
                 }, 100);
               }}
@@ -360,7 +460,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="stories"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   }
                 }, 100);
               }}
@@ -381,7 +485,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="calendar"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   }
                 }, 100);
               }}
@@ -397,7 +505,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="referral"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    const elementRect = element.getBoundingClientRect();
+                    const elementTop = elementRect.top + window.pageYOffset;
+                    const viewportHeight = window.innerHeight;
+                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
+                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
                   }
                 }, 100);
               }}
