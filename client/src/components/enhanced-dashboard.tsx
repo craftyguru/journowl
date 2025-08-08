@@ -1458,76 +1458,306 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               </motion.div>
             </div>
 
-            {/* Recent Smart Entries */}
-            <Card className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg border border-purple-500/20 shadow-2xl">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white">
-                  <Clock className="w-5 h-5 text-purple-400" />
-                  Recent Smart Entries
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {entries.length > 0 ? entries.map((entry: JournalEntry, index: number) => (
-                    <motion.div
-                      key={entry.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      onClick={() => openUnifiedJournal(entry)}
-                      className="p-4 rounded-lg border border-purple-200/20 bg-slate-800/50 hover:bg-slate-700/50 hover:shadow-lg transition-all cursor-pointer backdrop-blur-sm group"
+            {/* Comprehensive Journal Toolkit */}
+            <div className="space-y-6">
+              {/* Quick Writing Actions */}
+              <Card className="bg-gradient-to-br from-purple-900/60 to-indigo-900/60 backdrop-blur-lg border border-purple-500/20 shadow-2xl">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Zap className="w-5 h-5 text-yellow-400" />
+                    Quick Writing Actions
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <Button
+                      onClick={() => openUnifiedJournal()}
+                      className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white h-auto p-4 flex flex-col items-center gap-2"
                     >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="text-2xl">{entry.mood}</div>
-                          <div>
-                            <h4 className="font-semibold text-white group-hover:text-purple-300 transition-colors">{entry.title}</h4>
-                            <div className="flex items-center gap-2 text-sm text-gray-300">
-                              <span>{new Date(entry.createdAt).toLocaleDateString()}</span>
-                              <span>•</span>
-                              <span>{entry.wordCount || 0} words</span>
-                              <span>•</span>
-                              <span className="text-purple-400">AI Enhanced</span>
+                      <Plus className="w-6 h-6" />
+                      <span className="text-sm font-medium">New Entry</span>
+                    </Button>
+                    <Button
+                      onClick={() => openUnifiedJournal()}
+                      variant="outline"
+                      className="border-blue-500/30 text-blue-300 hover:bg-blue-500/10 h-auto p-4 flex flex-col items-center gap-2"
+                    >
+                      <BookOpen className="w-6 h-6" />
+                      <span className="text-sm font-medium">Continue Writing</span>
+                    </Button>
+                    <Button
+                      onClick={() => openUnifiedJournal()}
+                      variant="outline"
+                      className="border-green-500/30 text-green-300 hover:bg-green-500/10 h-auto p-4 flex flex-col items-center gap-2"
+                    >
+                      <Heart className="w-6 h-6" />
+                      <span className="text-sm font-medium">Gratitude Entry</span>
+                    </Button>
+                    <Button
+                      onClick={() => openUnifiedJournal()}
+                      variant="outline"
+                      className="border-amber-500/30 text-amber-300 hover:bg-amber-500/10 h-auto p-4 flex flex-col items-center gap-2"
+                    >
+                      <Target className="w-6 h-6" />
+                      <span className="text-sm font-medium">Goal Reflection</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Content Creation Tools */}
+              <Card className="bg-gradient-to-br from-emerald-900/60 to-teal-900/60 backdrop-blur-lg border border-emerald-500/20 shadow-2xl">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Brush className="w-5 h-5 text-emerald-400" />
+                    Content Creation Tools
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-semibold text-emerald-300 mb-2">📝 Writing Modes</h4>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <Type className="w-4 h-4 mr-2" />
+                        Rich Text Editor
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <BookOpen className="w-4 h-4 mr-2" />
+                        Markdown Mode
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <Brush className="w-4 h-4 mr-2" />
+                        Drawing Canvas
+                      </Button>
+                    </div>
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-semibold text-emerald-300 mb-2">📊 Templates</h4>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <Heart className="w-4 h-4 mr-2" />
+                        Daily Reflection
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <Target className="w-4 h-4 mr-2" />
+                        Goal Planning
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <Brain className="w-4 h-4 mr-2" />
+                        Dream Journal
+                      </Button>
+                    </div>
+                    <div className="space-y-3">
+                      <h4 className="text-sm font-semibold text-emerald-300 mb-2">🎨 Media Tools</h4>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Upload Photos
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Voice Recording
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                        <Plus className="w-4 h-4 mr-2" />
+                        File Attachments
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Organization & Management */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="bg-gradient-to-br from-blue-900/60 to-cyan-900/60 backdrop-blur-lg border border-blue-500/20 shadow-2xl">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-white">
+                      <Star className="w-5 h-5 text-blue-400" />
+                      Organization Tools
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-500/10" onClick={() => setActiveTab('calendar')}>
+                      <Calendar className="w-4 h-4 mr-2" />
+                      View Entry Calendar
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-500/10" onClick={() => openUnifiedJournal()}>
+                      <Star className="w-4 h-4 mr-2" />
+                      Bookmark Favorites
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-500/10" onClick={() => openUnifiedJournal()}>
+                      <Trophy className="w-4 h-4 mr-2" />
+                      Tag Management
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-500/10" onClick={() => openUnifiedJournal()}>
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Search Entries
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-orange-900/60 to-red-900/60 backdrop-blur-lg border border-orange-500/20 shadow-2xl">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-white">
+                      <TrendingUp className="w-5 h-5 text-orange-400" />
+                      Productivity Features
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-orange-500/10" onClick={() => setActiveTab('goals')}>
+                      <Target className="w-4 h-4 mr-2" />
+                      Writing Goals
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-orange-500/10" onClick={() => setActiveTab('achievements')}>
+                      <Award className="w-4 h-4 mr-2" />
+                      Track Streaks
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-orange-500/10" onClick={() => openUnifiedJournal()}>
+                      <Clock className="w-4 h-4 mr-2" />
+                      Writing Timer
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-orange-500/10" onClick={() => setActiveTab('analytics')}>
+                      <BarChart3 className="w-4 h-4 mr-2" />
+                      Progress Analytics
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Export & Sharing Options */}
+              <Card className="bg-gradient-to-br from-violet-900/60 to-purple-900/60 backdrop-blur-lg border border-violet-500/20 shadow-2xl">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Gift className="w-5 h-5 text-violet-400" />
+                    Export & Sharing Tools
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    <Button variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => openUnifiedJournal()}>
+                      <BookOpen className="w-4 h-4 mr-2" />
+                      Export PDF
+                    </Button>
+                    <Button variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => openUnifiedJournal()}>
+                      <Type className="w-4 h-4 mr-2" />
+                      Export Text
+                    </Button>
+                    <Button variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => openUnifiedJournal()}>
+                      <Star className="w-4 h-4 mr-2" />
+                      Create Book
+                    </Button>
+                    <Button variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => openUnifiedJournal()}>
+                      <Shield className="w-4 h-4 mr-2" />
+                      Backup Data
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* AI-Powered Features */}
+              <Card className="bg-gradient-to-br from-pink-900/60 to-rose-900/60 backdrop-blur-lg border border-pink-500/20 shadow-2xl">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Brain className="w-5 h-5 text-pink-400" />
+                    AI-Powered Features
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => setActiveTab('insights')}>
+                        <Lightbulb className="w-4 h-4 mr-2" />
+                        AI Writing Insights
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => openUnifiedJournal()}>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Smart Prompts
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => openUnifiedJournal()}>
+                        <Brain className="w-4 h-4 mr-2" />
+                        Mood Analysis
+                      </Button>
+                    </div>
+                    <div className="space-y-3">
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => setActiveTab('stories')}>
+                        <BookOpen className="w-4 h-4 mr-2" />
+                        AI Story Generator
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => openUnifiedJournal()}>
+                        <Type className="w-4 h-4 mr-2" />
+                        Writing Assistant
+                      </Button>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => openUnifiedJournal()}>
+                        <Target className="w-4 h-4 mr-2" />
+                        Auto-Tagging
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recent Entries Quick Access */}
+              <Card className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg border border-gray-500/20 shadow-2xl">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-white">
+                    <Clock className="w-5 h-5 text-gray-400" />
+                    Recent Journal Entries
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3 max-h-64 overflow-y-auto">
+                    {entries.length > 0 ? entries.slice(0, 5).map((entry: JournalEntry, index: number) => (
+                      <motion.div
+                        key={entry.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        onClick={() => openUnifiedJournal(entry)}
+                        className="p-3 rounded-lg border border-gray-200/20 bg-slate-800/50 hover:bg-slate-700/50 hover:shadow-lg transition-all cursor-pointer backdrop-blur-sm group"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="text-lg">{entry.mood}</div>
+                            <div>
+                              <h4 className="font-medium text-white group-hover:text-purple-300 transition-colors text-sm">{entry.title}</h4>
+                              <div className="flex items-center gap-2 text-xs text-gray-300">
+                                <span>{new Date(entry.createdAt).toLocaleDateString()}</span>
+                                <span>•</span>
+                                <span>{entry.wordCount || 0} words</span>
+                              </div>
                             </div>
                           </div>
+                          <ChevronRight className="w-4 h-4 text-gray-400 group-hover:text-purple-300 transition-colors" />
                         </div>
-                        <div className="flex gap-1">
-                          {(entry.tags || []).map((tag: string, i: number) => (
-                            <Badge key={i} variant="outline" className="text-xs border-purple-400/20 text-purple-300 bg-purple-500/10">
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
+                      </motion.div>
+                    )) : (
+                      <div className="text-center py-6">
+                        <div className="text-3xl mb-2">📝</div>
+                        <h3 className="text-white font-medium mb-2">Start Your Journal Journey</h3>
+                        <p className="text-gray-400 text-sm mb-4">Create your first entry to unlock the full potential of JournOwl</p>
+                        <Button 
+                          onClick={() => openUnifiedJournal()}
+                          className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Create First Entry
+                        </Button>
                       </div>
-                    </motion.div>
-                  )) : (
-                    <div className="text-center py-8">
-                      <div className="text-4xl mb-3">📝</div>
-                      <h3 className="text-white font-semibold mb-2">No entries yet</h3>
-                      <p className="text-gray-400 text-sm mb-4">Start your journaling journey by creating your first entry</p>
+                    )}
+                  </div>
+                  
+                  {entries.length > 0 && (
+                    <div className="mt-4 text-center">
                       <Button 
                         onClick={() => openUnifiedJournal()}
-                        className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                        variant="outline" 
+                        className="border-gray-500/30 text-gray-300 hover:bg-gray-500/10"
                       >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Write First Entry
+                        <BookOpen className="w-4 h-4 mr-2" />
+                        Open Full Journal
                       </Button>
                     </div>
                   )}
-                </div>
-                
-                <div className="mt-6 text-center mb-20 sm:mb-6">
-                  <Button 
-                    onClick={() => openUnifiedJournal()}
-                    variant="outline" 
-                    className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Open Your Journal Book
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </TabsContent>
 
