@@ -384,192 +384,182 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
       {/* Mobile Navigation Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-card border-t border-border">
-          <div className="px-4 py-2 space-y-2">
-            {/* Core Features */}
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2">
-              📝 Writing & Analytics
-            </div>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${activeTab === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("journal");
-                setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="journal"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                  }
-                }, 100);
-              }}
-            >
-              ✍️ Journal
-            </Button>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${activeTab === "analytics" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("analytics");
-                setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="analytics"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                  }
-                }, 100);
-              }}
-            >
-              📊 Analytics
-            </Button>
-            
-            {/* Progress & Achievements */}
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2 mt-4">
-              🏆 Progress & Goals
-            </div>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${activeTab === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("achievements");
-                setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="achievements"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                  }
-                }, 100);
-              }}
-            >
-              🏆 Achievements
-            </Button>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${activeTab === "goals" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("goals");
-                setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="goals"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                  }
-                }, 100);
-              }}
-            >
-              🎯 Goals
-            </Button>
-            
-            {/* AI Features */}
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2 mt-4">
-              🤖 AI Features
-            </div>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${activeTab === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("insights");
-                setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="insights"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                  }
-                }, 100);
-              }}
-            >
-              🤖 AI Thoughts
-            </Button>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${activeTab === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("stories");
-                setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="stories"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                  }
-                }, 100);
-              }}
-            >
-              📚 AI Stories
-            </Button>
-            
-            {/* Memory & Organization */}
-            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2 mt-4">
-              📅 Memory & More
-            </div>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${activeTab === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("calendar");
-                setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="calendar"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                  }
-                }, 100);
-              }}
-            >
-              📅 Memory Calendar
-            </Button>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${currentView === "referral" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("referral");
-                setMobileMenuOpen(false);
-                setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="referral"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                  }
-                }, 100);
-              }}
-            >
-              🎁 Referral
-            </Button>
+          <div className="px-4 py-2 space-y-1">
+            {!isKidMode ? (
+              // Adult Mode Mobile Menu
+              <>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("journal");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  ✍️ Journal
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "analytics" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("analytics");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  📊 Analytics
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("achievements");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  🏆 Awards
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "goals" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("goals");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  🎯 Goals
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("insights");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  🤖 AI
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("calendar");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  📅 Memory
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("stories");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  📚 Stories
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "referral" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("referral");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  🎁 Referral
+                </Button>
+              </>
+            ) : (
+              // Kid Mode Mobile Menu
+              <>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "write" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("write");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  ✍️ Write
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("achievements");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  🏆 Badges
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "goals" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("goals");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  🎯 Goals
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("calendar");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  📅 Calendar
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "photos" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("photos");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  📸 Photos
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "ai" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("ai");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  🤖 AI Help
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "stats" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("stats");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  📊 My Stats
+                </Button>
+                <Button
+                  variant="ghost"
+                  className={`w-full justify-start ${activeTab === "story" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+                  onClick={() => {
+                    onNavigate("story");
+                    setMobileMenuOpen(false);
+                  }}
+                >
+                  📚 AI Story
+                </Button>
+              </>
+            )}
             
             {/* Mobile Logout Button */}
             {user && (
               <Button
                 variant="outline"
-                className="w-full justify-start border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 sm:hidden"
+                className="w-full justify-start border-red-200 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950 sm:hidden mt-2"
                 onClick={() => {
                   fetch('/api/auth/logout', { 
                     method: 'POST',
