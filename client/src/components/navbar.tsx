@@ -256,6 +256,26 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             
             {user && (
               <>
+                {/* Mode Switcher Buttons */}
+                <div className="hidden md:flex items-center gap-1 bg-muted/30 rounded-lg p-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90"
+                    title="Adult Mode (Current)"
+                  >
+                    👨‍💼 Adult
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                    title="Switch to Kid Mode"
+                  >
+                    🧒 Kid
+                  </Button>
+                </div>
+                
                 <Button
                   variant="outline"
                   size="sm"
