@@ -48,7 +48,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="journal"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
                     // Fallback: scroll to dashboard content area
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
@@ -68,7 +68,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="analytics"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
                     if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -87,7 +87,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="achievements"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
                     if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -106,7 +106,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="goals"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
                     if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -125,7 +125,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="insights"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
                     if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -144,7 +144,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="calendar"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
                     if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -163,7 +163,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="stories"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
                     if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -182,7 +182,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="referral"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   } else {
                     const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
                     if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -270,7 +270,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="journal"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
                 }, 100);
               }}
@@ -286,7 +286,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="analytics"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
                 }, 100);
               }}
@@ -307,7 +307,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="achievements"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
                 }, 100);
               }}
@@ -323,7 +323,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="goals"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
                 }, 100);
               }}
@@ -344,7 +344,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="insights"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
                 }, 100);
               }}
@@ -360,7 +360,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="stories"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
                 }, 100);
               }}
@@ -381,7 +381,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="calendar"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
                 }, 100);
               }}
@@ -397,7 +397,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setTimeout(() => {
                   const element = document.querySelector('[data-tabs-content][value="referral"]');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   }
                 }, 100);
               }}
