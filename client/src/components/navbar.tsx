@@ -307,7 +307,7 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden rounded-lg"
+              className="md:hidden rounded-lg border border-gray-200 dark:border-gray-700 bg-white/10 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-200"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
@@ -320,7 +320,7 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
               variant="ghost"
               size="icon"
               onClick={toggleColorScheme}
-              className="rounded-lg"
+              className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white/10 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-all duration-200"
               title="Toggle Dark/Light Mode"
             >
               {colorScheme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
