@@ -17,6 +17,7 @@ interface SupportMessage {
   attachmentType?: 'image' | 'video';
   createdAt: string;
   adminName?: string;
+  isRead?: boolean;
 }
 
 export function SupportChatBubble() {
@@ -32,10 +33,12 @@ export function SupportChatBubble() {
   const wsRef = useRef<WebSocket | null>(null);
 
   // Get current user for WebSocket auth
-  const { data: currentUser } = useQuery({
+  const { data: userResponse } = useQuery({
     queryKey: ['/api/auth/me'],
     retry: false
   }) as { data: any };
+
+  const currentUser = userResponse?.user;
 
   // Initialize WebSocket connection when chat opens
   useEffect(() => {
@@ -91,14 +94,20 @@ export function SupportChatBubble() {
 
   // Fetch initial messages when chat opens
   useEffect(() => {
-    if (open && messages.length === 0) {
+    if (open && messages.length === 0 && currentUser?.id) {
       setIsLoading(true);
+      console.log('Fetching support messages for user:', currentUser.id);
       fetch('/api/support/messages', {
         credentials: 'include'
       })
-      .then(res => res.json())
-      .then(data => {
-        setMessages(data || []);
+      .then(async res => {
+        const data = await res.json();
+        console.log('Support messages response:', data);
+        if (res.ok) {
+          setMessages(data || []);
+        } else {
+          console.error('Failed to fetch messages:', data.message);
+        }
         setIsLoading(false);
       })
       .catch(error => {
@@ -106,7 +115,7 @@ export function SupportChatBubble() {
         setIsLoading(false);
       });
     }
-  }, [open]);
+  }, [open, currentUser]);
 
   // Send message via WebSocket
   const sendMessage = async (messageData: { message: string; attachmentUrl?: string; attachmentType?: string }) => {
@@ -199,7 +208,7 @@ export function SupportChatBubble() {
         <span className="relative z-10">💬</span>
         
         {/* Notification badge for new messages */}
-        {((messages as any) || []).some((msg: SupportMessage) => msg.sender === 'admin' && !msg.adminName) && (
+        {messages.some((msg: SupportMessage) => msg.sender === 'admin' && !msg.isRead) && (
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -269,7 +278,7 @@ export function SupportChatBubble() {
                     <div className="flex items-center justify-center h-full">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                     </div>
-                  ) : (messages as any)?.length === 0 ? (
+                  ) : messages?.length === 0 ? (
                     <div className="text-center py-8">
                       <div className="text-4xl mb-4">🦉</div>
                       <h3 className="font-semibold text-gray-800 mb-2">Welcome to JournOwl Support!</h3>
@@ -279,7 +288,7 @@ export function SupportChatBubble() {
                       </p>
                     </div>
                   ) : (
-                    ((messages as any) || []).map((msg: SupportMessage) => (
+                    messages.map((msg: SupportMessage) => (
                       <div
                         key={msg.id}
                         className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}

@@ -1,0 +1,228 @@
+background-redux-new.js:1 Uncaught (in promise) Error: No tab with id: 1066415687.
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass <URL>
+Unchecked runtime.lastError: Cannot find menu item with id LastPass https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot find menu item with id LastPass https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot find menu item with id Add Item <URL>
+Unchecked runtime.lastError: Cannot find menu item with id Add Item <URL>
+Unchecked runtime.lastError: Cannot find menu item with id Add Item <URL>
+Unchecked runtime.lastError: Cannot find menu item with id Add Item <URL>
+Unchecked runtime.lastError: Cannot find menu item with id Add Item <URL>
+Unchecked runtime.lastError: Cannot find menu item with id LastPass https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id separator <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id separator <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id separator <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id separator <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id separator <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id separator <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id separator <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id separator <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password <URL>
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password <URL>
+index-D3maFoHk.js:103 🛒 Loading cart from localStorage: []
+index-D3maFoHk.js:103 🛒 Parsed cart from localStorage: Array(0)
+index-D3maFoHk.js:103 Auth check initiated - fetching real authenticated user
+index-D3maFoHk.js:103 🛒 Loading cart from localStorage: []
+index-D3maFoHk.js:103 🛒 Parsed cart from localStorage: Array(0)
+index-D3maFoHk.js:103 🛒 Saving cart to localStorage: Array(0)
+index-D3maFoHk.js:103 🛒 Saving cart to localStorage: Array(0)
+index-D3maFoHk.js:103 Auth check response status: 200
+index-D3maFoHk.js:103 ✅ Real authenticated user loaded: 2 RumpelStitches
+index-D3maFoHk.js:103 User data from /api/auth/user: Object
+index-D3maFoHk.js:103 isAdmin value: true
+index-D3maFoHk.js:103 isAdmin type: boolean
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+user-dashboard-DWLwaPAq.js:10 💎 Professional Coin Vault - Dialog state changed: false
+user-dashboard-DWLwaPAq.js:10 🔑 UserDashboard - Token found: true
+user-dashboard-DWLwaPAq.js:10 📡 UserDashboard - Fetching from /api/user-designs for user: 2
+user-dashboard-DWLwaPAq.js:10 🔍 Fetching forum stats with auth for user: 2
+user-dashboard-DWLwaPAq.js:10 UserDashboard - user data: Object
+user-dashboard-DWLwaPAq.js:10 UserDashboard - realTimeUserData: undefined
+user-dashboard-DWLwaPAq.js:10 UserDashboard - isLoading: false
+user-dashboard-DWLwaPAq.js:10 UserDashboard - error: null
+user-dashboard-DWLwaPAq.js:10 UserDashboard - savedDesigns: Array(0)
+user-dashboard-DWLwaPAq.js:10 UserDashboard - loadingDesigns: true
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+api/friends?user_id=6:1  Failed to load resource: the server responded with a status of 404 ()
+user-dashboard-DWLwaPAq.js:10 📊 UserDashboard - Response status: 200
+api/placeholder/32/32:1  Failed to load resource: the server responded with a status of 404 ()
+user-dashboard-DWLwaPAq.js:10 ✅ UserDashboard - Raw designs data: Array(0)
+user-dashboard-DWLwaPAq.js:10 ✅ UserDashboard - Data length: 0
+user-dashboard-DWLwaPAq.js:10 ✅ Forum stats received: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+MatrixMusicPlayer-QTl62MwH.js:26 Matrix Music Player: Created new global audio element
+user-dashboard-DWLwaPAq.js:10 UserDashboard - user data: Object
+user-dashboard-DWLwaPAq.js:10 UserDashboard - realTimeUserData: Object
+user-dashboard-DWLwaPAq.js:10 UserDashboard - isLoading: false
+user-dashboard-DWLwaPAq.js:10 UserDashboard - error: null
+user-dashboard-DWLwaPAq.js:10 UserDashboard - savedDesigns: Array(0)
+user-dashboard-DWLwaPAq.js:10 UserDashboard - loadingDesigns: false
+api/placeholder/32/32:1  Failed to load resource: the server responded with a status of 404 ()
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+user-dashboard-DWLwaPAq.js:10 🔍 Fetching forum stats with auth for user: 2
+user-dashboard-DWLwaPAq.js:10 ✅ Forum stats received: Object
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+index-D3maFoHk.js:103 🔍 Current token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJSdW1wZWxTdGl0Y2hlcyIsImVtYWlsIjoiQ3JhZnR5R3VydUAxb2Zha2luZHBpZWNlLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc1NDYyMjA1MywiZXhwIjoxNzU0NzA4NDUzfQ.SgaWjeoQlqX3IH6Lyg68s2Hv-m19LSFee51az3i274U
+index-D3maFoHk.js:103 🔍 Token from localStorage: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJSdW1wZWxTdGl0Y2hlcyIsImVtYWlsIjoiQ3JhZnR5R3VydUAxb2Zha2luZHBpZWNlLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc1NDYyMjA1MywiZXhwIjoxNzU0NzA4NDUzfQ.SgaWjeoQlqX3IH6Lyg68s2Hv-m19LSFee51az3i274U
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+user-dashboard-DWLwaPAq.js:10 🔍 Fetching forum stats with auth for user: 2
+user-dashboard-DWLwaPAq.js:10 ✅ Forum stats received: Object
+user-dashboard-DWLwaPAq.js:10 🔍 Fetching forum stats with auth for user: 2
+user-dashboard-DWLwaPAq.js:10 ✅ Forum stats received: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+index-D3maFoHk.js:103 🔍 Current token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJSdW1wZWxTdGl0Y2hlcyIsImVtYWlsIjoiQ3JhZnR5R3VydUAxb2Zha2luZHBpZWNlLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc1NDYyMjA1MywiZXhwIjoxNzU0NzA4NDUzfQ.SgaWjeoQlqX3IH6Lyg68s2Hv-m19LSFee51az3i274U
+index-D3maFoHk.js:103 🔍 Token from localStorage: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJSdW1wZWxTdGl0Y2hlcyIsImVtYWlsIjoiQ3JhZnR5R3VydUAxb2Zha2luZHBpZWNlLmNvbSIsImlzQWRtaW4iOnRydWUsImlhdCI6MTc1NDYyMjA1MywiZXhwIjoxNzU0NzA4NDUzfQ.SgaWjeoQlqX3IH6Lyg68s2Hv-m19LSFee51az3i274U
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+api/messages/4:1  Failed to load resource: the server responded with a status of 401 ()
+user-dashboard-DWLwaPAq.js:10 🔍 Fetching forum stats with auth for user: 2
+user-dashboard-DWLwaPAq.js:10 ✅ Forum stats received: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+user-dashboard-DWLwaPAq.js:10 🔍 Fetching forum stats with auth for user: 2
+user-dashboard-DWLwaPAq.js:10 ✅ Forum stats received: Object
+api/user/dashboard/2:1  Failed to load resource: the server responded with a status of 404 ()
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+vendor.js:151 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+    at g (vendor.js:151:18472)
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+api/user/dashboard/2:1  Failed to load resource: the server responded with a status of 404 ()
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+api/user/dashboard/2:1  Failed to load resource: the server responded with a status of 404 ()
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+api/user/dashboard/2:1  Failed to load resource: the server responded with a status of 404 ()
+api/user/dashboard/2:1  Failed to load resource: the server responded with a status of 404 ()
+user-dashboard-DWLwaPAq.js:10 🔍 Fetching forum stats with auth for user: 2
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+user-dashboard-DWLwaPAq.js:10 ✅ Forum stats received: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+NavBar-CtHYEj56.js:2 🍔 Mobile menu render - isOpen: false user: Object
+supabaseClient-BqyyUhqO.js:1 ⚠️ Supabase URL or Anon Key is missing from environment variables!
+(anonymous) @ supabaseClient-BqyyUhqO.js:1
+supabaseClient-BqyyUhqO.js:1 VITE_SUPABASE_URL: undefined
+supabaseClient-BqyyUhqO.js:1 VITE_SUPABASE_ANON_KEY: undefined
+intro-page-BXqax18g.js:1 First load of intro page - ensuring welcome section is visible
+intro-page-BXqax18g.js:1 🎬 Loading videos for main intro page
+intro-page-BXqax18g.js:1 🔧 Environment: production
+intro-page-BXqax18g.js:1 🔧 Supabase URL: Missing
+intro-page-BXqax18g.js:1 🔧 Supabase Key: Missing
+intro-page-BXqax18g.js:1 🎬 Supabase not configured, using local videos directly
+intro-page-BXqax18g.js:1 Audio initialized in muted and paused state
+intro-page-BXqax18g.js:1 🎬 UnifiedCreative section updating video source to: /videos/eagle.mp4
+intro-page-BXqax18g.js:1 🎬 WebDesign section updating video source to: /videos/pooh.mp4
+intro-page-BXqax18g.js:1 🎬 LaserGlass section updating video source to: /videos/sara.mp4
+intro-page-BXqax18g.js:1 Error with Video 1: n
+onError @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 Background music loaded successfully
+intro-page-BXqax18g.js:1 Error with video: n
+onError @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 UnifiedCreative video play error: NotSupportedError: Failed to load because no supported source was found.
+(anonymous) @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 Error with Video 5: n
+onError @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 LaserGlass video play error: NotSupportedError: Failed to load because no supported source was found.
+(anonymous) @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 Error with Video 4: n
+onError @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 WebDesign video play error: NotSupportedError: Failed to load because no supported source was found.
+(anonymous) @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 Scarface video loaded - Forum section
+intro-page-BXqax18g.js:1 🎬 Setting up video1 (poem.mp4) from: /videos/poem.mp4
+intro-page-BXqax18g.js:1 🎬 Setting up video2 (eagle.mp4) from: /videos/eagle.mp4
+intro-page-BXqax18g.js:1 🎬 Setting up video3 (pooh.mp4) from: /videos/pooh.mp4
+intro-page-BXqax18g.js:1 🎬 Setting up video4 (sara.mp4) from: /videos/sara.mp4
+intro-page-BXqax18g.js:1 Error with video: n
+onError @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 ❌ Failed to load video2 (eagle.mp4): Event
+m.current.m.current.onerror @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 ⚠️ video2 (eagle.mp4) autoplay failed (normal in some browsers): Failed to load because no supported source was found.
+(anonymous) @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 Error with Video 1: n
+onError @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 ❌ Failed to load video1 (poem.mp4): Event
+m.current.m.current.onerror @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 ⚠️ video1 (poem.mp4) autoplay failed (normal in some browsers): Failed to load because no supported source was found.
+(anonymous) @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 Error with Video 4: n
+onError @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 ❌ Failed to load video3 (pooh.mp4): Event
+m.current.m.current.onerror @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 ⚠️ video3 (pooh.mp4) autoplay failed (normal in some browsers): Failed to load because no supported source was found.
+(anonymous) @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 Error with Video 5: n
+onError @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 ❌ Failed to load video4 (sara.mp4): Event
+m.current.m.current.onerror @ intro-page-BXqax18g.js:1
+intro-page-BXqax18g.js:1 ⚠️ video4 (sara.mp4) autoplay failed (normal in some browsers): Failed to load because no supported source was found.
+(anonymous) @ intro-page-BXqax18g.js:1
+vendor.js:151 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+    at g (vendor.js:151:18472)
+g @ vendor.js:151
