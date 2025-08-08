@@ -1551,8 +1551,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                     repeatType: "reverse"
                   }}
                 />
-              {/* Tabs navigation removed - now handled by top navbar */}
-            {/* Navigation now handled by top navbar */}
+              </motion.div>
+            </div>
           </div>
         </div>
       
