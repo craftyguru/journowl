@@ -1373,60 +1373,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
         <UsageMeters />
       </div>
 
-      {/* Calendar Insights - Moved from bottom to prominent position */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="mb-6 bg-gradient-to-br from-slate-800/90 via-teal-900/80 to-cyan-900/90 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-teal-500/20"
-      >
-        <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
-          🧠 Calendar Insights
-        </h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-teal-500/20 rounded-lg p-4 border border-teal-400/20">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-4 h-4 bg-teal-400 rounded-full"></div>
-              <span className="text-sm font-medium text-teal-200">Most Active Day</span>
-            </div>
-            <p className="text-lg font-bold text-white">
-              {entries?.length > 0 ? 'Sunday' : 'Start writing to see patterns'}
-            </p>
-          </div>
-          
-          <div className="bg-blue-500/20 rounded-lg p-4 border border-blue-400/20">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
-              <span className="text-sm font-medium text-blue-200">Best Writing Time</span>
-            </div>
-            <p className="text-lg font-bold text-white">
-              {entries?.length > 0 ? 'Evening (7-9 PM)' : 'Track your patterns'}
-            </p>
-          </div>
-          
-          <div className="bg-purple-500/20 rounded-lg p-4 border border-purple-400/20">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-4 h-4 bg-purple-400 rounded-full"></div>
-              <span className="text-sm font-medium text-purple-200">Mood Pattern</span>
-            </div>
-            <p className="text-lg font-bold text-white">
-              {entries?.length > 0 ? 'Consistently positive' : 'Build your mood history'}
-            </p>
-          </div>
-          
-          <div className="bg-green-500/20 rounded-lg p-4 border border-green-400/20">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-4 h-4 bg-green-400 rounded-full"></div>
-              <span className="text-sm font-medium text-green-200">Next Milestone</span>
-            </div>
-            <p className="text-lg font-bold text-white">
-              {stats?.currentStreak > 6 ? '30-day streak' : '7-day streak'}
-            </p>
-          </div>
-        </div>
-      </motion.div>
-
       {/* Main Content Tabs - Simplified without complex navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 pb-8 lg:pb-6">
         {/* Simple mobile tab indicator for current active tab */}
@@ -4683,8 +4629,8 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
               </div>
             </motion.div>
 
-            {/* Calendar Tools Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {/* Calendar Tools Row - 4 columns with Calendar Insights */}
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
               {/* Mood Calendar Heatmap */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -4801,6 +4747,55 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
                   size="sm"
                 >
                   🎯 Pick Date
+                </Button>
+              </motion.div>
+
+              {/* Calendar Insights - Positioned to the right of Time Travel */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+                className="bg-gradient-to-br from-cyan-900/60 to-teal-900/60 rounded-xl p-6 border border-cyan-400/20 hover:border-cyan-400/40 transition-all"
+              >
+                <div className="text-center mb-4">
+                  <div className="text-3xl mb-2">🧠📊</div>
+                  <h3 className="text-lg font-bold text-white">Smart Insights</h3>
+                  <p className="text-sm text-gray-300">Your writing patterns</p>
+                </div>
+                
+                <div className="space-y-3 mb-4">
+                  <div className="bg-slate-800/60 rounded-lg p-3 border border-cyan-400/20">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-300">Most Active</span>
+                      <span className="text-sm font-bold text-cyan-400">
+                        {entries?.length > 0 ? 'Sunday' : 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="bg-slate-800/60 rounded-lg p-3 border border-cyan-400/20">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-300">Best Time</span>
+                      <span className="text-sm font-bold text-blue-400">
+                        {entries?.length > 0 ? '7-9 PM' : 'N/A'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="bg-slate-800/60 rounded-lg p-3 border border-cyan-400/20">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-300">Mood Trend</span>
+                      <span className="text-sm font-bold text-green-400">
+                        {entries?.length > 0 ? '😊 Positive' : '😐 Neutral'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                
+                <Button 
+                  className="w-full bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-600 hover:to-teal-600 text-white"
+                  size="sm"
+                  onClick={() => setActiveTab("analytics")}
+                >
+                  📈 View Analytics
                 </Button>
               </motion.div>
             </div>
