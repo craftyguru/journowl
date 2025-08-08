@@ -1557,7 +1557,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
         
         <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsContent value="journal" data-tabs-content>
-        <div className="hidden">
+          <div>
+            <div className="hidden">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -1683,7 +1684,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               </CardContent>
             </Card>
           </div>
-        </div>
+            </div>
+          </div>
         </TabsContent>
 
         <TabsContent value="overview" data-tabs-content className="space-y-6">
