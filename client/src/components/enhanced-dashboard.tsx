@@ -1556,8 +1556,20 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="hidden">
+            <TabsTrigger value="journal">Journal</TabsTrigger>
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="achievements">Achievements</TabsTrigger>
+            <TabsTrigger value="goals">Goals</TabsTrigger>
+            <TabsTrigger value="insights">Insights</TabsTrigger>
+            <TabsTrigger value="calendar">Calendar</TabsTrigger>
+            <TabsTrigger value="stories">Stories</TabsTrigger>
+            <TabsTrigger value="referral">Referral</TabsTrigger>
+          </TabsList>
+          
           <TabsContent value="journal" data-tabs-content>
-          <div>
+            <div className="w-full">
             <div className="hidden">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
               <motion.div
