@@ -1558,19 +1558,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       
         {/* Content sections controlled by top navbar */
         {/* Analytics Content */}
-        {activeTab === 'analytics' && (
-          <div className="space-y-6">
-            {/* Analytics content from TabsContent will be moved here */}
-            <p className="text-white text-center">Analytics content coming soon...</p>
-          </div>
-        )}
         
-        {/* Other tab contents will be handled by original TabsContent sections */}
-        {(activeTab === 'achievements' || activeTab === 'goals' || activeTab === 'insights' || activeTab === 'calendar' || activeTab === 'stories' || activeTab === 'referral') && (
-          <div className="space-y-6">
-            {/* Original TabsContent sections below handle these */}
-          </div>
-        )}
         
         {/* Keep original structure for now - will be cleaned up next */}
         <div className="hidden">
