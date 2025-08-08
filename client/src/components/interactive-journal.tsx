@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar, ChevronLeft, ChevronRight, Plus, Edit3, Heart, Smile, Meh, Frown } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Plus, Edit3, Heart, Smile, Meh, Frown, Sparkles, Camera, Palette } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,11 @@ const moodColors = {
   "🤔": "from-yellow-400 to-orange-500",
   "😄": "from-pink-400 to-rose-500"
 };
+
+interface InteractiveJournalProps {
+  onOpenSmartEditor?: (entry?: any) => void;
+  onOpenUnifiedJournal?: (entry?: any) => void;
+}
 
 const sampleEntries: JournalEntry[] = [
   {
@@ -52,7 +57,7 @@ const sampleEntries: JournalEntry[] = [
   }
 ];
 
-export default function InteractiveJournal() {
+export default function InteractiveJournal({ onOpenSmartEditor, onOpenUnifiedJournal }: InteractiveJournalProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [entries] = useState(sampleEntries);
   const [isWriting, setIsWriting] = useState(false);
@@ -156,15 +161,26 @@ export default function InteractiveJournal() {
                       <p className="text-purple-300 text-sm">{currentEntry.wordCount} words</p>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsWriting(true)}
-                    className="text-purple-300 hover:text-white hover:bg-purple-500/20"
-                  >
-                    <Edit3 className="w-4 h-4 mr-1" />
-                    Edit
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onOpenSmartEditor?.(currentEntry)}
+                      className="text-purple-300 hover:text-white hover:bg-purple-500/20"
+                    >
+                      <Sparkles className="w-4 h-4 mr-1" />
+                      Smart Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsWriting(true)}
+                      className="text-purple-300 hover:text-white hover:bg-purple-500/20"
+                    >
+                      <Edit3 className="w-4 h-4 mr-1" />
+                      Quick Edit
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -241,12 +257,39 @@ export default function InteractiveJournal() {
             </Card>
           )}
 
+          {/* Smart Journal Access Buttons */}
+          {!currentEntry && !isWriting && (
+            <div className="space-y-4 mb-8">
+              <div className="text-center">
+                <h3 className="text-white text-lg font-semibold mb-4">Choose Your Writing Experience</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                  <Button
+                    onClick={() => onOpenSmartEditor?.()}
+                    className="h-24 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white flex flex-col items-center justify-center space-y-2"
+                  >
+                    <Sparkles className="w-6 h-6" />
+                    <span className="font-semibold">Smart Journal</span>
+                    <span className="text-xs opacity-90">AI Assistant • Drawing • Photos</span>
+                  </Button>
+                  <Button
+                    onClick={() => onOpenUnifiedJournal?.()}
+                    className="h-24 bg-gradient-to-r from-blue-500 to-teal-500 hover:from-blue-600 hover:to-teal-600 text-white flex flex-col items-center justify-center space-y-2"
+                  >
+                    <Edit3 className="w-6 h-6" />
+                    <span className="font-semibold">Rich Editor</span>
+                    <span className="text-xs opacity-90">Enhanced Writing Experience</span>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Add Entry Button for empty days */}
           {!currentEntry && !isWriting && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-12"
+              className="text-center py-8"
             >
               <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-2xl p-8 border border-purple-500/20">
                 <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full flex items-center justify-center">

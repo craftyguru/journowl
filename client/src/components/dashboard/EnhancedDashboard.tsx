@@ -310,7 +310,10 @@ function EnhancedDashboard({
       case 'journal':
         return (
           <div className="space-y-6">
-            <InteractiveJournal />
+            <InteractiveJournal 
+              onOpenSmartEditor={openSmartEditor}
+              onOpenUnifiedJournal={openUnifiedJournal}
+            />
           </div>
         );
 
