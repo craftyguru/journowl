@@ -1555,8 +1555,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             </div>
           </div>
         
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsContent value="journal" data-tabs-content>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsContent value="journal" data-tabs-content>
           <div>
             <div className="hidden">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
@@ -1684,11 +1684,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               </CardContent>
             </Card>
           </div>
-            </div>
-          </div>
-        </TabsContent>
+        </div>
+          </TabsContent>
 
-        <TabsContent value="overview" data-tabs-content className="space-y-6">
+          <TabsContent value="overview" data-tabs-content className="space-y-6">
           {/* Usage Meters and Subscription Management */}
           <UsageMeters />
           
@@ -1785,7 +1784,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </TabsContent>
 
-        <TabsContent value="analytics" data-tabs-content>
+          <TabsContent value="analytics" data-tabs-content>
           <div className="space-y-6">
             {/* Premium Analytics Header with Animated Stats */}
             <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white rounded-3xl p-4 md:p-8 shadow-2xl">
@@ -2823,7 +2822,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </TabsContent>
 
-        <TabsContent value="achievements" data-tabs-content>
+          <TabsContent value="achievements" data-tabs-content>
           <div className="space-y-6">
             {/* Achievements Header */}
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-6">
@@ -3088,7 +3087,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </TabsContent>
 
-        <TabsContent value="goals" data-tabs-content>
+          <TabsContent value="goals" data-tabs-content>
           <div className="space-y-6">
             {/* Goals Header */}
             <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl p-6">
@@ -3350,7 +3349,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </TabsContent>
 
-        <TabsContent value="insights" data-tabs-content>
+          <TabsContent value="insights" data-tabs-content>
           <div className="space-y-6">
             {/* AI Therapist Header */}
             <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-2xl p-4 sm:p-6">
@@ -4683,7 +4682,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
 
-        <TabsContent value="calendar" data-tabs-content>
+          <TabsContent value="calendar" data-tabs-content>
           <div className="space-y-6">
             {/* Calendar Tools Header */}
             <motion.div
@@ -4985,7 +4984,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
         
-        <TabsContent value="stories" data-tabs-content>
+          <TabsContent value="stories" data-tabs-content>
           <div className="h-[80vh] overflow-y-auto space-y-6">
             <CreativeToolsSuite 
               entries={entries}
@@ -4994,7 +4993,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
         
-        <TabsContent value="referral" data-tabs-content>
+          <TabsContent value="referral" data-tabs-content>
           <div className="space-y-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -5065,7 +5064,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
 
-        <TabsContent value="analytics" data-tabs-content>
+          <TabsContent value="analytics" data-tabs-content>
           <div className="space-y-6">
             {/* Header Section */}
             <motion.div
