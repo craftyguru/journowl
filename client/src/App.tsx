@@ -498,7 +498,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
 
       {/* PWA install functionality is now handled by PWAInstallButton in navbar */}
     </div>
-  );}
+  );
 }
 
 export default App;
