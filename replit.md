@@ -32,7 +32,7 @@ UI/UX preferences: Animated, colorful, inviting design that gets users excited t
 - **Advanced AI Integration**: Utilizes OpenAI GPT-4o Vision for photo analysis, smart journal prompts, content insights, intelligent tagging, and personalized recommendations. Features an AI Sidekick with configurable personalities and memory extraction.
 - **Gamification**: XP system, achievements with rarity levels, streak tracking, and progress visualization.
 - **UI/UX Decisions**: Emphasizes animated, colorful, and inviting design. Includes features like animated modals, custom fonts (Rock Salt), and responsive layouts for mobile optimization. Implements full-screen animated installation guides for PWA.
-- **PWA (Progressive Web App) Support**: Full PWA implementation with offline capabilities, background sync, home screen widgets, push notifications, and native Android app installation. Includes advanced caching strategies and file handling integration.
+- **PWA (Progressive Web App) Support**: Full PWA implementation with offline capabilities, background sync, home screen widgets, push notifications, and native Android app installation. Includes advanced caching strategies and file handling integration. **Auto-update system re-enabled** (August 2025) with proper safeguards to prevent infinite loops - updates check every 24 hours and use debounced reloading.
 - **Real-Time Progress Tracking**: Goals and achievements update in real-time based on user activity.
 - **Flexible Authentication**: Users can sign in with either email or username.
 - **Comprehensive Signup Security**: Includes CAPTCHA, scroll-to-accept user agreements (Terms of Service and Privacy Policy), and enhanced password security.

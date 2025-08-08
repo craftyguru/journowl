@@ -1,5 +1,5 @@
 // Dynamic cache version based on build timestamp
-const BUILD_TIMESTAMP = '2025-07-31T23:19:01.533Z'; // Updated automatically on build // Updated automatically on build
+const BUILD_TIMESTAMP = '2025-08-08T20:00:53.024Z'; // Updated automatically on build // Updated automatically on build // Updated automatically on build
 const CACHE_NAME = `journowl-cache-v${BUILD_TIMESTAMP}`;
 const urlsToCache = [
   '/',
@@ -240,6 +240,6 @@ async function setLastUpdateCheckTime(timestamp) {
   }
 }
 
-// DISABLED: Auto-check for updates to prevent infinite loops
-// Only manual update checks through app UI
-// setInterval(checkForAppUpdate, UPDATE_CHECK_INTERVAL);
+// Re-enabled: Auto-check for updates with proper safeguards
+// Check for updates every 24 hours
+setInterval(checkForAppUpdate, UPDATE_CHECK_INTERVAL);

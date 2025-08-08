@@ -1,5 +1,16 @@
 // PWA utility functions for cache management and updates
 
+// Update check interval (24 hours)
+const UPDATE_CHECK_INTERVAL = 24 * 60 * 60 * 1000;
+
+// Function to check for service worker updates
+function checkForServiceWorkerUpdate(registration: ServiceWorkerRegistration) {
+  console.log('[PWA] Checking for service worker updates...');
+  registration.update().catch(error => {
+    console.error('[PWA] Error checking for updates:', error);
+  });
+}
+
 export function forcePWARefresh() {
   // Force service worker to update
   if ('serviceWorker' in navigator) {
@@ -41,18 +52,27 @@ export function checkForPWAUpdate() {
       }
     });
     
-    // DISABLED: Service worker controllerchange auto-reload to prevent infinite loops
-    // navigator.serviceWorker.addEventListener('controllerchange', () => {
-    //   console.log('[PWA] Service worker updated, reloading...');
-    //   window.location.reload();
-    // });
+    // Re-enabled: Service worker controllerchange auto-reload with debouncing
+    let reloadTimeout: NodeJS.Timeout | null = null;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('[PWA] Service worker updated, scheduling reload...');
+      
+      // Debounce rapid reloads
+      if (reloadTimeout) {
+        clearTimeout(reloadTimeout);
+      }
+      
+      reloadTimeout = setTimeout(() => {
+        window.location.reload();
+      }, 2000); // Wait 2 seconds before reloading
+    });
     
     navigator.serviceWorker.ready.then(registration => {
-      // DISABLED: All automatic update checking to prevent infinite loops
-      // Manual update checking only through app UI
-      console.log('[PWA] Service worker ready, automatic updates disabled');
+      // Re-enabled: Automatic update checking with proper safeguards
+      console.log('[PWA] Service worker ready, automatic updates enabled');
       
-      // Only listen for manual update events, no automatic checking
+      // Check for updates immediately and then periodically
+      checkForServiceWorkerUpdate(registration);
       registration.addEventListener('updatefound', () => {
         const newWorker = registration.installing;
         if (newWorker) {
@@ -67,7 +87,10 @@ export function checkForPWAUpdate() {
         }
       });
       
-      // NO automatic update checks - prevents infinite loops
+      // Set up periodic update checks
+      setInterval(() => {
+        checkForServiceWorkerUpdate(registration);
+      }, UPDATE_CHECK_INTERVAL);
     });
     
     // DISABLED: Automatic server version checking to prevent infinite loops
