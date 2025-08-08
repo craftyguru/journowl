@@ -1375,8 +1375,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
 
 
 
-      {/* Main Content - Navigation now handled by top navbar */}
-      <div className="space-y-6 pb-8 lg:pb-6">
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 pb-8 lg:pb-6">
         {/* Mobile-Responsive Horizontal Scrolling Tabs */}
         <div className="relative w-full">
           {/* Left scroll indicator */}
@@ -1444,55 +1444,85 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             </div>
           </motion.div>
           
-          {/* Navigation is now in top navbar - showing current active section */}
-          <div className="text-center mb-4">
-            <motion.div
-              className="inline-flex items-center gap-2 bg-slate-800/60 backdrop-blur-lg rounded-xl px-4 py-2 border border-purple-500/30"
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
+          <div className="overflow-x-auto lg:overflow-x-visible">
+            <TabsList className="flex w-max lg:w-full lg:justify-center bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-lg border-2 border-purple-500/20 shadow-2xl rounded-2xl p-3 gap-2 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)', paddingRight: '20px' }}>
+            <TabsTrigger 
+              value="journal" 
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
+                activeTab === 'journal' 
+                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/50 border-orange-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-orange-400/10 to-amber-400/10 text-orange-200 hover:from-orange-400/30 hover:to-amber-400/30 hover:text-white hover:scale-105 border-orange-400/20'
+              }`}
             >
-              <span className="text-2xl">
-                {activeTab === 'journal' && '✍️'}
-                {activeTab === 'analytics' && '📊'}  
-                {activeTab === 'achievements' && '🏆'}
-                {activeTab === 'goals' && '🎯'}
-                {activeTab === 'insights' && '🤖'}
-                {activeTab === 'calendar' && '📅'}
-                {activeTab === 'stories' && '📚'}
-                {activeTab === 'referral' && '🎁'}
-              </span>
-              <span className="text-white font-bold capitalize" style={{ fontFamily: '"Rock Salt", cursive' }}>
-                {activeTab === 'insights' ? 'AI Thoughts' : activeTab === 'stories' ? 'AI Stories' : activeTab}
-              </span>
-            </motion.div>
-          </div>
-        </div>
-
-        {/* Content based on active tab */}
-        {activeTab === 'journal' && (
-          <div className="space-y-6">
-            {/* Mobile-Optimized Features Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 }}
-                className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 backdrop-blur-lg rounded-lg p-3 border border-purple-500/20 h-fit"
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'journal' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'journal' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
               >
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500 rounded-lg flex items-center justify-center mb-2">
-                  <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-                </div>
-                <h3 className="text-white font-semibold text-sm sm:text-base mb-1">AI Photo Analysis</h3>
-                <p className="text-gray-300 text-xs sm:text-sm leading-tight">Upload photos and AI extracts emotions, activities, and insights</p>
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    rotate: activeTab === 'journal' ? [0, 10, -10, 0] : 0,
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: activeTab === 'journal' ? Infinity : 0,
+                    repeatType: "reverse"
+                  }}
+                >
+                  ✍️
+                </motion.span>
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
+                  Journal
+                  {activeTab === 'journal' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-yellow-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'journal' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
               </motion.div>
-              {/* More journal features will be added here from the original TabsContent */}
-            </div>
-          </div>
-        )}
-        
-        {/* This will be replaced with actual TabsContent sections below */}
-        
-        {/* Find TabsContent sections and include them here 
+              
+              {/* Animated background effects */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-yellow-400/30 via-orange-400/30 to-pink-400/30 opacity-0"
+                animate={{
+                  opacity: activeTab === 'journal' ? [0, 0.5, 0] : 0,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'journal' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              />
+            </TabsTrigger>
+            <TabsTrigger 
+              value="analytics" 
               className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
                 activeTab === 'analytics' 
                   ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/50 border-blue-400/50 transform scale-105' 
@@ -1552,25 +1582,246 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   }}
                 />
               </motion.div>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="achievements" 
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[150px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
+                activeTab === 'achievements' 
+                  ? 'bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-lg shadow-yellow-500/50 border-yellow-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-yellow-400/10 to-amber-400/10 text-yellow-200 hover:from-yellow-400/30 hover:to-amber-400/30 hover:text-white hover:scale-105 border-yellow-400/20'
+              }`}
+            >
+              <motion.div
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'achievements' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'achievements' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              >
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    rotate: activeTab === 'achievements' ? [0, 15, -15, 0] : 0,
+                    scale: activeTab === 'achievements' ? [1, 1.2, 1] : 1,
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: activeTab === 'achievements' ? Infinity : 0,
+                    repeatType: "reverse"
+                  }}
+                >
+                  🏆
+                </motion.span>
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
+                  Achievements
+                  {activeTab === 'achievements' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-yellow-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'achievements' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
+              </motion.div>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="goals" 
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
+                activeTab === 'goals' 
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/50 border-green-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-green-400/10 to-emerald-400/10 text-green-200 hover:from-green-400/30 hover:to-emerald-400/30 hover:text-white hover:scale-105 border-green-400/20'
+              }`}
+            >
+              <motion.div
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'goals' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'goals' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              >
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    scale: activeTab === 'goals' ? [1, 1.3, 1] : 1,
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: activeTab === 'goals' ? Infinity : 0,
+                    repeatType: "reverse"
+                  }}
+                >
+                  🎯
+                </motion.span>
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
+                  Goals
+                  {activeTab === 'goals' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-green-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'goals' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
+              </motion.div>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="insights" 
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
+                activeTab === 'insights' 
+                  ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/50 border-purple-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-purple-400/10 to-violet-400/10 text-purple-200 hover:from-purple-400/30 hover:to-violet-400/30 hover:text-white hover:scale-105 border-purple-400/20'
+              }`}
+            >
+              <motion.div
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'insights' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'insights' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              >
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    rotate: activeTab === 'insights' ? [0, 10, -10, 0] : 0,
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: activeTab === 'insights' ? Infinity : 0,
+                    repeatType: "reverse"
+                  }}
+                >
+                  🤖
+                </motion.span>
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
+                  AI
+                  {activeTab === 'insights' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-purple-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'insights' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
+              </motion.div>
+            </TabsTrigger>
+
+            {/* Secondary Navigation - More Subtle Styling */}
+            <div className="hidden xl:flex gap-1 ml-3 pl-3 border-l border-gray-600/20">
+              <TabsTrigger 
+                value="calendar" 
+                className={`relative flex-shrink-0 h-10 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap min-w-[100px] ${
+                  activeTab === 'calendar' 
+                    ? 'bg-teal-500/70 text-white shadow-sm' 
+                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
+                }`}
+                title="Memory Calendar"
+              >
+                📅
+              </TabsTrigger>
+              <TabsTrigger 
+                value="stories" 
+                className={`relative flex-shrink-0 h-10 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap min-w-[100px] ${
+                  activeTab === 'stories' 
+                    ? 'bg-emerald-500/70 text-white shadow-sm' 
+                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
+                }`}
+                title="AI Stories"
+              >
+                📚
+              </TabsTrigger>
+              <TabsTrigger 
+                value="referral" 
+                className={`relative flex-shrink-0 h-10 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap min-w-[100px] ${
+                  activeTab === 'referral' 
+                    ? 'bg-pink-500/70 text-white shadow-sm' 
+                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
+                }`}
+                title="Referral Program"
+              >
+                🎁
+              </TabsTrigger>
             </div>
+            
+            {/* Mobile Secondary Navigation */}
+            <div className="flex xl:hidden gap-1 w-full">
+              <TabsTrigger value="calendar" className="flex-1 h-10 px-2 text-xs bg-gray-700/20 text-gray-400 hover:bg-gray-600/30">📅</TabsTrigger>
+              <TabsTrigger value="stories" className="flex-1 h-10 px-2 text-xs bg-gray-700/20 text-gray-400 hover:bg-gray-600/30">📚</TabsTrigger>
+              <TabsTrigger value="referral" className="flex-1 h-10 px-2 text-xs bg-gray-700/20 text-gray-400 hover:bg-gray-600/30">🎁</TabsTrigger>
+            </div>
+            </TabsList>
           </div>
-        
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="hidden">
-            <TabsTrigger value="journal">Journal</TabsTrigger>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-            <TabsTrigger value="achievements">Achievements</TabsTrigger>
-            <TabsTrigger value="goals">Goals</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
-            <TabsTrigger value="calendar">Calendar</TabsTrigger>
-            <TabsTrigger value="stories">Stories</TabsTrigger>
-            <TabsTrigger value="referral">Referral</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="journal" data-tabs-content>
-            <div className="w-full">
-            <div className="hidden">
+        </div>
+
+        <TabsContent value="journal" data-tabs-content>
+          <div className="space-y-6">
+
+            {/* Mobile-Optimized Features Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -1696,10 +1947,9 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               </CardContent>
             </Card>
           </div>
-        </div>
-          </TabsContent>
+        </TabsContent>
 
-          <TabsContent value="overview" data-tabs-content className="space-y-6">
+        <TabsContent value="overview" data-tabs-content className="space-y-6">
           {/* Usage Meters and Subscription Management */}
           <UsageMeters />
           
@@ -1796,7 +2046,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </TabsContent>
 
-          <TabsContent value="analytics" data-tabs-content>
+        <TabsContent value="analytics" data-tabs-content>
           <div className="space-y-6">
             {/* Premium Analytics Header with Animated Stats */}
             <div className="bg-gradient-to-r from-violet-600 via-purple-600 to-fuchsia-600 text-white rounded-3xl p-4 md:p-8 shadow-2xl">
@@ -2834,7 +3084,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </TabsContent>
 
-          <TabsContent value="achievements" data-tabs-content>
+        <TabsContent value="achievements" data-tabs-content>
           <div className="space-y-6">
             {/* Achievements Header */}
             <div className="bg-gradient-to-r from-amber-500 to-orange-600 text-white rounded-2xl p-6">
@@ -3099,7 +3349,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </TabsContent>
 
-          <TabsContent value="goals" data-tabs-content>
+        <TabsContent value="goals" data-tabs-content>
           <div className="space-y-6">
             {/* Goals Header */}
             <div className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-2xl p-6">
@@ -3361,7 +3611,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </TabsContent>
 
-          <TabsContent value="insights" data-tabs-content>
+        <TabsContent value="insights" data-tabs-content>
           <div className="space-y-6">
             {/* AI Therapist Header */}
             <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white rounded-2xl p-4 sm:p-6">
@@ -4694,7 +4944,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
 
-          <TabsContent value="calendar" data-tabs-content>
+        <TabsContent value="calendar" data-tabs-content>
           <div className="space-y-6">
             {/* Calendar Tools Header */}
             <motion.div
@@ -4996,7 +5246,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
         
-          <TabsContent value="stories" data-tabs-content>
+        <TabsContent value="stories" data-tabs-content>
           <div className="h-[80vh] overflow-y-auto space-y-6">
             <CreativeToolsSuite 
               entries={entries}
@@ -5005,7 +5255,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
         
-          <TabsContent value="referral" data-tabs-content>
+        <TabsContent value="referral" data-tabs-content>
           <div className="space-y-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -5076,7 +5326,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </div>
         </TabsContent>
 
-          <TabsContent value="analytics" data-tabs-content>
+        <TabsContent value="analytics" data-tabs-content>
           <div className="space-y-6">
             {/* Header Section */}
             <motion.div
@@ -5892,7 +6142,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </motion.button>
         </div>
       )}
-      
+
     </div>
   );
 }
@@ -6316,10 +6566,10 @@ export default function EnhancedDashboardWithSupport({ onSwitchToKid, initialTab
         onJournalStateChange={handleJournalStateChange} 
       />
       
-        {/* Fixed positioned support bubble in bottom right */}
-        <div className="fixed bottom-6 right-6 z-50">
-          <MergedHelpSupportBubble hideWhenJournalOpen={journalOpen} />
-        </div>
+      {/* Fixed positioned support bubble in bottom right */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <MergedHelpSupportBubble hideWhenJournalOpen={journalOpen} />
       </div>
+    </div>
   );
 }

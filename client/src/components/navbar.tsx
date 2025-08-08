@@ -27,7 +27,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
   const user = userResponse?.user;
 
   return (
-    <nav className="bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-lg border-b border-purple-500/20 shadow-2xl sticky top-0 z-50">
+    <nav className="bg-white dark:bg-card shadow-sm border-b border-border sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-3">
@@ -37,149 +37,20 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             <h1 className="text-xl font-bold text-primary">🦉 JournOwl</h1>
           </div>
           
-          {/* Professional Desktop Navigation - All Tabs */}
-          <div className="hidden lg:flex items-center space-x-2 bg-gradient-to-r from-slate-800/80 via-slate-700/80 to-slate-800/80 backdrop-blur-lg rounded-2xl px-4 py-2 border border-slate-600/30 shadow-2xl">
+          <div className="hidden md:flex items-center space-x-6">
             <Button
               variant="ghost"
-              className={`h-10 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-300 border ${
-                activeTab === "journal" 
-                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/50 border-orange-400/50 transform scale-105' 
-                  : 'bg-gradient-to-r from-orange-400/10 to-amber-400/10 text-orange-200 hover:from-orange-400/30 hover:to-amber-400/30 hover:text-white hover:scale-105 border-orange-400/20'
-              }`}
-              onClick={() => onNavigate("journal")}
+              className={`${currentView === "dashboard" ? "text-primary" : "text-muted-foreground"} hover:text-primary`}
+              onClick={() => onNavigate("dashboard")}
             >
-              ✍️ Journal
+              Dashboard
             </Button>
             <Button
               variant="ghost"
-              className={`h-10 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-300 border ${
-                activeTab === "analytics" 
-                  ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/50 border-blue-400/50 transform scale-105' 
-                  : 'bg-gradient-to-r from-blue-400/10 to-cyan-400/10 text-blue-200 hover:from-blue-400/30 hover:to-cyan-400/30 hover:text-white hover:scale-105 border-blue-400/20'
-              }`}
-              onClick={() => onNavigate("analytics")}
-            >
-              📊 Analytics
-            </Button>
-            <Button
-              variant="ghost"
-              className={`h-10 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-300 border ${
-                activeTab === "achievements" 
-                  ? 'bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-lg shadow-yellow-500/50 border-yellow-400/50 transform scale-105' 
-                  : 'bg-gradient-to-r from-yellow-400/10 to-amber-400/10 text-yellow-200 hover:from-yellow-400/30 hover:to-amber-400/30 hover:text-white hover:scale-105 border-yellow-400/20'
-              }`}
-              onClick={() => onNavigate("achievements")}
-            >
-              🏆 Achievements
-            </Button>
-            <Button
-              variant="ghost"
-              className={`h-10 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-300 border ${
-                activeTab === "goals" 
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/50 border-green-400/50 transform scale-105' 
-                  : 'bg-gradient-to-r from-green-400/10 to-emerald-400/10 text-green-200 hover:from-green-400/30 hover:to-emerald-400/30 hover:text-white hover:scale-105 border-green-400/20'
-              }`}
-              onClick={() => onNavigate("goals")}
-            >
-              🎯 Goals
-            </Button>
-            <Button
-              variant="ghost"
-              className={`h-10 px-4 py-2 text-sm font-bold rounded-xl transition-all duration-300 border ${
-                activeTab === "insights" 
-                  ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/50 border-purple-400/50 transform scale-105' 
-                  : 'bg-gradient-to-r from-purple-400/10 to-violet-400/10 text-purple-200 hover:from-purple-400/30 hover:to-violet-400/30 hover:text-white hover:scale-105 border-purple-400/20'
-              }`}
+              className={`${currentView === "insights" ? "text-primary" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => onNavigate("insights")}
             >
-              🤖 AI
-            </Button>
-            
-            {/* Secondary Navigation - More Subtle */}
-            <div className="flex gap-1 ml-3 pl-3 border-l border-gray-600/30">
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`h-8 px-3 text-xs font-medium rounded-lg transition-all duration-200 ${
-                  activeTab === "calendar" 
-                    ? 'bg-teal-500/70 text-white shadow-sm' 
-                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
-                }`}
-                onClick={() => onNavigate("calendar")}
-                title="Memory Calendar"
-              >
-                📅
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`h-8 px-3 text-xs font-medium rounded-lg transition-all duration-200 ${
-                  activeTab === "stories" 
-                    ? 'bg-emerald-500/70 text-white shadow-sm' 
-                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
-                }`}
-                onClick={() => onNavigate("stories")}
-                title="AI Stories"
-              >
-                📚
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`h-8 px-3 text-xs font-medium rounded-lg transition-all duration-200 ${
-                  currentView === "referral" 
-                    ? 'bg-pink-500/70 text-white shadow-sm' 
-                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
-                }`}
-                onClick={() => onNavigate("referral")}
-                title="Referral Program"
-              >
-                🎁
-              </Button>
-            </div>
-          </div>
-          
-          {/* Tablet Navigation - Simplified */}
-          <div className="hidden md:flex lg:hidden items-center space-x-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`${activeTab === "journal" ? "bg-orange-500 text-white" : "text-muted-foreground hover:text-primary"} rounded-lg`}
-              onClick={() => onNavigate("journal")}
-            >
-              ✍️
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`${activeTab === "analytics" ? "bg-blue-500 text-white" : "text-muted-foreground hover:text-primary"} rounded-lg`}
-              onClick={() => onNavigate("analytics")}
-            >
-              📊
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`${activeTab === "achievements" ? "bg-yellow-500 text-white" : "text-muted-foreground hover:text-primary"} rounded-lg`}
-              onClick={() => onNavigate("achievements")}
-            >
-              🏆
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`${activeTab === "goals" ? "bg-green-500 text-white" : "text-muted-foreground hover:text-primary"} rounded-lg`}
-              onClick={() => onNavigate("goals")}
-            >
-              🎯
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`${activeTab === "insights" ? "bg-purple-500 text-white" : "text-muted-foreground hover:text-primary"} rounded-lg`}
-              onClick={() => onNavigate("insights")}
-            >
-              🤖
+              Insights
             </Button>
           </div>
 
