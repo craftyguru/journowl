@@ -1445,13 +1445,13 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </motion.div>
           
           <div className="overflow-x-auto lg:overflow-x-visible">
-            <TabsList className="flex w-max lg:w-full lg:justify-center bg-slate-800/95 backdrop-blur-lg border-2 border-purple-500/30 shadow-2xl rounded-lg p-1 gap-0.5 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)', paddingRight: '20px' }}>
+            <TabsList className="flex w-max lg:w-full lg:justify-center bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-lg border-2 border-purple-500/20 shadow-2xl rounded-2xl p-3 gap-2 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)', paddingRight: '20px' }}>
             <TabsTrigger 
               value="journal" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] lg:flex-1 lg:min-w-0 lg:justify-center ${
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
                 activeTab === 'journal' 
-                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-orange-400/20 to-amber-400/20 text-orange-200 hover:from-orange-400/40 hover:to-amber-400/40 hover:text-white hover:scale-105'
+                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/50 border-orange-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-orange-400/10 to-amber-400/10 text-orange-200 hover:from-orange-400/30 hover:to-amber-400/30 hover:text-white hover:scale-105 border-orange-400/20'
               }`}
             >
               <motion.div
@@ -1523,10 +1523,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             </TabsTrigger>
             <TabsTrigger 
               value="analytics" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] lg:flex-1 lg:min-w-0 lg:justify-center ${
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
                 activeTab === 'analytics' 
-                  ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-blue-400/20 to-cyan-400/20 text-blue-200 hover:from-blue-400/40 hover:to-cyan-400/40 hover:text-white hover:scale-105'
+                  ? 'bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/50 border-blue-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-blue-400/10 to-cyan-400/10 text-blue-200 hover:from-blue-400/30 hover:to-cyan-400/30 hover:text-white hover:scale-105 border-blue-400/20'
               }`}
             >
               <motion.div
@@ -1585,10 +1585,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             </TabsTrigger>
             <TabsTrigger 
               value="achievements" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] lg:flex-1 lg:min-w-0 lg:justify-center ${
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[150px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
                 activeTab === 'achievements' 
-                  ? 'bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-lg shadow-yellow-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-yellow-400/20 to-amber-400/20 text-yellow-200 hover:from-yellow-400/40 hover:to-amber-400/40 hover:text-white hover:scale-105'
+                  ? 'bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-lg shadow-yellow-500/50 border-yellow-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-yellow-400/10 to-amber-400/10 text-yellow-200 hover:from-yellow-400/30 hover:to-amber-400/30 hover:text-white hover:scale-105 border-yellow-400/20'
               }`}
             >
               <motion.div
@@ -1648,10 +1648,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             </TabsTrigger>
             <TabsTrigger 
               value="goals" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[100px] lg:flex-1 lg:min-w-0 lg:justify-center ${
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
                 activeTab === 'goals' 
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-green-400/20 to-emerald-400/20 text-green-200 hover:from-green-400/40 hover:to-emerald-400/40 hover:text-white hover:scale-105'
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/50 border-green-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-green-400/10 to-emerald-400/10 text-green-200 hover:from-green-400/30 hover:to-emerald-400/30 hover:text-white hover:scale-105 border-green-400/20'
               }`}
             >
               <motion.div
@@ -1710,49 +1710,110 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             </TabsTrigger>
             <TabsTrigger 
               value="insights" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] lg:flex-1 lg:min-w-0 lg:justify-center ${
+              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
                 activeTab === 'insights' 
-                  ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-purple-400/20 to-violet-400/20 text-purple-200 hover:from-purple-400/40 hover:to-violet-400/40 hover:text-white hover:scale-105'
+                  ? 'bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/50 border-purple-400/50 transform scale-105' 
+                  : 'bg-gradient-to-r from-purple-400/10 to-violet-400/10 text-purple-200 hover:from-purple-400/30 hover:to-violet-400/30 hover:text-white hover:scale-105 border-purple-400/20'
               }`}
-              style={{ fontFamily: '"Rock Salt", cursive' }}
             >
-              🤖 AI Thoughts
+              <motion.div
+                className="flex items-center gap-2"
+                animate={{
+                  scale: activeTab === 'insights' ? [1, 1.1, 1] : 1,
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: activeTab === 'insights' ? Infinity : 0,
+                  repeatType: "reverse"
+                }}
+              >
+                <motion.span 
+                  className="text-lg"
+                  animate={{
+                    rotate: activeTab === 'insights' ? [0, 10, -10, 0] : 0,
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: activeTab === 'insights' ? Infinity : 0,
+                    repeatType: "reverse"
+                  }}
+                >
+                  🤖
+                </motion.span>
+                <span className="relative" style={{ fontFamily: '"Rock Salt", cursive' }}>
+                  AI
+                  {activeTab === 'insights' && (
+                    <motion.div
+                      className="absolute -inset-1 bg-white/20 rounded blur-sm"
+                      animate={{
+                        opacity: [0.3, 0.7, 0.3],
+                      }}
+                      transition={{
+                        duration: 1.5,
+                        repeat: Infinity,
+                        repeatType: "reverse"
+                      }}
+                    />
+                  )}
+                </span>
+                <motion.div
+                  className="w-2 h-2 bg-purple-300 rounded-full"
+                  animate={{
+                    scale: activeTab === 'insights' ? [1, 1.5, 1] : [0.8, 1.2, 0.8],
+                    opacity: [0.7, 1, 0.7],
+                  }}
+                  transition={{
+                    duration: 1,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                />
+              </motion.div>
             </TabsTrigger>
 
-            <TabsTrigger 
-              value="calendar" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[170px] lg:flex-1 lg:min-w-0 lg:justify-center ${
-                activeTab === 'calendar' 
-                  ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-teal-400/20 to-cyan-400/20 text-teal-200 hover:from-teal-400/40 hover:to-cyan-400/40 hover:text-white hover:scale-105'
-              }`}
-              style={{ fontFamily: '"Rock Salt", cursive' }}
-            >
-              📅 Memory Calendar
-            </TabsTrigger>
-            <TabsTrigger 
-              value="stories" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[130px] lg:flex-1 lg:min-w-0 lg:justify-center ${
-                activeTab === 'stories' 
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-emerald-400/20 to-teal-400/20 text-emerald-200 hover:from-emerald-400/40 hover:to-teal-400/40 hover:text-white hover:scale-105'
-              }`}
-              style={{ fontFamily: '"Rock Salt", cursive' }}
-            >
-              📚 AI Stories
-            </TabsTrigger>
-            <TabsTrigger 
-              value="referral" 
-              className={`relative flex-shrink-0 h-10 px-3 py-2 text-sm font-bold rounded-lg transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[120px] lg:flex-1 lg:min-w-0 lg:justify-center ${
-                activeTab === 'referral' 
-                  ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg shadow-pink-500/50 scale-105' 
-                  : 'bg-gradient-to-r from-pink-400/20 to-rose-400/20 text-pink-200 hover:from-pink-400/40 hover:to-rose-400/40 hover:text-white hover:scale-105'
-              }`}
-              style={{ fontFamily: '"Rock Salt", cursive' }}
-            >
-              🎁 Referral
-            </TabsTrigger>
+            {/* Secondary Navigation - More Subtle Styling */}
+            <div className="hidden xl:flex gap-1 ml-3 pl-3 border-l border-gray-600/20">
+              <TabsTrigger 
+                value="calendar" 
+                className={`relative flex-shrink-0 h-10 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap min-w-[100px] ${
+                  activeTab === 'calendar' 
+                    ? 'bg-teal-500/70 text-white shadow-sm' 
+                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
+                }`}
+                title="Memory Calendar"
+              >
+                📅
+              </TabsTrigger>
+              <TabsTrigger 
+                value="stories" 
+                className={`relative flex-shrink-0 h-10 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap min-w-[100px] ${
+                  activeTab === 'stories' 
+                    ? 'bg-emerald-500/70 text-white shadow-sm' 
+                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
+                }`}
+                title="AI Stories"
+              >
+                📚
+              </TabsTrigger>
+              <TabsTrigger 
+                value="referral" 
+                className={`relative flex-shrink-0 h-10 px-3 py-2 text-xs font-medium rounded-lg transition-all duration-200 whitespace-nowrap min-w-[100px] ${
+                  activeTab === 'referral' 
+                    ? 'bg-pink-500/70 text-white shadow-sm' 
+                    : 'bg-gray-700/20 text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
+                }`}
+                title="Referral Program"
+              >
+                🎁
+              </TabsTrigger>
+            </div>
+            
+            {/* Mobile Secondary Navigation */}
+            <div className="flex xl:hidden gap-1 w-full">
+              <TabsTrigger value="calendar" className="flex-1 h-10 px-2 text-xs bg-gray-700/20 text-gray-400 hover:bg-gray-600/30">📅</TabsTrigger>
+              <TabsTrigger value="stories" className="flex-1 h-10 px-2 text-xs bg-gray-700/20 text-gray-400 hover:bg-gray-600/30">📚</TabsTrigger>
+              <TabsTrigger value="referral" className="flex-1 h-10 px-2 text-xs bg-gray-700/20 text-gray-400 hover:bg-gray-600/30">🎁</TabsTrigger>
+            </div>
             </TabsList>
           </div>
         </div>
