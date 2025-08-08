@@ -38,7 +38,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
           </div>
           
           {/* Desktop Tab Navigation - Compact */}
-          <div className="hidden lg:flex items-center space-x-0.5">
+          <div className="hidden md:flex items-center space-x-0.5">
             <Button
               variant="ghost"
               size="sm"
