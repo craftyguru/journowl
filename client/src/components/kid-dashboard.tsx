@@ -2798,6 +2798,7 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         </Badge>
                       </div>
                     </div>
+                </div>
                 
                 {/* Drawing Interface */}
                 <div className="mt-4">
@@ -2832,6 +2833,7 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         </div>
                       </div>
                     </div>
+                </div>
                 
                 {/* Voice Interface */}
                 <div className="mt-4">
@@ -2873,6 +2875,7 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         </Button>
                       </div>
                     </div>
+                </div>
                 
                 {/* Photos Interface */}
                 <div className="mt-4">
@@ -2959,6 +2962,7 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         </div>
                       )}
                     </div>
+                </div>
                 
                 {/* AI Help Interface */}
                 <div className="mt-4">
