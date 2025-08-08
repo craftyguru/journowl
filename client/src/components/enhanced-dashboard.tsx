@@ -1556,6 +1556,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </div>
         
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsContent value="journal" data-tabs-content>
         <div className="hidden">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
