@@ -1683,6 +1683,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               </CardContent>
             </Card>
           </div>
+        </div>
         </TabsContent>
 
         <TabsContent value="overview" data-tabs-content className="space-y-6">
