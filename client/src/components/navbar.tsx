@@ -13,9 +13,11 @@ interface NavbarProps {
   currentView: string;
   activeTab?: string;
   onNavigate: (view: string) => void;
+  isKidMode?: boolean;
+  onModeSwitch?: (isKidMode: boolean) => void;
 }
 
-export default function Navbar({ currentView, activeTab, onNavigate }: NavbarProps) {
+export default function Navbar({ currentView, activeTab, onNavigate, isKidMode = false, onModeSwitch }: NavbarProps) {
   const { colorScheme, toggleColorScheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
@@ -37,195 +39,265 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             <h1 className="text-xl font-bold text-primary">🦉 JournOwl</h1>
           </div>
           
-          {/* Desktop Tab Navigation - Ultra Compact */}
+          {/* Desktop Tab Navigation - Mode-Specific */}
           <div className="hidden md:flex items-center space-x-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "journal" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => {
-                onNavigate("journal");
-                setTimeout(() => {
-                  // Find the specific tab content section
-                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
-                                       document.querySelector('[data-tabs-content][value="journal"]');
-                  
-                  if (tabsContainer) {
-                    // Calculate position to scroll past the calendar insights section
-                    const rect = tabsContainer.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset + rect.top - 100; // 100px offset from top
-                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-                  } else {
-                    // Fallback: scroll to a reasonable position past header elements
-                    const headerHeight = 400; // Approximate height of stats + usage meters + insights
-                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-                  }
-                }, 300);
-              }}
-            >
-              ✍️ Journal
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "analytics" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => {
-                onNavigate("analytics");
-                setTimeout(() => {
-                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
-                                       document.querySelector('[data-tabs-content][value="analytics"]');
-                  
-                  if (tabsContainer) {
-                    const rect = tabsContainer.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset + rect.top - 100;
-                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-                  } else {
-                    const headerHeight = 400;
-                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-                  }
-                }, 300);
-              }}
-            >
-              📊 Analytics
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "achievements" ? "bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => {
-                onNavigate("achievements");
-                setTimeout(() => {
-                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
-                                       document.querySelector('[data-tabs-content][value="achievements"]');
-                  
-                  if (tabsContainer) {
-                    const rect = tabsContainer.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset + rect.top - 100;
-                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-                  } else {
-                    const headerHeight = 400;
-                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-                  }
-                }, 300);
-              }}
-            >
-              🏆 Awards
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "goals" ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => {
-                onNavigate("goals");
-                setTimeout(() => {
-                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
-                                       document.querySelector('[data-tabs-content][value="goals"]');
-                  
-                  if (tabsContainer) {
-                    const rect = tabsContainer.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset + rect.top - 100;
-                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-                  } else {
-                    const headerHeight = 400;
-                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-                  }
-                }, 300);
-              }}
-            >
-              🎯 Goals
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "insights" ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => {
-                onNavigate("insights");
-                setTimeout(() => {
-                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
-                                       document.querySelector('[data-tabs-content][value="insights"]');
-                  
-                  if (tabsContainer) {
-                    const rect = tabsContainer.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset + rect.top - 100;
-                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-                  } else {
-                    const headerHeight = 400;
-                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-                  }
-                }, 300);
-              }}
-            >
-              🤖 AI
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "calendar" ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => {
-                onNavigate("calendar");
-                setTimeout(() => {
-                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
-                                       document.querySelector('[data-tabs-content][value="calendar"]');
-                  
-                  if (tabsContainer) {
-                    const rect = tabsContainer.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset + rect.top - 100;
-                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-                  } else {
-                    const headerHeight = 400;
-                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-                  }
-                }, 300);
-              }}
-            >
-              📅 Memory
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "stories" ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => {
-                onNavigate("stories");
-                setTimeout(() => {
-                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
-                                       document.querySelector('[data-tabs-content][value="stories"]');
-                  
-                  if (tabsContainer) {
-                    const rect = tabsContainer.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset + rect.top - 100;
-                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-                  } else {
-                    const headerHeight = 400;
-                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-                  }
-                }, 300);
-              }}
-            >
-              📚 Stories
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "referral" ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => {
-                onNavigate("referral");
-                setTimeout(() => {
-                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
-                                       document.querySelector('[data-tabs-content][value="referral"]');
-                  
-                  if (tabsContainer) {
-                    const rect = tabsContainer.getBoundingClientRect();
-                    const scrollTop = window.pageYOffset + rect.top - 100;
-                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
-                  } else {
-                    const headerHeight = 400;
-                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
-                  }
-                }, 300);
-              }}
-            >
-              🎁 Referral
-            </Button>
+            {!isKidMode ? (
+              // Adult Mode Tabs
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "journal" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => {
+                    onNavigate("journal");
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="journal"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
+                  }}
+                >
+                  ✍️ Journal
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "analytics" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => {
+                    onNavigate("analytics");
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="analytics"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
+                  }}
+                >
+                  📊 Analytics
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "achievements" ? "bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => {
+                    onNavigate("achievements");
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="achievements"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
+                  }}
+                >
+                  🏆 Awards
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "goals" ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => {
+                    onNavigate("goals");
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="goals"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
+                  }}
+                >
+                  🎯 Goals
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "insights" ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => {
+                    onNavigate("insights");
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="insights"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
+                  }}
+                >
+                  🤖 AI
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "calendar" ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => {
+                    onNavigate("calendar");
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="calendar"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
+                  }}
+                >
+                  📅 Memory
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "stories" ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => {
+                    onNavigate("stories");
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="stories"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
+                  }}
+                >
+                  📚 Stories
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "referral" ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => {
+                    onNavigate("referral");
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="referral"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
+                  }}
+                >
+                  🎁 Referral
+                </Button>
+              </>
+            ) : (
+              // Kid Mode Tabs
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "write" ? "bg-gradient-to-r from-green-400 to-blue-400 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => onNavigate("write")}
+                >
+                  ✍️ Write
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "achievements" ? "bg-gradient-to-r from-yellow-400 to-orange-400 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => onNavigate("achievements")}
+                >
+                  🏆 Badges
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "goals" ? "bg-gradient-to-r from-emerald-400 to-teal-400 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => onNavigate("goals")}
+                >
+                  🎯 Goals
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "calendar" ? "bg-gradient-to-r from-purple-400 to-indigo-400 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => onNavigate("calendar")}
+                >
+                  📅 Calendar
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "photos" ? "bg-gradient-to-r from-pink-400 to-purple-400 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => onNavigate("photos")}
+                >
+                  📸 Photos
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "ai" ? "bg-gradient-to-r from-orange-400 to-red-400 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => onNavigate("ai")}
+                >
+                  🤖 AI Help
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "stats" ? "bg-gradient-to-r from-teal-400 to-cyan-400 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => onNavigate("stats")}
+                >
+                  📊 My Stats
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "story" ? "bg-gradient-to-r from-indigo-400 to-purple-400 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                  onClick={() => onNavigate("story")}
+                >
+                  📚 AI Story
+                </Button>
+              </>
+            )}
           </div>
 
 
@@ -261,16 +333,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="px-3 py-1.5 text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90"
-                    title="Adult Mode (Current)"
+                    className={`px-3 py-1.5 text-xs font-medium transition-all ${!isKidMode ? "bg-primary text-primary-foreground hover:bg-primary/90" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}`}
+                    title={!isKidMode ? "Adult Mode (Current)" : "Switch to Adult Mode"}
+                    onClick={() => onModeSwitch?.(false)}
                   >
                     👨‍💼 Adult
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                    title="Switch to Kid Mode"
+                    className={`px-3 py-1.5 text-xs font-medium transition-all ${isKidMode ? "bg-primary text-primary-foreground hover:bg-primary/90" : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"}`}
+                    title={isKidMode ? "Kid Mode (Current)" : "Switch to Kid Mode"}
+                    onClick={() => onModeSwitch?.(true)}
                   >
                     🧒 Kid
                   </Button>

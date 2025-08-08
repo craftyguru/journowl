@@ -418,6 +418,7 @@ function App() {
 // Authenticated App Component with Role-Based Access
 function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView: string, activeTab: string, onNavigate: (view: string) => void }) {
   const [isKidMode, setIsKidMode] = useState(false);
+  const [kidActiveTab, setKidActiveTab] = useState("write");
   
   const { data: user, isLoading, error } = useQuery({
     queryKey: ['/api/auth/me'],
@@ -457,13 +458,32 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
     );
   }
 
+  // Handle mode switching
+  const handleModeSwitch = (kidMode: boolean) => {
+    setIsKidMode(kidMode);
+    if (kidMode) {
+      setKidActiveTab("write"); // Default to write tab in kid mode
+    }
+  };
+
+  // Handle navigation for kid mode
+  const handleKidNavigate = (tab: string) => {
+    setKidActiveTab(tab);
+  };
+
   // Regular app interface for standard users
   // Ensure we always show dashboard as default for authenticated users
   const validView = (currentView === "dashboard" || currentView === "insights" || currentView === "referral") ? currentView : "dashboard";
   
   return (
     <div className="min-h-screen bg-background">
-      {!isKidMode && <Navbar currentView={validView} activeTab={activeTab} onNavigate={onNavigate} />}
+      <Navbar 
+        currentView={validView} 
+        activeTab={isKidMode ? kidActiveTab : activeTab} 
+        onNavigate={isKidMode ? handleKidNavigate : onNavigate}
+        isKidMode={isKidMode}
+        onModeSwitch={handleModeSwitch}
+      />
       <main>
         {isKidMode ? (
           <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
@@ -478,7 +498,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
 
       {/* PWA install functionality is now handled by PWAInstallButton in navbar */}
     </div>
-  );
+  );}
 }
 
 export default App;
