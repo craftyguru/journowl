@@ -1556,11 +1556,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           </div>
         </div>
       
-        {/* Content sections controlled by top navbar */
-        {/* Analytics Content */}
-        
-        
-        {/* Keep original structure for now - will be cleaned up next */}
         <div className="hidden">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
               <motion.div
