@@ -4760,13 +4760,93 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
               transition={{ delay: 0.8 }}
               className="bg-slate-800/60 rounded-xl border border-teal-400/20 overflow-hidden"
             >
-              <div className="h-[60vh]">
+              {/* Enhanced Full-Size Calendar */}
+              <div className="h-[85vh] min-h-[700px] bg-white rounded-xl border border-teal-200/50 shadow-lg overflow-hidden">
                 <InteractiveCalendar 
                   entries={calendarEntries}
                   onDateSelect={handleDateSelect}
                   onEntryEdit={handleEntryEdit}
                   onEntryDelete={handleEntryDelete}
                 />
+              </div>
+            </motion.div>
+
+            {/* Professional Calendar Tools */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.9 }}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+            >
+              {/* Productivity Tools */}
+              <div className="bg-slate-800/60 rounded-xl p-4 border border-cyan-400/20 backdrop-blur-lg">
+                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <span className="text-lg">⚡</span>
+                  Productivity Tools
+                </h3>
+                <div className="space-y-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    className="w-full text-left justify-start border-cyan-300/20 text-cyan-200 hover:bg-cyan-800/20"
+                    onClick={() => openUnifiedJournal()}
+                  >
+                    📝 Quick Journal Entry
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-cyan-300/20 text-cyan-200 hover:bg-cyan-800/20">
+                    🎯 Add Daily Goal
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-cyan-300/20 text-cyan-200 hover:bg-cyan-800/20">
+                    ⏰ Set Writing Reminder
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-cyan-300/20 text-cyan-200 hover:bg-cyan-800/20">
+                    📊 View Weekly Report
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Advanced Analytics */}
+              <div className="bg-slate-800/60 rounded-xl p-4 border border-purple-400/20 backdrop-blur-lg">
+                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <span className="text-lg">📈</span>
+                  Advanced Analytics
+                </h3>
+                <div className="space-y-2">
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-purple-300/20 text-purple-200 hover:bg-purple-800/20">
+                    📊 Mood Trends Analysis
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-purple-300/20 text-purple-200 hover:bg-purple-800/20">
+                    🔥 Activity Heatmap
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-purple-300/20 text-purple-200 hover:bg-purple-800/20">
+                    📝 Writing Patterns
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-purple-300/20 text-purple-200 hover:bg-purple-800/20">
+                    🎯 Goal Progress Chart
+                  </Button>
+                </div>
+              </div>
+              
+              {/* Calendar Management */}
+              <div className="bg-slate-800/60 rounded-xl p-4 border border-emerald-400/20 backdrop-blur-lg">
+                <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+                  <span className="text-lg">🗂️</span>
+                  Calendar Management
+                </h3>
+                <div className="space-y-2">
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-emerald-300/20 text-emerald-200 hover:bg-emerald-800/20">
+                    📤 Export to PDF/CSV
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-emerald-300/20 text-emerald-200 hover:bg-emerald-800/20">
+                    🔗 Sync with External
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-emerald-300/20 text-emerald-200 hover:bg-emerald-800/20">
+                    🏷️ Manage Tags & Labels
+                  </Button>
+                  <Button size="sm" variant="outline" className="w-full text-left justify-start border-emerald-300/20 text-emerald-200 hover:bg-emerald-800/20">
+                    ⚙️ Calendar Preferences
+                  </Button>
+                </div>
               </div>
             </motion.div>
 
