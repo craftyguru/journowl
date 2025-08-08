@@ -1,26 +1,72 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Menu, Home, Brain, Users, Settings, LogOut } from "lucide-react";
+import { Menu, Home, Brain, Users, Settings, LogOut, BookOpen, BarChart3, Trophy, Target, Calendar, Lightbulb, Sparkles } from "lucide-react";
 
 interface MobileNavbarProps {
   onNavigate: (view: string) => void;
   currentView?: string;
+  activeTab?: string;
+  isKidMode?: boolean;
 }
 
-export default function MobileNavbar({ onNavigate, currentView = "dashboard" }: MobileNavbarProps) {
+export default function MobileNavbar({ onNavigate, currentView = "dashboard", activeTab, isKidMode = false }: MobileNavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const navItems = [
+  const mainNavItems = [
     { id: "dashboard", label: "Dashboard", icon: Home },
     { id: "insights", label: "AI Insights", icon: Brain },
     { id: "demo", label: "Demo Mode", icon: Users },
     { id: "settings", label: "Settings", icon: Settings },
   ];
 
+  const dashboardTabItems = isKidMode ? [
+    { id: "journal", label: "✍️ Write Stories", icon: BookOpen },
+    { id: "achievements", label: "🏆 Achievements", icon: Trophy },
+    { id: "goals", label: "🎯 Goals", icon: Target },
+    { id: "stories", label: "📚 AI Stories", icon: Sparkles },
+  ] : [
+    { id: "journal", label: "✍️ Journal", icon: BookOpen },
+    { id: "analytics", label: "📊 Analytics", icon: BarChart3 },
+    { id: "achievements", label: "🏆 Awards", icon: Trophy },
+    { id: "goals", label: "🎯 Goals", icon: Target },
+    { id: "insights", label: "🧠 AI Therapist", icon: Brain },
+    { id: "calendar", label: "📅 Memory Calendar", icon: Calendar },
+    { id: "stories", label: "📚 AI Stories", icon: Sparkles },
+  ];
+
   const handleNavigation = (view: string) => {
     onNavigate(view);
     setIsOpen(false);
+  };
+
+  const handleTabNavigation = (tab: string) => {
+    // Navigate to dashboard if not already there
+    if (currentView !== "dashboard") {
+      onNavigate("dashboard");
+    }
+    
+    // Navigate to specific tab
+    onNavigate(tab);
+    
+    // Close mobile menu
+    setIsOpen(false);
+    
+    // Add scroll functionality with delay to ensure content is rendered
+    setTimeout(() => {
+      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                           document.querySelector(`[data-tabs-content][value="${tab}"]`);
+      
+      if (tabsContainer) {
+        const rect = tabsContainer.getBoundingClientRect();
+        const scrollTop = window.pageYOffset + rect.top - 100;
+        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+      } else {
+        // Fallback: scroll to approximate header height
+        const headerHeight = 400;
+        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+      }
+    }, 300);
   };
 
   return (
@@ -49,23 +95,54 @@ export default function MobileNavbar({ onNavigate, currentView = "dashboard" }: 
                 </div>
                 
                 <nav className="flex-1 p-4">
-                  <div className="space-y-2">
-                    {navItems.map((item) => {
-                      const Icon = item.icon;
-                      const isActive = currentView === item.id;
-                      
-                      return (
-                        <Button
-                          key={item.id}
-                          variant={isActive ? "default" : "ghost"}
-                          className="w-full justify-start gap-3 h-12"
-                          onClick={() => handleNavigation(item.id)}
-                        >
-                          <Icon className="h-5 w-5" />
-                          {item.label}
-                        </Button>
-                      );
-                    })}
+                  <div className="space-y-4">
+                    {/* Main Navigation */}
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 px-2">Main Navigation</h3>
+                      <div className="space-y-2">
+                        {mainNavItems.map((item) => {
+                          const Icon = item.icon;
+                          const isActive = currentView === item.id;
+                          
+                          return (
+                            <Button
+                              key={item.id}
+                              variant={isActive ? "default" : "ghost"}
+                              className="w-full justify-start gap-3 h-12"
+                              onClick={() => handleNavigation(item.id)}
+                            >
+                              <Icon className="h-5 w-5" />
+                              {item.label}
+                            </Button>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Dashboard Tabs - Only show if on dashboard */}
+                    {currentView === "dashboard" && (
+                      <div>
+                        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 px-2">Dashboard Sections</h3>
+                        <div className="space-y-2">
+                          {dashboardTabItems.map((item) => {
+                            const Icon = item.icon;
+                            const isActive = activeTab === item.id;
+                            
+                            return (
+                              <Button
+                                key={item.id}
+                                variant={isActive ? "default" : "ghost"}
+                                className="w-full justify-start gap-3 h-10 text-sm"
+                                onClick={() => handleTabNavigation(item.id)}
+                              >
+                                <Icon className="h-4 w-4" />
+                                {item.label}
+                              </Button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </nav>
                 
@@ -100,7 +177,7 @@ export default function MobileNavbar({ onNavigate, currentView = "dashboard" }: 
             </h1>
             
             <nav className="flex items-center gap-4">
-              {navItems.map((item) => {
+              {mainNavItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = currentView === item.id;
                 

@@ -394,6 +394,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("journal");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="journal"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   ✍️ Journal
@@ -404,6 +417,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("analytics");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="analytics"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   📊 Analytics
@@ -414,6 +440,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("achievements");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="achievements"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   🏆 Awards
@@ -424,6 +463,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("goals");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="goals"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   🎯 Goals
@@ -434,6 +486,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("insights");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="insights"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   🤖 AI
@@ -444,6 +509,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("calendar");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="calendar"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   📅 Memory
@@ -454,6 +532,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("stories");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="stories"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   📚 Stories
@@ -464,6 +555,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("referral");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="referral"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   🎁 Referral
@@ -478,6 +582,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("write");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="write"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   ✍️ Write
@@ -488,6 +605,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("achievements");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="achievements"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   🏆 Badges
@@ -498,6 +628,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("goals");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="goals"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   🎯 Goals
@@ -508,6 +651,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("calendar");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="calendar"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   📅 Calendar
@@ -518,6 +674,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("photos");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="photos"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   📸 Photos
@@ -528,6 +697,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("ai");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="ai"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   🤖 AI Help
@@ -538,6 +720,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("stats");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="stats"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   📊 My Stats
@@ -548,6 +743,19 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                   onClick={() => {
                     onNavigate("story");
                     setMobileMenuOpen(false);
+                    setTimeout(() => {
+                      const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                           document.querySelector('[data-tabs-content][value="story"]');
+                      
+                      if (tabsContainer) {
+                        const rect = tabsContainer.getBoundingClientRect();
+                        const scrollTop = window.pageYOffset + rect.top - 100;
+                        window.scrollTo({ top: scrollTop, behavior: 'smooth' });
+                      } else {
+                        const headerHeight = 400;
+                        window.scrollTo({ top: headerHeight, behavior: 'smooth' });
+                      }
+                    }, 300);
                   }}
                 >
                   📚 AI Story
