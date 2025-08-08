@@ -85,7 +85,23 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "calendar" ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("calendar")}
             >
-              📅 Memory Card
+              📅 Memory Calendar
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "stories" ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              onClick={() => onNavigate("stories")}
+            >
+              📚 AI Stories
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "referral" ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              onClick={() => onNavigate("referral")}
+            >
+              🎁 Referral
             </Button>
           </div>
 
