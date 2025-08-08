@@ -46,11 +46,15 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("journal");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="journal"]') || document.querySelector('[value="journal"]');
+                  const element = document.querySelector('[data-tabs-content][value="journal"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    // Fallback: scroll to dashboard content area
+                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
+                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                }, 100);
+                }, 200);
               }}
             >
               ✍️ Journal
@@ -62,11 +66,14 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("analytics");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="analytics"]') || document.querySelector('[value="analytics"]');
+                  const element = document.querySelector('[data-tabs-content][value="analytics"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
+                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                }, 100);
+                }, 200);
               }}
             >
               📊 Analytics
@@ -78,11 +85,14 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("achievements");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="achievements"]') || document.querySelector('[value="achievements"]');
+                  const element = document.querySelector('[data-tabs-content][value="achievements"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
+                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                }, 100);
+                }, 200);
               }}
             >
               🏆 Awards
@@ -94,11 +104,14 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("goals");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="goals"]') || document.querySelector('[value="goals"]');
+                  const element = document.querySelector('[data-tabs-content][value="goals"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
+                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                }, 100);
+                }, 200);
               }}
             >
               🎯 Goals
@@ -110,11 +123,14 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("insights");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="insights"]') || document.querySelector('[value="insights"]');
+                  const element = document.querySelector('[data-tabs-content][value="insights"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
+                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                }, 100);
+                }, 200);
               }}
             >
               🤖 AI
@@ -126,11 +142,14 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("calendar");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="calendar"]') || document.querySelector('[value="calendar"]');
+                  const element = document.querySelector('[data-tabs-content][value="calendar"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
+                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                }, 100);
+                }, 200);
               }}
             >
               📅 Memory
@@ -142,11 +161,14 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("stories");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="stories"]') || document.querySelector('[value="stories"]');
+                  const element = document.querySelector('[data-tabs-content][value="stories"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
+                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                }, 100);
+                }, 200);
               }}
             >
               📚 Stories
@@ -158,11 +180,14 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("referral");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="referral"]') || document.querySelector('[value="referral"]');
+                  const element = document.querySelector('[data-tabs-content][value="referral"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  } else {
+                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
+                    if (dashboard) dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                }, 100);
+                }, 200);
               }}
             >
               🎁 Referral
@@ -243,7 +268,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 onNavigate("journal");
                 setMobileMenuOpen(false);
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="journal"]') || document.querySelector('[value="journal"]');
+                  const element = document.querySelector('[data-tabs-content][value="journal"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -259,7 +284,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 onNavigate("analytics");
                 setMobileMenuOpen(false);
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="analytics"]') || document.querySelector('[value="analytics"]');
+                  const element = document.querySelector('[data-tabs-content][value="analytics"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -280,7 +305,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 onNavigate("achievements");
                 setMobileMenuOpen(false);
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="achievements"]') || document.querySelector('[value="achievements"]');
+                  const element = document.querySelector('[data-tabs-content][value="achievements"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -296,7 +321,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 onNavigate("goals");
                 setMobileMenuOpen(false);
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="goals"]') || document.querySelector('[value="goals"]');
+                  const element = document.querySelector('[data-tabs-content][value="goals"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -317,7 +342,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 onNavigate("insights");
                 setMobileMenuOpen(false);
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="insights"]') || document.querySelector('[value="insights"]');
+                  const element = document.querySelector('[data-tabs-content][value="insights"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -333,7 +358,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 onNavigate("stories");
                 setMobileMenuOpen(false);
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="stories"]') || document.querySelector('[value="stories"]');
+                  const element = document.querySelector('[data-tabs-content][value="stories"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -354,7 +379,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 onNavigate("calendar");
                 setMobileMenuOpen(false);
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="calendar"]') || document.querySelector('[value="calendar"]');
+                  const element = document.querySelector('[data-tabs-content][value="calendar"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
@@ -370,7 +395,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 onNavigate("referral");
                 setMobileMenuOpen(false);
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content="referral"]') || document.querySelector('[value="referral"]');
+                  const element = document.querySelector('[data-tabs-content][value="referral"]');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
