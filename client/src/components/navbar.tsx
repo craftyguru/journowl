@@ -366,7 +366,7 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                         window.location.href = '/';
                       });
                   }}
-                  className="hidden sm:inline-flex text-sm"
+                  className="hidden sm:inline-flex text-sm border-red-500 text-red-600 dark:text-red-400 shadow-lg shadow-red-500/50 hover:shadow-red-500/70 transition-shadow"
                 >
                   Logout
                 </Button>
