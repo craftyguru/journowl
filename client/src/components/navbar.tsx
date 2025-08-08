@@ -43,7 +43,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               variant="ghost"
               size="sm"
               className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "journal" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => onNavigate("journal")}
+              onClick={() => {
+                onNavigate("journal");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               ✍️ Journal
             </Button>
@@ -51,7 +54,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               variant="ghost"
               size="sm"
               className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "analytics" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => onNavigate("analytics")}
+              onClick={() => {
+                onNavigate("analytics");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               📊 Analytics
             </Button>
@@ -59,7 +65,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               variant="ghost"
               size="sm"
               className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "achievements" ? "bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => onNavigate("achievements")}
+              onClick={() => {
+                onNavigate("achievements");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               🏆 Awards
             </Button>
@@ -67,7 +76,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               variant="ghost"
               size="sm"
               className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "goals" ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => onNavigate("goals")}
+              onClick={() => {
+                onNavigate("goals");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               🎯 Goals
             </Button>
@@ -75,7 +87,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               variant="ghost"
               size="sm"
               className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "insights" ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => onNavigate("insights")}
+              onClick={() => {
+                onNavigate("insights");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               🤖 AI
             </Button>
@@ -83,7 +98,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               variant="ghost"
               size="sm"
               className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "calendar" ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => onNavigate("calendar")}
+              onClick={() => {
+                onNavigate("calendar");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               📅 Memory
             </Button>
@@ -91,7 +109,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               variant="ghost"
               size="sm"
               className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "stories" ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => onNavigate("stories")}
+              onClick={() => {
+                onNavigate("stories");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               📚 Stories
             </Button>
@@ -99,7 +120,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               variant="ghost"
               size="sm"
               className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "referral" ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
-              onClick={() => onNavigate("referral")}
+              onClick={() => {
+                onNavigate("referral");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               🎁 Referral
             </Button>
@@ -178,6 +202,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("journal");
                 setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               ✍️ Journal
@@ -188,6 +213,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("analytics");
                 setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               📊 Analytics
@@ -203,6 +229,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("achievements");
                 setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               🏆 Achievements
@@ -213,6 +240,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("goals");
                 setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               🎯 Goals
@@ -228,6 +256,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("insights");
                 setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               🤖 AI Thoughts
@@ -238,6 +267,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("stories");
                 setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               📚 AI Stories
@@ -253,6 +283,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("calendar");
                 setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               📅 Memory Calendar
@@ -263,6 +294,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("referral");
                 setMobileMenuOpen(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               🎁 Referral
