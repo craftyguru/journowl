@@ -2751,33 +2751,8 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                   />
                 </div>
 
-                {/* Multi-Tab Interface */}
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-5 bg-gradient-to-r from-purple-100 to-pink-100 rounded-2xl p-1">
-                    <TabsTrigger value="write" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
-                      <Sparkles className="w-4 h-4 mr-2" />
-                      Write
-                    </TabsTrigger>
-                    <TabsTrigger value="draw" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
-                      <Paintbrush className="w-4 h-4 mr-2" />
-                      Draw
-                    </TabsTrigger>
-                    <TabsTrigger value="voice" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
-                      <Mic className="w-4 h-4 mr-2" />
-                      Voice
-                    </TabsTrigger>
-                    <TabsTrigger value="photos" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
-                      <Camera className="w-4 h-4 mr-2" />
-                      Photos
-                    </TabsTrigger>
-                    <TabsTrigger value="ai" className="text-purple-700 font-bold rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">
-                      <Lightbulb className="w-4 h-4 mr-2" />
-                      AI Help
-                    </TabsTrigger>
-                  </TabsList>
-
-                  {/* Writing Tab */}
-                  <TabsContent value="write" className="mt-4">
+                {/* Writing Interface */}
+                <div className="mt-4">
                     <div>
                       <div className="flex items-center justify-between mb-3">
                         <Label className="text-lg font-bold text-purple-700 flex items-center gap-2">
@@ -2823,10 +2798,9 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         </Badge>
                       </div>
                     </div>
-                  </TabsContent>
-
-                  {/* Drawing Tab */}
-                  <TabsContent value="draw" className="mt-4">
+                
+                {/* Drawing Interface */}
+                <div className="mt-4">
                     <div>
                       <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
                         <Paintbrush className="w-5 h-5" />
@@ -2858,10 +2832,9 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         </div>
                       </div>
                     </div>
-                  </TabsContent>
-
-                  {/* Voice Tab */}
-                  <TabsContent value="voice" className="mt-4">
+                
+                {/* Voice Interface */}
+                <div className="mt-4">
                     <div>
                       <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
                         <Mic className="w-5 h-5" />
@@ -2900,10 +2873,9 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         </Button>
                       </div>
                     </div>
-                  </TabsContent>
-
-                  {/* Photos Tab */}
-                  <TabsContent value="photos" className="mt-4">
+                
+                {/* Photos Interface */}
+                <div className="mt-4">
                     <div>
                       <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
                         <Camera className="w-5 h-5" />
@@ -2987,10 +2959,9 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         </div>
                       )}
                     </div>
-                  </TabsContent>
-
-                  {/* AI Help Tab */}
-                  <TabsContent value="ai" className="mt-4">
+                
+                {/* AI Help Interface */}
+                <div className="mt-4">
                     <div>
                       <Label className="text-lg font-bold text-purple-700 mb-3 block flex items-center gap-2">
                         <Lightbulb className="w-5 h-5" />
@@ -3049,8 +3020,7 @@ function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write",
                         )}
                       </div>
                     </div>
-                  </TabsContent>
-                </Tabs>
+                </div>
               </div>
 
               {/* Action Buttons */}
