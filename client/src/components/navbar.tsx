@@ -37,20 +37,99 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             <h1 className="text-xl font-bold text-primary">🦉 JournOwl</h1>
           </div>
           
-          <div className="hidden md:flex items-center space-x-6">
+          {/* Desktop Tab Navigation */}
+          <div className="hidden lg:flex items-center space-x-1">
             <Button
               variant="ghost"
-              className={`${currentView === "dashboard" ? "text-primary" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => onNavigate("dashboard")}
+              size="sm"
+              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "journal" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              onClick={() => onNavigate("journal")}
             >
-              Dashboard
+              ✍️ Journal
             </Button>
             <Button
               variant="ghost"
-              className={`${currentView === "insights" ? "text-primary" : "text-muted-foreground"} hover:text-primary`}
+              size="sm"
+              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "analytics" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              onClick={() => onNavigate("analytics")}
+            >
+              📊 Analytics
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "achievements" ? "bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              onClick={() => onNavigate("achievements")}
+            >
+              🏆 Achievements
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "goals" ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              onClick={() => onNavigate("goals")}
+            >
+              🎯 Goals
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "insights" ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("insights")}
             >
-              Insights
+              🤖 AI Thoughts
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "calendar" ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              onClick={() => onNavigate("calendar")}
+            >
+              📅 Memory Card
+            </Button>
+          </div>
+
+          {/* Medium Screen Navigation - Simplified */}
+          <div className="hidden md:flex lg:hidden items-center space-x-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-2 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "journal" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}
+              onClick={() => onNavigate("journal")}
+            >
+              ✍️ Journal
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-2 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "analytics" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}
+              onClick={() => onNavigate("analytics")}
+            >
+              📊 Analytics
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-2 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "achievements" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}
+              onClick={() => onNavigate("achievements")}
+            >
+              🏆 Awards
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-2 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "goals" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}
+              onClick={() => onNavigate("goals")}
+            >
+              🎯 Goals
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`px-2 py-1 text-xs font-medium transition-all duration-200 ${activeTab === "insights" ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-primary"}`}
+              onClick={() => onNavigate("insights")}
+            >
+              🤖 AI
             </Button>
           </div>
 
@@ -116,16 +195,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
       {mobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-card border-t border-border">
           <div className="px-4 py-2 space-y-2">
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${currentView === "dashboard" && activeTab === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("dashboard");
-                setMobileMenuOpen(false);
-              }}
-            >
-              📊 Dashboard
-            </Button>
+            {/* Core Features */}
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2">
+              📝 Writing & Analytics
+            </div>
             <Button
               variant="ghost"
               className={`w-full justify-start ${activeTab === "journal" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
@@ -134,7 +207,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setMobileMenuOpen(false);
               }}
             >
-              📝 Journal
+              ✍️ Journal
             </Button>
             <Button
               variant="ghost"
@@ -144,8 +217,13 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
                 setMobileMenuOpen(false);
               }}
             >
-              📈 Analytics
+              📊 Analytics
             </Button>
+            
+            {/* Progress & Achievements */}
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2 mt-4">
+              🏆 Progress & Goals
+            </div>
             <Button
               variant="ghost"
               className={`w-full justify-start ${activeTab === "achievements" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
@@ -166,6 +244,11 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             >
               🎯 Goals
             </Button>
+            
+            {/* AI Features */}
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2 mt-4">
+              🤖 AI Features
+            </div>
             <Button
               variant="ghost"
               className={`w-full justify-start ${activeTab === "insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
@@ -178,14 +261,19 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             </Button>
             <Button
               variant="ghost"
-              className={`w-full justify-start ${activeTab === "analytics-insights" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
+              className={`w-full justify-start ${activeTab === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
               onClick={() => {
-                onNavigate("analytics-insights");
+                onNavigate("stories");
                 setMobileMenuOpen(false);
               }}
             >
-              📈 Insights
+              📚 AI Stories
             </Button>
+            
+            {/* Memory & Organization */}
+            <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2 mt-4">
+              📅 Memory & More
+            </div>
             <Button
               variant="ghost"
               className={`w-full justify-start ${activeTab === "calendar" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
@@ -195,17 +283,6 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               }}
             >
               📅 Memory Calendar
-            </Button>
-            
-            <Button
-              variant="ghost"
-              className={`w-full justify-start ${activeTab === "stories" ? "text-primary bg-primary/10" : "text-muted-foreground"} hover:text-primary`}
-              onClick={() => {
-                onNavigate("stories");
-                setMobileMenuOpen(false);
-              }}
-            >
-              📚 AI Stories
             </Button>
             <Button
               variant="ghost"
