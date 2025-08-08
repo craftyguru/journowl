@@ -385,16 +385,8 @@ function EnhancedDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 pb-20">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
-        {/* Welcome Banner */}
-        <WelcomeBanner
-          user={user}
-          onOpenJournal={openUnifiedJournal}
-          onOpenCalendar={() => setActiveTab('calendar')}
-          onOpenStories={() => setActiveTab('stories')}
-        />
-
         {/* Stats Cards */}
         <StatsCards stats={stats || {}} />
 
@@ -404,87 +396,81 @@ function EnhancedDashboard({
           promptUsage={promptUsage || { promptsRemaining: 100, promptsUsedThisMonth: 0 }}
           onUpgrade={() => setShowPromptPurchase(true)}
         />
+      </div>
 
-        {/* Tabbed Interface */}
+      {/* Fixed Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 z-40">
         <JournalTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
         >
-          {renderTabContent()}
+          <div></div>
         </JournalTabs>
+      </div>
 
-        {/* Modals */}
-        <AnimatePresence>
-          {showSmartEditor && (
-            <SmartJournalEditor
-              entry={selectedEntry}
-              onClose={() => setShowSmartEditor(false)}
-              onSave={handleSaveEntry}
-            />
-          )}
+      {/* Modals */}
+      <AnimatePresence>
+        {showSmartEditor && (
+          <SmartJournalEditor
+            entry={selectedEntry}
+            onClose={() => setShowSmartEditor(false)}
+            onSave={handleSaveEntry}
+          />
+        )}
 
-          {showUnifiedJournal && (
-            <UnifiedJournal
-              entry={selectedEntry}
-              onClose={() => setShowUnifiedJournal(false)}
-              onSave={handleSaveEntry}
-            />
-          )}
+        {showUnifiedJournal && (
+          <UnifiedJournal
+            entry={selectedEntry}
+            onClose={() => setShowUnifiedJournal(false)}
+            onSave={handleSaveEntry}
+          />
+        )}
 
-          {showPromptPurchase && (
-            <PromptPurchase />
-          )}
+        {showPromptPurchase && (
+          <PromptPurchase />
+        )}
 
-          {showNewGoalModal && (
-            <Dialog open={showNewGoalModal} onOpenChange={setShowNewGoalModal}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create New Goal</DialogTitle>
-                </DialogHeader>
-                <NewGoalForm
-                  onClose={() => setShowNewGoalModal(false)}
-                />
-              </DialogContent>
-            </Dialog>
-          )}
+        {showNewGoalModal && (
+          <Dialog open={showNewGoalModal} onOpenChange={setShowNewGoalModal}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create New Goal</DialogTitle>
+              </DialogHeader>
+              <NewGoalForm
+                onClose={() => setShowNewGoalModal(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
 
-          {showGoalDetailsModal && selectedGoal && (
-            <Dialog open={showGoalDetailsModal} onOpenChange={setShowGoalDetailsModal}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Goal Details</DialogTitle>
-                </DialogHeader>
-                <GoalDetailsView
-                  goal={selectedGoal}
-                  onClose={() => setShowGoalDetailsModal(false)}
-                />
-              </DialogContent>
-            </Dialog>
-          )}
+        {showGoalDetailsModal && selectedGoal && (
+          <Dialog open={showGoalDetailsModal} onOpenChange={setShowGoalDetailsModal}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Goal Details</DialogTitle>
+              </DialogHeader>
+              <GoalDetailsView
+                goal={selectedGoal}
+                onClose={() => setShowGoalDetailsModal(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
 
-          {showEditGoalModal && selectedGoal && (
-            <Dialog open={showEditGoalModal} onOpenChange={setShowEditGoalModal}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Edit Goal</DialogTitle>
-                </DialogHeader>
-                <EditGoalForm
-                  goal={selectedGoal}
-                  onClose={() => setShowEditGoalModal(false)}
-                />
-              </DialogContent>
-            </Dialog>
-          )}
-        </AnimatePresence>
+        {showEditGoalModal && selectedGoal && (
+          <Dialog open={showEditGoalModal} onOpenChange={setShowEditGoalModal}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Goal</DialogTitle>
+              </DialogHeader>
+              <EditGoalForm
+                goal={selectedGoal}
+                onClose={() => setShowEditGoalModal(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
 
-        {/* Camera Capture Component */}
-        <CameraCapture
-          isOpen={showCameraCapture}
-          onClose={() => setShowCameraCapture(false)}
-          onCapture={handleCameraCapture}
-        />
-
-        {/* Analytics Modals */}
         {showWordCloudModal && (
           <Dialog open={showWordCloudModal} onOpenChange={setShowWordCloudModal}>
             <DialogContent className="max-w-4xl">
@@ -507,7 +493,14 @@ function EnhancedDashboard({
             </DialogContent>
           </Dialog>
         )}
-      </div>
+      </AnimatePresence>
+
+      {/* Camera Capture Component */}
+      <CameraCapture
+        isOpen={showCameraCapture}
+        onClose={() => setShowCameraCapture(false)}
+        onCapture={handleCameraCapture}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { BookOpen, TrendingUp, Target, Award } from "lucide-react";
+import { BookOpen, FileText, TrendingUp, Star } from "lucide-react";
 import type { Stats } from "./types";
 
 interface StatsCardsProps {
@@ -8,74 +8,141 @@ interface StatsCardsProps {
 }
 
 export function StatsCards({ stats }: StatsCardsProps) {
+  // Calculate XP based on entries and words (simple formula)
+  const calculateXP = () => {
+    const entries = stats?.totalEntries || 0;
+    const words = stats?.totalWords || 0;
+    return (entries * 50) + Math.floor(words / 10);
+  };
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {/* ENTRIES Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
       >
-        <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 hover:shadow-lg transition-all duration-300 hover:scale-105">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-800">Total Entries</CardTitle>
-            <BookOpen className="h-4 w-4 text-blue-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-blue-900">{stats?.totalEntries || 0}</div>
-            <p className="text-xs text-blue-600 mt-1">Your journal collection</p>
+        <Card className="bg-gradient-to-br from-purple-500 to-purple-700 text-white border-none shadow-lg rounded-3xl relative overflow-hidden">
+          <div className="absolute top-4 left-4 bg-white bg-opacity-20 rounded-xl p-2">
+            <BookOpen className="h-6 w-6 text-white" />
+          </div>
+          <CardContent className="pt-16 pb-6">
+            <div className="text-3xl font-bold mb-2">{stats?.totalEntries || 0}</div>
+            <div className="text-white text-opacity-90 text-sm font-medium tracking-wide">ENTRIES</div>
+            <div className="mt-3 space-y-1">
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>This week:</span>
+                <span>+6</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Best day:</span>
+                <span>Thu</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Avg/week:</span>
+                <span>7.5</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </motion.div>
 
+      {/* WORDS Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
-        <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 hover:shadow-lg transition-all duration-300 hover:scale-105">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-green-800">Current Streak</CardTitle>
-            <TrendingUp className="h-4 w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-green-900">{stats?.currentStreak || 0}</div>
-            <p className="text-xs text-green-600 mt-1">Days in a row</p>
+        <Card className="bg-gradient-to-br from-pink-500 to-red-500 text-white border-none shadow-lg rounded-3xl relative overflow-hidden">
+          <div className="absolute top-4 left-4 bg-white bg-opacity-20 rounded-xl p-2">
+            <FileText className="h-6 w-6 text-white" />
+          </div>
+          <CardContent className="pt-16 pb-6">
+            <div className="text-3xl font-bold mb-2">{stats?.totalWords || 0}</div>
+            <div className="text-white text-opacity-90 text-sm font-medium tracking-wide">WORDS</div>
+            <div className="mt-3 space-y-1">
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Avg/entry:</span>
+                <span>5</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Best entry:</span>
+                <span>17 words</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Goal:</span>
+                <span>1000+ words</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </motion.div>
 
+      {/* STREAK Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 hover:shadow-lg transition-all duration-300 hover:scale-105">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-purple-800">Total Words</CardTitle>
-            <Target className="h-4 w-4 text-purple-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-purple-900">{stats?.totalWords?.toLocaleString() || 0}</div>
-            <p className="text-xs text-purple-600 mt-1">Words written</p>
+        <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-none shadow-lg rounded-3xl relative overflow-hidden">
+          <div className="absolute top-4 left-4 bg-white bg-opacity-20 rounded-xl p-2">
+            <TrendingUp className="h-6 w-6 text-white" />
+          </div>
+          <CardContent className="pt-16 pb-6">
+            <div className="text-3xl font-bold mb-2">{stats?.currentStreak || 0}</div>
+            <div className="text-white text-opacity-90 text-sm font-medium tracking-wide">STREAK</div>
+            <div className="mt-3 space-y-1">
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>days strong 🔥</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Best streak:</span>
+                <span>3 days</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>This month:</span>
+                <span>6 entries</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Target:</span>
+                <span>30-day streak</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </motion.div>
 
+      {/* XP Card */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
       >
-        <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 hover:shadow-lg transition-all duration-300 hover:scale-105">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-orange-800">Average Mood</CardTitle>
-            <Award className="h-4 w-4 text-orange-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-orange-900">
-              {stats?.averageMood ? `${stats.averageMood.toFixed(1)}/10` : 'N/A'}
+        <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-none shadow-lg rounded-3xl relative overflow-hidden">
+          <div className="absolute top-4 left-4 bg-white bg-opacity-20 rounded-xl p-2">
+            <Star className="h-6 w-6 text-white" />
+          </div>
+          <CardContent className="pt-16 pb-6">
+            <div className="text-3xl font-bold mb-2">{calculateXP()}</div>
+            <div className="text-white text-opacity-90 text-sm font-medium tracking-wide">XP</div>
+            <div className="mt-3 space-y-1">
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Level 1 ✨</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>To next level:</span>
+                <span>440 XP</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Progress:</span>
+                <span>56%</span>
+              </div>
+              <div className="text-white text-opacity-70 text-xs flex justify-between">
+                <span>Rank:</span>
+                <span>Beginner</span>
+              </div>
             </div>
-            <p className="text-xs text-orange-600 mt-1">Overall happiness</p>
           </CardContent>
         </Card>
       </motion.div>
