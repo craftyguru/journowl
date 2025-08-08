@@ -341,7 +341,7 @@ function EnhancedDashboard({
           />
         );
 
-      case 'insights':
+      case 'thoughts':
         return (
           <InsightsSection
             insights={insights || []}
@@ -365,6 +365,37 @@ function EnhancedDashboard({
               entries={Array.isArray(entries) ? entries : []} 
               stats={stats || {}}
             />
+          </div>
+        );
+
+      case 'referral':
+        return (
+          <div className="space-y-6">
+            <div className="bg-white rounded-3xl p-8 shadow-lg text-center">
+              <div className="text-6xl mb-4">🎁</div>
+              <h2 className="text-2xl font-bold mb-4">Invite Friends & Earn Rewards</h2>
+              <p className="text-gray-600 mb-6">Share JournOwl with friends and get bonus prompts when they join!</p>
+              <div className="bg-gray-100 rounded-lg p-4 mb-6">
+                <code className="text-sm">https://journowl.app/invite/your-code</code>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <div className="text-2xl mb-2">👥</div>
+                  <div className="font-semibold">Friends Invited</div>
+                  <div className="text-2xl font-bold text-blue-600">0</div>
+                </div>
+                <div className="bg-green-50 rounded-lg p-4">
+                  <div className="text-2xl mb-2">✨</div>
+                  <div className="font-semibold">Bonus Prompts</div>
+                  <div className="text-2xl font-bold text-green-600">0</div>
+                </div>
+                <div className="bg-purple-50 rounded-lg p-4">
+                  <div className="text-2xl mb-2">🏆</div>
+                  <div className="font-semibold">Referral Level</div>
+                  <div className="text-2xl font-bold text-purple-600">1</div>
+                </div>
+              </div>
+            </div>
           </div>
         );
 
@@ -396,6 +427,11 @@ function EnhancedDashboard({
           promptUsage={promptUsage || { promptsRemaining: 100, promptsUsedThisMonth: 0 }}
           onUpgrade={() => setShowPromptPurchase(true)}
         />
+      </div>
+
+      {/* Tab Content */}
+      <div className="container mx-auto px-4 pb-24 max-w-7xl">
+        {renderTabContent()}
       </div>
 
       {/* Fixed Bottom Navigation */}
