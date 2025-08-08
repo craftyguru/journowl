@@ -1555,9 +1555,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             {/* Navigation now handled by top navbar */}
           </div>
         </div>
-      </div>
-
-      <>
+      
+        {/* Content sections controlled by top navbar */
         {/* Analytics Content */}
         {activeTab === 'analytics' && (
           <div className="space-y-6">
@@ -6323,7 +6322,6 @@ export default function EnhancedDashboardWithSupport({ onSwitchToKid, initialTab
         <div className="fixed bottom-6 right-6 z-50">
           <MergedHelpSupportBubble hideWhenJournalOpen={journalOpen} />
         </div>
-      </>
-    </div>
+      </div>
   );
 }
