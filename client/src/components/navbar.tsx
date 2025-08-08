@@ -46,25 +46,21 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("journal");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="journal"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                  // Find the specific tab content section
+                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                       document.querySelector('[data-tabs-content][value="journal"]');
+                  
+                  if (tabsContainer) {
+                    // Calculate position to scroll past the calendar insights section
+                    const rect = tabsContainer.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset + rect.top - 100; // 100px offset from top
+                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
                   } else {
-                    // Fallback: scroll to dashboard content area
-                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) {
-                      const elementRect = dashboard.getBoundingClientRect();
-                      const elementTop = elementRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const offsetTop = elementTop - (viewportHeight / 3);
-                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
+                    // Fallback: scroll to a reasonable position past header elements
+                    const headerHeight = 400; // Approximate height of stats + usage meters + insights
+                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
                   }
-                }, 200);
+                }, 300);
               }}
             >
               ✍️ Journal
@@ -76,24 +72,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("analytics");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="analytics"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                       document.querySelector('[data-tabs-content][value="analytics"]');
+                  
+                  if (tabsContainer) {
+                    const rect = tabsContainer.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset + rect.top - 100;
+                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
                   } else {
-                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) {
-                      const elementRect = dashboard.getBoundingClientRect();
-                      const elementTop = elementRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const offsetTop = elementTop - (viewportHeight / 3);
-                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
+                    const headerHeight = 400;
+                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
                   }
-                }, 200);
+                }, 300);
               }}
             >
               📊 Analytics
@@ -105,24 +95,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("achievements");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="achievements"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                       document.querySelector('[data-tabs-content][value="achievements"]');
+                  
+                  if (tabsContainer) {
+                    const rect = tabsContainer.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset + rect.top - 100;
+                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
                   } else {
-                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) {
-                      const elementRect = dashboard.getBoundingClientRect();
-                      const elementTop = elementRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const offsetTop = elementTop - (viewportHeight / 3);
-                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
+                    const headerHeight = 400;
+                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
                   }
-                }, 200);
+                }, 300);
               }}
             >
               🏆 Awards
@@ -134,24 +118,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("goals");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="goals"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                       document.querySelector('[data-tabs-content][value="goals"]');
+                  
+                  if (tabsContainer) {
+                    const rect = tabsContainer.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset + rect.top - 100;
+                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
                   } else {
-                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) {
-                      const elementRect = dashboard.getBoundingClientRect();
-                      const elementTop = elementRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const offsetTop = elementTop - (viewportHeight / 3);
-                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
+                    const headerHeight = 400;
+                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
                   }
-                }, 200);
+                }, 300);
               }}
             >
               🎯 Goals
@@ -163,24 +141,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("insights");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="insights"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                       document.querySelector('[data-tabs-content][value="insights"]');
+                  
+                  if (tabsContainer) {
+                    const rect = tabsContainer.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset + rect.top - 100;
+                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
                   } else {
-                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) {
-                      const elementRect = dashboard.getBoundingClientRect();
-                      const elementTop = elementRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const offsetTop = elementTop - (viewportHeight / 3);
-                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
+                    const headerHeight = 400;
+                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
                   }
-                }, 200);
+                }, 300);
               }}
             >
               🤖 AI
@@ -192,24 +164,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("calendar");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="calendar"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                       document.querySelector('[data-tabs-content][value="calendar"]');
+                  
+                  if (tabsContainer) {
+                    const rect = tabsContainer.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset + rect.top - 100;
+                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
                   } else {
-                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) {
-                      const elementRect = dashboard.getBoundingClientRect();
-                      const elementTop = elementRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const offsetTop = elementTop - (viewportHeight / 3);
-                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
+                    const headerHeight = 400;
+                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
                   }
-                }, 200);
+                }, 300);
               }}
             >
               📅 Memory
@@ -221,24 +187,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("stories");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="stories"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                       document.querySelector('[data-tabs-content][value="stories"]');
+                  
+                  if (tabsContainer) {
+                    const rect = tabsContainer.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset + rect.top - 100;
+                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
                   } else {
-                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) {
-                      const elementRect = dashboard.getBoundingClientRect();
-                      const elementTop = elementRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const offsetTop = elementTop - (viewportHeight / 3);
-                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
+                    const headerHeight = 400;
+                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
                   }
-                }, 200);
+                }, 300);
               }}
             >
               📚 Stories
@@ -250,24 +210,18 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
               onClick={() => {
                 onNavigate("referral");
                 setTimeout(() => {
-                  const element = document.querySelector('[data-tabs-content][value="referral"]');
-                  if (element) {
-                    const elementRect = element.getBoundingClientRect();
-                    const elementTop = elementRect.top + window.pageYOffset;
-                    const viewportHeight = window.innerHeight;
-                    const offsetTop = elementTop - (viewportHeight / 2) + 100;
-                    window.scrollTo({ top: offsetTop, behavior: 'smooth' });
+                  const tabsContainer = document.querySelector('[role="tabpanel"][data-state="active"]') || 
+                                       document.querySelector('[data-tabs-content][value="referral"]');
+                  
+                  if (tabsContainer) {
+                    const rect = tabsContainer.getBoundingClientRect();
+                    const scrollTop = window.pageYOffset + rect.top - 100;
+                    window.scrollTo({ top: scrollTop, behavior: 'smooth' });
                   } else {
-                    const dashboard = document.querySelector('.space-y-6') || document.querySelector('main');
-                    if (dashboard) {
-                      const elementRect = dashboard.getBoundingClientRect();
-                      const elementTop = elementRect.top + window.pageYOffset;
-                      const viewportHeight = window.innerHeight;
-                      const offsetTop = elementTop - (viewportHeight / 3);
-                      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-                    }
+                    const headerHeight = 400;
+                    window.scrollTo({ top: headerHeight, behavior: 'smooth' });
                   }
-                }, 200);
+                }, 300);
               }}
             >
               🎁 Referral

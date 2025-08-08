@@ -1373,7 +1373,59 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
         <UsageMeters />
       </div>
 
-
+      {/* Calendar Insights - Moved from bottom to prominent position */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mb-6 bg-gradient-to-br from-slate-800/90 via-teal-900/80 to-cyan-900/90 backdrop-blur-lg rounded-2xl p-6 shadow-2xl border border-teal-500/20"
+      >
+        <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
+          🧠 Calendar Insights
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-teal-500/20 rounded-lg p-4 border border-teal-400/20">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-4 h-4 bg-teal-400 rounded-full"></div>
+              <span className="text-sm font-medium text-teal-200">Most Active Day</span>
+            </div>
+            <p className="text-lg font-bold text-white">
+              {entries?.length > 0 ? 'Sunday' : 'Start writing to see patterns'}
+            </p>
+          </div>
+          
+          <div className="bg-blue-500/20 rounded-lg p-4 border border-blue-400/20">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
+              <span className="text-sm font-medium text-blue-200">Best Writing Time</span>
+            </div>
+            <p className="text-lg font-bold text-white">
+              {entries?.length > 0 ? 'Evening (7-9 PM)' : 'Track your patterns'}
+            </p>
+          </div>
+          
+          <div className="bg-purple-500/20 rounded-lg p-4 border border-purple-400/20">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-4 h-4 bg-purple-400 rounded-full"></div>
+              <span className="text-sm font-medium text-purple-200">Mood Pattern</span>
+            </div>
+            <p className="text-lg font-bold text-white">
+              {entries?.length > 0 ? 'Consistently positive' : 'Build your mood history'}
+            </p>
+          </div>
+          
+          <div className="bg-green-500/20 rounded-lg p-4 border border-green-400/20">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-4 h-4 bg-green-400 rounded-full"></div>
+              <span className="text-sm font-medium text-green-200">Next Milestone</span>
+            </div>
+            <p className="text-lg font-bold text-white">
+              {stats?.currentStreak > 6 ? '30-day streak' : '7-day streak'}
+            </p>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Main Content Tabs - Simplified without complex navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 pb-8 lg:pb-6">
@@ -4850,7 +4902,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
               </div>
             </motion.div>
 
-            {/* Calendar Insights */}
+            {/* Calendar Tools Summary - Replaced detailed insights with action summary */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -4858,53 +4910,41 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
               className="bg-slate-800/60 rounded-xl p-6 border border-teal-400/20"
             >
               <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-4">
-                🧠 Calendar Insights
+                ⚡ Calendar Action Center
               </h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                  <div className="bg-teal-500/20 rounded-lg p-4 border border-teal-400/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-4 h-4 bg-teal-400 rounded-full"></div>
-                      <span className="text-sm font-medium text-teal-200">Most Active Day</span>
-                    </div>
-                    <p className="text-lg font-bold text-white">
-                      {entries?.length > 0 ? 'Sunday' : 'Start writing to see patterns'}
-                    </p>
-                  </div>
-                  
-                  <div className="bg-blue-500/20 rounded-lg p-4 border border-blue-400/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
-                      <span className="text-sm font-medium text-blue-200">Best Writing Time</span>
-                    </div>
-                    <p className="text-lg font-bold text-white">
-                      {entries?.length > 0 ? 'Evening (7-9 PM)' : 'Track your patterns'}
-                    </p>
-                  </div>
-                </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Button 
+                  className="bg-teal-600 hover:bg-teal-700 text-white h-auto py-4 flex-col gap-2"
+                  onClick={() => openUnifiedJournal()}
+                >
+                  <span className="text-lg">📝</span>
+                  <span className="text-xs">Quick Entry</span>
+                </Button>
                 
-                <div className="space-y-3">
-                  <div className="bg-purple-500/20 rounded-lg p-4 border border-purple-400/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-4 h-4 bg-purple-400 rounded-full"></div>
-                      <span className="text-sm font-medium text-purple-200">Mood Pattern</span>
-                    </div>
-                    <p className="text-lg font-bold text-white">
-                      {entries?.length > 0 ? 'Consistently positive' : 'Build your mood history'}
-                    </p>
-                  </div>
-                  
-                  <div className="bg-green-500/20 rounded-lg p-4 border border-green-400/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-4 h-4 bg-green-400 rounded-full"></div>
-                      <span className="text-sm font-medium text-green-200">Next Milestone</span>
-                    </div>
-                    <p className="text-lg font-bold text-white">
-                      {stats?.currentStreak > 6 ? '30-day streak' : '7-day streak'}
-                    </p>
-                  </div>
-                </div>
+                <Button 
+                  className="bg-purple-600 hover:bg-purple-700 text-white h-auto py-4 flex-col gap-2"
+                  onClick={() => setActiveTab("analytics")}
+                >
+                  <span className="text-lg">📊</span>
+                  <span className="text-xs">View Analytics</span>
+                </Button>
+                
+                <Button 
+                  className="bg-orange-600 hover:bg-orange-700 text-white h-auto py-4 flex-col gap-2"
+                  onClick={() => setActiveTab("goals")}
+                >
+                  <span className="text-lg">🎯</span>
+                  <span className="text-xs">Set Goals</span>
+                </Button>
+                
+                <Button 
+                  className="bg-green-600 hover:bg-green-700 text-white h-auto py-4 flex-col gap-2"
+                  onClick={() => setActiveTab("achievements")}
+                >
+                  <span className="text-lg">🏆</span>
+                  <span className="text-xs">View Awards</span>
+                </Button>
               </div>
             </motion.div>
           </div>
