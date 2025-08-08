@@ -486,7 +486,11 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
       />
       <main>
         {isKidMode ? (
-          <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
+          <KidDashboard 
+            onSwitchToAdult={() => setIsKidMode(false)} 
+            activeTab={kidActiveTab}
+            onTabChange={handleKidNavigate}
+          />
         ) : (
           <>
             {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} initialTab={activeTab} />}

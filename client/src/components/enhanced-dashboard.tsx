@@ -1012,26 +1012,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
         <div className="absolute top-1/3 right-1/4 w-20 h-20 bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-full blur-lg animate-bounce delay-500"></div>
       </div>
       
-      {/* Interface Switcher */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex justify-end mb-4 relative z-10"
-      >
-        <Card className="bg-slate-800/90 backdrop-blur-sm border border-purple-500/30 shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-gray-300">Adult Mode</span>
-              <Switch 
-                checked={false}
-                onCheckedChange={onSwitchToKid}
-                className="data-[state=checked]:bg-purple-500"
-              />
-              <span className="text-sm font-medium text-purple-300">Kid Mode</span>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
       {/* Mobile-Optimized Welcome Banner */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

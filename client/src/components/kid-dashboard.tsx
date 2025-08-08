@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, Trophy, Zap, Heart, BookOpen, Sparkles, Target, Gift, Camera, Palette, Music, GamepadIcon, Calendar, BarChart3, Users, Settings, X, Save, Plus, Mic, MicOff, Upload, Video, Image, Paintbrush, Lightbulb, Send, ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import UsageMeters from "@/components/UsageMeters";
@@ -121,9 +121,11 @@ interface JournalEntry {
 
 interface KidDashboardProps {
   onSwitchToAdult?: () => void;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
 }
 
-function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
+function KidDashboard({ onSwitchToAdult, activeTab: externalActiveTab = "write", onTabChange }: KidDashboardProps) {
   const [selectedPrompt, setSelectedPrompt] = useState(kidPrompts[0]);
   const [showAllAchievements, setShowAllAchievements] = useState(false);
   const [showJournalEditor, setShowJournalEditor] = useState(false);
@@ -133,7 +135,18 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedMood, setSelectedMood] = useState("😊");
-  const [activeTab, setActiveTab] = useState("write");
+  const [activeTab, setActiveTab] = useState(externalActiveTab);
+  
+  // Sync external active tab with internal state
+  React.useEffect(() => {
+    setActiveTab(externalActiveTab);
+  }, [externalActiveTab]);
+  
+  // Handle tab changes from within the component
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    onTabChange?.(tab);
+  };
   const [isRecording, setIsRecording] = useState(false);
   const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
   const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
@@ -1100,28 +1113,6 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
           🎨
         </motion.div>
       </div>
-      {/* Interface Switcher */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex justify-end mb-4"
-      >
-        <Card className="bg-white/80 backdrop-blur-sm border-2 border-purple-200 shadow-lg">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium text-purple-700">Kid Mode</span>
-              <Switch 
-                checked={false}
-                onCheckedChange={onSwitchToAdult}
-                className="data-[state=checked]:bg-purple-500"
-              />
-              <span className="text-sm font-medium text-gray-500">Adult Mode</span>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
-
-
 
       {/* Welcome Header */}
       <motion.div
@@ -1233,7 +1224,7 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
 
       {/* 8-Tab Navigation System */}
       <div className="w-full relative z-10">
-        <Tabs value={activeTab} onValueChange={setActiveTab} defaultValue="write" className="w-full">
+        <Tabs value={activeTab} onValueChange={handleTabChange} defaultValue="write" className="w-full">
           <TabsList className="flex w-full overflow-x-auto scrollbar-hide bg-white/90 backdrop-blur-lg border-3 border-purple-300 shadow-2xl rounded-2xl p-2 gap-2 md:grid md:grid-cols-8 md:gap-1 mb-6 relative">
             <TabsTrigger 
               value="write" 
