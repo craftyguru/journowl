@@ -37,12 +37,12 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             <h1 className="text-xl font-bold text-primary">🦉 JournOwl</h1>
           </div>
           
-          {/* Desktop Tab Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
+          {/* Desktop Tab Navigation - Compact */}
+          <div className="hidden lg:flex items-center space-x-0.5">
             <Button
               variant="ghost"
               size="sm"
-              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "journal" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              className={`px-2 py-1.5 text-xs font-medium transition-all duration-200 ${activeTab === "journal" ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("journal")}
             >
               ✍️ Journal
@@ -50,7 +50,7 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             <Button
               variant="ghost"
               size="sm"
-              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "analytics" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              className={`px-2 py-1.5 text-xs font-medium transition-all duration-200 ${activeTab === "analytics" ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("analytics")}
             >
               📊 Analytics
@@ -58,15 +58,15 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             <Button
               variant="ghost"
               size="sm"
-              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "achievements" ? "bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              className={`px-2 py-1.5 text-xs font-medium transition-all duration-200 ${activeTab === "achievements" ? "bg-gradient-to-r from-yellow-500 to-amber-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("achievements")}
             >
-              🏆 Achievements
+              🏆 Awards
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "goals" ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              className={`px-2 py-1.5 text-xs font-medium transition-all duration-200 ${activeTab === "goals" ? "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("goals")}
             >
               🎯 Goals
@@ -74,31 +74,31 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             <Button
               variant="ghost"
               size="sm"
-              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "insights" ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              className={`px-2 py-1.5 text-xs font-medium transition-all duration-200 ${activeTab === "insights" ? "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("insights")}
             >
-              🤖 AI Thoughts
+              🤖 AI
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "calendar" ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              className={`px-2 py-1.5 text-xs font-medium transition-all duration-200 ${activeTab === "calendar" ? "bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("calendar")}
             >
-              📅 Memory Calendar
+              📅 Memory
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "stories" ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              className={`px-2 py-1.5 text-xs font-medium transition-all duration-200 ${activeTab === "stories" ? "bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("stories")}
             >
-              📚 AI Stories
+              📚 Stories
             </Button>
             <Button
               variant="ghost"
               size="sm"
-              className={`px-3 py-2 text-sm font-medium transition-all duration-200 ${activeTab === "referral" ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+              className={`px-2 py-1.5 text-xs font-medium transition-all duration-200 ${activeTab === "referral" ? "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
               onClick={() => onNavigate("referral")}
             >
               🎁 Referral
