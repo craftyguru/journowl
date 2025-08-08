@@ -52,7 +52,103 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   const [timeAnalysisData, setTimeAnalysisData] = useState<any>(null);
   const [topicAnalysisData, setTopicAnalysisData] = useState<any>(null);
   
+  // AI Therapy state
+  const [therapyMessages, setTherapyMessages] = useState<{role: 'user' | 'therapist', content: string}[]>([
+    {role: 'therapist', content: "Hello! I'm Dr. Sofia, your AI therapist. How are you feeling today? What's on your mind?"}
+  ]);
+  const [therapyInput, setTherapyInput] = useState("");
+  const [isTherapyLoading, setIsTherapyLoading] = useState(false);
+  const [personalityAnalysis, setPersonalityAnalysis] = useState<any>(null);
+  const [isAnalysisLoading, setIsAnalysisLoading] = useState(false);
+  
   const queryClient = useQueryClient();
+
+  // AI Therapy Functions
+  const sendTherapyMessage = async () => {
+    if (!therapyInput.trim() || isTherapyLoading) return;
+    
+    const userMessage = therapyInput;
+    setTherapyInput("");
+    setTherapyMessages(prev => [...prev, {role: 'user', content: userMessage}]);
+    setIsTherapyLoading(true);
+    
+    try {
+      const response = await apiRequest("POST", "/api/ai/therapy/chat", {
+        message: userMessage,
+        conversationHistory: therapyMessages.map(msg => ({
+          role: msg.role === 'therapist' ? 'assistant' : 'user',
+          content: msg.content
+        }))
+      });
+      
+      const data = await response.json();
+      setTherapyMessages(prev => [...prev, {role: 'therapist', content: data.reply}]);
+    } catch (error) {
+      console.error('Therapy chat error:', error);
+      setTherapyMessages(prev => [...prev, {
+        role: 'therapist', 
+        content: "I'm having trouble connecting right now. Please try again in a moment."
+      }]);
+    } finally {
+      setIsTherapyLoading(false);
+    }
+  };
+
+  const getPersonalityAnalysis = async () => {
+    setIsAnalysisLoading(true);
+    try {
+      const response = await apiRequest("GET", "/api/ai/therapy/personality-analysis");
+      const data = await response.json();
+      setPersonalityAnalysis(data);
+      return data;
+    } catch (error) {
+      console.error('Personality analysis error:', error);
+      return null;
+    } finally {
+      setIsAnalysisLoading(false);
+    }
+  };
+
+  const getCopingStrategy = async (situation: string) => {
+    try {
+      const response = await apiRequest("POST", "/api/ai/therapy/coping-strategy", {
+        situation
+      });
+      const data = await response.json();
+      return data.strategy;
+    } catch (error) {
+      console.error('Coping strategy error:', error);
+      return "Take 5 deep breaths. This helps activate your parasympathetic nervous system and reduce stress.";
+    }
+  };
+
+  const getTherapeuticPrompt = async (emotionalState: string, concerns: string[]) => {
+    try {
+      const response = await apiRequest("POST", "/api/ai/therapy/therapeutic-prompt", {
+        emotionalState,
+        concerns
+      });
+      const data = await response.json();
+      return data.prompt;
+    } catch (error) {
+      console.error('Therapeutic prompt error:', error);
+      return "What emotions am I experiencing right now, and what might they be trying to tell me?";
+    }
+  };
+
+  const getMoodAssessment = async () => {
+    try {
+      const response = await apiRequest("POST", "/api/ai/therapy/mood-assessment");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Mood assessment error:', error);
+      return {
+        dominantMood: "neutral",
+        recommendation: "Unable to assess mood at this time. Please try again later."
+      };
+    }
+  };
   
   // Notify parent about journal state changes
   useEffect(() => {
@@ -3416,7 +3512,14 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   <Button 
                     className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-sm"
                     onClick={() => {
-                      alert("Starting therapy session with your AI counselor...");
+                      setTherapyMessages(prev => [...prev, {
+                        role: 'therapist',
+                        content: "Welcome to your therapy session! I'm Dr. Sofia, and I'm here to provide professional psychological support. What would you like to explore today?"
+                      }]);
+                      // Scroll to therapy chat
+                      setTimeout(() => {
+                        document.getElementById('therapy-messages')?.scrollIntoView({ behavior: 'smooth' });
+                      }, 100);
                     }}
                   >
                     <Brain className="w-4 h-4 mr-2" />
@@ -3424,17 +3527,22 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   </Button>
                   <Button 
                     className="bg-white/20 hover:bg-white/30 text-white border-white/30 text-sm"
-                    onClick={() => {
-                      const report = `Psychological Assessment Report:
+                    onClick={async () => {
+                      const personalityAnalysis = await getPersonalityAnalysis();
+                      const moodAssessment = await getMoodAssessment();
                       
-📊 Emotional Intelligence: High
-🧘 Stress Management: Developing
-💭 Self-Reflection: Excellent
-🎯 Goal Achievement: On Track
-📝 Expression Clarity: Strong
-
-Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 0} words analyzed.`;
-                      alert(report);
+                      const report = `Psychological Assessment Report:\n\n📊 Emotional Intelligence: ${personalityAnalysis?.agreeableness > 70 ? 'High' : 'Developing'}\n🧘 Stress Management: ${personalityAnalysis?.neuroticism < 40 ? 'Strong' : 'Developing'}\n💭 Self-Reflection: ${stats?.totalEntries > 10 ? 'Excellent' : 'Good'}\n🎯 Goal Achievement: ${stats?.currentStreak >= 7 ? 'On Track' : 'Building'}\n📝 Expression Clarity: ${(stats?.totalWords || 0) / Math.max(stats?.totalEntries || 1, 1) > 100 ? 'Strong' : 'Developing'}\n\nBased on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 0} words analyzed.\nDominant mood pattern: ${moodAssessment.dominantMood}`;
+                      
+                      const modalDiv = document.createElement('div');
+                      modalDiv.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm';
+                      modalDiv.innerHTML = `
+                        <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-6 max-w-md mx-4 shadow-2xl border-2 border-emerald-200">
+                          <h3 class="text-xl font-bold text-emerald-800 mb-4">📋 Therapy Assessment Report</h3>
+                          <div class="text-sm text-gray-700 whitespace-pre-line mb-4">${report}</div>
+                          <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg" onclick="this.parentElement.parentElement.remove()">Close</button>
+                        </div>
+                      `;
+                      document.body.appendChild(modalDiv);
                     }}
                   >
                     📋 Therapy Report
@@ -3588,24 +3696,45 @@ Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 
                   <CardContent>
                     <div className="space-y-4">
                       {/* Therapy conversation */}
-                      <div className="space-y-3 max-h-60 overflow-y-auto">
-                        <div className="flex justify-start">
-                          <div className="bg-indigo-100 border border-indigo-200 rounded-2xl rounded-tl-sm px-4 py-2 max-w-xs">
-                            <p className="text-sm text-indigo-800">Hello! I'm your AI therapist. How are you feeling today? What's on your mind?</p>
+                      <div className="space-y-3 max-h-60 overflow-y-auto" id="therapy-messages">
+                        {therapyMessages.map((message, index) => (
+                          <div key={index} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`${message.role === 'user' 
+                              ? 'bg-indigo-500 text-white rounded-2xl rounded-tr-sm' 
+                              : 'bg-indigo-100 border border-indigo-200 rounded-2xl rounded-tl-sm text-indigo-800'
+                            } px-4 py-2 max-w-xs`}>
+                              <p className="text-sm">{message.content}</p>
+                            </div>
                           </div>
-                        </div>
-                        
-                        <div className="flex justify-end">
-                          <div className="bg-indigo-500 text-white rounded-2xl rounded-tr-sm px-4 py-2 max-w-xs">
-                            <p className="text-sm">I've been feeling a bit overwhelmed lately with work and personal goals.</p>
+                        ))}
+                        {isTherapyLoading && (
+                          <div className="flex justify-start">
+                            <div className="bg-indigo-100 border border-indigo-200 rounded-2xl rounded-tl-sm px-4 py-2 max-w-xs">
+                              <p className="text-sm text-indigo-800">Thinking...</p>
+                            </div>
                           </div>
-                        </div>
-
-                        <div className="flex justify-start">
-                          <div className="bg-indigo-100 border border-indigo-200 rounded-2xl rounded-tl-sm px-4 py-2 max-w-xs">
-                            <p className="text-sm text-indigo-800">That sounds challenging. From your journal entries, I can see you're making great progress. What specific aspect feels most overwhelming?</p>
-                          </div>
-                        </div>
+                        )}
+                      </div>
+                      
+                      {/* Therapy input */}
+                      <div className="flex gap-2 pt-2 border-t border-indigo-200">
+                        <input
+                          type="text"
+                          value={therapyInput}
+                          onChange={(e) => setTherapyInput(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && sendTherapyMessage()}
+                          placeholder="Share what's on your mind..."
+                          className="flex-1 px-3 py-2 text-sm border border-indigo-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          disabled={isTherapyLoading}
+                        />
+                        <Button
+                          onClick={sendTherapyMessage}
+                          disabled={!therapyInput.trim() || isTherapyLoading}
+                          size="sm"
+                          className="bg-indigo-500 hover:bg-indigo-600 text-white"
+                        >
+                          Send
+                        </Button>
                       </div>
 
                       {/* Therapy tools */}
@@ -3614,15 +3743,12 @@ Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 
                           variant="outline" 
                           size="sm" 
                           className="text-xs h-8"
-                          onClick={() => {
-                            const techniques = [
-                              "Try the 5-4-3-2-1 grounding technique: Name 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste.",
-                              "Practice deep breathing: Inhale for 4 counts, hold for 7, exhale for 8. Repeat 3 times.",
-                              "Write down 3 things you're grateful for right now, no matter how small.",
-                              "Use progressive muscle relaxation: Tense and release each muscle group from toes to head."
-                            ];
-                            const technique = techniques[Math.floor(Math.random() * techniques.length)];
-                            alert(`Coping Technique: ${technique}`);
+                          onClick={async () => {
+                            const strategy = await getCopingStrategy("feeling overwhelmed or stressed");
+                            setTherapyMessages(prev => [...prev, {
+                              role: 'therapist',
+                              content: `Here's a coping strategy for you: ${strategy}`
+                            }]);
                           }}
                         >
                           🧘 Coping tools
@@ -3631,15 +3757,12 @@ Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 
                           variant="outline" 
                           size="sm" 
                           className="text-xs h-8"
-                          onClick={() => {
-                            const exercises = [
-                              "Reframe negative thoughts: What would you tell a friend in this situation?",
-                              "Challenge your assumptions: What evidence supports or contradicts this thought?",
-                              "Focus on what you can control: List 3 actions you can take today.",
-                              "Practice self-compassion: Treat yourself with the kindness you'd show a good friend."
-                            ];
-                            const exercise = exercises[Math.floor(Math.random() * exercises.length)];
-                            alert(`Cognitive Exercise: ${exercise}`);
+                          onClick={async () => {
+                            const strategy = await getCopingStrategy("negative thought patterns or cognitive distortions");
+                            setTherapyMessages(prev => [...prev, {
+                              role: 'therapist',
+                              content: `Here's a cognitive exercise: ${strategy}`
+                            }]);
                           }}
                         >
                           🧠 Cognitive exercises
@@ -3648,15 +3771,12 @@ Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 
                           variant="outline" 
                           size="sm" 
                           className="text-xs h-8"
-                          onClick={() => {
-                            const prompts = [
-                              "What would your life look like if this problem was solved?",
-                              "How have you successfully handled similar challenges before?",
-                              "What are you learning about yourself through this experience?",
-                              "What small step could you take today to move forward?"
-                            ];
-                            const prompt = prompts[Math.floor(Math.random() * prompts.length)];
-                            alert(`Reflection Prompt: ${prompt}`);
+                          onClick={async () => {
+                            const prompt = await getTherapeuticPrompt("reflective", ["self-discovery", "personal growth"]);
+                            setTherapyMessages(prev => [...prev, {
+                              role: 'therapist',
+                              content: `Here's a reflection prompt for you: ${prompt}`
+                            }]);
                           }}
                         >
                           💭 Reflection prompts
@@ -3665,16 +3785,12 @@ Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 
                           variant="outline" 
                           size="sm" 
                           className="text-xs h-8"
-                          onClick={() => {
-                            const moods = ['anxious', 'sad', 'angry', 'stressed', 'overwhelmed'];
-                            const allContent = entries?.map(e => e.content || '').join(' ').toLowerCase() || '';
-                            const concerns = moods.filter(mood => allContent.includes(mood));
-                            
-                            const assessment = concerns.length === 0 
-                              ? "Your emotional state appears stable. Continue your positive journaling practice!"
-                              : `Areas for attention: ${concerns.join(', ')}. Consider discussing these with a mental health professional if they persist.`;
-                            
-                            alert(`Quick Assessment: ${assessment}`);
+                          onClick={async () => {
+                            const assessment = await getMoodAssessment();
+                            setTherapyMessages(prev => [...prev, {
+                              role: 'therapist',
+                              content: `Mood Assessment: Your dominant mood pattern is ${assessment.dominantMood}. ${assessment.recommendation}`
+                            }]);
                           }}
                         >
                           📊 Mood check
@@ -3685,15 +3801,10 @@ Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 
                         <Button 
                           className="w-full bg-indigo-500 hover:bg-indigo-600 text-white"
                           onClick={() => {
-                            const sessions = [
-                              "Anxiety Management: Learn techniques to reduce worry and overthinking",
-                              "Stress Reduction: Develop healthy coping strategies for daily pressures",
-                              "Self-Esteem Building: Strengthen your inner voice and confidence",
-                              "Goal Setting: Create achievable plans for personal growth",
-                              "Relationship Skills: Improve communication and boundaries"
-                            ];
-                            const session = sessions[Math.floor(Math.random() * sessions.length)];
-                            alert(`Starting Therapy Session: ${session}`);
+                            setTherapyMessages(prev => [...prev, {
+                              role: 'therapist',
+                              content: "I'm here to start a focused therapy session with you. What specific area would you like to work on today? We can explore anxiety management, stress reduction, self-esteem, goal setting, or relationship skills."
+                            }]);
                           }}
                         >
                           <Brain className="w-4 h-4 mr-2" />
@@ -3724,24 +3835,23 @@ Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 
                       <motion.div
                         whileHover={{ scale: 1.02 }}
                         className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer"
-                        onClick={() => {
-                          const personalityTraits = {
-                            introversion: Math.floor(Math.random() * 40) + 30,
-                            openness: Math.floor(Math.random() * 30) + 70,
-                            conscientiousness: Math.floor(Math.random() * 20) + 75,
-                            agreeableness: Math.floor(Math.random() * 25) + 65,
-                            neuroticism: Math.floor(Math.random() * 30) + 20
-                          };
-                          
-                          const analysis = `Personality Analysis (Big 5):
-                          
-🧠 Openness: ${personalityTraits.openness}% - Highly creative and open to new experiences
-🎯 Conscientiousness: ${personalityTraits.conscientiousness}% - Well-organized and goal-oriented
-🤝 Agreeableness: ${personalityTraits.agreeableness}% - Cooperative and empathetic
-⚡ Neuroticism: ${personalityTraits.neuroticism}% - Emotionally stable and resilient
-🔋 Introversion: ${personalityTraits.introversion}% - Balanced social energy`;
-                          
-                          alert(analysis);
+                        onClick={async () => {
+                          const analysis = await getPersonalityAnalysis();
+                          if (analysis) {
+                            const formatted = `Personality Analysis (Big 5):\n\n🧠 Openness: ${analysis.openness}% - ${analysis.openness > 70 ? 'Highly creative and open to new experiences' : 'Moderate openness to new experiences'}\n🎯 Conscientiousness: ${analysis.conscientiousness}% - ${analysis.conscientiousness > 70 ? 'Well-organized and goal-oriented' : 'Developing organizational skills'}\n🤝 Agreeableness: ${analysis.agreeableness}% - ${analysis.agreeableness > 70 ? 'Cooperative and empathetic' : 'Balanced in interpersonal approach'}\n⚡ Neuroticism: ${analysis.neuroticism}% - ${analysis.neuroticism < 40 ? 'Emotionally stable and resilient' : 'Managing emotional variability'}\n🔋 Extraversion: ${analysis.extraversion}% - ${analysis.extraversion > 60 ? 'Socially energetic' : 'Balanced social energy'}\n\n${analysis.summary}`;
+                            
+                            // Show in a nice modal instead of alert
+                            const modalDiv = document.createElement('div');
+                            modalDiv.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm';
+                            modalDiv.innerHTML = `
+                              <div class="bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+                                <h3 class="text-xl font-bold text-purple-800 mb-4">🧬 Your Personality Analysis</h3>
+                                <div class="text-sm text-gray-700 whitespace-pre-line mb-4">${formatted}</div>
+                                <button class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg" onclick="this.parentElement.parentElement.remove()">Close</button>
+                              </div>
+                            `;
+                            document.body.appendChild(modalDiv);
+                          }
                         }}
                       >
                         <div className="flex items-start gap-3">
@@ -3757,21 +3867,20 @@ Based on ${stats?.totalEntries || 0} journal entries and ${stats?.totalWords || 
                       <motion.div
                         whileHover={{ scale: 1.02 }}
                         className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer"
-                        onClick={() => {
-                          const behaviors = ['journaling', 'goal-setting', 'self-reflection', 'mindfulness', 'gratitude practice'];
-                          const scores = behaviors.map(behavior => ({
-                            behavior,
-                            score: Math.floor(Math.random() * 30) + 70
-                          }));
+                        onClick={async () => {
+                          const assessment = await getMoodAssessment();
+                          const behaviorAnalysis = `Behavioral Pattern Analysis:\n\nJournaling consistency: ${stats?.currentStreak || 0} day streak\nSelf-reflection frequency: ${stats?.totalEntries || 0} entries\nEmotional awareness: ${assessment.dominantMood} patterns\nWord count average: ${Math.round((stats?.totalWords || 0) / Math.max(stats?.totalEntries || 1, 1))} words per entry\n\nStrongest pattern: ${stats?.currentStreak >= 7 ? 'Excellent consistency' : 'Building momentum'}\nRecommendation: ${assessment.recommendation}`;
                           
-                          const analysis = `Behavioral Pattern Analysis:
-                          
-${scores.map(item => `${item.behavior}: ${item.score}%`).join('\n')}
-                          
-Strongest pattern: Self-reflection and journaling consistency
-Recommendation: Continue building on your excellent self-awareness habits.`;
-                          
-                          alert(analysis);
+                          const modalDiv = document.createElement('div');
+                          modalDiv.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm';
+                          modalDiv.innerHTML = `
+                            <div class="bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+                              <h3 class="text-xl font-bold text-purple-800 mb-4">📊 Behavioral Patterns</h3>
+                              <div class="text-sm text-gray-700 whitespace-pre-line mb-4">${behaviorAnalysis}</div>
+                              <button class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg" onclick="this.parentElement.parentElement.remove()">Close</button>
+                            </div>
+                          `;
+                          document.body.appendChild(modalDiv);
                         }}
                       >
                         <div className="flex items-start gap-3">
@@ -3787,18 +3896,45 @@ Recommendation: Continue building on your excellent self-awareness habits.`;
                       <motion.div
                         whileHover={{ scale: 1.02 }}
                         className="p-4 bg-white rounded-xl border border-purple-200 cursor-pointer"
-                        onClick={() => {
-                          const growthAreas = [
-                            'Emotional regulation: Developing greater awareness of emotional triggers',
-                            'Stress management: Building resilience through mindfulness practices', 
-                            'Self-compassion: Treating yourself with greater kindness',
-                            'Goal achievement: Breaking large goals into manageable steps',
-                            'Social connections: Nurturing meaningful relationships'
-                          ];
+                        onClick={async () => {
+                          const assessment = await getMoodAssessment();
+                          const analysis = await getPersonalityAnalysis();
+                          
+                          const growthAreas = [];
+                          if (assessment.dominantMood === 'anxious') {
+                            growthAreas.push('Anxiety management: Practice grounding techniques and breathing exercises');
+                          }
+                          if (analysis?.neuroticism > 60) {
+                            growthAreas.push('Emotional regulation: Develop awareness of emotional triggers');
+                          }
+                          if (stats?.currentStreak < 7) {
+                            growthAreas.push('Consistency building: Establish a regular journaling routine');
+                          }
+                          if (analysis?.agreeableness < 50) {
+                            growthAreas.push('Social connections: Work on empathy and communication skills');
+                          }
+                          
+                          // Add default recommendations if none match
+                          if (growthAreas.length === 0) {
+                            growthAreas.push(
+                              'Self-compassion: Practice treating yourself with kindness',
+                              'Mindfulness: Develop present-moment awareness',
+                              'Goal achievement: Break large goals into smaller steps'
+                            );
+                          }
                           
                           const recommendations = growthAreas.slice(0, 3).map((area, i) => `${i + 1}. ${area}`).join('\n');
                           
-                          alert(`Personal Growth Recommendations:\n\n${recommendations}`);
+                          const modalDiv = document.createElement('div');
+                          modalDiv.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm';
+                          modalDiv.innerHTML = `
+                            <div class="bg-white rounded-2xl p-6 max-w-md mx-4 shadow-2xl">
+                              <h3 class="text-xl font-bold text-purple-800 mb-4">🌱 Growth Opportunities</h3>
+                              <div class="text-sm text-gray-700 whitespace-pre-line mb-4">Personal Growth Recommendations:\n\n${recommendations}</div>
+                              <button class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg" onclick="this.parentElement.parentElement.remove()">Close</button>
+                            </div>
+                          `;
+                          document.body.appendChild(modalDiv);
                         }}
                       >
                         <div className="flex items-start gap-3">
@@ -3813,31 +3949,22 @@ Recommendation: Continue building on your excellent self-awareness habits.`;
 
                       <Button 
                         className="w-full bg-purple-500 hover:bg-purple-600 text-white"
-                        onClick={() => {
-                          const detailedReport = `Comprehensive Psychological Assessment:
+                        onClick={async () => {
+                          const personalityAnalysis = await getPersonalityAnalysis();
+                          const moodAssessment = await getMoodAssessment();
                           
-🧠 COGNITIVE PATTERNS:
-- Critical thinking: Advanced
-- Problem-solving: Strong
-- Creative expression: Highly developed
+                          const detailedReport = `Comprehensive Psychological Assessment:\n\n🧠 COGNITIVE PATTERNS:\n- Creative thinking: ${personalityAnalysis?.openness > 70 ? 'Advanced' : 'Developing'}\n- Problem-solving: ${personalityAnalysis?.conscientiousness > 70 ? 'Strong' : 'Moderate'}\n- Self-expression: ${stats?.totalWords > 5000 ? 'Highly developed' : 'Growing'}\n\n💙 EMOTIONAL INTELLIGENCE:\n- Self-awareness: ${stats?.totalEntries > 10 ? 'Excellent' : 'Good'} (${Math.min(Math.ceil((stats?.totalEntries || 0) / 2), 10)}/10)\n- Emotional stability: ${personalityAnalysis?.neuroticism < 40 ? 'Strong' : 'Developing'}\n- Pattern recognition: Well-developed\n\n🎯 BEHAVIORAL INSIGHTS:\n- Journaling consistency: ${stats?.currentStreak || 0} day streak\n- Self-reflection frequency: ${stats?.totalEntries || 0} entries\n- Mood patterns: ${moodAssessment.dominantMood}\n- Writing depth: ${Math.round((stats?.totalWords || 0) / Math.max(stats?.totalEntries || 1, 1))} avg words\n\n📈 RECOMMENDATIONS:\n1. ${stats?.currentStreak < 7 ? 'Build journaling consistency' : 'Maintain excellent journaling habit'}\n2. ${personalityAnalysis?.neuroticism > 60 ? 'Practice stress management techniques' : 'Continue emotional wellness practices'}\n3. ${moodAssessment.recommendation}\n4. Explore deeper self-reflection prompts`;
                           
-💙 EMOTIONAL INTELLIGENCE:
-- Self-awareness: Excellent (9/10)
-- Empathy: Well-developed (8/10)
-- Emotional regulation: Good (7/10)
-                          
-🎯 BEHAVIORAL INSIGHTS:
-- Journaling consistency: ${stats?.currentStreak || 0} day streak
-- Self-reflection frequency: ${stats?.totalEntries || 0} entries
-- Goal-oriented behavior: Strong evidence
-                          
-📈 RECOMMENDATIONS:
-1. Continue regular journaling practice
-2. Explore meditation for stress reduction
-3. Set specific, measurable goals
-4. Practice gratitude daily`;
-                          
-                          alert(detailedReport);
+                          const modalDiv = document.createElement('div');
+                          modalDiv.className = 'fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm';
+                          modalDiv.innerHTML = `
+                            <div class="bg-white rounded-2xl p-6 max-w-lg mx-4 shadow-2xl max-h-[80vh] overflow-y-auto">
+                              <h3 class="text-xl font-bold text-purple-800 mb-4">🧠 Full Assessment Report</h3>
+                              <div class="text-sm text-gray-700 whitespace-pre-line mb-4">${detailedReport}</div>
+                              <button class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-lg" onclick="this.parentElement.parentElement.remove()">Close</button>
+                            </div>
+                          `;
+                          document.body.appendChild(modalDiv);
                         }}
                       >
                         <Brain className="w-4 h-4 mr-2" />

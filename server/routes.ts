@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage, db } from "./storage";
-import { generateJournalPrompt, generatePersonalizedPrompt, generateInsight } from "./services/openai";
+import { generateJournalPrompt, generatePersonalizedPrompt, generateInsight, generateTherapyResponse, generatePersonalityAnalysis, generateTherapeuticPrompt, generateCopingStrategy } from "./services/openai";
 import { trackableOpenAICall } from "./middleware/promptTracker";
 import { createUser, authenticateUser } from "./services/auth";
 import { 
@@ -1489,6 +1489,154 @@ Your story shows how every day brings new experiences and emotions, creating the
       res.json({ achievements });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // AI Therapy routes
+  app.post("/api/ai/therapy/chat", requireAuth, requireAIPrompts, async (req: any, res) => {
+    try {
+      const { message, conversationHistory = [] } = req.body;
+      const userId = req.session.userId;
+      
+      if (!message || !message.trim()) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+      
+      // Get user's journal entries for context
+      const entries = await storage.getJournalEntries(userId, 10);
+      
+      const response = await generateTherapyResponse(
+        message,
+        conversationHistory,
+        entries,
+        userId
+      );
+      
+      res.json({ reply: response });
+    } catch (error: any) {
+      console.error("Error in therapy chat:", error);
+      res.status(500).json({ 
+        error: "Failed to generate therapy response",
+        reply: "I'm having trouble connecting right now. Please try again in a moment."
+      });
+    }
+  });
+
+  app.get("/api/ai/therapy/personality-analysis", requireAuth, requireAIPrompts, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const entries = await storage.getJournalEntries(userId, 15);
+      
+      const analysis = await generatePersonalityAnalysis(entries, userId);
+      
+      res.json(analysis);
+    } catch (error: any) {
+      console.error("Error generating personality analysis:", error);
+      res.status(500).json({ 
+        error: "Failed to generate personality analysis",
+        fallback: {
+          openness: 75,
+          conscientiousness: 70,
+          agreeableness: 80,
+          neuroticism: 30,
+          extraversion: 60,
+          summary: "Unable to generate analysis at this time. Please try again later."
+        }
+      });
+    }
+  });
+
+  app.post("/api/ai/therapy/therapeutic-prompt", requireAuth, requireAIPrompts, async (req: any, res) => {
+    try {
+      const { emotionalState, concerns = [] } = req.body;
+      const userId = req.session.userId;
+      
+      const prompt = await generateTherapeuticPrompt(
+        emotionalState || "reflective",
+        concerns,
+        userId
+      );
+      
+      res.json({ prompt });
+    } catch (error: any) {
+      console.error("Error generating therapeutic prompt:", error);
+      res.status(500).json({ 
+        error: "Failed to generate therapeutic prompt",
+        prompt: "What emotions am I experiencing right now, and what might they be trying to tell me?"
+      });
+    }
+  });
+
+  app.post("/api/ai/therapy/coping-strategy", requireAuth, requireAIPrompts, async (req: any, res) => {
+    try {
+      const { situation } = req.body;
+      const userId = req.session.userId;
+      
+      if (!situation || !situation.trim()) {
+        return res.status(400).json({ error: "Situation description is required" });
+      }
+      
+      const strategy = await generateCopingStrategy(situation, userId);
+      
+      res.json({ strategy });
+    } catch (error: any) {
+      console.error("Error generating coping strategy:", error);
+      res.status(500).json({ 
+        error: "Failed to generate coping strategy",
+        strategy: "Take 5 deep breaths. Inhale for 4 counts, hold for 4, exhale for 6. This activates your parasympathetic nervous system and helps you feel calmer."
+      });
+    }
+  });
+
+  app.post("/api/ai/therapy/mood-assessment", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const entries = await storage.getJournalEntries(userId, 10);
+      
+      // Analyze mood patterns from recent entries
+      const moodWords = {
+        anxious: ['anxious', 'worry', 'nervous', 'stress', 'fear'],
+        sad: ['sad', 'down', 'depressed', 'blue', 'melancholy'],
+        angry: ['angry', 'mad', 'frustrated', 'irritated', 'annoyed'],
+        happy: ['happy', 'joy', 'excited', 'pleased', 'content'],
+        stressed: ['stressed', 'overwhelmed', 'pressure', 'deadline', 'busy']
+      };
+      
+      const allContent = entries.map(e => e.content || '').join(' ').toLowerCase();
+      const moodScores: Record<string, number> = {};
+      
+      for (const [mood, words] of Object.entries(moodWords)) {
+        moodScores[mood] = words.reduce((count, word) => 
+          count + (allContent.split(word).length - 1), 0
+        );
+      }
+      
+      const dominantMood = Object.entries(moodScores)
+        .sort(([,a], [,b]) => b - a)[0];
+      
+      const assessment = {
+        dominantMood: dominantMood[0],
+        moodScores,
+        totalEntries: entries.length,
+        recommendation: dominantMood[1] === 0 
+          ? "Your emotional state appears stable. Continue your positive journaling practice!"
+          : dominantMood[1] > 3 
+            ? `High ${dominantMood[0]} levels detected. Consider discussing these feelings with a mental health professional if they persist.`
+            : `Some ${dominantMood[0]} patterns identified. Focus on self-care and mindfulness practices.`
+      };
+      
+      res.json(assessment);
+    } catch (error: any) {
+      console.error("Error generating mood assessment:", error);
+      res.status(500).json({ 
+        error: "Failed to generate mood assessment",
+        assessment: {
+          dominantMood: "neutral",
+          moodScores: {},
+          totalEntries: 0,
+          recommendation: "Unable to assess mood at this time. Please try again later."
+        }
+      });
     }
   });
 

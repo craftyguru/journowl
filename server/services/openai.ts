@@ -129,3 +129,191 @@ export async function generateInsight(entries: { content: string; mood: string; 
     return fallback;
   }
 }
+
+// AI Therapy Functions
+export async function generateTherapyResponse(userMessage: string, conversationHistory: { role: string; content: string }[], userEntries: any[], userId?: number): Promise<string> {
+  const fallback = "I'm here to listen and support you. Can you tell me more about what's on your mind?";
+  
+  if (!userId) {
+    return fallback;
+  }
+
+  try {
+    const recentEntries = userEntries.slice(0, 5).map(entry => ({
+      content: entry.content.substring(0, 300),
+      mood: entry.mood,
+      date: new Date(entry.createdAt).toLocaleDateString()
+    }));
+
+    return await trackableOpenAICall(
+      userId,
+      "therapy_response",
+      async () => {
+        const messages = [
+          {
+            role: "system",
+            content: `You are Dr. Sofia, a compassionate AI therapist with expertise in cognitive behavioral therapy, mindfulness, and emotional support. 
+
+Your approach:
+- Use warm, empathetic language
+- Ask thoughtful follow-up questions
+- Provide evidence-based coping strategies
+- Validate emotions while encouraging growth
+- Reference their journal patterns when relevant
+- Keep responses conversational and supportive (2-3 sentences)
+- Never diagnose or replace professional therapy
+
+Recent journal insights: ${recentEntries.length > 0 ? JSON.stringify(recentEntries) : 'No recent entries available'}`
+          },
+          ...conversationHistory.slice(-6), // Keep last 6 messages for context
+          {
+            role: "user",
+            content: userMessage
+          }
+        ];
+
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: messages as any,
+          max_tokens: 200,
+          temperature: 0.7,
+        });
+
+        return response.choices[0].message.content || fallback;
+      },
+      200 // Estimated tokens
+    );
+  } catch (error) {
+    console.error("Failed to generate therapy response:", error);
+    return fallback;
+  }
+}
+
+export async function generatePersonalityAnalysis(entries: any[], userId?: number): Promise<any> {
+  const fallback = {
+    openness: 75,
+    conscientiousness: 70,
+    agreeableness: 80,
+    neuroticism: 30,
+    extraversion: 60,
+    summary: "Based on your writing patterns, you show strong self-awareness and emotional intelligence."
+  };
+  
+  if (!userId || entries.length === 0) {
+    return fallback;
+  }
+
+  try {
+    const entriesData = entries.slice(0, 10).map(entry => ({
+      content: entry.content.substring(0, 500),
+      mood: entry.mood,
+      date: new Date(entry.createdAt).toLocaleDateString()
+    }));
+
+    return await trackableOpenAICall(
+      userId,
+      "personality_analysis",
+      async () => {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a psychological assessment AI. Analyze writing patterns to estimate Big Five personality traits (0-100 scale). Respond in JSON format with: openness, conscientiousness, agreeableness, neuroticism, extraversion (numbers), and summary (string)."
+            },
+            {
+              role: "user",
+              content: `Analyze these journal entries for personality traits: ${JSON.stringify(entriesData)}`
+            }
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 300,
+          temperature: 0.3,
+        });
+
+        const result = JSON.parse(response.choices[0].message.content || JSON.stringify(fallback));
+        return result;
+      },
+      300 // Estimated tokens
+    );
+  } catch (error) {
+    console.error("Failed to generate personality analysis:", error);
+    return fallback;
+  }
+}
+
+export async function generateTherapeuticPrompt(emotionalState: string, recentConcerns: string[], userId?: number): Promise<string> {
+  const fallback = "What emotions am I experiencing right now, and what might they be trying to tell me?";
+  
+  if (!userId) {
+    return fallback;
+  }
+
+  try {
+    return await trackableOpenAICall(
+      userId,
+      "therapeutic_prompt",
+      async () => {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a therapeutic journaling expert. Create a deep, thought-provoking journal prompt that encourages self-reflection and emotional processing. The prompt should be therapeutic but not overwhelming."
+            },
+            {
+              role: "user",
+              content: `Create a therapeutic journal prompt for someone feeling ${emotionalState} who has mentioned concerns about: ${recentConcerns.join(', ')}`
+            }
+          ],
+          max_tokens: 150,
+          temperature: 0.8,
+        });
+
+        return response.choices[0].message.content || fallback;
+      },
+      150 // Estimated tokens
+    );
+  } catch (error) {
+    console.error("Failed to generate therapeutic prompt:", error);
+    return fallback;
+  }
+}
+
+export async function generateCopingStrategy(situation: string, userId?: number): Promise<string> {
+  const fallback = "Take 5 deep breaths. Inhale for 4 counts, hold for 4, exhale for 6. This activates your parasympathetic nervous system and helps you feel calmer.";
+  
+  if (!userId) {
+    return fallback;
+  }
+
+  try {
+    return await trackableOpenAICall(
+      userId,
+      "coping_strategy",
+      async () => {
+        const response = await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
+            {
+              role: "system",
+              content: "You are a mental health expert specializing in evidence-based coping strategies. Provide a specific, actionable technique for the given situation. Include brief explanation of why it works."
+            },
+            {
+              role: "user",
+              content: `Suggest a coping strategy for: ${situation}`
+            }
+          ],
+          max_tokens: 150,
+          temperature: 0.6,
+        });
+
+        return response.choices[0].message.content || fallback;
+      },
+      150 // Estimated tokens
+    );
+  } catch (error) {
+    console.error("Failed to generate coping strategy:", error);
+    return fallback;
+  }
+}
