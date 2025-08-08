@@ -1554,7 +1554,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               </motion.div>
             </div>
           </div>
-        </div>
         
         <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsContent value="journal" data-tabs-content>
@@ -5880,7 +5879,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
           </motion.button>
         </div>
       )}
-
+      
     </div>
   );
 }
