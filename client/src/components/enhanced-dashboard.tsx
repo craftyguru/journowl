@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+// Tabs removed - now using top navigation from Navbar
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -1375,85 +1375,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
 
 
 
-      {/* Main Content Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6 pb-8 lg:pb-6">
-        {/* Mobile-Responsive Horizontal Scrolling Tabs */}
-        <div className="relative w-full">
-          {/* Left scroll indicator */}
-          <div className="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-900/80 to-transparent z-10 pointer-events-none lg:hidden flex items-center justify-start pl-1">
-            <motion.div
-              animate={{ x: [-2, 2, -2] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="text-purple-400 text-xs"
-            >
-              ←
-            </motion.div>
-          </div>
-          
-          {/* Right scroll indicator */}
-          <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-900/80 to-transparent z-10 pointer-events-none lg:hidden flex items-center justify-end pr-1">
-            <motion.div
-              animate={{ x: [2, -2, 2] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="text-purple-400 text-xs"
-            >
-              →
-            </motion.div>
-          </div>
-          
-          {/* Bright Neon Red Swipe Indicator Across Screen */}
-          <motion.div 
-            className="absolute -bottom-6 left-0 right-0 lg:hidden z-20 px-4"
-            animate={{ 
-              scale: [1, 1.05, 1],
-              textShadow: [
-                '0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 30px #ff0040',
-                '0 0 15px #ff0040, 0 0 25px #ff0040, 0 0 40px #ff0040', 
-                '0 0 10px #ff0040, 0 0 20px #ff0040, 0 0 30px #ff0040'
-              ]
-            }}
-            transition={{ 
-              duration: 2, 
-              repeat: Infinity, 
-              repeatType: "reverse" 
-            }}
-          >
-            <div className="flex items-center justify-between bg-black/80 backdrop-blur-sm px-6 py-0.5 rounded-full border-2 border-red-500 shadow-lg shadow-red-500/50 w-full max-w-md mx-auto">
-              <motion.span 
-                className="text-lg text-red-400"
-                animate={{ x: [-4, 4, -4] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                style={{ filter: 'drop-shadow(0 0 8px #ff0040)' }}
-              >
-                ←
-              </motion.span>
-              <span className="text-xs font-bold text-red-400 tracking-widest flex-1 text-center" style={{ 
-                textShadow: '0 0 10px #ff0040, 0 0 20px #ff0040',
-                filter: 'brightness(1.3)'
-              }}>
-                SWIPE
-              </span>
-              <motion.span 
-                className="text-lg text-red-400"
-                animate={{ x: [4, -4, 4] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                style={{ filter: 'drop-shadow(0 0 8px #ff0040)' }}
-              >
-                →
-              </motion.span>
-            </div>
-          </motion.div>
-          
-          <div className="overflow-x-auto lg:overflow-x-visible">
-            <TabsList className="flex w-max lg:w-full lg:justify-center bg-gradient-to-r from-slate-900/95 via-slate-800/95 to-slate-900/95 backdrop-blur-lg border-2 border-purple-500/20 shadow-2xl rounded-2xl p-3 gap-2 scrollbar-thin touch-pan-x" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch', scrollbarColor: 'rgba(147, 51, 234, 0.5) rgba(71, 85, 105, 0.3)', paddingRight: '20px' }}>
-            <TabsTrigger 
-              value="journal" 
-              className={`relative flex-shrink-0 h-12 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-300 whitespace-nowrap overflow-hidden min-w-[140px] lg:flex-1 lg:min-w-0 lg:justify-center border ${
-                activeTab === 'journal' 
-                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/50 border-orange-400/50 transform scale-105' 
-                  : 'bg-gradient-to-r from-orange-400/10 to-amber-400/10 text-orange-200 hover:from-orange-400/30 hover:to-amber-400/30 hover:text-white hover:scale-105 border-orange-400/20'
-              }`}
-            >
+      {/* Main Content - Controlled by Top Navigation */}
+      <div className="space-y-6 pb-8 lg:pb-6">
+        {/* Navigation now handled by top Navbar component */}
+        {/* All navigation now handled by top Navbar component */}
               <motion.div
                 className="flex items-center gap-2"
                 animate={{
@@ -5697,7 +5622,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
             </motion.div>
           </div>
         </TabsContent>
-      </Tabs>
+      </div>
 
       {/* Smart Journal Editor Modal */}
       <AnimatePresence>
