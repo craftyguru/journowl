@@ -13,8 +13,32 @@ const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// PWA MIME type middleware - CRITICAL for PWABuilder compatibility
+// Security headers and PWA MIME type middleware - CRITICAL for PWABuilder compatibility
 app.use((req, res, next) => {
+  // Security headers for PWABuilder compliance
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Force HTTPS in production
+  if (process.env.NODE_ENV === 'production' && req.header('x-forwarded-proto') !== 'https') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+  }
+  
+  // Content Security Policy for enhanced security
+  res.setHeader('Content-Security-Policy', [
+    "default-src 'self' https:",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
+    "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
+    "img-src 'self' data: https: blob:",
+    "connect-src 'self' https: wss:",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "base-uri 'self'"
+  ].join('; '));
+
   // Set correct MIME types for PWA files
   if (req.path === '/manifest.json' || req.path.startsWith('/manifest.json')) {
     res.setHeader('Content-Type', 'application/manifest+json');
@@ -25,6 +49,7 @@ app.use((req, res, next) => {
     res.setHeader('Content-Type', 'image/png');
   } else if (req.path === '/service-worker.js') {
     res.setHeader('Content-Type', 'application/javascript');
+    res.setHeader('Cache-Control', 'no-cache'); // Service worker should not be cached
   } else if (req.path.endsWith('.js') || req.path.includes('/assets/') && req.path.endsWith('.js')) {
     res.setHeader('Content-Type', 'application/javascript');
   } else if (req.path.endsWith('.css') || req.path.includes('/assets/') && req.path.endsWith('.css')) {
