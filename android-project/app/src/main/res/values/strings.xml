@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">JournOwl - Your Wise Writing Companion</string>
+    <string name="asset_statements">
+        [{
+            "relation": ["delegate_permission/common.handle_all_urls"],
+            "target": {
+                "namespace": "android_app",
+                "package_name": "com.journowl.app",
+                "sha256_cert_fingerprints": ["SHA256_FINGERPRINT_PLACEHOLDER"]
+            }
+        }]
+    </string>
+</resources>

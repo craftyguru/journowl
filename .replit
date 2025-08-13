@@ -1,10 +1,10 @@
-modules = ["nodejs-20", "postgresql-16", "python-3.11", "web"]
+modules = ["nodejs-20", "postgresql-16", "python-3.11", "web", "java-21"]
 run = "npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["unixtools.ping", "gh", "python311Packages.pillow", "imagemagick"]
+packages = ["unixtools.ping", "gh", "python311Packages.pillow", "imagemagick", "android-tools", "gradle", "openjdk"]
 
 [deployment]
 deploymentTarget = "autoscale"
