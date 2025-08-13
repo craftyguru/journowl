@@ -72,6 +72,7 @@
 - **Store Password**: `journowl2024`
 - **Key Alias**: `journowl-key`
 - **Key Password**: `journowl2024`
+- **SHA1**: `40:2D:C9:41:8F:C7:CF:70:03:7E:51:E5:D5:8D:1E:18:A0:0B:6F:E3`
 - **SHA256**: `BB:3B:1B:82:7B:BA:0C:9E:1F:99:A2:56:44:D0:FE:26:9C:87:90:20:E1:64:92:ED:65:25:EC:F8:26:AA:B5:A8`
 
 ⚠️ **Critical**: Keep the keystore file safe - you need it for all future app updates!
