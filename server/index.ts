@@ -1,181 +1,180 @@
+// server/index.ts
 import dotenv from "dotenv";
 dotenv.config();
 
-// Only log Stripe key in development for security
-if (process.env.NODE_ENV === "development") {
-  console.log("STRIPE_SECRET_KEY loaded:", process.env.STRIPE_SECRET_KEY?.substring(0, 20) + "...");
-}
-import express, { type Request, Response, NextFunction } from "express";
+import express, { type Request, type Response, type NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import { setupVite, log } from "./vite";
 
 const app = express();
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Security headers and PWA MIME type middleware - CRITICAL for PWABuilder compatibility
+// ---------- Core middleware ----------
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// Security + PWA MIME headers (kept tight for PWABuilder compatibility)
 app.use((req, res, next) => {
-  // Security headers for PWABuilder compliance
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
-  
-  // Force HTTPS in production
-  if (process.env.NODE_ENV === 'production' && req.header('x-forwarded-proto') !== 'https') {
-    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  }
-  
-  // Content Security Policy for enhanced security
-  res.setHeader('Content-Security-Policy', [
-    "default-src 'self' https:",
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
-    "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
-    "img-src 'self' data: https: blob:",
-    "connect-src 'self' https: wss:",
-    "object-src 'none'",
-    "frame-ancestors 'none'",
-    "base-uri 'self'"
-  ].join('; '));
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
 
-  // Set correct MIME types for PWA files
-  if (req.path === '/manifest.json' || req.path.startsWith('/manifest.json')) {
-    res.setHeader('Content-Type', 'application/manifest+json');
-    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate'); // Force refresh for PWABuilder
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-  } else if (req.path.endsWith('.png') && req.path.includes('/icons/')) {
-    res.setHeader('Content-Type', 'image/png');
-  } else if (req.path === '/service-worker.js') {
-    res.setHeader('Content-Type', 'application/javascript');
-    res.setHeader('Cache-Control', 'no-cache'); // Service worker should not be cached
-  } else if (req.path.endsWith('.js') || req.path.includes('/assets/') && req.path.endsWith('.js')) {
-    res.setHeader('Content-Type', 'application/javascript');
-  } else if (req.path.endsWith('.css') || req.path.includes('/assets/') && req.path.endsWith('.css')) {
-    res.setHeader('Content-Type', 'text/css');
-  } else if (req.path === '/adaptive-card.json' || req.path === '/stats-card.json') {
-    res.setHeader('Content-Type', 'application/json');
-  } else if (req.path === '/offline.html') {
-    res.setHeader('Content-Type', 'text/html');
+  // Force HTTPS headers when behind a proxy (Railway)
+  if (process.env.NODE_ENV === "production" && req.header("x-forwarded-proto") !== "https") {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   }
+
+  // CSP (relaxed enough for Vite/prod assets and fonts)
+  res.setHeader(
+    "Content-Security-Policy",
+    [
+      "default-src 'self' https:",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
+      "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
+      "img-src 'self' data: https: blob:",
+      "connect-src 'self' https: wss:",
+      "object-src 'none'",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+    ].join("; ")
+  );
+
+  // Correct MIME for PWA bits
+  const p = req.path;
+  if (p === "/manifest.json" || p.startsWith("/manifest.json")) {
+    res.setHeader("Content-Type", "application/manifest+json");
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+  } else if (p === "/service-worker.js") {
+    res.setHeader("Content-Type", "application/javascript");
+    res.setHeader("Cache-Control", "no-cache");
+  } else if (p.endsWith(".png") && p.includes("/icons/")) {
+    res.setHeader("Content-Type", "image/png");
+  } else if (p.endsWith(".js")) {
+    res.setHeader("Content-Type", "application/javascript");
+  } else if (p.endsWith(".css")) {
+    res.setHeader("Content-Type", "text/css");
+  } else if (p === "/offline.html") {
+    res.setHeader("Content-Type", "text/html");
+  } else if (p === "/adaptive-card.json" || p === "/stats-card.json") {
+    res.setHeader("Content-Type", "application/json");
+  }
+
   next();
 });
 
+// Trimmed API access log (keeps console readable)
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
+  let captured: unknown;
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+  const orig = res.json.bind(res);
+  (res as any).json = (body: unknown, ...args: any[]) => {
+    captured = body;
+    return orig(body, ...args);
   };
 
   res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
+    if (!path.startsWith("/api")) return;
+    const ms = Date.now() - start;
+    let line = `${req.method} ${path} ${res.statusCode} in ${ms}ms`;
+    if (captured) {
+      const s = JSON.stringify(captured);
+      if (s && s.length < 120) line += ` :: ${s}`;
     }
+    log(line);
   });
 
   next();
 });
 
 (async () => {
+  // Mount API routes (and get an http server if your registerRoutes returns one)
   const server = await registerRoutes(app);
 
-  // Add a simple test route to verify server is working
-  app.get("/health", (req, res) => {
+  // Health probes
+  app.get("/health", (_req, res) => {
     res.json({ status: "OK", message: "JournOwl server is running!", timestamp: new Date().toISOString() });
   });
+  app.get("/healthz", (_req, res) => res.status(200).send("ok"));
 
-  // Serve PWA static files in development and production
-  app.use('/manifest.json', express.static('client/public/manifest.json'));
-  app.use('/service-worker.js', express.static('client/public/service-worker.js'));
-  app.use('/offline.html', express.static('client/public/offline.html'));
-  app.use('/icons', express.static('client/public/icons'));
-  app.use('/adaptive-card.json', express.static('client/public/adaptive-card.json'));
-  app.use('/stats-card.json', express.static('client/public/stats-card.json'));
-  
-  // Remove the root route override - let Vite handle everything in development
+  // PWA assets from repo (not the Vite build)
+  app.use("/manifest.json", express.static("client/public/manifest.json"));
+  app.use("/service-worker.js", express.static("client/public/service-worker.js"));
+  app.use("/offline.html", express.static("client/public/offline.html"));
+  app.use("/icons", express.static("client/public/icons"));
+  app.use("/adaptive-card.json", express.static("client/public/adaptive-card.json"));
+  app.use("/stats-card.json", express.static("client/public/stats-card.json"));
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
-  });
-
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  
-  // Check if dist/public exists to determine if we should serve static files
+  // --------- Choose serving mode ----------
+  // PRODUCTION: serve built client (auto-detect dist path) + SPA fallback
+  // DEVELOPMENT: hand off to Vite dev server
   const fs = await import("fs");
   const path = await import("path");
   const __dirname = path.dirname(new URL(import.meta.url).pathname);
-  const distPath = path.resolve(__dirname, "..", "dist", "public");
-  
-  // CHOOSE ONE MODE - NEVER MIX DEV AND PRODUCTION
-  if (process.env.NODE_ENV === "production") {
-    console.log("Production mode: serving static files from dist/public");
-    
-    if (!fs.existsSync(distPath)) {
-      throw new Error(`Build files not found at ${distPath}. Run 'npm run build' first.`);
-    }
-    
-    // Production: Only serve static files
-    app.use(express.static(distPath, {
-      setHeaders: (res, filePath) => {
-        if (filePath.endsWith('.js')) {
-          res.setHeader('Content-Type', 'application/javascript');
-        } else if (filePath.endsWith('.css')) {
-          res.setHeader('Content-Type', 'text/css');
-        }
-      }
-    }));
 
-    // SPA fallback - only serve index.html for routes, NOT for assets
-    app.get("*", (req, res) => {
-      // Don't serve index.html for asset requests
-      if (req.path.startsWith("/assets/") || 
-          req.path.endsWith(".js") || 
-          req.path.endsWith(".css") || 
-          req.path.endsWith(".png") || 
-          req.path.endsWith(".ico") || 
-          req.path.endsWith(".json")) {
-        res.status(404).end();
-        return;
+  if (process.env.NODE_ENV === "production") {
+    const candidates = [
+      path.resolve(__dirname, "..", "dist", "public"), // if you ever keep this layout
+      path.resolve(__dirname, "..", "dist"), // Vite default
+    ];
+    const distPath = candidates.find((p) => fs.existsSync(p));
+
+    if (!distPath) {
+      throw new Error(
+        `Build files not found in any of: ${candidates.join(", ")}. Did you run 'pnpm run build' before deploy?`
+      );
+    }
+    console.log("🔧 Serving static client from:", distPath);
+
+    app.use(
+      express.static(distPath, {
+        index: false,
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith(".js")) res.setHeader("Content-Type", "application/javascript");
+          else if (filePath.endsWith(".css")) res.setHeader("Content-Type", "text/css");
+        },
+      })
+    );
+
+    // SPA history fallback (don’t hijack API or asset requests)
+    app.get("*", (req, res, next) => {
+      if (
+        req.path.startsWith("/api") ||
+        req.path.startsWith("/assets/") ||
+        req.path.match(/\.(js|css|png|ico|json|svg|jpg|jpeg|webp|txt|map)$/)
+      ) {
+        return next();
       }
       res.sendFile(path.resolve(distPath, "index.html"));
     });
   } else {
-    console.log("Development mode: using Vite development server");
-    // Development: Only use Vite dev server
+    console.log("🧪 Development mode: using Vite dev server");
     await setupVite(app, server);
   }
 
-  // ALWAYS serve the app on port 5000
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
-  const port = process.env.PORT || 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  // Global error handler (after routes/middleware)
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err?.status || err?.statusCode || 500;
+    const message = err?.message || "Internal Server Error";
+    try {
+      res.status(status).json({ message });
+    } catch {}
+    // surface to logs
+    console.error(err);
   });
+
+  // Start
+  const port = process.env.PORT || 5000;
+  server.listen(
+    {
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    },
+    () => log(`🚀 Serving on port ${port} (mode=${process.env.NODE_ENV || "development"})`)
+  );
 })();
