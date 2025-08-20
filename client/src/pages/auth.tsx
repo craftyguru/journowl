@@ -426,23 +426,23 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
   }
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4">
+    <div className="min-h-screen relative flex items-center justify-center p-3 sm:p-4">
       <AnimatedBackground />
       
-      <div className="w-full max-w-md relative z-10">
+      <div className="w-full max-w-sm sm:max-w-md relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
           <Card className="bg-black border-white/10 shadow-2xl">
-            <CardHeader className="text-center pb-2">
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+            <CardHeader className="text-center pb-2 px-4 sm:px-6">
+              <CardTitle className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
                 🦉 JournOwl
               </CardTitle>
-              <p className="text-gray-300 mt-2">Your Wise Writing Companion</p>
+              <p className="text-gray-300 mt-2 text-sm sm:text-base">Your Wise Writing Companion</p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="px-4 sm:px-6">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-white/10 border-white/20">
                   <TabsTrigger value="login" className="text-gray-300 data-[state=active]:bg-white/20 data-[state=active]:text-white">

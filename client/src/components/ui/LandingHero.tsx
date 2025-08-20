@@ -364,7 +364,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
       </motion.div>
 
       {/* Main Content */}
-      <div className="relative z-20 mobile-container py-8 sm:py-12 lg:py-20 pt-16 sm:pt-24 lg:pt-32">
+      <div className="relative z-20 mobile-container py-4 sm:py-8 lg:py-20 pt-20 sm:pt-24 lg:pt-32 px-4 sm:px-6 lg:px-8">
         
         {/* Hero Header */}
         <motion.div
@@ -380,15 +380,15 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             transition={{ duration: 1, delay: 0.1 }}
             className="mb-4 sm:mb-6 lg:mb-8"
           >
-            <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-2 sm:mb-4 leading-tight" 
-                style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)', lineHeight: '1.2' }}>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold bg-gradient-to-r from-amber-400 via-orange-500 to-red-500 bg-clip-text text-transparent drop-shadow-2xl mb-3 sm:mb-4 leading-tight px-2 sm:px-0" 
+                style={{ fontFamily: '"Rock Salt", cursive', textShadow: '0 0 20px rgba(251, 191, 36, 0.3)', lineHeight: '1.1' }}>
               JournOwl
             </h1>
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-sm sm:text-lg md:text-xl lg:text-2xl font-bold"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold px-2 sm:px-0"
               style={{ fontFamily: '"Rock Salt", cursive' }}
             >
               <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-lg">
@@ -402,10 +402,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="inline-flex items-center gap-1 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 mb-4 sm:mb-6 lg:mb-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm"
+            className="inline-flex items-center gap-2 sm:gap-2 px-4 sm:px-6 py-3 sm:py-3 mb-6 sm:mb-6 lg:mb-8 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm mx-2 sm:mx-0"
           >
 
-            <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-semibold text-xs sm:text-sm" 
+            <span className="bg-gradient-to-r from-purple-200 to-pink-200 bg-clip-text text-transparent font-semibold text-sm sm:text-sm" 
                   style={{ fontFamily: '"Rock Salt", cursive' }}>
               AI-Powered Smart Journaling
             </span>
@@ -419,7 +419,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6 lg:mb-8 leading-tight"
+            className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-bold mb-6 sm:mb-6 lg:mb-8 leading-tight px-2 sm:px-0"
             style={{ fontFamily: '"Rock Salt", cursive' }}
           >
             <span className="bg-gradient-to-r from-purple-400 via-pink-300 to-amber-300 bg-clip-text text-transparent drop-shadow-lg">
@@ -507,7 +507,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               <Button
                 onClick={onGetStarted}
                 size="lg"
-                className="relative px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-black bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-300 hover:via-orange-400 hover:to-red-400 text-white border-4 border-white/40 rounded-2xl shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 w-full sm:w-auto transform hover:rotate-1"
+                className="relative px-6 sm:px-12 py-4 sm:py-6 text-base sm:text-lg lg:text-xl font-black bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 hover:from-yellow-300 hover:via-orange-400 hover:to-red-400 text-white border-4 border-white/40 rounded-2xl shadow-2xl hover:shadow-orange-500/50 transition-all duration-300 w-full sm:w-auto transform hover:rotate-1 min-h-[56px]"
                 style={{ fontFamily: '"Rock Salt", cursive', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
               >
                 <motion.div 
@@ -516,8 +516,8 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   transition={{ duration: 1.5, repeat: Infinity }}
                 >
                   <BookOpen className="w-6 h-6 sm:w-8 sm:h-8 animate-bounce" />
-                  <span className="text-lg sm:text-xl font-black tracking-wide">
-                    🚀 START YOUR WISE JOURNEY! 🦉
+                  <span className="text-sm sm:text-base lg:text-lg font-black tracking-wide">
+                    🚀 START YOUR JOURNEY! 🦉
                   </span>
                   <ArrowRight className="w-6 h-6 sm:w-8 sm:h-8 animate-pulse" />
                 </motion.div>
@@ -544,7 +544,7 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                 variant="outline"
                 size="lg"
                 onClick={handleDemo}
-                className="relative px-8 sm:px-12 py-4 sm:py-6 text-lg sm:text-xl font-bold border-4 border-purple-400 bg-gradient-to-r from-purple-900/50 to-blue-900/50 text-white hover:bg-gradient-to-r hover:from-purple-800/70 hover:to-blue-800/70 rounded-2xl backdrop-blur-md transition-all duration-300 w-full sm:w-auto shadow-xl hover:shadow-purple-500/30"
+                className="relative px-6 sm:px-12 py-4 sm:py-6 text-base sm:text-lg lg:text-xl font-bold border-4 border-purple-400 bg-gradient-to-r from-purple-900/50 to-blue-900/50 text-white hover:bg-gradient-to-r hover:from-purple-800/70 hover:to-blue-800/70 rounded-2xl backdrop-blur-md transition-all duration-300 w-full sm:w-auto shadow-xl hover:shadow-purple-500/30 min-h-[56px]"
                 style={{ fontFamily: '"Rock Salt", cursive', textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}
               >
                 <motion.div 
@@ -553,8 +553,8 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   transition={{ duration: 2, repeat: Infinity }}
                 >
                   <Play className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400 animate-bounce" />
-                  <span className="text-lg sm:text-xl font-bold tracking-wide">
-                    ✨ TRY WITH TEST ACCOUNT 🎬
+                  <span className="text-sm sm:text-base lg:text-lg font-bold tracking-wide">
+                    ✨ TRY DEMO 🎬
                   </span>
                 </motion.div>
               </Button>
