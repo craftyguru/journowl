@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getCurrentUser } from "@/lib/auth";
+import { checkAuthStatus } from "@/lib/authBoot";
 import { checkForPWAUpdate, clearPWACache } from "@/lib/pwa-utils";
 import { apiRequest } from "@/lib/queryClient";
 import AuthPage from "@/pages/auth";
@@ -134,23 +135,22 @@ function App() {
       return;
     }
     
-    // Check authentication status for legitimate sessions (like demo login)
+    // Safe authentication check for legitimate sessions
     if (isAuthenticated === null) {
-      console.log('🔧 Checking authentication status...');
-      fetch('/api/auth/me')
-        .then(response => {
-          if (response.ok) {
-            return response.json();
-          }
-          throw new Error('Not authenticated');
-        })
+      console.log('🔧 Checking authentication status safely...');
+      checkAuthStatus()
         .then(data => {
-          console.log('🔧 User is authenticated:', data.user.username);
-          setIsAuthenticated(true);
-          setCurrentView("dashboard");
+          if (data.loggedIn) {
+            console.log('🔧 User is authenticated:', data.user?.username || 'Unknown');
+            setIsAuthenticated(true);
+            setCurrentView("dashboard");
+          } else {
+            console.log('🔧 User is not authenticated');
+            setIsAuthenticated(false);
+          }
         })
         .catch(() => {
-          console.log('🔧 User is not authenticated');
+          console.log('🔧 Auth check failed - defaulting to not authenticated');
           setIsAuthenticated(false);
         });
     }

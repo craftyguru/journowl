@@ -1,0 +1,115 @@
+Yep — update that file. Add a safe /me route that never hard-fails on first load, plus a tiny requireAuth you can use for protected APIs.
+
+Drop this into server/routes.ts (or merge with yours):
+
+// server/routes.ts
+import type { Express, RequestHandler } from "express";
+
+// If you already have session typings, adjust this
+type SessionUser = {
+  id: string;
+  email: string;
+  name?: string;
+  // add whatever you need, but never return secrets
+};
+
+const requireAuth: RequestHandler = (req, res, next) => {
+  const user = (req.session as any)?.user as SessionUser | undefined;
+  if (!user) {
+    // For protected API calls we still return 401.
+    return res.status(401).json({ error: "auth_required" });
+  }
+  next();
+};
+
+export async function registerRoutes(app: Express) {
+  // ---------- PUBLIC ROUTES ----------
+  // Health
+  app.get("/healthz", (_req, res) => res.status(200).send("ok"));
+
+  // IMPORTANT: /me MUST be SAFE for first-time visitors.
+  // Return {loggedIn:false} instead of 401 so the app can show the lander.
+  app.get("/me", (req, res) => {
+    const user = (req.session as any)?.user as SessionUser | undefined;
+    if (!user) {
+      return res.status(200).json({ loggedIn: false });
+    }
+    // Return only safe fields the client needs
+    const { id, email, name } = user;
+    return res.json({ loggedIn: true, user: { id, email, name } });
+  });
+
+  // Example: public login endpoint (pseudo)
+  app.post("/auth/login", async (req, res) => {
+    // ...do your auth, then:
+    const user: SessionUser = { id: "u_123", email: "x@y.com", name: "Rob" };
+    (req.session as any).user = user;
+    res.json({ ok: true, user });
+  });
+
+  app.post("/auth/logout", (req, res) => {
+    req.session?.destroy(() => {});
+    res.json({ ok: true });
+  });
+
+  // ---------- PROTECTED ROUTES ----------
+  // Anything below here requires a session
+  app.get("/api/profile", requireAuth, (req, res) => {
+    const user = (req.session as any).user as SessionUser;
+    res.json({ user });
+  });
+
+  // add more protected routes with `requireAuth`…
+
+  // Return the Node http.Server if you already did before,
+  // otherwise remove the return type and keep mounting.
+  return app.listen(); // or return whatever your original implementation expects
+}
+
+Also update your CSP (unblocks Stripe)
+
+In server/index.ts, include Stripe’s domain:
+
+res.setHeader('Content-Security-Policy', [
+  "default-src 'self' https:",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://js.stripe.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
+  "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
+  "img-src 'self' data: https: blob:",
+  "connect-src 'self' https: wss:",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'"
+].join('; '));
+
+Frontend boot (so new users land on the lander/login)
+
+Where your app initializes, do this (notice the graceful path on first load):
+
+// authBoot.ts
+export async function bootNavigate(navigate: (path: string) => void) {
+  try {
+    const res = await fetch("/me", { credentials: "include" });
+    const data = await res.json();
+    if (data?.loggedIn) {
+      navigate("/dashboard");     // logged-in home
+    } else {
+      navigate("/login");         // your lander page
+    }
+  } catch {
+    navigate("/login");           // fail-safe for first load
+  }
+}
+
+
+Then call bootNavigate(navigate) in your root component useEffect.
+
+Why this fixes your blank screen
+
+Your app previously called /me, got 401, and likely crashed before routing. Now /me always returns { loggedIn: false } for fresh installs, so the client can route to the lander/login instead of dying. Stripe is also unblocked by CSP so any Stripe boot code won’t be blocked.
+
+Ship these changes to Railway, then open https://journowl.app:
+
+Network should show /me → 200 with { loggedIn:false }
+
+You should land on the login/lander page in both the browser and the Android app.

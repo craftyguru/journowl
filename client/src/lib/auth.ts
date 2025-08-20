@@ -58,10 +58,13 @@ export async function getCurrentUser(): Promise<AuthResponse> {
         "Pragma": "no-cache"
       }
     });
-    if (!response.ok) {
+    
+    // Safe /me route always returns 200, check loggedIn status
+    const data = await response.json();
+    if (!data.loggedIn) {
       throw new Error("Not authenticated");
     }
-    return response.json();
+    return data;
   } catch (error) {
     console.error('getCurrentUser failed:', error);
     throw error;

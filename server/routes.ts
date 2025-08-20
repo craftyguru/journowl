@@ -732,13 +732,24 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
   app.get("/api/auth/logout", handleLogout);
   app.post("/api/auth/logout", handleLogout);
 
-  app.get("/api/auth/me", requireAuth, async (req: any, res) => {
+  // SAFE /me route - never returns 401 for first-time visitors
+  app.get("/api/auth/me", async (req: any, res) => {
     try {
+      // Check if user is logged in
+      if (!req.session?.userId) {
+        return res.status(200).json({ loggedIn: false });
+      }
+
       const user = await storage.getUser(req.session.userId);
       if (!user) {
-        return res.status(404).json({ message: "User not found" });
+        // Session exists but user not found - clear session
+        req.session.destroy(() => {});
+        return res.status(200).json({ loggedIn: false });
       }
-      res.json({ 
+
+      // Return safe user data
+      return res.json({ 
+        loggedIn: true,
         user: {
           id: user.id, 
           email: user.email, 
@@ -749,7 +760,29 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
         }
       });
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      console.error('Error in /me route:', error);
+      return res.status(200).json({ loggedIn: false });
+    }
+  });
+
+  // Safe /me route (alternative path for compatibility)
+  app.get("/me", async (req: any, res) => {
+    try {
+      if (!req.session?.userId) {
+        return res.status(200).json({ loggedIn: false });
+      }
+
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        req.session.destroy(() => {});
+        return res.status(200).json({ loggedIn: false });
+      }
+
+      const { id, email, username } = user;
+      return res.json({ loggedIn: true, user: { id, email, username } });
+    } catch (error: any) {
+      console.error('Error in /me route:', error);
+      return res.status(200).json({ loggedIn: false });
     }
   });
 

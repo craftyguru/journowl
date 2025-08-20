@@ -12,11 +12,10 @@ const app = express();
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 
-// Security + PWA MIME headers (Android WebView compatible)
+// Security + PWA MIME headers (kept tight for PWABuilder compatibility)
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
-  // Changed from DENY to SAMEORIGIN for Android WebView compatibility
-  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("X-XSS-Protection", "1; mode=block");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
 
@@ -25,43 +24,19 @@ app.use((req, res, next) => {
     res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   }
 
-  // CSP (Android WebView compatible - more permissive)
-  const userAgent = req.get('User-Agent') || '';
-  const isAndroidWebView = /Android/i.test(userAgent) && /wv|WebView/i.test(userAgent);
-  
-  if (isAndroidWebView) {
-    // More permissive CSP for Android WebView
-    res.setHeader(
-      "Content-Security-Policy",
-      [
-        "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:",
-        "style-src 'self' 'unsafe-inline' https: data:",
-        "font-src 'self' https: data:",
-        "img-src 'self' data: https: blob:",
-        "connect-src 'self' https: wss: data:",
-        "object-src 'self'",
-        "frame-ancestors 'self'",
-        "base-uri 'self'",
-      ].join("; ")
-    );
-  } else {
-    // Standard CSP for regular browsers
-    res.setHeader(
-      "Content-Security-Policy",
-      [
-        "default-src 'self' https:",
-        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com",
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
-        "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
-        "img-src 'self' data: https: blob:",
-        "connect-src 'self' https: wss:",
-        "object-src 'none'",
-        "frame-ancestors 'none'",
-        "base-uri 'self'",
-      ].join("; ")
-    );
-  }
+  // CSP (relaxed enough for Vite/prod assets and fonts)
+ res.setHeader('Content-Security-Policy', [
+  "default-src 'self' https:",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://js.stripe.com",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
+  "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
+  "img-src 'self' data: https: blob:",
+  "connect-src 'self' https: wss:",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'"
+].join('; '));
+
 
   // Correct MIME for PWA bits
   const p = req.path;
