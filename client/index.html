@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
     <title>🦉 JournOwl - Your Wise Writing Companion ✨</title>
     <meta name="description" content="AI-powered journaling platform for capturing thoughts, analyzing emotions, and unlocking insights from your daily experiences">
     
@@ -45,6 +45,45 @@
     <!-- Android WebView Optimization -->
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="format-detection" content="telephone=no">
+    <meta name="HandheldFriendly" content="true">
+    <meta name="MobileOptimized" content="320">
+    
+    <!-- Prevent text size adjust on mobile -->
+    <style>
+      html { 
+        -webkit-text-size-adjust: 100%; 
+        -moz-text-size-adjust: 100%; 
+        -ms-text-size-adjust: 100%; 
+      }
+      
+      /* Android WebView specific fixes */
+      body {
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        overflow-x: hidden;
+      }
+      
+      /* Ensure full height on Android */
+      #root {
+        min-height: 100vh;
+        min-height: 100dvh;
+      }
+      
+      /* Touch-friendly buttons */
+      button, input, select, textarea {
+        font-size: 16px !important; /* Prevent zoom on iOS */
+      }
+      
+      /* Better Android WebView scrolling */
+      * {
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
     
     <!-- Google Fonts for enhanced typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

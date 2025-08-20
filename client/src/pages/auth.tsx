@@ -466,14 +466,14 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3, duration: 0.5 }}
                     >
-                      <Label htmlFor="login-identifier" className="text-gray-300 font-medium">Email or Username</Label>
+                      <Label htmlFor="login-identifier" className="text-gray-300 font-medium text-sm sm:text-base">Email or Username</Label>
                       <Input
                         id="login-identifier"
                         type="text"
                         value={loginData.identifier}
                         onChange={(e) => setLoginData(prev => ({ ...prev, identifier: e.target.value }))}
                         placeholder="Enter your email or username"
-                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10 text-base min-h-[48px] px-4"
                         autoComplete="username"
                       />
                     </motion.div>
@@ -482,14 +482,14 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.4, duration: 0.5 }}
                     >
-                      <Label htmlFor="login-password" className="text-gray-300 font-medium">Password</Label>
+                      <Label htmlFor="login-password" className="text-gray-300 font-medium text-sm sm:text-base">Password</Label>
                       <Input
                         id="login-password"
                         type="password"
                         value={loginData.password}
                         onChange={(e) => setLoginData(prev => ({ ...prev, password: e.target.value }))}
                         placeholder="Enter your password"
-                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10 text-base min-h-[48px] px-4"
                         autoComplete="current-password"
                       />
                     </motion.div>
@@ -502,7 +502,7 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                     >
                       <Button 
                         type="submit" 
-                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-purple-500/25 transition-all duration-300"
+                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-4 min-h-[52px] rounded-xl shadow-lg hover:shadow-purple-500/25 transition-all duration-300 text-base"
                         disabled={loginMutation.isPending}
                       >
                         {loginMutation.isPending ? (
