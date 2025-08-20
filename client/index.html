@@ -38,9 +38,13 @@
     
     <!-- Security Meta Tags -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
     <meta name="referrer" content="strict-origin-when-cross-origin">
+    
+    <!-- Android WebView Optimization -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
     
     <!-- Google Fonts for enhanced typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,41 +55,69 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     
-    <!-- PWA Service Worker Registration -->
+    <!-- Android WebView Error Handling and Debug -->
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          // Clear old caches first in development
-          if (window.location.hostname === 'localhost' || window.location.hostname.includes('replit')) {
-            caches.keys().then(cacheNames => {
-              cacheNames.forEach(cacheName => {
-                console.log('Clearing cache:', cacheName);
-                caches.delete(cacheName);
-              });
-            });
-          }
-          
-          navigator.serviceWorker.register('/service-worker.js')
-            .then((registration) => {
-              console.log('JournOwl SW registered: ', registration);
-              
-              // Check for updates
-              registration.addEventListener('updatefound', () => {
-                const newWorker = registration.installing;
-                newWorker.addEventListener('statechange', () => {
-                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                    // New content is available, show update notification
-                    if (confirm('New version of JournOwl is available. Refresh to update?')) {
-                      window.location.reload();
-                    }
-                  }
+      // Android WebView compatibility and error handling
+      window.addEventListener('error', function(e) {
+        console.error('Global error:', e.error, e.filename, e.lineno);
+        // Send error info to a visible element for debugging
+        var errorDiv = document.getElementById('error-debug');
+        if (!errorDiv) {
+          errorDiv = document.createElement('div');
+          errorDiv.id = 'error-debug';
+          errorDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;background:red;color:white;padding:10px;z-index:9999;font-size:12px;word-wrap:break-word;';
+          document.body.appendChild(errorDiv);
+        }
+        errorDiv.innerHTML = 'Error: ' + (e.message || 'Unknown error') + ' at ' + (e.filename || 'unknown') + ':' + (e.lineno || '?');
+      });
+
+      // Check if we're in Android WebView
+      const isAndroid = /Android/i.test(navigator.userAgent);
+      const isWebView = /wv|WebView/i.test(navigator.userAgent);
+      
+      console.log('User Agent:', navigator.userAgent);
+      console.log('Is Android:', isAndroid);
+      console.log('Is WebView:', isWebView);
+      
+      if (isAndroid && isWebView) {
+        console.log('Running in Android WebView - Service Worker disabled');
+        // Don't register service worker in Android WebView to prevent blank screens
+      } else {
+        // Only register service worker outside of Android WebView
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            // Clear old caches first in development
+            if (window.location.hostname === 'localhost' || window.location.hostname.includes('replit')) {
+              caches.keys().then(cacheNames => {
+                cacheNames.forEach(cacheName => {
+                  console.log('Clearing cache:', cacheName);
+                  caches.delete(cacheName);
                 });
               });
-            })
-            .catch((registrationError) => {
-              console.log('JournOwl SW registration failed: ', registrationError);
-            });
-        });
+            }
+            
+            navigator.serviceWorker.register('/service-worker.js')
+              .then((registration) => {
+                console.log('JournOwl SW registered: ', registration);
+                
+                // Check for updates
+                registration.addEventListener('updatefound', () => {
+                  const newWorker = registration.installing;
+                  newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      // New content is available, show update notification
+                      if (confirm('New version of JournOwl is available. Refresh to update?')) {
+                        window.location.reload();
+                      }
+                    }
+                  });
+                });
+              })
+              .catch((registrationError) => {
+                console.log('JournOwl SW registration failed: ', registrationError);
+              });
+          });
+        }
       }
       
       // PWA Install Prompt - Enhanced for debugging
