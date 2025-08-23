@@ -214,11 +214,23 @@
       console.log('User Agent:', navigator.userAgent);
       console.log('Is Android:', isAndroid);
       console.log('Is WebView:', isWebView);
+      console.log('Screen dimensions:', window.innerWidth, 'x', window.innerHeight);
+      console.log('Device pixel ratio:', window.devicePixelRatio);
+      console.log('Viewport size:', document.documentElement.clientWidth, 'x', document.documentElement.clientHeight);
       
       // Let Android WebView use normal responsive design like desktop browsers
       // Only disable service worker, don't force mobile layout
       if (isAndroid && isWebView) {
         console.log('Android WebView detected - using normal responsive design');
+        
+        // Debug: Log what breakpoint should be active based on screen width
+        if (window.innerWidth >= 1024) {
+          console.log('Should be using DESKTOP layout (lg: breakpoint)');
+        } else if (window.innerWidth >= 768) {
+          console.log('Should be using TABLET layout (md: breakpoint)');
+        } else {
+          console.log('Should be using MOBILE layout (default)');
+        }
       }
       
       if (isAndroid && isWebView) {
