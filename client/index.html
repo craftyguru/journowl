@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover, shrink-to-fit=no" />
     <title>🦉 JournOwl - Your Wise Writing Companion ✨</title>
     <meta name="description" content="AI-powered journaling platform for capturing thoughts, analyzing emotions, and unlocking insights from your daily experiences">
     
@@ -155,29 +155,33 @@
         padding-right: 1rem !important;
       }
       
-      /* Force mobile responsive breakpoints */
-      @media screen {
-        .force-mobile-layout .md\:flex,
-        .force-mobile .md\:flex,
-        .android-webview .md\:flex {
-          display: block !important;
+      /* Ensure mobile layout works in WebView */
+      @media screen and (max-width: 768px) {
+        .container {
+          width: 100% !important;
+          max-width: 100% !important;
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
         }
         
-        .force-mobile-layout .lg\:text-6xl,
-        .force-mobile .lg\:text-6xl,
-        .android-webview .lg\:text-6xl,
-        .force-mobile-layout .lg\:text-5xl,
-        .force-mobile .lg\:text-5xl,
-        .android-webview .lg\:text-5xl {
+        .lg\:text-6xl,
+        .lg\:text-5xl,
+        .md\:text-6xl,
+        .md\:text-5xl {
           font-size: 2.25rem !important;
           line-height: 2.5rem !important;
         }
         
-        .force-mobile-layout .lg\:px-8,
-        .force-mobile .lg\:px-8,
-        .android-webview .lg\:px-8 {
-          padding-left: 1rem !important;
-          padding-right: 1rem !important;
+        .hidden {
+          display: none !important;
+        }
+        
+        .md\:block {
+          display: none !important;
+        }
+        
+        .md\:flex {
+          display: block !important;
         }
       }
     </style>
@@ -211,26 +215,18 @@
       const isAndroid = /Android/i.test(navigator.userAgent);
       const isWebView = /wv|WebView/i.test(navigator.userAgent);
       
-      console.log('User Agent:', navigator.userAgent);
-      console.log('Is Android:', isAndroid);
-      console.log('Is WebView:', isWebView);
-      console.log('Screen dimensions:', window.innerWidth, 'x', window.innerHeight);
-      console.log('Device pixel ratio:', window.devicePixelRatio);
-      console.log('Viewport size:', document.documentElement.clientWidth, 'x', document.documentElement.clientHeight);
-      
-      // Let Android WebView use normal responsive design like desktop browsers
-      // Only disable service worker, don't force mobile layout
+      // Force proper mobile detection for Android WebView
       if (isAndroid && isWebView) {
-        console.log('Android WebView detected - using normal responsive design');
-        
-        // Debug: Log what breakpoint should be active based on screen width
-        if (window.innerWidth >= 1024) {
-          console.log('Should be using DESKTOP layout (lg: breakpoint)');
-        } else if (window.innerWidth >= 768) {
-          console.log('Should be using TABLET layout (md: breakpoint)');
-        } else {
-          console.log('Should be using MOBILE layout (default)');
+        // Force mobile viewport and layout
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover, shrink-to-fit=no');
         }
+        
+        // Add mobile class to force responsive behavior
+        document.documentElement.classList.add('mobile-webview');
+        document.body.style.maxWidth = '100vw';
+        document.body.style.overflowX = 'hidden';
       }
       
       if (isAndroid && isWebView) {
