@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover, shrink-to-fit=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>🦉 JournOwl - Your Wise Writing Companion ✨</title>
     <meta name="description" content="AI-powered journaling platform for capturing thoughts, analyzing emotions, and unlocking insights from your daily experiences">
     
@@ -155,35 +155,6 @@
         padding-right: 1rem !important;
       }
       
-      /* Ensure mobile layout works in WebView */
-      @media screen and (max-width: 768px) {
-        .container {
-          width: 100% !important;
-          max-width: 100% !important;
-          padding-left: 1rem !important;
-          padding-right: 1rem !important;
-        }
-        
-        .lg\:text-6xl,
-        .lg\:text-5xl,
-        .md\:text-6xl,
-        .md\:text-5xl {
-          font-size: 2.25rem !important;
-          line-height: 2.5rem !important;
-        }
-        
-        .hidden {
-          display: none !important;
-        }
-        
-        .md\:block {
-          display: none !important;
-        }
-        
-        .md\:flex {
-          display: block !important;
-        }
-      }
     </style>
     
     <!-- Google Fonts for enhanced typography -->
@@ -193,6 +164,9 @@
   </head>
   <body>
     <div id="root"></div>
+    
+    <!-- Temporary debug banner for viewport testing -->
+    <div id="vw-debug" style="position:fixed;bottom:8px;right:8px;padding:6px 10px;font:12px/1.2 system-ui;background:#0008;color:#fff;border-radius:8px;z-index:99999"></div>
     <script type="module" src="/src/main.tsx"></script>
     
     <!-- Android WebView Error Handling and Debug -->
@@ -211,26 +185,11 @@
         errorDiv.innerHTML = 'Error: ' + (e.message || 'Unknown error') + ' at ' + (e.filename || 'unknown') + ':' + (e.lineno || '?');
       });
 
-      // Check if we're in Android WebView
+      // Check if we're in Android WebView - only for service worker disable
       const isAndroid = /Android/i.test(navigator.userAgent);
       const isWebView = /wv|WebView/i.test(navigator.userAgent);
       
-      // Force proper mobile detection for Android WebView
       if (isAndroid && isWebView) {
-        // Force mobile viewport and layout
-        const viewport = document.querySelector('meta[name="viewport"]');
-        if (viewport) {
-          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover, shrink-to-fit=no');
-        }
-        
-        // Add mobile class to force responsive behavior
-        document.documentElement.classList.add('mobile-webview');
-        document.body.style.maxWidth = '100vw';
-        document.body.style.overflowX = 'hidden';
-      }
-      
-      if (isAndroid && isWebView) {
-        console.log('Running in Android WebView - Service Worker disabled');
         // Don't register service worker in Android WebView to prevent blank screens
       } else {
         // Only register service worker outside of Android WebView
@@ -312,6 +271,14 @@
           console.log('PWA Debug: Global deferredPrompt available:', !!window.deferredPrompt);
         }, 2000);
       });
+      
+      // Debug viewport width for testing
+      const debugEl = document.getElementById('vw-debug');
+      if (debugEl) {
+        const updateDebug = () => debugEl.textContent = `w:${window.innerWidth}px dpr:${window.devicePixelRatio}`;
+        updateDebug();
+        window.addEventListener('resize', updateDebug);
+      }
     </script>
     
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
