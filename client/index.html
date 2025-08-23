@@ -132,6 +132,54 @@
         padding-top: 2rem !important;
         padding-bottom: 2rem !important;
       }
+      
+      /* Force mobile layout regardless of detection */
+      .force-mobile-layout,
+      .force-mobile {
+        max-width: 100vw !important;
+        width: 100vw !important;
+      }
+      
+      .force-mobile-layout *,
+      .force-mobile * {
+        max-width: 100% !important;
+      }
+      
+      /* Force all containers to mobile width */
+      .force-mobile-layout .container,
+      .force-mobile .container,
+      .android-webview .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      
+      /* Force mobile responsive breakpoints */
+      @media screen {
+        .force-mobile-layout .md\:flex,
+        .force-mobile .md\:flex,
+        .android-webview .md\:flex {
+          display: block !important;
+        }
+        
+        .force-mobile-layout .lg\:text-6xl,
+        .force-mobile .lg\:text-6xl,
+        .android-webview .lg\:text-6xl,
+        .force-mobile-layout .lg\:text-5xl,
+        .force-mobile .lg\:text-5xl,
+        .android-webview .lg\:text-5xl {
+          font-size: 2.25rem !important;
+          line-height: 2.5rem !important;
+        }
+        
+        .force-mobile-layout .lg\:px-8,
+        .force-mobile .lg\:px-8,
+        .android-webview .lg\:px-8 {
+          padding-left: 1rem !important;
+          padding-right: 1rem !important;
+        }
+      }
     </style>
     
     <!-- Google Fonts for enhanced typography -->
@@ -167,16 +215,49 @@
       console.log('Is Android:', isAndroid);
       console.log('Is WebView:', isWebView);
       
-      // Force mobile layout in Android WebView
-      if (isAndroid && isWebView) {
+      // Force mobile layout in Android WebView OR if screen is mobile-sized
+      const isMobileScreen = window.innerWidth <= 768;
+      const shouldForceMobile = (isAndroid && isWebView) || isMobileScreen;
+      
+      if (shouldForceMobile) {
         document.documentElement.classList.add('android-webview');
+        document.body.classList.add('force-mobile');
+        
         // Force viewport to mobile
         const viewport = document.querySelector('meta[name="viewport"]');
         if (viewport) {
           viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover');
         }
-        console.log('Android WebView detected - forcing mobile layout');
+        
+        // Force mobile layout with JavaScript
+        document.documentElement.style.setProperty('--screen-width', '375px');
+        document.documentElement.style.setProperty('--mobile-forced', '1');
+        
+        console.log('Mobile layout forced - WebView:', isAndroid && isWebView, 'MobileScreen:', isMobileScreen);
       }
+      
+      // Additional aggressive mobile detection
+      if (window.innerWidth <= 768 || /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        document.documentElement.classList.add('force-mobile-layout');
+        console.log('Additional mobile detection triggered');
+      }
+      
+      // Force mobile layout on resize
+      window.addEventListener('resize', function() {
+        if (window.innerWidth <= 768) {
+          document.documentElement.classList.add('force-mobile-layout');
+          document.body.classList.add('force-mobile');
+        }
+      });
+      
+      // Extremely aggressive mobile forcing for Android apps
+      setTimeout(function() {
+        if (window.innerWidth <= 500 || (isAndroid && window.innerWidth <= 800)) {
+          document.documentElement.classList.add('force-mobile-layout');
+          document.body.classList.add('force-mobile');
+          console.log('Delayed mobile forcing triggered for narrow screen');
+        }
+      }, 100);
       
       if (isAndroid && isWebView) {
         console.log('Running in Android WebView - Service Worker disabled');
