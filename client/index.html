@@ -215,9 +215,13 @@
       console.log('Is Android:', isAndroid);
       console.log('Is WebView:', isWebView);
       
-      // Force mobile layout in Android WebView OR if screen is mobile-sized
-      const isMobileScreen = window.innerWidth <= 768;
-      const shouldForceMobile = (isAndroid && isWebView) || isMobileScreen;
+      // Only force mobile layout for actual mobile devices and Android WebView
+      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isMobileUserAgent = /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      const isActualMobile = isTouchDevice && isMobileUserAgent && window.innerWidth <= 768;
+      
+      // Force mobile layout ONLY for Android WebView (your app) or actual mobile devices
+      const shouldForceMobile = (isAndroid && isWebView) || isActualMobile;
       
       if (shouldForceMobile) {
         document.documentElement.classList.add('android-webview');
@@ -233,31 +237,17 @@
         document.documentElement.style.setProperty('--screen-width', '375px');
         document.documentElement.style.setProperty('--mobile-forced', '1');
         
-        console.log('Mobile layout forced - WebView:', isAndroid && isWebView, 'MobileScreen:', isMobileScreen);
+        console.log('Mobile layout forced - AndroidWebView:', isAndroid && isWebView, 'ActualMobile:', isActualMobile);
       }
       
-      // Additional aggressive mobile detection
-      if (window.innerWidth <= 768 || /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-        document.documentElement.classList.add('force-mobile-layout');
-        console.log('Additional mobile detection triggered');
+      // Only for Android app - extremely aggressive mobile forcing
+      if (isAndroid && isWebView) {
+        setTimeout(function() {
+          document.documentElement.classList.add('force-mobile-layout');
+          document.body.classList.add('force-mobile');
+          console.log('Android app mobile forcing applied');
+        }, 100);
       }
-      
-      // Force mobile layout on resize
-      window.addEventListener('resize', function() {
-        if (window.innerWidth <= 768) {
-          document.documentElement.classList.add('force-mobile-layout');
-          document.body.classList.add('force-mobile');
-        }
-      });
-      
-      // Extremely aggressive mobile forcing for Android apps
-      setTimeout(function() {
-        if (window.innerWidth <= 500 || (isAndroid && window.innerWidth <= 800)) {
-          document.documentElement.classList.add('force-mobile-layout');
-          document.body.classList.add('force-mobile');
-          console.log('Delayed mobile forcing triggered for narrow screen');
-        }
-      }, 100);
       
       if (isAndroid && isWebView) {
         console.log('Running in Android WebView - Service Worker disabled');
