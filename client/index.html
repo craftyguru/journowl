@@ -215,13 +215,14 @@
       console.log('Is Android:', isAndroid);
       console.log('Is WebView:', isWebView);
       
-      // Only force mobile layout for actual mobile devices and Android WebView
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const isMobileUserAgent = /Mobile|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      const isActualMobile = isTouchDevice && isMobileUserAgent && window.innerWidth <= 768;
+      // Only force mobile layout for Android WebView (your app) specifically
+      // Don't force mobile for desktop browsers, even if they have touch
+      const isDesktopWithTouch = window.innerWidth > 1024; // Large screens are desktop
+      const isTabletLandscape = window.innerWidth > 768 && window.innerWidth <= 1024;
       
-      // Force mobile layout ONLY for Android WebView (your app) or actual mobile devices
-      const shouldForceMobile = (isAndroid && isWebView) || isActualMobile;
+      // Force mobile layout ONLY for Android WebView (your Google app)
+      // Let normal responsive design handle everything else
+      const shouldForceMobile = isAndroid && isWebView && !isDesktopWithTouch;
       
       if (shouldForceMobile) {
         document.documentElement.classList.add('android-webview');
