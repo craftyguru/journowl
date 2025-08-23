@@ -83,6 +83,55 @@
       * {
         -webkit-overflow-scrolling: touch;
       }
+      
+      /* Force mobile layout in Android WebView */
+      .android-webview {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      
+      .android-webview body {
+        width: 100vw !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+      }
+      
+      /* Force mobile breakpoints in WebView */
+      .android-webview * {
+        max-width: 100% !important;
+      }
+      
+      /* Force Tailwind mobile styles in Android WebView */
+      .android-webview .hidden {
+        display: none !important;
+      }
+      
+      .android-webview .md\:block {
+        display: none !important;
+      }
+      
+      .android-webview .sm\:block {
+        display: block !important;
+      }
+      
+      /* Force mobile text sizes */
+      .android-webview .text-6xl,
+      .android-webview .text-5xl,
+      .android-webview .text-4xl {
+        font-size: 2.25rem !important; /* text-4xl mobile size */
+        line-height: 2.5rem !important;
+      }
+      
+      /* Force mobile spacing */
+      .android-webview .px-8 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+      }
+      
+      .android-webview .py-8 {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+      }
     </style>
     
     <!-- Google Fonts for enhanced typography -->
@@ -117,6 +166,17 @@
       console.log('User Agent:', navigator.userAgent);
       console.log('Is Android:', isAndroid);
       console.log('Is WebView:', isWebView);
+      
+      // Force mobile layout in Android WebView
+      if (isAndroid && isWebView) {
+        document.documentElement.classList.add('android-webview');
+        // Force viewport to mobile
+        const viewport = document.querySelector('meta[name="viewport"]');
+        if (viewport) {
+          viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover');
+        }
+        console.log('Android WebView detected - forcing mobile layout');
+      }
       
       if (isAndroid && isWebView) {
         console.log('Running in Android WebView - Service Worker disabled');
