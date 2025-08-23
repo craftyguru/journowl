@@ -97,8 +97,6 @@
   <body>
     <div id="root"></div>
     
-    <!-- Temporary debug banner for viewport testing -->
-    <div id="vw-debug" style="position:fixed;bottom:8px;right:8px;padding:6px 10px;font:12px/1.2 system-ui;background:#0008;color:#fff;border-radius:8px;z-index:99999"></div>
     <script type="module" src="/src/main.tsx"></script>
     
     <!-- Android WebView Error Handling and Debug -->
@@ -247,21 +245,6 @@
       window.addEventListener('DOMContentLoaded', forceCorrectViewport);
       setTimeout(forceCorrectViewport, 100);
       setTimeout(forceCorrectViewport, 500);
-      
-      // Debug viewport width for testing
-      const debugEl = document.getElementById('vw-debug');
-      if (debugEl) {
-        const updateDebug = () => {
-          const isDesktop = window.innerWidth > 768;
-          debugEl.textContent = `w:${window.innerWidth}px dpr:${window.devicePixelRatio} ${isDesktop ? 'DESKTOP' : 'MOBILE'}`;
-          debugEl.style.background = isDesktop ? '#f00' : '#0f0';
-        };
-        updateDebug();
-        window.addEventListener('resize', updateDebug);
-        
-        // Update every 500ms to catch viewport changes
-        setInterval(updateDebug, 500);
-      }
     </script>
     
     <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
