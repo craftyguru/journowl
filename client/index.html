@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <title>🦉 JournOwl - Your Wise Writing Companion ✨</title>
     <meta name="description" content="AI-powered journaling platform for capturing thoughts, analyzing emotions, and unlocking insights from your daily experiences">
     
@@ -202,12 +204,38 @@
         }, 2000);
       });
       
+      // Force correct viewport in TWA/WebView
+      function forceCorrectViewport() {
+        // Remove any existing viewport meta tags
+        const existingViewports = document.querySelectorAll('meta[name="viewport"]');
+        existingViewports.forEach(tag => tag.remove());
+        
+        // Add fresh viewport meta tag
+        const viewport = document.createElement('meta');
+        viewport.name = 'viewport';
+        viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no';
+        document.head.appendChild(viewport);
+        
+        console.log('Viewport forced for TWA/WebView');
+      }
+      
+      // Force viewport immediately and on load
+      forceCorrectViewport();
+      window.addEventListener('load', forceCorrectViewport);
+      
       // Debug viewport width for testing
       const debugEl = document.getElementById('vw-debug');
       if (debugEl) {
-        const updateDebug = () => debugEl.textContent = `w:${window.innerWidth}px dpr:${window.devicePixelRatio}`;
+        const updateDebug = () => {
+          const isDesktop = window.innerWidth > 768;
+          debugEl.textContent = `w:${window.innerWidth}px dpr:${window.devicePixelRatio} ${isDesktop ? 'DESKTOP' : 'MOBILE'}`;
+          debugEl.style.background = isDesktop ? '#f00' : '#0f0';
+        };
         updateDebug();
         window.addEventListener('resize', updateDebug);
+        
+        // Update every 500ms to catch viewport changes
+        setInterval(updateDebug, 500);
       }
     </script>
     
