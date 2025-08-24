@@ -1,0 +1,217 @@
+index-BVcNrmiQ.js:521 Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.
+yi @ index-BVcNrmiQ.js:521
+index-BVcNrmiQ.js:490 🛒 Loading cart from localStorage: []
+index-BVcNrmiQ.js:490 🛒 Parsed cart from localStorage: Array(0)
+index-BVcNrmiQ.js:490 Auth check initiated - fetching real authenticated user
+index-BVcNrmiQ.js:490 🛒 Loading cart from localStorage: []
+index-BVcNrmiQ.js:490 🛒 Parsed cart from localStorage: Array(0)
+index-BVcNrmiQ.js:490 🛒 Saving cart to localStorage: Array(0)
+index-BVcNrmiQ.js:490 🛒 Saving cart to localStorage: Array(0)
+index-BVcNrmiQ.js:490 Auth check response status: 200
+index-BVcNrmiQ.js:521 Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.
+yi @ index-BVcNrmiQ.js:521
+index-BVcNrmiQ.js:490 ✅ Real authenticated user loaded: 2 RumpelStitches
+index-BVcNrmiQ.js:490 User data from /api/auth/user: Object
+index-BVcNrmiQ.js:490 isAdmin value: true
+index-BVcNrmiQ.js:490 isAdmin type: boolean
+RootRedirect-Bl08yw7k.js:1 User is logged in, redirecting to embroidery page
+index-BVcNrmiQ.js:537 📋 CONVERSATIONS LOADED: Object
+index-BVcNrmiQ.js:537 🔍 REACT QUERY DEBUG: Object
+index-BVcNrmiQ.js:537 💬 MESSAGES STATE UPDATE: Object
+index-BVcNrmiQ.js:537 📋 CONVERSATIONS LOADED: Object
+index-BVcNrmiQ.js:537 🔍 REACT QUERY DEBUG: Object
+index-BVcNrmiQ.js:537 💬 MESSAGES STATE UPDATE: Object
+index-BVcNrmiQ.js:537 📋 CONVERSATIONS LOADED: Object
+index-BVcNrmiQ.js:537 🔍 REACT QUERY DEBUG: Object
+index-BVcNrmiQ.js:537 💬 MESSAGES STATE UPDATE: Object
+favicon.ico:1  Failed to load resource: the server responded with a status of 404 ()
+favicon.ico:1  Failed to load resource: the server responded with a status of 404 ()
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+videos/poem.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/eagle.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/pooh.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/sara.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+images/digi.jpg:1  Failed to load resource: the server responded with a status of 404 ()
+videos/scarface.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/alice.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/intro2.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+vendor.js:151 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+    at g (vendor.js:151:18472)
+videos/poem.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/eagle.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/pooh.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+images/digi.jpg:1  Failed to load resource: the server responded with a status of 404 ()
+MatrixMusicPlayer-GNMg6ve9.js:26 Matrix Music Player: Created new global audio element
+EmbroideryPage-VncrdkaD.js:11 🎬 Loading Supabase videos for embroidery page
+useSupabaseVideo-CDgFp83f.js:1 🎬 Requesting video: poem.mp4
+useSupabaseVideo-CDgFp83f.js:1 🔗 Generated Supabase URL for poem.mp4: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/poem.mp4
+useSupabaseVideo-CDgFp83f.js:1 🎬 Requesting video: eagle.mp4
+useSupabaseVideo-CDgFp83f.js:1 🔗 Generated Supabase URL for eagle.mp4: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/eagle.mp4
+useSupabaseVideo-CDgFp83f.js:1 🎬 Requesting video: pooh.mp4
+useSupabaseVideo-CDgFp83f.js:1 🔗 Generated Supabase URL for pooh.mp4: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/pooh.mp4
+useSupabaseVideo-CDgFp83f.js:1 🎬 Requesting video: sara.mp4
+useSupabaseVideo-CDgFp83f.js:1 🔗 Generated Supabase URL for sara.mp4: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/sara.mp4
+useSupabaseVideo-CDgFp83f.js:1 🎬 Requesting video: scarface.mp4
+useSupabaseVideo-CDgFp83f.js:1 🔗 Generated Supabase URL for scarface.mp4: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/scarface.mp4
+useSupabaseVideo-CDgFp83f.js:1 🎬 Requesting video: alice.mp4
+useSupabaseVideo-CDgFp83f.js:1 🔗 Generated Supabase URL for alice.mp4: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/alice.mp4
+useSupabaseVideo-CDgFp83f.js:1 🎬 Requesting video: intro2.mp4
+useSupabaseVideo-CDgFp83f.js:1 🔗 Generated Supabase URL for intro2.mp4: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/intro2.mp4
+videos/sara.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/scarface.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+images/digi.jpg:1  Failed to load resource: the server responded with a status of 404 ()
+videos/alice.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+videos/intro2.mp4:1  Failed to load resource: the server responded with a status of 404 ()
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+EmbroideryPage-VncrdkaD.js:11 🎬 Welcome video source: 
+useSupabaseVideo-CDgFp83f.js:1 ✅ Video poem.mp4 confirmed accessible at Supabase URL
+useSupabaseVideo-CDgFp83f.js:1 ✅ Video eagle.mp4 confirmed accessible at Supabase URL
+useSupabaseVideo-CDgFp83f.js:1 ✅ Video pooh.mp4 confirmed accessible at Supabase URL
+useSupabaseVideo-CDgFp83f.js:1 ✅ Video sara.mp4 confirmed accessible at Supabase URL
+useSupabaseVideo-CDgFp83f.js:1 ✅ Video scarface.mp4 confirmed accessible at Supabase URL
+useSupabaseVideo-CDgFp83f.js:1 ✅ Video alice.mp4 confirmed accessible at Supabase URL
+useSupabaseVideo-CDgFp83f.js:1 ✅ Video intro2.mp4 confirmed accessible at Supabase URL
+EmbroideryPage-VncrdkaD.js:11 ✅ Using Supabase for poem.mp4
+EmbroideryPage-VncrdkaD.js:11 ✅ Using Supabase for eagle.mp4
+EmbroideryPage-VncrdkaD.js:11 ✅ Using Supabase for pooh.mp4
+EmbroideryPage-VncrdkaD.js:11 ✅ Using Supabase for sara.mp4
+EmbroideryPage-VncrdkaD.js:11 ✅ Using Supabase for scarface.mp4
+EmbroideryPage-VncrdkaD.js:11 ✅ Using Supabase for alice.mp4
+EmbroideryPage-VncrdkaD.js:11 ✅ Using Supabase for intro2.mp4
+EmbroideryPage-VncrdkaD.js:11 🎬 Final video URLs: Object
+EmbroideryPage-VncrdkaD.js:11 🎬 Embroidery video URLs loaded: Object
+EmbroideryPage-VncrdkaD.js:11 🎬 Video URLs loaded, starting playback with URLs: Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+EmbroideryPage-VncrdkaD.js:11 🎬 Playing welcome (poem.mp4) from: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/poem.mp4
+EmbroideryPage-VncrdkaD.js:11 🎬 Playing machines (eagle.mp4) from: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/eagle.mp4
+EmbroideryPage-VncrdkaD.js:11 🎬 Playing software (pooh.mp4) from: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/pooh.mp4
+EmbroideryPage-VncrdkaD.js:11 🎬 Playing ai-tools (sara.mp4) from: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/sara.mp4
+EmbroideryPage-VncrdkaD.js:11 🎬 Playing process (scarface.mp4) from: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/scarface.mp4
+EmbroideryPage-VncrdkaD.js:11 🎬 Playing projects (alice.mp4) from: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/alice.mp4
+EmbroideryPage-VncrdkaD.js:11 🎬 Playing why-choose (intro2.mp4) from: https://wnhnuzgqbtkczkqwtoqa.supabase.co/storage/v1/object/public/videos/intro2.mp4
+EmbroideryPage-VncrdkaD.js:11 ❌ Welcome video play error: AbortError: The play() request was interrupted by a new load request. https://goo.gl/LdLk22
+(anonymous) @ EmbroideryPage-VncrdkaD.js:11
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+vendor.js:151 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+    at g (vendor.js:151:18472)
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:587 💎 Professional Coin Vault - Dialog state changed: false
+index-BVcNrmiQ.js:587 🔑 UserDashboard - Token found: true
+index-BVcNrmiQ.js:587 📡 UserDashboard - Fetching from /api/user-designs for user: 2
+index-BVcNrmiQ.js:587 🔍 Fetching forum stats with auth for user: 2
+index-BVcNrmiQ.js:587 UserDashboard - user data: Object
+index-BVcNrmiQ.js:587 UserDashboard - realTimeUserData: undefined
+index-BVcNrmiQ.js:587 UserDashboard - isLoading: false
+index-BVcNrmiQ.js:587 UserDashboard - error: null
+index-BVcNrmiQ.js:587 UserDashboard - savedDesigns: Array(0)
+index-BVcNrmiQ.js:587 UserDashboard - loadingDesigns: true
+index-BVcNrmiQ.js:537 📋 CONVERSATIONS LOADED: Object
+index-BVcNrmiQ.js:537 🔍 REACT QUERY DEBUG: Object
+index-BVcNrmiQ.js:537 💬 MESSAGES STATE UPDATE: Object
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:587 📊 UserDashboard - Response status: 200
+EmbroideryPage-VncrdkaD.js:11 ❌ welcome (poem.mp4) play error: AbortError: The play() request was interrupted because the media was removed from the document. https://goo.gl/LdLk22
+(anonymous) @ EmbroideryPage-VncrdkaD.js:11
+EmbroideryPage-VncrdkaD.js:11 ❌ machines (eagle.mp4) play error: AbortError: The play() request was interrupted because the media was removed from the document. https://goo.gl/LdLk22
+(anonymous) @ EmbroideryPage-VncrdkaD.js:11
+EmbroideryPage-VncrdkaD.js:11 ❌ software (pooh.mp4) play error: AbortError: The play() request was interrupted because the media was removed from the document. https://goo.gl/LdLk22
+(anonymous) @ EmbroideryPage-VncrdkaD.js:11
+EmbroideryPage-VncrdkaD.js:11 ❌ ai-tools (sara.mp4) play error: AbortError: The play() request was interrupted because the media was removed from the document. https://goo.gl/LdLk22
+(anonymous) @ EmbroideryPage-VncrdkaD.js:11
+EmbroideryPage-VncrdkaD.js:11 ❌ process (scarface.mp4) play error: AbortError: The play() request was interrupted because the media was removed from the document. https://goo.gl/LdLk22
+(anonymous) @ EmbroideryPage-VncrdkaD.js:11
+EmbroideryPage-VncrdkaD.js:11 ❌ projects (alice.mp4) play error: AbortError: The play() request was interrupted because the media was removed from the document. https://goo.gl/LdLk22
+(anonymous) @ EmbroideryPage-VncrdkaD.js:11
+EmbroideryPage-VncrdkaD.js:11 ❌ why-choose (intro2.mp4) play error: AbortError: The play() request was interrupted because the media was removed from the document. https://goo.gl/LdLk22
+(anonymous) @ EmbroideryPage-VncrdkaD.js:11
+index-BVcNrmiQ.js:587 ✅ UserDashboard - Raw designs data: Array(0)
+index-BVcNrmiQ.js:587 ✅ UserDashboard - Data length: 0
+index-BVcNrmiQ.js:587 ✅ Forum stats received: Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:587 🔄 Real-time dashboard data received: Object
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:587 UserDashboard - user data: Object
+index-BVcNrmiQ.js:587 UserDashboard - realTimeUserData: Object
+index-BVcNrmiQ.js:587 UserDashboard - isLoading: false
+index-BVcNrmiQ.js:587 UserDashboard - error: null
+index-BVcNrmiQ.js:587 UserDashboard - savedDesigns: Array(0)
+index-BVcNrmiQ.js:587 UserDashboard - loadingDesigns: false
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+radix-CGEcAt_4.js:53 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ radix-CGEcAt_4.js:53
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:587 🔍 Fetching forum stats with auth for user: 2
+index-BVcNrmiQ.js:587 ✅ Forum stats received: Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:522 🔐 Using token for avatar upload: eyJhbGciOiJIUzI1NiIs...
+api/avatars/update:1  Failed to load resource: the server responded with a status of 400 ()
+index-BVcNrmiQ.js:522 Avatar upload failed: Error: Failed to update profile
+    at Object.mutationFn (index-BVcNrmiQ.js:522:36857)
+onError @ index-BVcNrmiQ.js:522
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:537 📋 CONVERSATIONS LOADED: Object
+index-BVcNrmiQ.js:537 🔍 REACT QUERY DEBUG: Object
+index-BVcNrmiQ.js:537 💬 MESSAGES STATE UPDATE: Object
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+vendor.js:151 Uncaught (in promise) Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received
+    at g (vendor.js:151:18472)
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:587 🔍 Fetching forum stats with auth for user: 2
+index-BVcNrmiQ.js:587 ✅ Forum stats received: Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:537 📋 CONVERSATIONS LOADED: Object
+index-BVcNrmiQ.js:537 🔍 REACT QUERY DEBUG: Object
+index-BVcNrmiQ.js:537 💬 MESSAGES STATE UPDATE: Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:537 📋 CONVERSATIONS LOADED: Object
+index-BVcNrmiQ.js:537 🔍 REACT QUERY DEBUG: Object
+index-BVcNrmiQ.js:537 💬 MESSAGES STATE UPDATE: Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:490 Auth check initiated - fetching real authenticated user
+index-BVcNrmiQ.js:490 Auth check response status: 200
+index-BVcNrmiQ.js:490 ✅ Real authenticated user loaded: 2 RumpelStitches
+index-BVcNrmiQ.js:490 User data from /api/auth/user: Object
+index-BVcNrmiQ.js:490 isAdmin value: true
+index-BVcNrmiQ.js:490 isAdmin type: boolean
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: Object
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX {version: 'v1.7.1-CONVERSATION-FIX', build: 1756065668870, environment: 'production', features: {…}, description: 'CONVERSATION VISIBILITY FIX v1.7.1 - FIXED regular…hose with existing messages. Upload fix included.', …}
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX {version: 'v1.7.1-CONVERSATION-FIX', build: 1756065668870, environment: 'production', features: {…}, description: 'CONVERSATION VISIBILITY FIX v1.7.1 - FIXED regular…hose with existing messages. Upload fix included.', …}
+index-BVcNrmiQ.js:587 🔍 Fetching forum stats with auth for user: 2
+index-BVcNrmiQ.js:587 ✅ Forum stats received: {totalPosts: 0, totalThreads: 0, totalLikes: 0, reputation: 0}
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🍔 Mobile menu render - isOpen: false user: {id: 2, username: 'RumpelStitches', email: 'CraftyGuru@1ofakindpiece.com', avatarUrl: null, isAdmin: true}
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX {version: 'v1.7.1-CONVERSATION-FIX', build: 1756065668870, environment: 'production', features: {…}, description: 'CONVERSATION VISIBILITY FIX v1.7.1 - FIXED regular…hose with existing messages. Upload fix included.', …}
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX {version: 'v1.7.1-CONVERSATION-FIX', build: 1756065668870, environment: 'production', features: {…}, description: 'CONVERSATION VISIBILITY FIX v1.7.1 - FIXED regular…hose with existing messages. Upload fix included.', …}
+index-BVcNrmiQ.js:587 🔍 Fetching forum stats with auth for user: 2
+index-BVcNrmiQ.js:587 ✅ Forum stats received: {totalPosts: 0, totalThreads: 0, totalLikes: 0, reputation: 0}
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX {version: 'v1.7.1-CONVERSATION-FIX', build: 1756065668870, environment: 'production', features: {…}, description: 'CONVERSATION VISIBILITY FIX v1.7.1 - FIXED regular…hose with existing messages. Upload fix included.', …}
+index-BVcNrmiQ.js:581 🔄 Server version fetched (no cache): v1.7.1-CONVERSATION-FIX {version: 'v1.7.1-CONVERSATION-FIX', build: 1756065668870, environment: 'production', features: {…}, description: 'CONVERSATION VISIBILITY FIX v1.7.1 - FIXED regular…hose with existing messages. Upload fix included.', …}
+index-BVcNrmiQ.js:587 💰 Real-time coin balance updated: 1100
