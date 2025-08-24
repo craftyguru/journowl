@@ -751,40 +751,32 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       
       retakeButton.onclick = showCamera;
       
-      usePhotoButton.onclick = async () => {
-        console.log('🔥 USE PHOTO BUTTON CLICKED!');
+      usePhotoButton.onclick = () => {
         if (capturedPhotoUrl) {
-          try {
-            // Convert blob URL to base64
-            const response = await fetch(capturedPhotoUrl);
-            const blob = await response.blob();
-            
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-              const base64 = e.target?.result as string;
-              console.log('📸 Photo converted to base64, length:', base64.length);
-              
-              // Add to photos state
-              const newPhoto = {
-                id: Date.now(),
-                src: base64,
-                timestamp: new Date(),
-                analysis: null
-              };
-              
-              // For now, just log success - this component doesn't have photo state
-              console.log('💾 Photo captured and converted to base64');
-              console.log('🤖 Would trigger AI analysis here');
-              
-              console.log('✅ Photo processed successfully!');
-              cleanup();
-            };
-            reader.readAsDataURL(blob);
-            
-          } catch (error) {
-            console.error('❌ Error processing photo:', error);
-            cleanup();
-          }
+          const today = new Date().toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+          });
+          
+          cleanup();
+          
+          const entryWithPhoto = {
+            title: `📸 Photo Story - ${today}`,
+            content: "Here's what I captured today! Let me tell you about this amazing moment...\n\n",
+            photos: [{ url: capturedPhotoUrl, timestamp: new Date() }],
+            videoRecordings: [],
+            audioRecordings: [],
+            mood: '😊',
+            tags: ['photo', 'memory'],
+            fontFamily: 'Inter',
+            fontSize: 16,
+            textColor: '#1f2937',
+            backgroundColor: '#ffffff',
+            isPrivate: false
+          };
+          openUnifiedJournal(entryWithPhoto);
         }
       };
       

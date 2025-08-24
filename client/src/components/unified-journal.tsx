@@ -763,7 +763,6 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
 
   // Unified camera function with live preview
   const takeCameraPhoto = () => {
-    console.log('🔥 UNIFIED JOURNAL - takeCameraPhoto called!');
     openCameraPreview(false);
   };
 
@@ -864,7 +863,6 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
       
       // Handle capture
       captureBtn.onclick = () => {
-        console.log('🔥 UNIFIED JOURNAL CAPTURE BUTTON CLICKED!');
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -878,24 +876,24 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
               const reader = new FileReader();
               reader.onload = async (e) => {
                 const base64 = e.target?.result as string;
-                console.log('📸 Camera photo captured, base64 length:', base64?.length);
                 
                 // Add photo to journal with proper ID
                 const newPhoto = {
                   id: Date.now(),
                   src: base64,
+                  timestamp: new Date(),
                   analysis: null
                 };
                 
-                console.log('📸 Adding camera photo to state:', newPhoto.id);
                 setPhotos(prev => [...prev, newPhoto]);
                 
                 // ALWAYS trigger AI analysis for camera photos
-                console.log('📸 Starting AI analysis for camera photo...');
-                setAiMessages(prev => [...prev, {
-                  type: 'ai',
-                  message: '📸 Analyzing your captured photo... This will help me suggest better writing prompts!'
-                }]);
+                if (showAiChat) {
+                  setAiMessages(prev => [...prev, {
+                    type: 'ai',
+                    message: '📸 Analyzing your captured photo... This will help me suggest better writing prompts!'
+                  }]);
+                }
 
                 try {
                   const response = await fetch('/api/ai/analyze-photo', {
@@ -910,7 +908,6 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
 
                   if (response.ok) {
                     const analysis = await response.json();
-                    console.log('📸 Camera photo analysis successful:', analysis);
                     
                     setPhotos(prev => prev.map(p => 
                       p.id === newPhoto.id ? { ...p, analysis } : p
@@ -921,18 +918,22 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
                       setTags(prev => [...new Set([...prev, ...analysis.tags])]);
                     }
 
-                    // Add detailed AI analysis message
-                    setAiMessages(prev => [...prev, {
-                      type: 'ai',
-                      message: `📸 Perfect capture! I analyzed your photo:\n\n📝 ${analysis.description}\n🏷️ Key elements: ${analysis.tags?.slice(0, 3).join(', ')}\n💭 Writing prompt: ${analysis.journalPrompts?.[0] || 'What story does this moment tell?'}\n\nWant me to help you write about this?`
-                    }]);
+                    // Add detailed AI analysis message only if AI chat is open
+                    if (showAiChat) {
+                      setAiMessages(prev => [...prev, {
+                        type: 'ai',
+                        message: `📸 Perfect capture! I analyzed your photo:\n\n📝 ${analysis.description}\n🏷️ Key elements: ${analysis.tags?.slice(0, 3).join(', ')}\n💭 Writing prompt: ${analysis.journalPrompts?.[0] || 'What story does this moment tell?'}\n\nWant me to help you write about this?`
+                      }]);
+                    }
                   }
                 } catch (error) {
                   console.error('❌ Camera photo analysis failed:', error);
-                  setAiMessages(prev => [...prev, {
-                    type: 'ai',
-                    message: '😅 I had trouble analyzing that photo. But I can still help you write about it! What do you see in the image?'
-                  }]);
+                  if (showAiChat) {
+                    setAiMessages(prev => [...prev, {
+                      type: 'ai',
+                      message: '😅 I had trouble analyzing that photo. But I can still help you write about it! What do you see in the image?'
+                    }]);
+                  }
                 }
                 
                 // Cleanup
@@ -2446,18 +2447,11 @@ ${cleanedResponse}
               <div className="relative flex justify-center">
                 <Button
                   onClick={showAiChat ? capturePhotoForAI : () => {
-                    console.log('🔥 BLUE CAMERA BUTTON CLICKED!');
-                    console.log('🔥 showAiChat:', showAiChat);
                     // Show options menu for camera or upload
-                    console.log('🔥 BLUE CAMERA BUTTON CLICKED!');
                     const choice = window.confirm("Camera (OK) or Upload from Gallery (Cancel)?");
-                    console.log('🔥 User choice - Camera?', choice);
                     if (choice) {
-                      console.log('🔥 Opening camera modal...');
                       setShowCameraModal(true);
                     } else {
-                      console.log('🔥 Opening file picker...');
-                      console.log('🔥 fileInputRef.current:', fileInputRef.current);
                       fileInputRef.current?.click();
                     }
                   }}
