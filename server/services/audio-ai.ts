@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import FormData from "form-data";
 import { trackableOpenAICall } from "../middleware/promptTracker";
+import { Readable } from "stream";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -27,18 +28,15 @@ export async function transcribeAndAnalyzeAudio(audioBuffer: Buffer, filename: s
       bufferType: typeof audioBuffer
     });
     
-    // Create a file-like object that OpenAI expects
-    const audioFile = new File([audioBuffer], filename, { 
-      type: filename.endsWith('.wav') ? 'audio/wav' : 
-            filename.endsWith('.mp3') ? 'audio/mp3' : 
-            filename.endsWith('.webm') ? 'audio/webm' : 
-            filename.endsWith('.ogg') ? 'audio/ogg' : 
-            filename.endsWith('.m4a') ? 'audio/m4a' : 'audio/wav' // Default to wav
-    });
+    // Create a readable stream from the buffer for OpenAI
+    const audioStream = Readable.from(audioBuffer);
+    // Add required properties for OpenAI
+    (audioStream as any).path = filename;
+    (audioStream as any).name = filename;
     
     // Transcribe audio using Whisper with enhanced error handling
     const transcription = await openai.audio.transcriptions.create({
-      file: audioFile,
+      file: audioStream as any,
       model: "whisper-1",
       language: "en",
       response_format: "text"
