@@ -1627,7 +1627,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         <Plus className="w-4 h-4 mr-2" />
                         Upload Photos
                       </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
+                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={recordAudio}>
                         <Plus className="w-4 h-4 mr-2" />
                         Voice Recording
                       </Button>

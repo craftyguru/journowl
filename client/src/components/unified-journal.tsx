@@ -488,7 +488,29 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         }
       };
 
-      recorder.onstop = () => {
+      recorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const duration = Math.round((Date.now() - recordingStartTime) / 1000);
+        
+        // Add to audio recordings
+        const newAudioRecording = {
+          url: audioUrl,
+          duration: duration,
+          timestamp: new Date(),
+          blob: audioBlob
+        };
+        setAudioRecordings(prev => [...prev, newAudioRecording]);
+        
+        // Always analyze audio with AI for better journaling insights
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: `🎵 Audio recorded! Analyzing with AI to help with your journaling...`
+        }]);
+        
+        // Analyze the audio with AI
+        await analyzeAudioWithAI(audioBlob, duration);
+        
         stream.getTracks().forEach(track => track.stop());
       };
 
@@ -563,23 +585,22 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         // Display comprehensive analysis in AI chat
         const analysisMessage = `🎵 **Audio Analysis Complete!**
 
-📝 **Transcription:** "${analysis.transcription}"
+📝 **What you said:** "${analysis.transcription}"
 
 📊 **Summary:** ${analysis.summary}
 
-🎭 **Emotions Detected:** ${analysis.emotions.join(', ')}
-📋 **Key Topics:** ${analysis.keyTopics.join(', ')}
-😊 **Overall Mood:** ${analysis.mood}
-⏱️ **Duration:** ${analysis.duration}
-📝 **Word Count:** ${analysis.wordCount} words
+🎭 **Emotions:** ${analysis.emotions.join(', ')}
+📋 **Topics:** ${analysis.keyTopics.join(', ')}
+😊 **Mood:** ${analysis.mood}
+⏱️ **Duration:** ${analysis.duration} | 📝 **Words:** ${analysis.wordCount}
 
-💡 **Journal Prompts:**
+💡 **Writing prompts based on your audio:**
 ${analysis.journalPrompts.map((prompt: string, i: number) => `${i + 1}. ${prompt}`).join('\n')}
 
-🔍 **Insights:**
+🔍 **Key insights I noticed:**
 ${analysis.insights.map((insight: string, i: number) => `• ${insight}`).join('\n')}
 
-Would you like me to help you turn this into a journal entry or explore any of these themes further?`;
+Ready to turn your thoughts into a beautiful journal entry? I can help you expand on any of these themes!`;
 
         setAiMessages(prev => [...prev.slice(0, -1), {
           type: 'ai',
