@@ -1513,66 +1513,6 @@ ${cleanedResponse}
               message: '😅 I had trouble analyzing that photo. But I can still help you write about it! What do you see in the image?'
             }]);
           }
-        } catch (uploadError) {
-          console.error('❌ Upload failed:', file.name, uploadError);
-          
-          // Fallback to base64
-          const newPhoto = {
-            id: Date.now() + i,
-            src: base64,
-            analysis: null
-          };
-          
-          setPhotos(prev => [...prev, newPhoto]);
-          
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '📸 Photo saved! Analyzing now...'
-          }]);
-
-          try {
-            const response = await fetch('/api/ai/analyze-photo', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({ 
-                base64Image: base64.split(',')[1],
-                currentMood: mood 
-              })
-            });
-
-            if (response.ok) {
-              const analysis = await response.json();
-              // Update the latest photo with analysis
-              setPhotos(prev => {
-                const updatedPhotos = [...prev];
-                if (updatedPhotos.length > 0) {
-                  updatedPhotos[updatedPhotos.length - 1] = {
-                    ...updatedPhotos[updatedPhotos.length - 1],
-                    analysis
-                  };
-                }
-                return updatedPhotos;
-              });
-              
-              // Add AI-generated tags
-              if (analysis.tags) {
-                setTags(prev => [...new Set([...prev, ...analysis.tags])]);
-              }
-
-              // Add detailed AI analysis message
-              setAiMessages(prev => [...prev, {
-                type: 'ai',
-                message: `🔍 I analyzed your photo and found:\n\n📝 ${analysis.description}\n🏷️ Key elements: ${analysis.tags?.slice(0, 3).join(', ')}\n💭 Writing prompt: ${analysis.journalPrompts?.[0] || 'What story does this moment tell?'}\n\nWant me to help you write about this?`
-              }]);
-            }
-          } catch (error) {
-            console.error('Photo analysis failed:', error);
-            setAiMessages(prev => [...prev, {
-              type: 'ai',
-              message: '😅 I had trouble analyzing that photo. But I can still help you write about it! What do you see in the image?'
-            }]);
-          }
         }
       };
 
