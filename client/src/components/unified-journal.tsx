@@ -83,7 +83,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [showAiChat, setShowAiChat] = useState(true);
   const [isAiListening, setIsAiListening] = useState(false);
   const [aiRecognition, setAiRecognition] = useState<any>(null);
-  const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string}>>([]);
+  const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string, audioUrl?: string, audioDuration?: number}>>([]);
   const [aiInput, setAiInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
@@ -407,29 +407,33 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       recorder.onstop = async () => {
         const audioBlob = new Blob(chunks, { type: 'audio/wav' });
         const audioUrl = URL.createObjectURL(audioBlob);
+        const actualDuration = Math.round((Date.now() - recordingStartTime) / 1000);
         
         // Add to audio recordings
         const newAudioRecording = {
           url: audioUrl,
-          duration: recordingDuration,
+          duration: actualDuration,
           timestamp: new Date(),
           blob: audioBlob
         };
         setAudioRecordings(prev => [...prev, newAudioRecording]);
         
         if (showAiChat) {
+          // Add user audio message with playable audio
           setAiMessages(prev => [...prev, {
             type: 'user',
-            message: '🎵 I just recorded an audio note!'
+            message: `🎵 Audio Recording (${actualDuration}s)`,
+            audioUrl: audioUrl,
+            audioDuration: actualDuration
           }]);
           
           setAiMessages(prev => [...prev, {
             type: 'ai',
-            message: `✅ Audio recorded! Analyzing your voice message with AI...`
+            message: `✅ Got your audio! Analyzing with AI...`
           }]);
 
           // Analyze the audio with AI
-          analyzeAudioWithAI(audioBlob, recordingDuration);
+          analyzeAudioWithAI(audioBlob, actualDuration);
         }
         
         stream.getTracks().forEach(track => track.stop());
@@ -2309,6 +2313,17 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                         : 'bg-blue-500 text-white'
                     }`}>
                       <div className="whitespace-pre-wrap">{msg.message}</div>
+                      {msg.audioUrl && (
+                        <div className="mt-2 p-2 bg-gray-50 rounded-lg border">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs text-gray-500">🎵 Audio Recording ({msg.audioDuration}s)</span>
+                          </div>
+                          <audio controls className="w-full h-8" style={{ height: '32px' }}>
+                            <source src={msg.audioUrl} type="audio/wav" />
+                            Your browser does not support audio playback.
+                          </audio>
+                        </div>
+                      )}
                       {msg.type === 'ai' && msg.message.length > 50 && !msg.message.includes('✅') && !msg.message.includes('🎤') && (
                         <Button 
                           onClick={() => addToJournal(msg.message)}
