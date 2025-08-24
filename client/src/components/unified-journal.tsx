@@ -619,13 +619,18 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
 
       console.log('🎵 Sending audio for analysis...', formData);
       
-      const response = await fetch('/api/ai/analyze-audio', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData
-      });
-      
-      console.log('📡 Audio analysis response status:', response.status);
+      let response;
+      try {
+        response = await fetch('/api/ai/analyze-audio', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+        });
+        console.log('📡 Audio analysis response received:', response.status, response.statusText);
+      } catch (fetchError) {
+        console.error('🚨 FETCH ERROR - Request failed:', fetchError);
+        throw new Error(`Network request failed: ${fetchError.message}`);
+      }
 
       if (response.ok) {
         const analysis = await response.json();
@@ -671,7 +676,12 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
         }
         
       } else {
-        const errorData = await response.text();
+        let errorData;
+        try {
+          errorData = await response.text();
+        } catch (e) {
+          errorData = 'Could not read error response';
+        }
         console.log('❌ Audio analysis failed with status:', response.status, 'Error:', errorData);
         throw new Error(`Failed to analyze audio: ${response.status} - ${errorData}`);
       }
