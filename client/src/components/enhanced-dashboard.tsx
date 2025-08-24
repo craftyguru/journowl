@@ -991,9 +991,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
         chunks.push(event.data);
       };
       
-      mediaRecorder.onstop = () => {
+      mediaRecorder.onstop = async () => {
         const blob = new Blob(chunks, { type: 'audio/webm' });
         const audioUrl = URL.createObjectURL(blob);
+        const actualDuration = Math.floor((Date.now() - startTime - pausedTime) / 1000);
         
         const today = new Date().toLocaleDateString('en-US', { 
           weekday: 'long', 
@@ -1012,14 +1013,16 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           content: "I recorded something special today! Here's what I want to remember...\n\n",
           photos: [],
           videoRecordings: [],
-          audioRecordings: [{ url: audioUrl, duration: Math.floor((Date.now() - startTime - pausedTime) / 1000), timestamp: new Date() }],
+          audioRecordings: [{ url: audioUrl, duration: actualDuration, timestamp: new Date(), blob: blob }],
           mood: '😊',
           tags: ['audio', 'voice', 'story'],
           fontFamily: 'Inter',
           fontSize: 16,
           textColor: '#1f2937',
           backgroundColor: '#ffffff',
-          isPrivate: false
+          isPrivate: false,
+          // Add flag to trigger AI analysis
+          triggerAiAnalysis: true
         };
         openUnifiedJournal(entryWithAudio);
       };

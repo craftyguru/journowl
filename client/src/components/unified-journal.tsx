@@ -139,6 +139,35 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   }, [user, initialMessageSet]);
 
+  // Auto-trigger AI analysis for dashboard recordings
+  useEffect(() => {
+    if (entry?.triggerAiAnalysis && entry?.audioRecordings?.length > 0) {
+      const audioRecording = entry.audioRecordings[0];
+      
+      // Show AI chat automatically
+      setShowAiChat(true);
+      
+      // Add audio message to chat
+      setAiMessages(prev => [...prev, {
+        type: 'user',
+        message: `🎵 Dashboard Audio Recording (${audioRecording.duration}s)`,
+        audioUrl: audioRecording.url,
+        audioDuration: audioRecording.duration
+      }]);
+      
+      // Add analyzing message
+      setAiMessages(prev => [...prev, {
+        type: 'ai',
+        message: `🎵 Great audio recording! Analyzing with AI to help with your journaling...`
+      }]);
+      
+      // Trigger AI analysis if blob exists
+      if (audioRecording.blob) {
+        analyzeAudioWithAI(audioRecording.blob, audioRecording.duration);
+      }
+    }
+  }, [entry]);
+
   // Initialize speech recognition
   useEffect(() => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
