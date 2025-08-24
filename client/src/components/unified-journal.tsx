@@ -381,7 +381,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   }, [content, mood, photos, title]);
 
-  // Enhanced voice recording that feeds into AI chat when open
+  // Voice to Text for Journal Content - FIXED VERSION  
   const toggleVoiceRecording = () => {
     if (recognition) {
       if (isListening) {
@@ -390,24 +390,55 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       } else {
         recognition.start();
         setIsListening(true);
-        
-        if (showAiChat) {
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '🎤 Listening... Start speaking and I\'ll help you with whatever you say!'
-          }]);
-        } else {
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '🎤 Listening... Start speaking and I\'ll transcribe your thoughts!'
-          }]);
-        }
       }
     } else {
-      setAiMessages(prev => [...prev, {
-        type: 'ai',
-        message: 'Sorry, voice recognition is not supported in your browser. Try using Chrome or Edge!'
-      }]);
+      // Initialize speech recognition for journal content
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const newRecognition = new SpeechRecognition();
+        newRecognition.continuous = true;
+        newRecognition.interimResults = true;
+        newRecognition.lang = 'en-US';
+
+        newRecognition.onstart = () => {
+          setIsListening(true);
+          console.log('🎤 Voice to Text started');
+        };
+
+        newRecognition.onresult = (event: any) => {
+          let finalTranscript = '';
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript;
+            }
+          }
+
+          if (finalTranscript && finalTranscript !== lastFinalTranscript) {
+            setLastFinalTranscript(finalTranscript);
+            // MAIN FEATURE: Add transcribed speech directly to journal content
+            setContent(prev => prev + finalTranscript + ' ');
+            console.log('✅ Added to journal:', finalTranscript);
+          }
+        };
+
+        newRecognition.onerror = (event: any) => {
+          console.error('Speech recognition error:', event.error);
+          setIsListening(false);
+        };
+
+        newRecognition.onend = () => {
+          setIsListening(false);
+          console.log('🎤 Voice to Text stopped');
+        };
+
+        setRecognition(newRecognition);
+        newRecognition.start();
+        setIsListening(true);
+      } else {
+        alert('Speech recognition not supported in this browser');
+      }
     }
   };
 
@@ -598,6 +629,68 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       
       const duration = Math.round((Date.now() - recordingStartTime) / 1000);
       setRecordingDuration(duration);
+    }
+  };
+
+  // Voice to Text for Journal Content (Browser Speech Recognition)
+  const toggleVoiceRecording = () => {
+    if (isListening) {
+      // Stop speech recognition
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+        setIsListening(false);
+      }
+    } else {
+      // Start speech recognition
+      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+        
+        let finalTranscript = '';
+        
+        recognition.onstart = () => {
+          setIsListening(true);
+          console.log('🎤 Voice to Text started');
+        };
+        
+        recognition.onresult = (event: any) => {
+          let interimTranscript = '';
+          
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript + ' ';
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+          
+          // Update journal content with transcribed speech
+          if (finalTranscript) {
+            setContent(prev => prev + finalTranscript);
+            finalTranscript = '';
+          }
+        };
+        
+        recognition.onerror = (event: any) => {
+          console.error('Speech recognition error:', event.error);
+          setIsListening(false);
+        };
+        
+        recognition.onend = () => {
+          setIsListening(false);
+          console.log('🎤 Voice to Text stopped');
+        };
+        
+        recognitionRef.current = recognition;
+        recognition.start();
+      } else {
+        alert('Speech recognition not supported in this browser');
+      }
     }
   };
 
