@@ -515,17 +515,25 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
+      const chunks: BlobPart[] = []; // Use local array instead of state
       
       recorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          setAudioChunks(prev => [...prev, event.data]);
+          chunks.push(event.data); // Add to local array
+          setAudioChunks(prev => [...prev, event.data]); // Also update state for UI
         }
       };
 
       recorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+        const audioBlob = new Blob(chunks, { type: 'audio/wav' }); // Use local chunks
         const audioUrl = URL.createObjectURL(audioBlob);
         const duration = Math.round((Date.now() - recordingStartTime) / 1000);
+        
+        console.log('🎤 Audio recording complete:', { 
+          blobSize: audioBlob.size, 
+          chunksLength: chunks.length,
+          duration 
+        });
         
         // Add to audio recordings
         const newAudioRecording = {
@@ -543,7 +551,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         }]);
         
         // Analyze the audio with AI
-        console.log('🎤 About to analyze audio (second location):', { audioBlob, duration });
+        console.log('🎤 About to analyze audio (fixed version):', { audioBlob, duration });
         await analyzeAudioWithAI(audioBlob, duration);
         
         stream.getTracks().forEach(track => track.stop());
