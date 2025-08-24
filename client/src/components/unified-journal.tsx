@@ -597,11 +597,15 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
       const formData = new FormData();
       formData.append('audio', audioBlob, `audio-${Date.now()}.wav`);
 
+      console.log('🎵 Sending audio for analysis...');
+      
       const response = await fetch('/api/ai/analyze-audio', {
         method: 'POST',
         credentials: 'include',
         body: formData
       });
+      
+      console.log('📡 Audio analysis response status:', response.status);
 
       if (response.ok) {
         const analysis = await response.json();
@@ -647,7 +651,9 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
         }
         
       } else {
-        throw new Error('Failed to analyze audio');
+        const errorData = await response.text();
+        console.log('❌ Audio analysis failed with status:', response.status, 'Error:', errorData);
+        throw new Error(`Failed to analyze audio: ${response.status} - ${errorData}`);
       }
     } catch (error) {
       console.error('Audio analysis failed:', error);
