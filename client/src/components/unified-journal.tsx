@@ -876,18 +876,61 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
               const reader = new FileReader();
               reader.onload = async (e) => {
                 const base64 = e.target?.result as string;
+                console.log('📸 Camera photo captured, base64 length:', base64?.length);
                 
-                // Add photo to journal
+                // Add photo to journal with proper ID
                 const newPhoto = {
+                  id: Date.now(),
                   src: base64,
-                  timestamp: new Date(),
                   analysis: null
                 };
+                
+                console.log('📸 Adding camera photo to state:', newPhoto.id);
                 setPhotos(prev => [...prev, newPhoto]);
                 
-                // AI analysis if enabled
-                if (enableAiAnalysis && showAiChat) {
-                  handlePhotoAiAnalysis(base64);
+                // ALWAYS trigger AI analysis for camera photos
+                console.log('📸 Starting AI analysis for camera photo...');
+                setAiMessages(prev => [...prev, {
+                  type: 'ai',
+                  message: '📸 Analyzing your captured photo... This will help me suggest better writing prompts!'
+                }]);
+
+                try {
+                  const response = await fetch('/api/ai/analyze-photo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ 
+                      base64Image: base64.split(',')[1],
+                      currentMood: mood 
+                    })
+                  });
+
+                  if (response.ok) {
+                    const analysis = await response.json();
+                    console.log('📸 Camera photo analysis successful:', analysis);
+                    
+                    setPhotos(prev => prev.map(p => 
+                      p.id === newPhoto.id ? { ...p, analysis } : p
+                    ));
+                    
+                    // Add AI-generated tags
+                    if (analysis.tags) {
+                      setTags(prev => [...new Set([...prev, ...analysis.tags])]);
+                    }
+
+                    // Add detailed AI analysis message
+                    setAiMessages(prev => [...prev, {
+                      type: 'ai',
+                      message: `📸 Perfect capture! I analyzed your photo:\n\n📝 ${analysis.description}\n🏷️ Key elements: ${analysis.tags?.slice(0, 3).join(', ')}\n💭 Writing prompt: ${analysis.journalPrompts?.[0] || 'What story does this moment tell?'}\n\nWant me to help you write about this?`
+                    }]);
+                  }
+                } catch (error) {
+                  console.error('❌ Camera photo analysis failed:', error);
+                  setAiMessages(prev => [...prev, {
+                    type: 'ai',
+                    message: '😅 I had trouble analyzing that photo. But I can still help you write about it! What do you see in the image?'
+                  }]);
                 }
                 
                 // Cleanup
