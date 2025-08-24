@@ -676,7 +676,8 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
         throw new Error(`Failed to analyze audio: ${response.status} - ${errorData}`);
       }
     } catch (error) {
-      console.error('Audio analysis failed:', error);
+      console.error('🔥 AUDIO ANALYSIS ERROR:', error);
+      console.error('🔥 Error details:', error.message, error.stack);
       setAiMessages(prev => [...prev.slice(0, -1), {
         type: 'ai',
         message: '🎵 Audio recorded successfully! I had trouble analyzing it, but the recording is saved. You can still tell me about what you recorded!'
