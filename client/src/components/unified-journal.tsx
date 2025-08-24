@@ -462,6 +462,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
           }]);
 
           // Analyze the audio with AI
+          console.log('🎤 About to analyze audio:', { audioBlob, actualDuration });
           analyzeAudioWithAI(audioBlob, actualDuration);
         }
         
@@ -542,6 +543,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
         }]);
         
         // Analyze the audio with AI
+        console.log('🎤 About to analyze audio (second location):', { audioBlob, duration });
         await analyzeAudioWithAI(audioBlob, duration);
         
         stream.getTracks().forEach(track => track.stop());
@@ -594,10 +596,20 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
   // AI Audio Analysis Function
   const analyzeAudioWithAI = async (audioBlob: Blob, duration: number) => {
     try {
+      console.log('🎵 analyzeAudioWithAI called with:', {
+        blobSize: audioBlob?.size || 'no blob',
+        blobType: audioBlob?.type || 'no type',
+        duration: duration
+      });
+
+      if (!audioBlob || audioBlob.size === 0) {
+        throw new Error('No audio data to analyze');
+      }
+
       const formData = new FormData();
       formData.append('audio', audioBlob, `audio-${Date.now()}.wav`);
 
-      console.log('🎵 Sending audio for analysis...');
+      console.log('🎵 Sending audio for analysis...', formData);
       
       const response = await fetch('/api/ai/analyze-audio', {
         method: 'POST',

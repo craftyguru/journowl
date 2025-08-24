@@ -1420,16 +1420,30 @@ Your story shows how every day brings new experiences and emotions, creating the
   // Audio AI routes
   app.post("/api/ai/analyze-audio", requireAuth, requireAIPrompts, upload.single('audio'), async (req: any, res) => {
     try {
+      console.log('🎵 Audio analysis request received:', {
+        hasFile: !!req.file,
+        fileSize: req.file?.size,
+        fileName: req.file?.originalname,
+        userId: req.session?.userId
+      });
+
       if (!req.file) {
+        console.log('❌ No audio file in request');
         return res.status(400).json({ error: "Audio file required" });
       }
+
+      console.log('📁 Processing audio file:', {
+        buffer: !!req.file.buffer,
+        bufferLength: req.file.buffer?.length,
+        mimetype: req.file.mimetype
+      });
 
       const { transcribeAndAnalyzeAudio } = await import("./services/audio-ai");
       const analysis = await transcribeAndAnalyzeAudio(req.file.buffer, req.file.originalname);
       res.json(analysis);
     } catch (error: any) {
-      console.error("Error analyzing audio:", error);
-      res.status(500).json({ error: "Failed to analyze audio" });
+      console.error("❌ Error analyzing audio:", error);
+      res.status(500).json({ error: "Failed to analyze audio", details: error.message });
     }
   });
 
