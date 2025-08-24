@@ -124,8 +124,39 @@ Return only valid JSON in this format:
     });
 
     const analysisText = analysisResponse.choices[0]?.message?.content;
+    console.log('🤖 Analysis response:', analysisText);
+    
     if (!analysisText) {
-      throw new Error('No analysis response received');
+      console.log('❌ Empty analysis response, creating fallback analysis');
+      // Create fallback analysis for short or unclear transcriptions
+      const fallbackAnalysis = {
+        summary: transcription.length > 10 ? `Brief audio recording: "${transcription}"` : "Short audio recording captured",
+        emotions: ["neutral"],
+        keyTopics: transcription.length > 5 ? ["audio recording"] : ["voice note"],
+        mood: "neutral",
+        journalPrompts: [
+          "What was the context behind this recording?",
+          "How did you feel when you recorded this?",
+          "What thoughts does this audio bring to mind?"
+        ],
+        insights: [
+          "Audio captured for journaling purposes",
+          "Consider adding more context about this moment"
+        ],
+        wordCount: transcription.trim().split(/\s+/).length
+      };
+      
+      return {
+        transcription,
+        summary: fallbackAnalysis.summary,
+        emotions: fallbackAnalysis.emotions,
+        keyTopics: fallbackAnalysis.keyTopics,
+        mood: fallbackAnalysis.mood,
+        journalPrompts: fallbackAnalysis.journalPrompts,
+        insights: fallbackAnalysis.insights,
+        duration: "momentary",
+        wordCount: fallbackAnalysis.wordCount
+      };
     }
 
     // Log the raw response for debugging
