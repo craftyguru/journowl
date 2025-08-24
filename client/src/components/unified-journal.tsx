@@ -669,10 +669,15 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
           message: analysisMessage
         }]);
 
-        // Auto-add interesting insights to journal content
-        if (analysis.transcription && analysis.transcription.length > 10) {
-          const autoContent = `\n\n🎵 **Voice Note (${new Date().toLocaleTimeString()}):**\n"${analysis.transcription}"\n\n*Key themes: ${analysis.keyTopics.join(', ')} | Mood: ${analysis.mood}*\n`;
-          setContent(prev => prev + autoContent);
+        // MAIN FEATURE: Add transcribed speech directly to journal content  
+        if (analysis.transcription && analysis.transcription.length > 5) {
+          // Add the actual speech as main content
+          const speechContent = `${analysis.transcription}\n\n`;
+          setContent(prev => prev + speechContent);
+          
+          // Also add metadata in smaller text
+          const metadata = `*[Voice note from ${new Date().toLocaleTimeString()}: ${analysis.keyTopics.join(', ')} | ${analysis.mood} mood]*\n\n`;
+          setContent(prev => prev + metadata);
         }
         
       } else {
