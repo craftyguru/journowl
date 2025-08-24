@@ -83,7 +83,7 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [showAiChat, setShowAiChat] = useState(true);
   const [isAiListening, setIsAiListening] = useState(false);
   const [aiRecognition, setAiRecognition] = useState<any>(null);
-  const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string, audioUrl?: string, audioDuration?: number}>>([]);
+  const [aiMessages, setAiMessages] = useState<Array<{type: 'ai' | 'user', message: string, audioUrl?: string, audioDuration?: number, photoUrl?: string}>>([]);
   const [aiInput, setAiInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [recognition, setRecognition] = useState<any>(null);
@@ -889,6 +889,13 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
                 
                 // ALWAYS trigger AI analysis for camera photos
                 if (showAiChat) {
+                  // Add user message with photo
+                  setAiMessages(prev => [...prev, {
+                    type: 'user',
+                    message: 'I just took a photo!',
+                    photoUrl: base64
+                  }]);
+                  
                   setAiMessages(prev => [...prev, {
                     type: 'ai',
                     message: '📸 Analyzing your captured photo... This will help me suggest better writing prompts!'
@@ -2107,26 +2114,17 @@ ${cleanedResponse}
                       {/* Photo Grid */}
                       <div className="grid grid-cols-2 gap-1">
                         {photos.slice(0, 4).map((photo, index) => (
-                          <div key={index} className="relative group">
+                          <div key={photo.id || index} className="relative group">
                             <img
                               src={photo.src}
-                              alt={`Upload ${index + 1}`}
+                              alt={`Photo ${index + 1}`}
                               className={`w-full h-16 object-cover rounded cursor-pointer transition-all ${
                                 selectedPhoto?.index === index ? 'ring-2 ring-amber-400' : ''
                               }`}
                               onClick={() => setSelectedPhoto({ ...photo, index })}
                               onError={(e) => {
-                                console.error('❌ Photo failed to load:', {
-                                  photoId: photo.id,
-                                  srcLength: photo.src?.length,
-                                  srcPrefix: photo.src?.substring(0, 100),
-                                  error: e
-                                });
-                                // Try to show a placeholder or error message
-                                const target = e.target as HTMLImageElement;
-                                target.style.backgroundColor = '#f3f4f6';
-                                target.style.border = '2px dashed #d1d5db';
-                                target.alt = 'Failed to load image';
+                                console.error('❌ Photo failed to load:', photo.id);
+                                (e.target as HTMLImageElement).style.display = 'none';
                               }}
                               onLoad={() => {
                                 console.log('✅ Photo loaded successfully:', photo.id);
@@ -2553,6 +2551,16 @@ ${cleanedResponse}
                         : 'bg-blue-500 text-white'
                     }`}>
                       <div className="whitespace-pre-wrap">{msg.message}</div>
+                      {msg.photoUrl && (
+                        <div className="mt-2">
+                          <img 
+                            src={msg.photoUrl} 
+                            alt="User photo" 
+                            className="max-w-full h-auto rounded-lg border border-gray-200"
+                            style={{ maxHeight: '200px' }}
+                          />
+                        </div>
+                      )}
                       {msg.audioUrl && (
                         <div className="mt-2 p-2 bg-gray-50 rounded-lg border">
                           <div className="flex items-center gap-2 mb-1">
