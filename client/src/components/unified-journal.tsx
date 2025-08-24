@@ -595,7 +595,7 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
   const analyzeAudioWithAI = async (audioBlob: Blob, duration: number) => {
     try {
       const formData = new FormData();
-      formData.append('audio', audioBlob, 'recording.wav');
+      formData.append('audio', audioBlob, `audio-${Date.now()}.wav`);
 
       const response = await fetch('/api/ai/analyze-audio', {
         method: 'POST',

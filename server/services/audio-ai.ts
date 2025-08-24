@@ -20,23 +20,31 @@ export interface AudioAnalysis {
 
 export async function transcribeAndAnalyzeAudio(audioBuffer: Buffer, filename: string): Promise<AudioAnalysis> {
   try {
-    // Create a file object for OpenAI Whisper
-    const file = new File([audioBuffer], filename, { 
+    console.log('🎵 Transcribing audio with OpenAI Whisper...');
+    console.log('📁 Audio file details:', { 
+      filename, 
+      bufferSize: audioBuffer.length,
+      bufferType: typeof audioBuffer
+    });
+    
+    // Create a file-like object that OpenAI expects
+    const audioFile = new File([audioBuffer], filename, { 
       type: filename.endsWith('.wav') ? 'audio/wav' : 
             filename.endsWith('.mp3') ? 'audio/mp3' : 
             filename.endsWith('.webm') ? 'audio/webm' : 
-            filename.endsWith('.ogg') ? 'audio/ogg' : 'audio/mpeg'
+            filename.endsWith('.ogg') ? 'audio/ogg' : 
+            filename.endsWith('.m4a') ? 'audio/m4a' : 'audio/wav' // Default to wav
     });
-
-    console.log('🎵 Transcribing audio with OpenAI Whisper...');
     
-    // Transcribe audio using Whisper
+    // Transcribe audio using Whisper with enhanced error handling
     const transcription = await openai.audio.transcriptions.create({
-      file: file,
+      file: audioFile,
       model: "whisper-1",
-      language: "en", // Can be made dynamic if needed
+      language: "en",
       response_format: "text"
     });
+    
+    console.log('✅ Transcription successful:', transcription.substring(0, 100) + '...');
 
     console.log('📝 Transcription complete, analyzing content...');
 
@@ -147,14 +155,19 @@ Return only valid JSON in this format:
     };
 
   } catch (error) {
-    console.error('Audio analysis failed:', error);
+    console.error('❌ Audio analysis failed:', error);
+    console.error('🔍 Error details:', {
+      name: error.name,
+      message: error.message,
+      stack: error.stack?.split('\n').slice(0, 3)
+    });
     
-    // Return basic fallback analysis
+    // Return enhanced fallback analysis with debugging info
     return {
-      transcription: "Audio transcription failed",
-      summary: "Audio recording captured but could not be analyzed",
+      transcription: `Audio transcription failed: ${error.message}`,
+      summary: "Audio recording captured but could not be analyzed due to technical issues",
       emotions: ["unknown"],
-      keyTopics: ["audio recording"],
+      keyTopics: ["audio recording", "technical issue"],
       mood: "neutral",
       journalPrompts: [
         "What were you thinking about when you made this recording?",

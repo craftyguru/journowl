@@ -992,7 +992,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       };
       
       mediaRecorder.onstop = async () => {
-        const blob = new Blob(chunks, { type: 'audio/webm' });
+        const blob = new Blob(chunks, { type: 'audio/wav' });
         const audioUrl = URL.createObjectURL(blob);
         const actualDuration = Math.floor((Date.now() - startTime - pausedTime) / 1000);
         
@@ -1013,7 +1013,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           content: "I recorded something special today! Here's what I want to remember...\n\n",
           photos: [],
           videoRecordings: [],
-          audioRecordings: [{ url: audioUrl, duration: actualDuration, timestamp: new Date(), blob: blob }],
+          audioRecordings: [{ url: audioUrl, duration: actualDuration, timestamp: new Date(), blob: blob, originalFormat: 'wav' }],
           mood: '😊',
           tags: ['audio', 'voice', 'story'],
           fontFamily: 'Inter',
