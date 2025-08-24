@@ -2401,11 +2401,17 @@ ${cleanedResponse}
               <div className="relative flex justify-center">
                 <Button
                   onClick={showAiChat ? capturePhotoForAI : () => {
+                    console.log('🔥 BLUE CAMERA BUTTON CLICKED!');
+                    console.log('🔥 showAiChat:', showAiChat);
                     // Show options menu for camera or upload
                     const choice = window.confirm("Camera (OK) or Upload from Gallery (Cancel)?");
+                    console.log('🔥 User choice - Camera?', choice);
                     if (choice) {
+                      console.log('🔥 Opening camera modal...');
                       setShowCameraModal(true);
                     } else {
+                      console.log('🔥 Opening file picker...');
+                      console.log('🔥 fileInputRef.current:', fileInputRef.current);
                       fileInputRef.current?.click();
                     }
                   }}
