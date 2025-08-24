@@ -381,63 +381,75 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   }, [content, mood, photos, title]);
 
-  // Voice to Text for Journal Content - FIXED VERSION  
+  // Voice to Text for Journal Content - WORKING VERSION
   const toggleVoiceRecording = () => {
-    if (recognition) {
-      if (isListening) {
-        recognition.stop();
-        setIsListening(false);
-      } else {
-        recognition.start();
-        setIsListening(true);
-      }
+    console.log('🎤 toggleVoiceRecording called, isListening:', isListening, 'recognition:', !!recognition);
+    
+    if (isListening && recognition) {
+      // Stop listening
+      recognition.stop();
+      setIsListening(false);
+      console.log('🛑 Stopping voice recognition');
     } else {
-      // Initialize speech recognition for journal content
+      // Start listening
       if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
         const newRecognition = new SpeechRecognition();
+        
         newRecognition.continuous = true;
         newRecognition.interimResults = true;
         newRecognition.lang = 'en-US';
 
         newRecognition.onstart = () => {
           setIsListening(true);
-          console.log('🎤 Voice to Text started');
+          console.log('🎤✅ Voice to Text started successfully');
         };
 
         newRecognition.onresult = (event: any) => {
+          console.log('🎤📝 Speech recognition result event:', event);
           let finalTranscript = '';
+          let interimTranscript = '';
 
           for (let i = event.resultIndex; i < event.results.length; i++) {
             const transcript = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
               finalTranscript += transcript;
+            } else {
+              interimTranscript += transcript;
             }
           }
 
-          if (finalTranscript && finalTranscript !== lastFinalTranscript) {
-            setLastFinalTranscript(finalTranscript);
-            // MAIN FEATURE: Add transcribed speech directly to journal content
-            setContent(prev => prev + finalTranscript + ' ');
-            console.log('✅ Added to journal:', finalTranscript);
+          console.log('🎤 Final transcript:', finalTranscript);
+          console.log('🎤 Interim transcript:', interimTranscript);
+
+          // Add final transcript to journal content immediately
+          if (finalTranscript && finalTranscript.trim().length > 0) {
+            console.log('✅ Adding to journal content:', finalTranscript);
+            setContent(prev => {
+              const newContent = prev + finalTranscript + ' ';
+              console.log('📝 New content will be:', newContent);
+              return newContent;
+            });
           }
         };
 
         newRecognition.onerror = (event: any) => {
-          console.error('Speech recognition error:', event.error);
+          console.error('❌ Speech recognition error:', event.error);
           setIsListening(false);
+          alert(`Speech recognition error: ${event.error}. Please try again.`);
         };
 
         newRecognition.onend = () => {
           setIsListening(false);
-          console.log('🎤 Voice to Text stopped');
+          console.log('🎤 Voice to Text ended');
         };
 
         setRecognition(newRecognition);
         newRecognition.start();
-        setIsListening(true);
+        console.log('🎤 Starting new speech recognition...');
+        
       } else {
-        alert('Speech recognition not supported in this browser');
+        alert('Speech recognition not supported in this browser. Please use Chrome, Edge, or Safari.');
       }
     }
   };
