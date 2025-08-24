@@ -51,7 +51,12 @@ export async function transcribeAndAnalyzeAudio(audioBuffer: Buffer, filename: s
       response_format: "text"
     });
     
-    console.log('✅ Transcription successful:', transcription.substring(0, 100) + '...');
+    console.log('✅ Transcription successful length:', transcription?.length || 0);
+    console.log('📝 First 100 chars:', transcription?.substring(0, 100) || 'No transcription content');
+    
+    if (!transcription || transcription.trim().length === 0) {
+      throw new Error('Empty transcription received from Whisper');
+    }
 
     console.log('📝 Transcription complete, analyzing content...');
 
