@@ -98,6 +98,9 @@ export interface IStorage {
   addPromptPurchase(userId: number, stripePaymentId: string, amount: number, promptsAdded: number): Promise<void>;
   resetMonthlyUsage(): Promise<void>;
   updateUserPrompts(userId: number, promptsToAdd: number): Promise<void>;
+  checkAndRefreshUserPrompts(userId: number): Promise<void>;
+  refreshUserPrompts(userId: number): Promise<void>;
+  checkAllUsersForPromptRefresh(): Promise<void>;
 
   updateUserSubscription(userId: number, subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }): Promise<void>;
   updateStorageUsage(userId: number, additionalMB: number): Promise<void>;
@@ -664,15 +667,25 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (!user) throw new Error("User not found");
 
-    if (user.promptsRemaining == null) {
+    // Check if user needs prompt refresh before returning usage
+    await this.checkAndRefreshUserPrompts(userId);
+    
+    // Get updated user data after potential refresh
+    const updatedUser = await this.getUser(userId);
+    if (!updatedUser) throw new Error("User not found after refresh");
+
+    if (updatedUser.promptsRemaining == null) {
       await db.update(users).set({ promptsRemaining: 100, promptsUsedThisMonth: 0 } as any).where(eq(users.id, userId));
-      return { promptsRemaining: 100, promptsUsedThisMonth: 0, currentPlan: user.currentPlan || "free" };
+      return { promptsRemaining: 100, promptsUsedThisMonth: 0, currentPlan: updatedUser.currentPlan || "free" };
     }
 
-    return { promptsRemaining: user.promptsRemaining || 0, promptsUsedThisMonth: user.promptsUsedThisMonth || 0, currentPlan: user.currentPlan || "free" };
+    return { promptsRemaining: updatedUser.promptsRemaining || 0, promptsUsedThisMonth: updatedUser.promptsUsedThisMonth || 0, currentPlan: updatedUser.currentPlan || "free" };
   }
 
   async incrementPromptUsage(userId: number): Promise<void> {
+    // Check if user needs prompt refresh before incrementing
+    await this.checkAndRefreshUserPrompts(userId);
+    
     const user = await this.getUser(userId);
     if (!user) throw new Error("User not found");
 
@@ -697,6 +710,63 @@ export class DatabaseStorage implements IStorage {
 
   async resetMonthlyUsage(): Promise<void> {
     await db.update(users).set({ promptsUsedThisMonth: 0, lastUsageReset: new Date() } as any);
+  }
+
+  async checkAndRefreshUserPrompts(userId: number): Promise<void> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error("User not found");
+
+    const now = new Date();
+    const lastReset = user.lastUsageReset || user.createdAt;
+    const daysSinceReset = Math.floor((now.getTime() - lastReset.getTime()) / (1000 * 60 * 60 * 24));
+
+    // If 30+ days have passed, refresh their prompts
+    if (daysSinceReset >= 30) {
+      await this.refreshUserPrompts(userId);
+    }
+  }
+
+  async refreshUserPrompts(userId: number): Promise<void> {
+    const user = await this.getUser(userId);
+    if (!user) throw new Error("User not found");
+
+    // Get prompt limit based on current plan
+    let monthlyPromptLimit = 100; // free plan
+    if (user.currentPlan === "premium") {
+      monthlyPromptLimit = 1000;
+    } else if (user.currentPlan === "pro") {
+      monthlyPromptLimit = 999999; // unlimited
+    }
+
+    // Reset their prompts and usage
+    await db.update(users).set({ 
+      promptsUsedThisMonth: 0,
+      promptsRemaining: monthlyPromptLimit,
+      lastUsageReset: new Date()
+    } as any).where(eq(users.id, userId));
+
+    console.log(`Refreshed prompts for user ${userId}: ${monthlyPromptLimit} prompts (${user.currentPlan} plan)`);
+  }
+
+  async checkAllUsersForPromptRefresh(): Promise<void> {
+    const allUsers = await db.select({ id: users.id }).from(users);
+    let refreshedCount = 0;
+
+    for (const user of allUsers) {
+      try {
+        const beforeUser = await this.getUser(user.id);
+        await this.checkAndRefreshUserPrompts(user.id);
+        const afterUser = await this.getUser(user.id);
+        
+        if (beforeUser?.lastUsageReset !== afterUser?.lastUsageReset) {
+          refreshedCount++;
+        }
+      } catch (error) {
+        console.error(`Failed to check prompts for user ${user.id}:`, error);
+      }
+    }
+
+    console.log(`Checked ${allUsers.length} users, refreshed ${refreshedCount} users' prompts`);
   }
 
   async updateUserSubscription(userId: number, subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }): Promise<void> {

@@ -2544,6 +2544,20 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Admin route to manually check all users for 30-day prompt refresh
+  app.post("/api/admin/refresh-prompts", requireAdmin, async (req: any, res) => {
+    try {
+      await storage.checkAllUsersForPromptRefresh();
+      res.json({ 
+        success: true,
+        message: "Checked all users for 30-day prompt refresh" 
+      });
+    } catch (error: any) {
+      console.error("Error checking users for prompt refresh:", error);
+      res.status(500).json({ message: "Failed to check prompt refresh" });
+    }
+  });
+
   // Referral system endpoints
   app.get("/api/referrals", requireAuth, async (req: any, res) => {
     try {
