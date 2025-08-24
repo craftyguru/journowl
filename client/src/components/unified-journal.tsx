@@ -1259,11 +1259,20 @@ ${cleanedResponse}
       const reader = new FileReader();
       reader.onload = async (e) => {
         const base64 = e.target?.result as string;
+        console.log('📸 Photo loaded, base64 length:', base64?.length);
+        console.log('📸 Base64 starts with:', base64?.substring(0, 50));
+        
         const newPhoto = {
           id: Date.now() + i,
           src: base64,
           analysis: null
         };
+        
+        console.log('📸 Created new photo object:', { 
+          id: newPhoto.id, 
+          srcLength: newPhoto.src?.length,
+          srcPrefix: newPhoto.src?.substring(0, 50)
+        });
 
         setPhotos(prev => [...prev, newPhoto]);
 
@@ -1309,6 +1318,15 @@ ${cleanedResponse}
           }]);
         }
       };
+
+      reader.onerror = (error) => {
+        console.error('❌ Failed to read file:', file.name, error);
+        setAiMessages(prev => [...prev, {
+          type: 'ai',
+          message: `😅 I had trouble reading the file "${file.name}". Please try uploading the image again, or try a different file format (JPG, PNG).`
+        }]);
+      };
+
       reader.readAsDataURL(file);
     }
   }, [mood]);
@@ -2041,6 +2059,22 @@ ${cleanedResponse}
                                 selectedPhoto?.index === index ? 'ring-2 ring-amber-400' : ''
                               }`}
                               onClick={() => setSelectedPhoto({ ...photo, index })}
+                              onError={(e) => {
+                                console.error('❌ Photo failed to load:', {
+                                  photoId: photo.id,
+                                  srcLength: photo.src?.length,
+                                  srcPrefix: photo.src?.substring(0, 100),
+                                  error: e
+                                });
+                                // Try to show a placeholder or error message
+                                const target = e.target as HTMLImageElement;
+                                target.style.backgroundColor = '#f3f4f6';
+                                target.style.border = '2px dashed #d1d5db';
+                                target.alt = 'Failed to load image';
+                              }}
+                              onLoad={() => {
+                                console.log('✅ Photo loaded successfully:', photo.id);
+                              }}
                             />
                             {photo.analysis && (
                               <div className="absolute inset-0 bg-black/70 rounded opacity-0 group-hover:opacity-100 transition-opacity p-1">
