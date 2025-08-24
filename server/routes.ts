@@ -1400,16 +1400,53 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
-  // Photo AI routes
-  app.post("/api/ai/analyze-photo", requireAuth, requireAIPrompts, async (req: any, res) => {
+  // Photo upload endpoint
+  app.post("/api/upload/photo", requireAuth, async (req: any, res) => {
     try {
-      const { base64Image, currentMood } = req.body;
+      const { base64Image, filename } = req.body;
       if (!base64Image) {
         return res.status(400).json({ error: "Image data required" });
       }
 
+      // Convert base64 to buffer
+      const base64Data = base64Image.replace(/^data:image\/[a-z]+;base64,/, "");
+      const imageBuffer = Buffer.from(base64Data, 'base64');
+      
+      const { uploadPhoto } = await import("./services/storage");
+      const result = await uploadPhoto(req.session.userId, imageBuffer, filename || 'photo.jpg');
+      
+      if (result.error) {
+        return res.status(500).json({ error: result.error });
+      }
+      
+      res.json({ url: result.url, path: result.path });
+    } catch (error: any) {
+      console.error("Error uploading photo:", error);
+      res.status(500).json({ error: "Failed to upload photo" });
+    }
+  });
+
+  // Photo AI routes
+  app.post("/api/ai/analyze-photo", requireAuth, requireAIPrompts, async (req: any, res) => {
+    try {
+      const { photoUrl, base64Image, currentMood } = req.body;
+      
+      // Support both storage URLs and base64 for backward compatibility
+      let imageData = base64Image;
+      if (photoUrl && !base64Image) {
+        // Fetch image from storage URL and convert to base64
+        const response = await fetch(photoUrl);
+        const buffer = await response.arrayBuffer();
+        const base64 = Buffer.from(buffer).toString('base64');
+        imageData = `data:image/jpeg;base64,${base64}`;
+      }
+      
+      if (!imageData) {
+        return res.status(400).json({ error: "Image data required" });
+      }
+
       const { analyzePhoto } = await import("./services/photo-ai");
-      const analysis = await analyzePhoto(base64Image);
+      const analysis = await analyzePhoto(imageData);
       res.json(analysis);
     } catch (error: any) {
       console.error("Error analyzing photo:", error);

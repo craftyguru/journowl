@@ -877,38 +877,87 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
               reader.onload = async (e) => {
                 const base64 = e.target?.result as string;
                 
-                // Add photo to journal with proper ID
-                const newPhoto = {
-                  id: Date.now(),
-                  src: base64,
-                  timestamp: new Date(),
-                  analysis: null
-                };
-                
-                setPhotos(prev => [...prev, newPhoto]);
-                
-                // ALWAYS trigger AI analysis for camera photos
-                if (showAiChat) {
-                  // Add user message with photo
-                  setAiMessages(prev => [...prev, {
-                    type: 'user',
-                    message: 'I just took a photo!',
-                    photoUrl: base64
-                  }]);
+                // Upload photo to storage first
+                try {
+                  const uploadResponse = await fetch('/api/upload/photo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                      base64Image: base64,
+                      filename: `camera-${Date.now()}.jpg`
+                    })
+                  });
                   
-                  setAiMessages(prev => [...prev, {
-                    type: 'ai',
-                    message: '📸 Analyzing your captured photo... This will help me suggest better writing prompts!'
-                  }]);
+                  if (!uploadResponse.ok) {
+                    throw new Error('Upload failed');
+                  }
+                  
+                  const { url: storageUrl } = await uploadResponse.json();
+                  console.log('✅ Photo uploaded to storage:', storageUrl);
+                  
+                  // Add photo to journal with storage URL
+                  const newPhoto = {
+                    id: Date.now(),
+                    src: storageUrl, // Use storage URL instead of base64
+                    timestamp: new Date(),
+                    analysis: null
+                  };
+                  
+                  setPhotos(prev => [...prev, newPhoto]);
+                  
+                  // ALWAYS trigger AI analysis for camera photos
+                  if (showAiChat) {
+                    // Add user message with photo
+                    setAiMessages(prev => [...prev, {
+                      type: 'user',
+                      message: 'I just took a photo!',
+                      photoUrl: storageUrl // Use storage URL
+                    }]);
+                    
+                    setAiMessages(prev => [...prev, {
+                      type: 'ai',
+                      message: '📸 Analyzing your captured photo... This will help me suggest better writing prompts!'
+                    }]);
+                  }
+                } catch (uploadError) {
+                  console.error('❌ Photo upload failed:', uploadError);
+                  // Fallback to base64 if upload fails
+                  const newPhoto = {
+                    id: Date.now(),
+                    src: base64,
+                    timestamp: new Date(),
+                    analysis: null
+                  };
+                  
+                  setPhotos(prev => [...prev, newPhoto]);
+                  
+                  if (showAiChat) {
+                    setAiMessages(prev => [...prev, {
+                      type: 'user',
+                      message: 'I just took a photo!',
+                      photoUrl: base64
+                    }]);
+                    
+                    setAiMessages(prev => [...prev, {
+                      type: 'ai',
+                      message: '📸 Photo saved! Analyzing now...'
+                    }]);
+                  }
                 }
 
                 try {
+                  // Get the latest photo
+                  const latestPhoto = photos[photos.length - 1] || { src: base64 };
+                  const isStorageUrl = latestPhoto.src && !latestPhoto.src.startsWith('data:');
+                  
                   const response = await fetch('/api/ai/analyze-photo', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ 
-                      base64Image: base64.split(',')[1],
+                      photoUrl: isStorageUrl ? latestPhoto.src : undefined,
+                      base64Image: isStorageUrl ? undefined : (latestPhoto.src || base64).split(',')[1],
                       currentMood: mood 
                     })
                   });
@@ -916,9 +965,17 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
                   if (response.ok) {
                     const analysis = await response.json();
                     
-                    setPhotos(prev => prev.map(p => 
-                      p.id === newPhoto.id ? { ...p, analysis } : p
-                    ));
+                    // Update the latest photo with analysis
+                    setPhotos(prev => {
+                      const updatedPhotos = [...prev];
+                      if (updatedPhotos.length > 0) {
+                        updatedPhotos[updatedPhotos.length - 1] = {
+                          ...updatedPhotos[updatedPhotos.length - 1],
+                          analysis
+                        };
+                      }
+                      return updatedPhotos;
+                    });
                     
                     // Add AI-generated tags
                     if (analysis.tags) {
@@ -1315,31 +1372,74 @@ ${cleanedResponse}
         console.log('📸 Photo loaded, base64 length:', base64?.length);
         console.log('📸 Base64 starts with:', base64?.substring(0, 50));
         
-        const newPhoto = {
-          id: Date.now() + i,
-          src: base64,
-          analysis: null
-        };
-        
-        console.log('📸 Created new photo object:', { 
-          id: newPhoto.id, 
-          srcLength: newPhoto.src?.length,
-          srcPrefix: newPhoto.src?.substring(0, 50)
-        });
-
-        setPhotos(prev => [...prev, newPhoto]);
-
-        // Trigger AI analysis
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: '📸 Analyzing your photo... This will help me suggest better writing prompts!'
-        }]);
-
+        // Upload photo to storage first
         try {
+          const uploadResponse = await fetch('/api/upload/photo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              base64Image: base64,
+              filename: file.name
+            })
+          });
+          
+          if (!uploadResponse.ok) {
+            throw new Error('Upload failed');
+          }
+          
+          const { url: storageUrl } = await uploadResponse.json();
+          console.log('✅ Gallery photo uploaded to storage:', storageUrl);
+          
+          const newPhoto = {
+            id: Date.now() + i,
+            src: storageUrl, // Use storage URL
+            analysis: null
+          };
+          
+          console.log('📸 Created new photo object:', { 
+            id: newPhoto.id, 
+            srcLength: newPhoto.src?.length,
+            srcPrefix: newPhoto.src?.substring(0, 50)
+          });
+
+          setPhotos(prev => [...prev, newPhoto]);
+
+          // Trigger AI analysis
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '📸 Analyzing your photo... This will help me suggest better writing prompts!'
+          }]);
+
           const response = await fetch('/api/ai/analyze-photo', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include', // Include cookies for session authentication
+            body: JSON.stringify({ 
+              photoUrl: storageUrl,
+              currentMood: mood 
+            })
+          });
+        } catch (uploadError) {
+          console.error('❌ Photo upload failed:', uploadError);
+          // Fallback to base64
+          const newPhoto = {
+            id: Date.now() + i,
+            src: base64,
+            analysis: null
+          };
+          
+          setPhotos(prev => [...prev, newPhoto]);
+          
+          setAiMessages(prev => [...prev, {
+            type: 'ai',
+            message: '📸 Photo saved! Analyzing now...'
+          }]);
+
+          const response = await fetch('/api/ai/analyze-photo', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify({ 
               base64Image: base64.split(',')[1],
               currentMood: mood 
@@ -1348,9 +1448,17 @@ ${cleanedResponse}
 
           if (response.ok) {
             const analysis = await response.json();
-            setPhotos(prev => prev.map(p => 
-              p.id === newPhoto.id ? { ...p, analysis } : p
-            ));
+            // Update the latest photo with analysis
+            setPhotos(prev => {
+              const updatedPhotos = [...prev];
+              if (updatedPhotos.length > 0) {
+                updatedPhotos[updatedPhotos.length - 1] = {
+                  ...updatedPhotos[updatedPhotos.length - 1],
+                  analysis
+                };
+              }
+              return updatedPhotos;
+            });
             
             // Add AI-generated tags
             if (analysis.tags) {
