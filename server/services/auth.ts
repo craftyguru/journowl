@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { storage } from "../storage";
-import { type InsertUser } from "@shared/schema";
+import { type InsertUser, type User } from "@shared/schema";
 
 export async function hashPassword(password: string): Promise<string> {
   return await bcrypt.hash(password, 10);
@@ -10,7 +10,7 @@ export async function verifyPassword(password: string, hashedPassword: string): 
   return await bcrypt.compare(password, hashedPassword);
 }
 
-export async function createUser(userData: InsertUser) {
+export async function createUser(userData: Partial<User>) {
   const existingUser = await storage.getUserByEmail((userData as any).email);
   if (existingUser) {
     throw new Error("User already exists");
