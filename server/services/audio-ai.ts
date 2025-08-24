@@ -120,7 +120,6 @@ Return only valid JSON in this format:
 }`
         }
       ],
-      temperature: 0.7,
       max_completion_tokens: 1000
     });
 
