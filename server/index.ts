@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 // Security + PWA MIME headers (kept tight for PWABuilder compatibility)
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
   res.setHeader("X-XSS-Protection", "1; mode=block");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
 
@@ -33,7 +33,7 @@ app.use((req, res, next) => {
   "img-src 'self' data: https: blob:",
   "connect-src 'self' https: wss:",
   "object-src 'none'",
-  "frame-ancestors 'none'",
+  "frame-ancestors 'self' *.replit.dev *.replit.com",
   "base-uri 'self'"
 ].join('; '));
 
