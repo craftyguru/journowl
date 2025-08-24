@@ -1191,13 +1191,48 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
     }
   };
 
-  // Add AI response to journal content
+  // Add AI response to journal content in a user-friendly format
   const addToJournal = (aiResponse: string) => {
-    // Extract prompt from AI response if it contains prompt-like text
-    const promptMatch = aiResponse.match(/(?:prompt|write about|consider|reflect on)[\s\S]*?(?:[.!?]|$)/gi);
-    const promptText = promptMatch ? promptMatch.join(' ') : aiResponse;
+    const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     
-    setContent(prev => prev + '\n\n' + promptText);
+    // Clean up the AI response for better journal formatting
+    let cleanedResponse = aiResponse
+      .replace(/\*\*/g, '') // Remove markdown bold
+      .replace(/\*/g, '') // Remove markdown italics
+      .replace(/#{1,6}\s/g, '') // Remove markdown headers
+      .replace(/^\d+\.\s/gm, '') // Remove numbered lists
+      .replace(/^•\s/gm, '') // Remove bullet points
+      .replace(/^-\s/gm, '') // Remove dashes
+      .trim();
+    
+    // If it's a structured prompt, format it nicely
+    if (cleanedResponse.includes('Reflect on') || cleanedResponse.includes('What inspired') || cleanedResponse.includes('Describe')) {
+      // This is a writing prompt - format it as a journal reflection starter
+      const journalEntry = `
+
+📝 **Journal Reflection** (${currentTime})
+
+${cleanedResponse}
+
+---
+
+*My thoughts:*
+
+`;
+      setContent(prev => prev + journalEntry);
+    } else {
+      // Regular AI response - add as a thoughtful note
+      const journalEntry = `
+
+💭 **AI Insight** (${currentTime})
+
+${cleanedResponse}
+
+`;
+      setContent(prev => prev + journalEntry);
+    }
+    
+    // Show success message
     setAiMessages(prev => [...prev, {
       type: 'ai',
       message: '✅ Added to your journal! You can now edit and expand on this content.'
