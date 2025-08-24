@@ -121,7 +121,7 @@ Return only valid JSON in this format:
         }
       ],
       temperature: 0.7,
-      max_tokens: 1000
+      max_completion_tokens: 1000
     });
 
     const analysisText = analysisResponse.choices[0]?.message?.content;

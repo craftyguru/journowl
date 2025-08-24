@@ -632,67 +632,6 @@ Ready to capture today's adventure? Let's start journaling! ✨`;
     }
   };
 
-  // Voice to Text for Journal Content (Browser Speech Recognition)
-  const toggleVoiceRecording = () => {
-    if (isListening) {
-      // Stop speech recognition
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-        setIsListening(false);
-      }
-    } else {
-      // Start speech recognition
-      if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-        const recognition = new SpeechRecognition();
-        
-        recognition.continuous = true;
-        recognition.interimResults = true;
-        recognition.lang = 'en-US';
-        
-        let finalTranscript = '';
-        
-        recognition.onstart = () => {
-          setIsListening(true);
-          console.log('🎤 Voice to Text started');
-        };
-        
-        recognition.onresult = (event: any) => {
-          let interimTranscript = '';
-          
-          for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
-            if (event.results[i].isFinal) {
-              finalTranscript += transcript + ' ';
-            } else {
-              interimTranscript += transcript;
-            }
-          }
-          
-          // Update journal content with transcribed speech
-          if (finalTranscript) {
-            setContent(prev => prev + finalTranscript);
-            finalTranscript = '';
-          }
-        };
-        
-        recognition.onerror = (event: any) => {
-          console.error('Speech recognition error:', event.error);
-          setIsListening(false);
-        };
-        
-        recognition.onend = () => {
-          setIsListening(false);
-          console.log('🎤 Voice to Text stopped');
-        };
-        
-        recognitionRef.current = recognition;
-        recognition.start();
-      } else {
-        alert('Speech recognition not supported in this browser');
-      }
-    }
-  };
 
   // AI Audio Analysis Function
   const analyzeAudioWithAI = async (audioBlob: Blob, duration: number) => {
