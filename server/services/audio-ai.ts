@@ -3,10 +3,32 @@ import FormData from "form-data";
 import { trackableOpenAICall } from "../middleware/promptTracker";
 import { Readable } from "stream";
 
-// Fix for Node.js compatibility with OpenAI SDK
+// Fix for Node.js compatibility with OpenAI SDK  
 if (!globalThis.File) {
-  const { File } = require('node:buffer');
-  globalThis.File = File;
+  // Simple File polyfill for Node.js
+  globalThis.File = class File {
+    name: string;
+    lastModified: number;
+    size: number;
+    type: string;
+    private data: any;
+    
+    constructor(fileBits: any[], name: string, options: any = {}) {
+      this.name = name;
+      this.lastModified = options.lastModified ?? Date.now();
+      this.type = options.type || '';
+      this.data = fileBits[0]; // Store the buffer
+      this.size = fileBits[0]?.length || 0;
+    }
+    
+    stream() {
+      return Readable.from(this.data);
+    }
+    
+    arrayBuffer() {
+      return Promise.resolve(this.data.buffer);
+    }
+  } as any;
 }
 
 const openai = new OpenAI({
