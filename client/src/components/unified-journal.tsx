@@ -763,6 +763,7 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
 
   // Unified camera function with live preview
   const takeCameraPhoto = () => {
+    console.log('🔥 UNIFIED JOURNAL - takeCameraPhoto called!');
     openCameraPreview(false);
   };
 
@@ -863,6 +864,7 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
       
       // Handle capture
       captureBtn.onclick = () => {
+        console.log('🔥 UNIFIED JOURNAL CAPTURE BUTTON CLICKED!');
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -2447,6 +2449,7 @@ ${cleanedResponse}
                     console.log('🔥 BLUE CAMERA BUTTON CLICKED!');
                     console.log('🔥 showAiChat:', showAiChat);
                     // Show options menu for camera or upload
+                    console.log('🔥 BLUE CAMERA BUTTON CLICKED!');
                     const choice = window.confirm("Camera (OK) or Upload from Gallery (Cancel)?");
                     console.log('🔥 User choice - Camera?', choice);
                     if (choice) {
