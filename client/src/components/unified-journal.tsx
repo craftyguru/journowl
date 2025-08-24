@@ -2018,7 +2018,11 @@ ${cleanedResponse}
                     </h3>
                     <div className="flex items-center gap-1">
                       <Button
-                        onClick={() => fileInputRef.current?.click()}
+                        onClick={() => {
+                          console.log('🔥 Upload button clicked');
+                          console.log('🔥 fileInputRef.current:', fileInputRef.current);
+                          fileInputRef.current?.click();
+                        }}
                         variant="outline"
                         size="sm"
                       >
@@ -2042,7 +2046,13 @@ ${cleanedResponse}
                     type="file"
                     multiple
                     accept="image/*"
-                    onChange={(e) => e.target.files && handlePhotoUpload(e.target.files)}
+                    onChange={(e) => {
+                      console.log('🔥 File input changed:', e.target.files);
+                      console.log('🔥 Files length:', e.target.files?.length);
+                      if (e.target.files) {
+                        handlePhotoUpload(e.target.files);
+                      }
+                    }}
                     className="hidden"
                   />
 
