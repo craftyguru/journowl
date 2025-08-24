@@ -1417,9 +1417,9 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
-  // Audio AI routes - FIXED VERSION
-  app.post("/api/ai/analyze-audio", requireAuth, requireAIPrompts, (req: any, res) => {
-    console.log('🎵 AUDIO REQUEST RECEIVED!');
+  // Audio AI routes - ULTRA SIMPLE VERSION
+  app.post("/api/ai/analyze-audio", (req: any, res) => {
+    console.log('🎵 AUDIO REQUEST RECEIVED!', req.headers);
     
     // Use multer manually to handle upload
     upload.single('audio')(req, res, async (err) => {
