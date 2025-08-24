@@ -25,17 +25,23 @@ app.use((req, res, next) => {
   }
 
   // CSP (relaxed enough for Vite/prod assets and fonts)
- res.setHeader('Content-Security-Policy', [
-  "default-src 'self' https:",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://js.stripe.com",
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
-  "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
-  "img-src 'self' data: https: blob:",
-  "connect-src 'self' https: wss:",
-  "object-src 'none'",
-  "frame-ancestors 'self' *.replit.dev *.replit.com",
-  "base-uri 'self'"
-].join('; '));
+ // Disable CSP in development to prevent preview issues
+ if (process.env.NODE_ENV !== 'production') {
+   // Very permissive CSP for development/Replit preview
+   res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; img-src * data: blob:; font-src * data:; connect-src * ws: wss:; frame-ancestors *;");
+ } else {
+   res.setHeader('Content-Security-Policy', [
+     "default-src 'self' https:",
+     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com https://js.stripe.com",
+     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
+     "font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com",
+     "img-src 'self' data: https: blob:",
+     "connect-src 'self' https: wss:",
+     "object-src 'none'",
+     "frame-ancestors 'self' *.replit.dev *.replit.com",
+     "base-uri 'self'"
+   ].join('; '));
+ }
 
 
   // Correct MIME for PWA bits
