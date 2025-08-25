@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, X, Edit, BookOpen, Calendar } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Edit, BookOpen, Calendar, Search, Play, Pause } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 interface JournalBookReaderProps {
   entries: any[];
@@ -13,11 +15,74 @@ interface JournalBookReaderProps {
 export default function JournalBookReader({ entries, onClose, onEditEntry, initialEntryIndex = 0 }: JournalBookReaderProps) {
   const [currentPageIndex, setCurrentPageIndex] = useState(initialEntryIndex);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [playingAudio, setPlayingAudio] = useState<string | null>(null);
 
-  const currentEntry = entries[currentPageIndex];
+  // Filter entries based on search
+  const filteredEntries = useMemo(() => {
+    if (!searchQuery.trim()) return entries;
+    
+    const query = searchQuery.toLowerCase();
+    return entries.filter(entry => 
+      entry.title?.toLowerCase().includes(query) ||
+      entry.content?.toLowerCase().includes(query) ||
+      entry.tags?.some((tag: string) => tag.toLowerCase().includes(query)) ||
+      new Date(entry.createdAt).toLocaleDateString().includes(query)
+    );
+  }, [entries, searchQuery]);
+
+  // Update current page when search results change
+  useEffect(() => {
+    if (filteredEntries.length > 0 && currentPageIndex >= filteredEntries.length) {
+      setCurrentPageIndex(0);
+    }
+  }, [filteredEntries.length, currentPageIndex]);
+
+  const currentEntry = filteredEntries[currentPageIndex];
+
+  // Generate calendar dates for current month
+  const generateCalendarDates = () => {
+    const entryDates = entries.map(entry => {
+      const date = new Date(entry.createdAt);
+      return {
+        date: date.toDateString(),
+        entry
+      };
+    });
+    
+    const groupedByDate = entryDates.reduce((acc, item) => {
+      if (!acc[item.date]) acc[item.date] = [];
+      acc[item.date].push(item.entry);
+      return acc;
+    }, {} as Record<string, any[]>);
+
+    return groupedByDate;
+  };
+
+  const calendarData = generateCalendarDates();
+
+  const handleDateClick = (date: string, entriesForDate: any[]) => {
+    const entryIndex = entries.findIndex(entry => 
+      new Date(entry.createdAt).toDateString() === date
+    );
+    if (entryIndex !== -1) {
+      setCurrentPageIndex(entryIndex);
+      setShowCalendar(false);
+      setSearchQuery(""); // Clear search when navigating via calendar
+    }
+  };
+
+  const handleAudioPlay = (audioUrl: string) => {
+    if (playingAudio === audioUrl) {
+      setPlayingAudio(null);
+    } else {
+      setPlayingAudio(audioUrl);
+    }
+  };
 
   const goToNextPage = () => {
-    if (currentPageIndex < entries.length - 1 && !isAnimating) {
+    if (currentPageIndex < filteredEntries.length - 1 && !isAnimating) {
       setIsAnimating(true);
       setCurrentPageIndex(currentPageIndex + 1);
       setTimeout(() => setIsAnimating(false), 500);
@@ -103,22 +168,45 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
           </div>
 
           {/* Header Controls */}
-          <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-            <Button
-              onClick={() => onEditEntry(currentEntry)}
-              variant="ghost"
-              className="bg-blue-500/80 hover:bg-blue-600 text-white border border-blue-400 h-10 px-4 rounded-full shadow-lg"
-            >
-              <Edit className="w-4 h-4 mr-2" />
-              Edit
-            </Button>
-            <Button
-              onClick={onClose}
-              variant="ghost"
-              className="bg-red-500/80 hover:bg-red-600 text-white border border-red-400 h-10 w-10 p-0 rounded-full shadow-lg"
-            >
-              <X className="w-4 h-4" />
-            </Button>
+          <div className="absolute top-4 left-12 right-4 z-20 flex items-center justify-between">
+            {/* Search Bar */}
+            <div className="flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 border-2 border-amber-300 shadow-lg">
+              <Search className="w-4 h-4 text-amber-700" />
+              <Input
+                placeholder="Search entries, words, dates..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="border-none bg-transparent placeholder-amber-600 text-amber-800 focus-visible:ring-0 w-64"
+              />
+              {searchQuery && (
+                <Button
+                  onClick={() => setSearchQuery("")}
+                  variant="ghost"
+                  className="h-6 w-6 p-0 hover:bg-amber-200 text-amber-600"
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => onEditEntry(currentEntry)}
+                variant="ghost"
+                className="bg-blue-500/80 hover:bg-blue-600 text-white border border-blue-400 h-10 px-4 rounded-full shadow-lg"
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Edit
+              </Button>
+              <Button
+                onClick={onClose}
+                variant="ghost"
+                className="bg-red-500/80 hover:bg-red-600 text-white border border-red-400 h-10 w-10 p-0 rounded-full shadow-lg"
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Page Content */}
@@ -146,10 +234,48 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
                         {currentEntry.title || 'Untitled Entry'}
                       </h1>
                       <div className="flex items-center gap-4 text-amber-700">
-                        <span className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          {formatEntryDate(currentEntry.createdAt)}
-                        </span>
+                        <Popover open={showCalendar} onOpenChange={setShowCalendar}>
+                          <PopoverTrigger asChild>
+                            <button className="flex items-center gap-2 hover:text-amber-900 transition-colors cursor-pointer">
+                              <Calendar className="w-4 h-4" />
+                              {formatEntryDate(currentEntry.createdAt)}
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-80 p-4" align="start">
+                            <div className="space-y-2">
+                              <h4 className="font-semibold text-lg mb-3">📅 Jump to Date</h4>
+                              <div className="max-h-60 overflow-y-auto space-y-2">
+                                {Object.entries(calendarData).map(([date, entriesForDate]) => (
+                                  <div
+                                    key={date}
+                                    onClick={() => handleDateClick(date, entriesForDate)}
+                                    className="flex items-center justify-between p-3 bg-amber-50 hover:bg-amber-100 rounded-lg cursor-pointer transition-colors border border-amber-200"
+                                  >
+                                    <div>
+                                      <div className="font-medium text-amber-800">
+                                        {new Date(date).toLocaleDateString('en-US', { 
+                                          weekday: 'short', 
+                                          month: 'short', 
+                                          day: 'numeric' 
+                                        })}
+                                      </div>
+                                      <div className="text-sm text-amber-600">
+                                        {entriesForDate.length} {entriesForDate.length === 1 ? 'entry' : 'entries'}
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      {entriesForDate.slice(0, 3).map((entry, idx) => (
+                                        <span key={idx} className="text-lg">
+                                          {entry.mood || '📝'}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
                         <span className="text-2xl">{currentEntry.mood}</span>
                         {currentEntry.wordCount && (
                           <span className="text-sm">{currentEntry.wordCount} words</span>
@@ -159,7 +285,14 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
                     <div className="text-right text-amber-600">
                       <div className="text-sm font-medium">Page</div>
                       <div className="text-2xl font-bold">{currentPageIndex + 1}</div>
-                      <div className="text-xs">of {entries.length}</div>
+                      <div className="text-xs">
+                        of {filteredEntries.length}
+                        {searchQuery && (
+                          <div className="text-xs text-amber-500 mt-1">
+                            (filtered)
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -177,19 +310,53 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
                   >
                     {/* Audio Recordings */}
                     {currentEntry.audioRecordings && currentEntry.audioRecordings.length > 0 && (
-                      <div className="mb-6 p-4 bg-purple-50 rounded-lg border-2 border-purple-200">
-                        <h3 className="text-lg font-semibold text-purple-800 mb-3">🎵 Audio Memories</h3>
-                        <div className="space-y-2">
+                      <div className="mb-6 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border-2 border-purple-300 shadow-lg">
+                        <h3 className="text-xl font-semibold text-purple-800 mb-4 flex items-center gap-2">
+                          🎵 Voice Memories 
+                          <span className="text-sm bg-purple-200 px-2 py-1 rounded-full">
+                            {currentEntry.audioRecordings.length}
+                          </span>
+                        </h3>
+                        <div className="space-y-3">
                           {currentEntry.audioRecordings.map((audio: any, index: number) => (
-                            <div key={index} className="flex items-center gap-3 p-2 bg-white rounded border">
-                              <audio controls className="flex-1">
-                                <source src={audio.url} type="audio/webm" />
-                                <source src={audio.url} type="audio/wav" />
-                                Your browser does not support audio playback.
-                              </audio>
-                              <span className="text-xs text-purple-600">
-                                {audio.duration ? `${Math.round(audio.duration)}s` : ''}
-                              </span>
+                            <div key={index} className="flex items-center gap-4 p-4 bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+                              <div className="flex items-center gap-3 flex-1">
+                                <div className="relative">
+                                  <Button
+                                    onClick={() => handleAudioPlay(audio.url)}
+                                    variant="ghost"
+                                    className="h-10 w-10 p-0 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-700"
+                                  >
+                                    {playingAudio === audio.url ? (
+                                      <Pause className="w-5 h-5" />
+                                    ) : (
+                                      <Play className="w-5 h-5" />
+                                    )}
+                                  </Button>
+                                </div>
+                                <div className="flex-1">
+                                  <audio 
+                                    controls 
+                                    className="w-full h-8"
+                                    style={{ filter: 'sepia(20%) saturate(70%) hue-rotate(315deg) brightness(1.1)' }}
+                                  >
+                                    <source src={audio.url} type="audio/webm" />
+                                    <source src={audio.url} type="audio/wav" />
+                                    <source src={audio.url} type="audio/mp3" />
+                                    Your browser does not support audio playback.
+                                  </audio>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-xs text-purple-600 font-medium">
+                                  Recording {index + 1}
+                                </div>
+                                {audio.duration && (
+                                  <div className="text-xs text-purple-500">
+                                    {Math.round(audio.duration)}s
+                                  </div>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -198,20 +365,30 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
 
                     {/* Photos */}
                     {currentEntry.photos && currentEntry.photos.length > 0 && (
-                      <div className="mb-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="mb-6 p-4 bg-gradient-to-br from-blue-50 to-sky-50 rounded-xl border-2 border-blue-200 shadow-lg">
+                        <h3 className="text-xl font-semibold text-blue-800 mb-4 flex items-center gap-2">
+                          📸 Photo Memories
+                          <span className="text-sm bg-blue-200 px-2 py-1 rounded-full">
+                            {currentEntry.photos.length}
+                          </span>
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           {currentEntry.photos.map((photo: any, index: number) => (
-                            <div key={index} className="relative">
-                              <img
-                                src={photo.url}
-                                alt={photo.caption || `Photo ${index + 1}`}
-                                className="w-full rounded-lg shadow-lg border-4 border-white"
-                                style={{ maxHeight: '300px', objectFit: 'cover' }}
-                              />
+                            <div key={index} className="relative group">
+                              <div className="relative overflow-hidden rounded-xl shadow-lg border-4 border-white hover:shadow-xl transition-all duration-300 group-hover:scale-[1.02]">
+                                <img
+                                  src={photo.url}
+                                  alt={photo.caption || `Photo ${index + 1}`}
+                                  className="w-full h-64 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                              </div>
                               {photo.caption && (
-                                <p className="text-sm text-gray-600 mt-2 italic text-center">
-                                  {photo.caption}
-                                </p>
+                                <div className="mt-3 p-3 bg-white rounded-lg border border-blue-200 shadow-sm">
+                                  <p className="text-sm text-gray-700 italic text-center leading-relaxed">
+                                    "{photo.caption}"
+                                  </p>
+                                </div>
                               )}
                             </div>
                           ))}
@@ -262,13 +439,18 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
 
             <div className="bg-white/90 rounded-full px-6 py-2 border-2 border-amber-300 shadow-lg">
               <span className="font-medium text-amber-800">
-                Page {currentPageIndex + 1} of {entries.length}
+                Page {currentPageIndex + 1} of {filteredEntries.length}
+                {searchQuery && (
+                  <span className="text-xs text-amber-600 ml-2">
+                    (filtered from {entries.length})
+                  </span>
+                )}
               </span>
             </div>
 
             <Button
               onClick={goToNextPage}
-              disabled={currentPageIndex === entries.length - 1 || isAnimating}
+              disabled={currentPageIndex === filteredEntries.length - 1 || isAnimating}
               variant="ghost"
               className="bg-amber-600/80 hover:bg-amber-700 text-white border border-amber-500 disabled:opacity-50 h-12 px-6 rounded-full shadow-lg"
             >
