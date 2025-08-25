@@ -1,7 +1,7 @@
-import { 
-  users, 
-  journalEntries, 
-  achievements, 
+import {
+  users,
+  journalEntries,
+  achievements,
   userStats,
   goals,
   emailCampaigns,
@@ -12,9 +12,8 @@ import {
   promptPurchases,
   promoCodes,
   promoCodeUsage,
-  type User, 
-  type InsertUser, 
-  type JournalEntry, 
+  type User,
+  type JournalEntry,
   type InsertJournalEntry,
   type Achievement,
   type InsertAchievement,
@@ -27,15 +26,14 @@ import {
   type Announcement,
   type SupportMessage,
   type PromptPurchase,
-  type InsertPromptPurchase,
   type PromoCode,
   type InsertPromoCode,
   type PromoCodeUsage,
 } from "@shared/schema";
-import { eq, desc, sql, and, gte } from "drizzle-orm";
+import { eq, desc, and } from "drizzle-orm";
 
-// Import the unified database connection from db.ts
-import { db } from './db';
+// Unified DB connection
+import { db } from "./db";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -100,7 +98,6 @@ export interface IStorage {
   getUserByReferralCode(referralCode: string): Promise<User | undefined>;
   addUserPrompts(userId: number, promptsToAdd: number): Promise<void>;
 
-  // Promo code methods
   validatePromoCode(code: string): Promise<PromoCode | null>;
   usePromoCode(userId: number, promoCodeId: number, ipAddress?: string, userAgent?: string): Promise<void>;
   createPromoCode(promoCode: InsertPromoCode, createdBy: number): Promise<PromoCode>;
@@ -128,36 +125,32 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(user: Partial<User>): Promise<User> {
-    // Ensure required fields are present
     const userData = {
       email: user.email!,
       username: user.username!,
-      password: user.password || null,
-      role: user.role || 'user',
-      level: user.level || 1,
-      xp: user.xp || 0,
-      avatar: user.avatar || null,
-      theme: user.theme || 'dark',
-      bio: user.bio || null,
-      favoriteQuote: user.favoriteQuote || null,
-      currentPlan: user.currentPlan || 'free',
-      promptsUsedThisMonth: user.promptsUsedThisMonth || 0,
-      promptsRemaining: user.promptsRemaining || 100,
-      storageUsedMB: user.storageUsedMB || 0,
-      lastUsageReset: user.lastUsageReset || new Date(),
-      emailVerified: user.emailVerified || false,
-      requiresEmailVerification: user.requiresEmailVerification !== false,
-      emailVerificationToken: (user as any).emailVerificationToken || null,
-      emailVerificationExpires: (user as any).emailVerificationExpires || null
-    };
-    
+      password_hash: user.password_hash || null,       // hashed value expected
+      role: user.role ?? "user",
+      level: user.level ?? 1,
+      xp: user.xp ?? 0,
+      avatar: user.avatar ?? null,
+      theme: user.theme ?? "dark",
+      bio: user.bio ?? null,
+      favoriteQuote: user.favoriteQuote ?? null,
+      currentPlan: user.currentPlan ?? "free",
+      promptsUsedThisMonth: user.promptsUsedThisMonth ?? 0,
+      promptsRemaining: user.promptsRemaining ?? 100,
+      storageUsedMB: user.storageUsedMB ?? 0,          // ✅ correct column name
+      lastUsageReset: (user.lastUsageReset as any) ?? new Date().toISOString(),
+      emailVerified: user.emailVerified ?? false,
+      // removed: requiresEmailVerification / token fields (not in schema)
+    } as any;
+
     const result = await db.insert(users).values(userData).returning();
     const newUser = result[0];
     await this.createUserStats(newUser.id);
     return newUser;
   }
 
-  // Add minimal implementations for all required methods
   async updateUser(id: number, updates: Partial<User>): Promise<void> {
     await db.update(users).set(updates as any).where(eq(users.id, id));
   }
@@ -187,28 +180,29 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJournalEntry(entry: InsertJournalEntry & { userId: number }): Promise<JournalEntry> {
-    const wordCount = entry.content.trim().split(/\s+/).filter((word: string) => word.length > 0).length;
+    const wordCount = entry.content.trim().split(/\s+/).filter((w) => w.length > 0).length;
+
     const entryData = {
       userId: entry.userId,
       title: entry.title,
       content: entry.content,
       mood: entry.mood,
       wordCount,
-      fontFamily: entry.fontFamily || "Inter",
-      fontSize: entry.fontSize || 16,
-      textColor: entry.textColor || "#1f2937",
-      backgroundColor: entry.backgroundColor || "#ffffff",
-      isPrivate: entry.isPrivate || false,
-      tags: entry.tags || [],
-      photos: entry.photos || [],
-      drawings: entry.drawings || [],
-      audioUrl: entry.audioUrl || null,
-      location: entry.location || null,
-      weather: entry.weather || null,
+      fontFamily: entry.fontFamily ?? "Inter",
+      fontSize: entry.fontSize ?? 16,
+      textColor: entry.textColor ?? "#ffffff",           // matches schema default
+      backgroundColor: entry.backgroundColor ?? "#1e293b",
+      isPrivate: entry.isPrivate ?? false,
+      tags: entry.tags ?? [],
+      photos: entry.photos ?? [],
+      drawings: entry.drawings ?? [],
       aiInsights: null,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
+      location: entry.location ?? null,
+      weather: entry.weather ?? null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      // removed: audioUrl (not in schema)
+    } as any;
 
     const result = await db.insert(journalEntries).values(entryData).returning();
     const newEntry = result[0];
@@ -217,16 +211,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getJournalEntries(userId: number, limit = 10): Promise<JournalEntry[]> {
-    return await db.select().from(journalEntries).where(eq(journalEntries.userId, userId)).orderBy(desc(journalEntries.createdAt)).limit(limit);
+    return await db
+      .select()
+      .from(journalEntries)
+      .where(eq(journalEntries.userId, userId))
+      .orderBy(desc(journalEntries.createdAt))
+      .limit(limit);
   }
 
   async getJournalEntry(id: number, userId: number): Promise<JournalEntry | undefined> {
-    const result = await db.select().from(journalEntries).where(and(eq(journalEntries.id, id), eq(journalEntries.userId, userId))).limit(1);
+    const result = await db
+      .select()
+      .from(journalEntries)
+      .where(and(eq(journalEntries.id, id), eq(journalEntries.userId, userId)))
+      .limit(1);
     return result[0];
   }
 
   async updateJournalEntry(id: number, userId: number, entry: Partial<InsertJournalEntry>): Promise<void> {
-    await db.update(journalEntries).set(entry as any).where(and(eq(journalEntries.id, id), eq(journalEntries.userId, userId)));
+    await db
+      .update(journalEntries)
+      .set({ ...(entry as any), updatedAt: new Date().toISOString() })
+      .where(and(eq(journalEntries.id, id), eq(journalEntries.userId, userId)));
   }
 
   async deleteJournalEntry(id: number, userId: number): Promise<void> {
@@ -253,10 +259,10 @@ export class DatabaseStorage implements IStorage {
 
   async createUserStats(userId: number): Promise<UserStats> {
     try {
-      const result = await db.insert(userStats).values({ userId }).returning();
+      const result = await db.insert(userStats).values({ userId } as any).returning();
       return result[0];
     } catch (error: any) {
-      if (error.code === '23505') {
+      if (error.code === "23505") {
         const result = await db.select().from(userStats).where(eq(userStats.userId, userId)).limit(1);
         return result[0];
       }
@@ -264,8 +270,8 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async recalculateUserStats(userId: number): Promise<void> {
-    // Simplified implementation
+  async recalculateUserStats(_userId: number): Promise<void> {
+    // (left intentionally minimal)
   }
 
   async getUserGoals(userId: number): Promise<Goal[]> {
@@ -278,14 +284,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateGoal(id: number, userId: number, updates: Partial<Goal>): Promise<void> {
-    await db.update(goals).set(updates).where(and(eq(goals.id, id), eq(goals.userId, userId)));
+    await db.update(goals).set(updates as any).where(and(eq(goals.id, id), eq(goals.userId, userId)));
   }
 
   async logUserActivity(userId: number, action: string, details?: any, ipAddress?: string, userAgent?: string): Promise<void> {
     await db.insert(userActivityLogs).values({ userId, action, details, ipAddress, userAgent } as any);
   }
 
-  // Simplified implementations for all other methods...
   async getEmailCampaign(id: number): Promise<EmailCampaign | undefined> {
     const result = await db.select().from(emailCampaigns).where(eq(emailCampaigns.id, id)).limit(1);
     return result[0];
@@ -309,7 +314,23 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateSiteSetting(key: string, value: string, updatedBy: number): Promise<void> {
-    await db.insert(siteSettings).values({ key, value, updatedBy } as any);
+    // Upsert by unique key
+    await db
+      .insert(siteSettings)
+      .values({
+        key,
+        value,
+        updatedBy,
+        updatedAt: new Date().toISOString(),
+      } as any)
+      .onConflictDoUpdate({
+        target: siteSettings.key,
+        set: {
+          value,
+          updatedBy,
+          updatedAt: new Date().toISOString(),
+        } as any,
+      });
   }
 
   async getUserActivityLogs(userId?: number, limit = 100): Promise<UserActivityLog[]> {
@@ -324,7 +345,8 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  async getActiveAnnouncements(targetAudience = 'all'): Promise<Announcement[]> {
+  async getActiveAnnouncements(targetAudience = "all"): Promise<Announcement[]> {
+    // (targetAudience param kept for future filter)
     return await db.select().from(announcements).where(eq(announcements.isActive, true));
   }
 
@@ -348,9 +370,9 @@ export class DatabaseStorage implements IStorage {
   async getUserPromptUsage(userId: number): Promise<{ promptsRemaining: number; promptsUsedThisMonth: number; currentPlan: string }> {
     const user = await this.getUser(userId);
     return {
-      promptsRemaining: user?.promptsRemaining || 100,
-      promptsUsedThisMonth: user?.promptsUsedThisMonth || 0,
-      currentPlan: user?.currentPlan || 'free'
+      promptsRemaining: user?.promptsRemaining ?? 100,
+      promptsUsedThisMonth: user?.promptsUsedThisMonth ?? 0,
+      currentPlan: user?.currentPlan ?? "free",
     };
   }
 
@@ -358,9 +380,9 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (user) {
       await this.updateUser(userId, {
-        promptsUsedThisMonth: (user.promptsUsedThisMonth || 0) + 1,
-        promptsRemaining: Math.max(0, (user.promptsRemaining || 0) - 1)
-      });
+        promptsUsedThisMonth: (user.promptsUsedThisMonth ?? 0) + 1,
+        promptsRemaining: Math.max(0, (user.promptsRemaining ?? 0) - 1),
+      } as any);
     }
   }
 
@@ -376,16 +398,19 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (user) {
       await this.updateUser(userId, {
-        promptsRemaining: (user.promptsRemaining || 0) + promptsToAdd
-      });
+        promptsRemaining: (user.promptsRemaining ?? 0) + promptsToAdd,
+      } as any);
     }
   }
 
-  async checkAndRefreshUserPrompts(userId: number): Promise<void> {}
-  async refreshUserPrompts(userId: number): Promise<void> {}
+  async checkAndRefreshUserPrompts(_userId: number): Promise<void> {}
+  async refreshUserPrompts(_userId: number): Promise<void> {}
   async checkAllUsersForPromptRefresh(): Promise<void> {}
 
-  async updateUserSubscription(userId: number, subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }): Promise<void> {
+  async updateUserSubscription(
+    userId: number,
+    subscription: { tier: string; status: string; expiresAt: Date; stripeSubscriptionId: string }
+  ): Promise<void> {
     await this.updateUser(userId, { currentPlan: subscription.tier } as any);
   }
 
@@ -393,8 +418,8 @@ export class DatabaseStorage implements IStorage {
     const user = await this.getUser(userId);
     if (user) {
       await this.updateUser(userId, {
-        storageUsedMB: (user.storageUsedMB || 0) + additionalMB
-      });
+        storageUsedMB: (user.storageUsedMB || 0) + additionalMB, // ✅ correct column
+      } as any);
     }
   }
 
@@ -402,11 +427,11 @@ export class DatabaseStorage implements IStorage {
     return 0;
   }
 
-  async refreshUserStorageUsage(userId: number): Promise<number> {
+  async refreshUserStorageUsage(_userId: number): Promise<number> {
     return 0;
   }
 
-  async getUserByReferralCode(referralCode: string): Promise<User | undefined> {
+  async getUserByReferralCode(_referralCode: string): Promise<User | undefined> {
     return undefined;
   }
 
@@ -420,11 +445,11 @@ export class DatabaseStorage implements IStorage {
     return result[0] || null;
   }
 
-  async usePromoCode(userId: number, promoCodeId: number, ipAddress?: string, userAgent?: string): Promise<void> {
+  async usePromoCode(userId: number, promoCodeId: number, _ipAddress?: string, _userAgent?: string): Promise<void> {
     await db.insert(promoCodeUsage).values({ userId, promoCodeId } as any);
   }
 
-  async createPromoCode(promoCode: InsertPromoCode, createdBy: number): Promise<PromoCode> {
+  async createPromoCode(promoCode: InsertPromoCode, _createdBy: number): Promise<PromoCode> {
     const result = await db.insert(promoCodes).values(promoCode as any).returning();
     return result[0];
   }
@@ -450,7 +475,7 @@ export class DatabaseStorage implements IStorage {
       totalCodes: 0,
       activeCodes: 0,
       totalUsage: 0,
-      recentUsage: []
+      recentUsage: [],
     };
   }
 }

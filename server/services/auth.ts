@@ -12,82 +12,52 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 
 export async function createUser(userData: Partial<User>) {
   const existingUser = await storage.getUserByEmail((userData as any).email);
-  if (existingUser) {
-    throw new Error("User already exists");
-  }
+  if (existingUser) throw new Error("User already exists");
 
   const hashedPassword = await hashPassword((userData as any).password);
+  // ⬇️ write to the real column name
   return await storage.createUser({
     ...userData,
-    password_hash: hashedPassword,
-  });
+    password: hashedPassword,      // was password_hash
+  } as any);
 }
 
 export async function authenticateUser(identifier: string, password: string) {
-  console.log('authenticateUser called with identifier:', identifier);
-  
-  // Try to find user by email first, then by username
+  console.log("authenticateUser called with identifier:", identifier);
+
+  // email then username
   let user = await storage.getUserByEmail(identifier);
-  console.log('getUserByEmail result:', user ? 'Found user' : 'No user found');
-  
-  if (!user) {
-    // If not found by email, try by username
-    user = await storage.getUserByUsername(identifier);
-    console.log('getUserByUsername result:', user ? 'Found user' : 'No user found');
-  }
-  
-  if (!user) {
-    console.log('No user found for identifier:', identifier);
-    throw new Error("Invalid credentials");
-  }
+  if (!user) user = await storage.getUserByUsername(identifier);
 
-  console.log('User found:', user.username, user.email, 'hasPassword:', !!user.password_hash);
-  const isValid = await verifyPassword(password, user.password_hash || "");
-  console.log('Password verification result:', isValid);
-  
-  if (!isValid) {
-    console.log('Password verification failed for user:', user.username);
-    throw new Error("Invalid credentials");
-  }
+  if (!user) throw new Error("Invalid credentials");
 
-  console.log('Authentication successful for user:', user.username);
+  // ⬇️ read the real column name
+  const hash = (user as any).password;     // was user.password_hash
+  console.log("User found:", user.username, user.email, "hasPassword:", !!hash);
+
+  const isValid = hash ? await verifyPassword(password, hash) : false;
+  console.log("Password verification result:", isValid);
+
+  if (!isValid) throw new Error("Invalid credentials");
   return user;
 }
 
 export async function createAdminUser() {
-  try {
-    // Check if admin already exists
-    const existingAdmin = await storage.getUserByEmail("archimedes@journowl.app");
-    if (existingAdmin) {
-      console.log("Admin user already exists");
-      return existingAdmin;
-    }
+  // if you keep this seeder, also write to `password`
+  const existing = await storage.getUserByEmail("archimedes@journowl.app")
+                 ?? await storage.getUserByUsername("archimedes");
+  if (existing) return existing;
 
-    // Check by username too
-    const existingByUsername = await storage.getUserByUsername("archimedes");
-    if (existingByUsername) {
-      console.log("Admin username already exists");
-      return existingByUsername;
-    }
-
-    const hashedPassword = await hashPassword("7756guru");
-    const adminUser = await storage.createUser({
-      email: "archimedes@journowl.app",
-      username: "archimedes", 
-      password_hash: hashedPassword,
-      role: "admin",
-      level: 99,
-      xp: 999999,
-      currentPlan: "power",
-      promptsRemaining: 999999,
-      emailVerified: true,
-      requiresEmailVerification: false
-    });
-
-    console.log("Admin user created successfully:", adminUser.username);
-    return adminUser;
-  } catch (error) {
-    console.error("Error creating admin user:", error);
-    throw error;
-  }
+  const hashedPassword = await hashPassword("7756guru");
+  return await storage.createUser({
+    email: "archimedes@journowl.app",
+    username: "archimedes",
+    password: hashedPassword,      // was password_hash
+    role: "admin",
+    level: 99,
+    xp: 999999,
+    currentPlan: "power",
+    promptsRemaining: 999999,
+    emailVerified: true,
+  } as any);
 }
