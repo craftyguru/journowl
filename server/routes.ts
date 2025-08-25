@@ -2579,6 +2579,28 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Get detailed prompt usage history
+  app.get("/api/prompts/history", requireAuth, async (req: any, res) => {
+    try {
+      const history = await storage.getPromptUsageHistory(req.session.userId);
+      res.json({ history });
+    } catch (error: any) {
+      console.error("Error fetching prompt history:", error);
+      res.status(500).json({ message: "Failed to get prompt history" });
+    }
+  });
+
+  // Get prompt usage statistics
+  app.get("/api/prompts/stats", requireAuth, async (req: any, res) => {
+    try {
+      const stats = await storage.getPromptUsageStats(req.session.userId);
+      res.json(stats);
+    } catch (error: any) {
+      console.error("Error fetching prompt stats:", error);
+      res.status(500).json({ message: "Failed to get prompt stats" });
+    }
+  });
+
   app.post("/api/prompts/purchase", requireAuth, async (req: any, res) => {
     try {
       if (!stripe) {

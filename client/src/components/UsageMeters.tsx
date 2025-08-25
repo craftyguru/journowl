@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import SubscriptionManager from "./SubscriptionManager";
 import { StorageManager } from "./StorageManager";
+import { PromptUsageManager } from "./PromptUsageManager";
 
 interface UsageData {
   tier: string;
@@ -87,6 +88,7 @@ function CircularGauge({
 export default function UsageMeters() {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [showStorageManager, setShowStorageManager] = useState(false);
+  const [showPromptUsageManager, setShowPromptUsageManager] = useState(false);
 
   // Get current usage data
   const { data: usage, isLoading } = useQuery<UsageData>({
@@ -118,7 +120,10 @@ export default function UsageMeters() {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* AI Prompts Usage Meter */}
-        <Card className="border-2 border-purple-500/30 bg-gradient-to-br from-slate-800/90 to-purple-900/90 backdrop-blur-lg">
+        <Card 
+          className="border-2 border-purple-500/30 bg-gradient-to-br from-slate-800/90 to-purple-900/90 backdrop-blur-lg cursor-pointer hover:border-purple-400/50 transition-colors"
+          onClick={() => setShowPromptUsageManager(true)}
+        >
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-white">
               <Sparkles className="w-5 h-5 text-purple-400" />
@@ -146,6 +151,9 @@ export default function UsageMeters() {
             <div className="text-center space-y-2">
               <div className="text-sm text-gray-300">
                 Resets monthly • {usage?.promptsRemaining || 0}/100 left
+              </div>
+              <div className="text-xs text-purple-300 opacity-75">
+                Click to see detailed usage
               </div>
               <Button 
                 onClick={() => setShowSubscriptionModal(true)}
@@ -230,6 +238,16 @@ export default function UsageMeters() {
             <DialogTitle>Storage Management</DialogTitle>
           </DialogHeader>
           <StorageManager onClose={() => setShowStorageManager(false)} />
+        </DialogContent>
+      </Dialog>
+
+      {/* Prompt Usage Manager Modal */}
+      <Dialog open={showPromptUsageManager} onOpenChange={setShowPromptUsageManager}>
+        <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto p-0">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle>AI Prompt Usage</DialogTitle>
+          </DialogHeader>
+          <PromptUsageManager onClose={() => setShowPromptUsageManager(false)} />
         </DialogContent>
       </Dialog>
     </>
