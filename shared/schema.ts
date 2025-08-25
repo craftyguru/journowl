@@ -72,7 +72,7 @@ export const journalEntries = pgTable("journal_entries", {
 
 export const achievements = pgTable("achievements", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'cascade' }).notNull(),
   achievementId: text("achievement_id").notNull(), // unique identifier for the achievement type
   title: text("title").notNull(),
   description: text("description").notNull(),
@@ -87,7 +87,7 @@ export const achievements = pgTable("achievements", {
 
 export const userStats = pgTable("user_stats", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'cascade' }).notNull(),
   totalEntries: integer("total_entries").default(0),
   totalWords: integer("total_words").default(0),
   currentStreak: integer("current_streak").default(0),
@@ -106,7 +106,7 @@ export const moodTrends = pgTable("mood_trends", {
 
 export const goals = pgTable("goals", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id).notNull(),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'cascade' }).notNull(),
   goalId: text("goal_id").notNull(), // unique identifier for the goal type
   title: text("title").notNull(),
   description: text("description"),
@@ -173,7 +173,7 @@ export const siteSettings = pgTable("site_settings", {
 // User activity logs for admin monitoring
 export const userActivityLogs = pgTable("user_activity_logs", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id").references(() => users.id, { onDelete: 'cascade' }),
   action: text("action").notNull(), // login, logout, entry_created, entry_updated, etc.
   details: json("details"), // Additional context
   ipAddress: text("ip_address"),

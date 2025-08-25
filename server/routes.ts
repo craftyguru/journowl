@@ -2030,11 +2030,25 @@ Your story shows how every day brings new experiences and emotions, creating the
             console.log('Error deleting entries for user', user.username);
           }
           
+          // Delete user_stats (the main blocker)
+          try {
+            await db.execute(sql`DELETE FROM user_stats WHERE user_id = ${user.id}`);
+          } catch (e) {
+            console.log('No user stats to delete for user', user.username);
+          }
+
           // Delete any other references
           try {
             await db.execute(sql`DELETE FROM user_activity_logs WHERE user_id = ${user.id}`);
           } catch (e) {
             console.log('No activity logs to delete for user', user.username);
+          }
+          
+          // Delete mood trends
+          try {
+            await db.execute(sql`DELETE FROM mood_trends WHERE user_id = ${user.id}`);
+          } catch (e) {
+            console.log('No mood trends to delete for user', user.username);
           }
           
           // Now delete the user
