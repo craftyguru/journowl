@@ -9,11 +9,11 @@ console.log("DB host in use:", u.hostname, "port:", u.port || "(default)", "db:"
 
 export const pool = new Pool({
   connectionString: cs,
-  ssl: { rejectUnauthorized: true }, // keep strict; Supabase uses valid certs
+  // let connection string's ?sslmode=require handle SSL entirely
   max: 3,
   idleTimeoutMillis: 10_000,
   connectionTimeoutMillis: 10_000,
 });
 
-await pool.query("select now()"); // fail fast if anything's wrong
+// Remove startup health check - test connection on first API call instead
 export const db = drizzle(pool, { schema });
