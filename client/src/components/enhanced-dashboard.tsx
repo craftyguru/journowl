@@ -714,16 +714,9 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                     
                     console.log('📷 About to call openUnifiedJournal with entry:', newEntry);
                     
-                    // Open unified journal with the photo
-                    setTimeout(() => {
-                      try {
-                        console.log('📷 Opening unified journal with photo entry...');
-                        openUnifiedJournal(newEntry);
-                        console.log('✅ Photo captured and journal opened!', photoUrl);
-                      } catch (error) {
-                        console.error('❌ Error opening unified journal:', error);
-                      }
-                    }, 100); // Small delay to ensure cleanup is done
+                    // Open unified journal with the photo immediately
+                    openUnifiedJournal(newEntry);
+                    console.log('✅ Photo captured and journal opened!', photoUrl);
                   } else {
                     console.error('❌ Photo storage failed:', storageResponse.status);
                   }
@@ -751,10 +744,12 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               console.error('❌ Canvas.toBlob failed - no blob created');
             }
             
-            // Cleanup - moved outside if/else to always run
-            stream.getTracks().forEach(track => track.stop());
-            document.body.removeChild(overlay);
-            setShowCameraModal(false);
+            // Cleanup after journal is opened
+            setTimeout(() => {
+              stream.getTracks().forEach(track => track.stop());
+              document.body.removeChild(overlay);
+              setShowCameraModal(false);
+            }, 50);
           }, 'image/jpeg', 0.8);
         }
       };
@@ -787,29 +782,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     setShowCameraModal(true); // Open Camera Options modal
   };
 
-  // Test function to check if journal opens
-  const testJournalOpen = () => {
-    console.log('🧪 Testing journal open...');
-    const testEntry = {
-      id: Date.now(),
-      title: "Test Entry",
-      content: "This is a test to see if the journal opens",
-      mood: "😊",
-      photos: [{
-        id: 1,
-        src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzBkYTQ4NyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTVDwvdGV4dD48L3N2Zz4=",
-        filename: "test.svg",
-        uploadedAt: new Date().toISOString(),
-        analysis: null
-      }],
-      isPrivate: false,
-      tags: ["test"],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    console.log('🧪 Calling openUnifiedJournal with test entry:', testEntry);
-    openUnifiedJournal(testEntry);
-  };
 
   // File input ref for gallery uploads  
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -5961,17 +5933,6 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
             title="Take Photo"
           >
             📸
-          </motion.button>
-          
-          {/* Test button for debugging - Remove later */}
-          <motion.button
-            onClick={testJournalOpen}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-12 h-12 bg-purple-500 hover:bg-purple-600 rounded-full shadow-lg flex items-center justify-center text-white text-sm border-2 border-white transition-all duration-200"
-            title="Test Journal"
-          >
-            🧪
           </motion.button>
           
           <motion.button

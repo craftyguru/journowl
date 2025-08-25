@@ -1,0 +1,1601 @@
+The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+init-script.ts:45  GET https://analytics.tiktok.com/i18n/pixel/events.js?sdkid=D004GE3C77U8PIVDSDJG&lib=ttq net::ERR_BLOCKED_BY_CLIENT
+o.load @ init-script.ts:45
+(anonymous) @ init-script.ts:48
+(anonymous) @ init-script.ts:4
+initialize @ index.ts:249
+h @ plugin.js:19
+(anonymous) @ index.ts:154
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ index.ts:140
+(anonymous) @ event-queue.js:50
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ event-queue.js:30
+(anonymous) @ index.ts:410
+(anonymous) @ index.ts:408
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+(anonymous) @ index.ts:404
+(anonymous) @ index.ts:200
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+ne @ index.ts:116
+(anonymous) @ index.ts:304
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+s @ tslib.es6.js:73
+Promise.then
+a @ tslib.es6.js:76
+(anonymous) @ tslib.es6.js:76
+u @ tslib.es6.js:72
+re @ index.ts:239
+(anonymous) @ index.ts:338
+Promise.then
+(anonymous) @ index.ts:339
+t @ index.ts:307
+n @ index.ts:337
+(anonymous) @ index.ts:389
+(anonymous) @ index.ts:393
+(anonymous) @ standalone-analytics.ts:53
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+se @ standalone-analytics.ts:49
+(anonymous) @ standalone.ts:69
+(anonymous) @ tslib.es6.js:103
+(anonymous) @ tslib.es6.js:108
+(anonymous) @ tslib.es6.js:80
+u @ tslib.es6.js:72
+de @ sdk.min.js:1
+(anonymous) @ sdk.min.js:1
+(anonymous) @ sdk.min.js:1
+(anonymous) @ sdk.min.js:1
+The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+JournOwl:1 The source list for the Content Security Policy directive 'default-src' contains an invalid source: ''unsafe-dynamic''. It will be ignored.
+JournOwl:1 The Content-Security-Policy directive 'default-src' contains 'report-uri' as a source expression. Did you want to add it as a directive and forget a semicolon?
+JournOwl:1 The source list for Content Security Policy directive 'default-src' contains a source with an invalid path: '/api/4509669501698048/security/?sentry_key=7eb3d90eb4660416caf507087367e67e'. The query component, including the '?', will be ignored.
+_app-b1d4c19b053bc2fa.js:16 
+      /////////////////////
+   ///////////////////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////        Curious and driven?
+  ///////////////@@@@@@@///////        Work with us!
+  ///////////////@@@@@@@///////
+  ///////////////@@@@@@@///////        https://join.replit.com/hack.with.us
+  ////////@@@@@@@//////////////
+  ////////@@@@@@@//////////////
+  ////////@@@@@@#//////////////
+   ///////////////////////////
+      /////////////////////
+      
+_app-b1d4c19b053bc2fa.js:16 [LaunchDarkly] LaunchDarkly client initialized
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:534973)
+(anonymous) @ web-client-content-script.js:2
+framework-22eb81c01242a256.js:1 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'ambient-light-sensor'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'battery'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'execution-while-not-rendered'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'execution-while-out-of-viewport'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'layout-animations'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'legacy-image-formats'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'navigation-override'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'oversized-images'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'publickey-credentials'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'speaker-selection'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'unoptimized-images'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'unsized-media'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Unrecognized feature: 'pointer-lock'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Allow attribute will take precedence over 'allowfullscreen'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+framework-22eb81c01242a256.js:1 Allow attribute will take precedence over 'allowpaymentrequest'.
+_ @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uD @ framework-22eb81c01242a256.js:1
+uI @ framework-22eb81c01242a256.js:1
+uM @ framework-22eb81c01242a256.js:1
+uS @ framework-22eb81c01242a256.js:1
+C @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+z @ framework-22eb81c01242a256.js:1
+(anonymous) @ setImmediate.js:40
+y @ setImmediate.js:69
+c @ setImmediate.js:109
+postMessage
+n @ setImmediate.js:120
+push.YBdB.f.setImmediate @ setImmediate.js:27
+r @ framework-22eb81c01242a256.js:1
+I @ framework-22eb81c01242a256.js:1
+t.unstable_scheduleCallback @ framework-22eb81c01242a256.js:1
+l @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+uO @ framework-22eb81c01242a256.js:1
+u_ @ framework-22eb81c01242a256.js:1
+r6 @ framework-22eb81c01242a256.js:1
+(anonymous) @ framework-22eb81c01242a256.js:1
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Error while parsing the 'sandbox' attribute: 'allow-downloads-without-user-activation' is an invalid sandbox flag.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'ambient-light-sensor'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'battery'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'execution-while-not-rendered'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'execution-while-out-of-viewport'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'layout-animations'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'legacy-image-formats'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'navigation-override'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'oversized-images'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'publickey-credentials'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'speaker-selection'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'unoptimized-images'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Unrecognized feature: 'unsized-media'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Allow attribute will take precedence over 'allowfullscreen'.
+workspace_iframe.html?initialPath=%2F&id=%3Ar45%3A:32 Allow attribute will take precedence over 'allowpaymentrequest'.
+e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/:53 X-Frame-Options may only be set via an HTTP header sent along with a document. It may not be set inside <meta>.
+(index):247 Ultra-aggressive viewport forced
+(index):247 Ultra-aggressive viewport forced
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A020A80344540000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A050A80344540000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0C0A70344540000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+JournOwl:1 [GroupMarkerNotSet(crbug.com/242999)!:A0A0520044540000]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.
+(index):247 Ultra-aggressive viewport forced
+client:536 WebSocket connection to 'wss://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/?token=gtOYjTqWHbc2' failed: 
+setupWebSocket @ client:536
+(anonymous) @ client:531
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=gtOYjTqWHbc2' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)
+setupWebSocket @ client:536
+fallback @ client:509
+(anonymous) @ client:555
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:534973)
+(anonymous) @ web-client-content-script.js:2
+(index):247 Ultra-aggressive viewport forced
+App.tsx:38 🔧 App initializing - pathname: / search: 
+App.tsx:39 🔧 Demo param detected: null
+App.tsx:230 🔧 Landing check - isAuthenticated: null currentView: landing specialViews: (8) ['auth', 'privacy-policy', 'terms', 'faq', 'email-confirmation', 'email-verified', 'import', 'share'] includes currentView: false
+App.tsx:232 🔧 Showing landing page - isAuthenticated: null currentView: landing specialViews includes currentView: false
+App.tsx:112 🔧 useEffect triggered - currentView: landing isAuthenticated: null
+App.tsx:140 🔧 Checking authentication status safely...
+pwa-utils.ts:72 [PWA] Service worker ready, automatic updates enabled
+pwa-utils.ts:8 [PWA] Checking for service worker updates...
+App.tsx:144 🔧 User is authenticated: djfluent
+App.tsx:230 🔧 Landing check - isAuthenticated: true currentView: dashboard specialViews: (8) ['auth', 'privacy-policy', 'terms', 'faq', 'email-confirmation', 'email-verified', 'import', 'share'] includes currentView: false
+App.tsx:112 🔧 useEffect triggered - currentView: dashboard isAuthenticated: true
+pwa-utils.ts:72 [PWA] Service worker ready, automatic updates enabled
+pwa-utils.ts:8 [PWA] Checking for service worker updates...
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:534973)
+(anonymous) @ web-client-content-script.js:2
+(index):197 PWA Debug: Checking installation eligibility...
+(index):198 PWA Debug: HTTPS: true
+(index):199 PWA Debug: Service Worker supported: true
+(index):200 PWA Debug: Manifest linked: true
+(index):247 Ultra-aggressive viewport forced
+(index):148 JournOwl SW registered:  ServiceWorkerRegistration {installing: null, waiting: null, active: ServiceWorker, navigationPreload: NavigationPreloadManager, scope: 'https://e9204149-ed5d-4c26-b940-3fdece41619d-00-18n96349e7ebd.riker.replit.dev/', …}
+JournOwl:1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+web-client-content-script.js:2 Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.
+    at HTMLIFrameElement.<anonymous> (web-client-content-script.js:2:534973)
+(anonymous) @ web-client-content-script.js:2
+(index):208 PWA Debug: beforeinstallprompt fired: false
+(index):209 PWA Debug: Global deferredPrompt available: false
+enhanced-dashboard.tsx:786 🔵 Blue camera button clicked - opening modal
+enhanced-dashboard.tsx:568 📸 Opening camera preview from enhanced dashboard, AI: false
+enhanced-dashboard.tsx:777 ✅ Camera preview opened from enhanced dashboard
+enhanced-dashboard.tsx:668 📷 Canvas.toBlob successful, blob size: 51609
+enhanced-dashboard.tsx:673 📷 FileReader finished reading blob
+enhanced-dashboard.tsx:675 📷 Base64 string created, length: 68835
+enhanced-dashboard.tsx:678 📷 Uploading to /api/photos/upload...
+VM171:1 Uncaught (in promise) SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
