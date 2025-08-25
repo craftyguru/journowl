@@ -714,9 +714,15 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                     
                     console.log('📷 About to call openUnifiedJournal with entry:', newEntry);
                     
-                    // Open unified journal with the photo immediately
-                    openUnifiedJournal(newEntry);
-                    console.log('✅ Photo captured and journal opened!', photoUrl);
+                    // Ensure we're not in camera modal mode when opening journal
+                    setShowCameraModal(false);
+                    
+                    // Open unified journal with the photo after a small delay
+                    setTimeout(() => {
+                      console.log('📷 Opening unified journal now...');
+                      openUnifiedJournal(newEntry);
+                      console.log('✅ Photo captured and journal opened!', photoUrl);
+                    }, 200);
                   } else {
                     console.error('❌ Photo storage failed:', storageResponse.status);
                   }
@@ -744,12 +750,9 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               console.error('❌ Canvas.toBlob failed - no blob created');
             }
             
-            // Cleanup after journal is opened
-            setTimeout(() => {
-              stream.getTracks().forEach(track => track.stop());
-              document.body.removeChild(overlay);
-              setShowCameraModal(false);
-            }, 50);
+            // Cleanup camera resources immediately
+            stream.getTracks().forEach(track => track.stop());
+            document.body.removeChild(overlay);
           }, 'image/jpeg', 0.8);
         }
       };
@@ -844,9 +847,21 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     }
   };
 
-  // Recording functions (simplified)
+  // Recording functions - open unified journal for voice recording
   const recordAudio = () => {
-    console.log('Audio recording started from enhanced dashboard');
+    console.log('🎤 Opening journal for voice recording...');
+    const voiceEntry = {
+      id: Date.now(),
+      title: "",
+      content: "🎤 Voice Recording",
+      mood: "😊",
+      photos: [],
+      isPrivate: false,
+      tags: ["voice"],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    openUnifiedJournal(voiceEntry);
   };
 
   // Convert entries to calendar format with varied dates
