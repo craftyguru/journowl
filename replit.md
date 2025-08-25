@@ -6,6 +6,7 @@ JournOwl is a multi-dashboard journaling application that leverages AI to provid
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 UI/UX preferences: Animated, colorful, inviting design that gets users excited to test and use the app regularly.
+**CRITICAL**: Never add debugging code (alerts, console.logs, etc.) unless explicitly requested by user. User strongly dislikes debugging code being added.
 
 ## System Architecture
 

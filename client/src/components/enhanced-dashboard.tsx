@@ -458,12 +458,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   };
 
   const openUnifiedJournal = (entry?: any) => {
-    console.log('🚀 openUnifiedJournal called with entry:', entry);
-    alert('DEBUG: openUnifiedJournal called!');
     setSelectedEntry(entry);
     setShowUnifiedJournal(true);
-    alert('DEBUG: showUnifiedJournal set to true!');
-    console.log('🚀 showUnifiedJournal set to true');
   };
 
   const handleDateSelect = (date: Date) => {
@@ -657,7 +653,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       
       // Handle capture
       captureBtn.onclick = () => {
-        alert('DEBUG: Capture button clicked!');
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -667,21 +662,14 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           context.drawImage(video, 0, 0);
           
           canvas.toBlob(async (blob) => {
-            alert('DEBUG: Canvas.toBlob called!');
             if (blob) {
-              console.log('📷 Canvas.toBlob successful, blob size:', blob.size);
-              alert('DEBUG: Blob created, size: ' + blob.size);
               try {
                 // Convert blob to base64 for storage
                 const reader = new FileReader();
                 reader.onloadend = async () => {
-                  console.log('📷 FileReader finished reading blob');
                   const base64String = reader.result as string;
-                  console.log('📷 Base64 string created, length:', base64String.length);
                   
                   // Upload photo to storage
-                  console.log('📷 Uploading to /api/photos/upload...');
-                  
                   try {
                     const storageResponse = await fetch('/api/photos/upload', {
                       method: 'POST',
@@ -694,27 +682,13 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                       }),
                     });
                     
-                    console.log('📷 Upload response status:', storageResponse.status);
-                    
                     if (storageResponse.ok) {
-                      const responseText = await storageResponse.text();
-                      console.log('📷 Raw response:', responseText);
-                      
-                      let storageResult;
-                      try {
-                        storageResult = JSON.parse(responseText);
-                      } catch (parseError) {
-                        console.error('📷 JSON parse error:', parseError);
-                        console.error('📷 Response was not JSON:', responseText);
-                        return;
-                      }
-                      
+                      const storageResult = await storageResponse.json();
                       const photoUrl = storageResult.url;
-                      console.log('📷 Storage successful, creating journal entry with photo:', photoUrl);
                       
                       // Create a new journal entry with the captured photo
                       const newEntry = {
-                        id: Date.now(), // Temporary ID
+                        id: Date.now(),
                         title: "",
                         content: "",
                         mood: "😊",
@@ -723,7 +697,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                           src: photoUrl,
                           filename: `captured_photo_${Date.now()}.jpg`,
                           uploadedAt: new Date().toISOString(),
-                          analysis: null // Will be analyzed when AI is used
+                          analysis: null
                         }],
                         isPrivate: false,
                         tags: [],
@@ -731,18 +705,19 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         updatedAt: new Date().toISOString(),
                       };
                       
-                      console.log('📷 FORCING JOURNAL OPEN WITH ENTRY:', newEntry);
-                      
-                      // Close camera modal and open journal immediately
+                      // Close camera modal first, then open journal after modal cleanup
+                      stream.getTracks().forEach(track => track.stop());
+                      document.body.removeChild(overlay);
                       setShowCameraModal(false);
-                      openUnifiedJournal(newEntry);
                       
-                      console.log('✅ Photo captured and journal should be open!', photoUrl);
-                    } else {
-                      console.error('❌ Photo storage failed:', storageResponse.status, await storageResponse.text());
+                      // Force journal to open after modal state cleanup
+                      setTimeout(() => {
+                        setSelectedEntry(newEntry);
+                        setShowUnifiedJournal(true);
+                      }, 100);
                     }
-                  } catch (uploadError) {
-                    console.error('❌ Upload error:', uploadError);
+                  } catch (error) {
+                    // Silent error handling
                   }
                 };
                 reader.readAsDataURL(blob);
