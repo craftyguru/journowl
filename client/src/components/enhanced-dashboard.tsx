@@ -543,8 +543,22 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   
   const startVideoRecording = async () => {
     setShowCameraModal(false); // Close modal first
-    // Add video recording functionality here if needed
     console.log('Video recording started from enhanced dashboard');
+    
+    // For now, create a blank journal entry to write about the video experience
+    const newEntry = {
+      id: Date.now(),
+      title: "",
+      content: "📹 I wanted to record a video moment...\n\n",
+      mood: "😊",
+      photos: [],
+      isPrivate: false,
+      tags: ["video-moment"],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    
+    openUnifiedJournal(newEntry);
   };
   
   // Create camera preview with live video feed (same as unified journal)
@@ -649,8 +663,58 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           
           canvas.toBlob(async (blob) => {
             if (blob) {
-              // For enhanced dashboard, we'll just log success for now
-              console.log('✅ Photo captured from enhanced dashboard!', blob);
+              try {
+                // Convert blob to base64 for storage
+                const reader = new FileReader();
+                reader.onloadend = async () => {
+                  const base64String = reader.result as string;
+                  
+                  // Upload photo to storage
+                  const storageResponse = await fetch('/api/photos/upload', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      image: base64String,
+                      filename: `captured_photo_${Date.now()}.jpg`
+                    }),
+                  });
+                  
+                  if (storageResponse.ok) {
+                    const storageResult = await storageResponse.json();
+                    const photoUrl = storageResult.url;
+                    
+                    // Create a new journal entry with the captured photo
+                    const newEntry = {
+                      id: Date.now(), // Temporary ID
+                      title: "",
+                      content: "",
+                      mood: "😊",
+                      photos: [{
+                        id: Date.now(),
+                        url: photoUrl,
+                        filename: `captured_photo_${Date.now()}.jpg`,
+                        uploadedAt: new Date().toISOString(),
+                        analysis: null // Will be analyzed when AI is used
+                      }],
+                      isPrivate: false,
+                      tags: [],
+                      createdAt: new Date().toISOString(),
+                      updatedAt: new Date().toISOString(),
+                    };
+                    
+                    // Open unified journal with the photo
+                    openUnifiedJournal(newEntry);
+                    
+                    console.log('✅ Photo captured and journal opened!', photoUrl);
+                  }
+                };
+                reader.readAsDataURL(blob);
+                
+              } catch (error) {
+                console.error('❌ Failed to process captured photo:', error);
+              }
               
               // Cleanup
               stream.getTracks().forEach(track => track.stop());
@@ -692,18 +756,60 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   
   // Upload from gallery function
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const result = e.target?.result;
-        if (typeof result === 'string') {
-          console.log('✅ Photo uploaded from gallery!', result);
-          // Handle the uploaded image here
-        }
-      };
-      reader.readAsDataURL(file);
+      try {
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64String = reader.result as string;
+          
+          // Upload photo to storage
+          const storageResponse = await fetch('/api/photos/upload', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              image: base64String,
+              filename: file.name
+            }),
+          });
+          
+          if (storageResponse.ok) {
+            const storageResult = await storageResponse.json();
+            const photoUrl = storageResult.url;
+            
+            // Create a new journal entry with the uploaded photo
+            const newEntry = {
+              id: Date.now(), // Temporary ID
+              title: "",
+              content: "",
+              mood: "😊",
+              photos: [{
+                id: Date.now(),
+                url: photoUrl,
+                filename: file.name,
+                uploadedAt: new Date().toISOString(),
+                analysis: null // Will be analyzed when AI is used
+              }],
+              isPrivate: false,
+              tags: [],
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            };
+            
+            // Open unified journal with the photo
+            openUnifiedJournal(newEntry);
+            
+            console.log('✅ Photo uploaded from gallery and journal opened!', photoUrl);
+          }
+        };
+        reader.readAsDataURL(file);
+        
+      } catch (error) {
+        console.error('❌ Failed to process uploaded photo:', error);
+      }
     }
   };
 
