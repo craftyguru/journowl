@@ -14,15 +14,18 @@ try {
   console.log("DATABASE_URL parse error:", e);
 }
 
-// Supabase connection with proper settings
+// Supabase pooler connection with SASL authentication fix
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
   },
-  max: 10,
-  idleTimeoutMillis: 20000,
-  connectionTimeoutMillis: 10000,
+  // Pooler-specific settings to avoid SASL issues
+  statement_timeout: 30000,
+  query_timeout: 30000,
+  max: 5, // Lower max connections for pooler
+  idleTimeoutMillis: 15000,
+  connectionTimeoutMillis: 15000,
 });
 
 export const db = drizzle(pool, { schema });
