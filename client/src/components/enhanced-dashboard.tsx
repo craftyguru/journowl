@@ -19,6 +19,7 @@ import { apiRequest } from "@/lib/queryClient";
 import InteractiveJournal from "./interactive-journal";
 import SmartJournalEditor from "./smart-journal-editor";
 import UnifiedJournal from "./unified-journal";
+import JournalBookReader from "./journal-book-reader";
 import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "./PromptPurchase";
 import UsageMeters from "./UsageMeters";
@@ -36,6 +37,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   const [activeTab, setActiveTab] = useState(initialTab);
   const [showSmartEditor, setShowSmartEditor] = useState(false);
   const [showUnifiedJournal, setShowUnifiedJournal] = useState(false);
+  const [showJournalBookReader, setShowJournalBookReader] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<any>(null);
   const [showNewGoalModal, setShowNewGoalModal] = useState(false);
   const [showGoalDetailsModal, setShowGoalDetailsModal] = useState(false);
@@ -1855,11 +1857,11 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   whileHover={{ scale: 1.02, rotateY: 5 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
-                    // Open to most recent entry if entries exist, otherwise create new
+                    // Open journal book reader for reading/browsing entries
                     if (entries && entries.length > 0) {
-                      const mostRecentEntry = entries[entries.length - 1];
-                      openUnifiedJournal(mostRecentEntry);
+                      setShowJournalBookReader(true);
                     } else {
+                      // If no entries, open editor to create first entry
                       openUnifiedJournal();
                     }
                   }}
@@ -5977,6 +5979,21 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
               setShowSmartEditor(false);
               setSelectedEntry(null);
             }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Journal Book Reader Experience */}
+      <AnimatePresence>
+        {showJournalBookReader && (
+          <JournalBookReader
+            entries={entries || []}
+            onClose={() => setShowJournalBookReader(false)}
+            onEditEntry={(entry) => {
+              setShowJournalBookReader(false);
+              openUnifiedJournal(entry);
+            }}
+            initialEntryIndex={entries?.length > 0 ? entries.length - 1 : 0}
           />
         )}
       </AnimatePresence>
