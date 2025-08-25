@@ -60,6 +60,7 @@ export const journalEntries = pgTable("journal_entries", {
   backgroundColor: text("background_color").default("#1e293b"),
   drawings: json("drawings"), // JSON array of drawing data
   photos: json("photos"), // JSON array of photo data with AI analysis
+  audioUrl: text("audio_url"), // Base64 audio data from recordings
   tags: json("tags"), // JSON array of extracted tags
   aiInsights: json("ai_insights"), // JSON object with AI analysis
   isPrivate: boolean("is_private").default(false),
@@ -289,6 +290,7 @@ export const insertJournalEntrySchema = z.object({
   tags: z.array(z.string()).optional(),
   photos: z.array(z.any()).optional(),
   drawings: z.array(z.any()).optional(),
+  audioUrl: z.string().optional(),
   location: z.string().optional(),
   weather: z.string().optional(),
 });
