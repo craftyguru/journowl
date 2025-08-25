@@ -705,16 +705,13 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         updatedAt: new Date().toISOString(),
                       };
                       
-                      // Close camera modal first, then open journal after modal cleanup
+                      // Close camera modal and open journal exactly like the journal button
                       stream.getTracks().forEach(track => track.stop());
                       document.body.removeChild(overlay);
-                      setShowCameraModal(false);
                       
-                      // Force journal to open after modal state cleanup
-                      setTimeout(() => {
-                        setSelectedEntry(newEntry);
-                        setShowUnifiedJournal(true);
-                      }, 100);
+                      // Open journal exactly like the "Open Journal Book" button
+                      setSelectedEntry(newEntry);
+                      setShowUnifiedJournal(true);
                     }
                   } catch (error) {
                     // Silent error handling
@@ -962,10 +959,9 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                 updatedAt: new Date().toISOString(),
               };
               
-              // Open journal with voice recording
-              setTimeout(() => {
-                openUnifiedJournal(voiceEntry);
-              }, 200);
+              // Open journal exactly like the "Open Journal Book" button
+              setSelectedEntry(voiceEntry);
+              setShowUnifiedJournal(true);
             }
           } catch (error) {
             console.error('Failed to upload voice recording:', error);
