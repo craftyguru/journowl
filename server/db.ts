@@ -9,10 +9,13 @@ if (!process.env.DATABASE_URL) {
 
 console.log(`Database connecting to: ${process.env.DATABASE_URL}`);
 
-// Supabase PostgreSQL connection - direct connection format
+// Supabase PostgreSQL connection with fixed SASL settings
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: true,
+  ssl: {
+    rejectUnauthorized: false,
+    checkServerIdentity: () => undefined,
+  },
   max: 10,
   idleTimeoutMillis: 20000,
   connectionTimeoutMillis: 10000,
