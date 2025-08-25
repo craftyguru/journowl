@@ -592,7 +592,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const demoUser = await createUser({
         email: 'demo@journowl.app',
         username: 'demo_user',
-        password: 'demo123',
+        password_hash: 'demo123',
         emailVerified: true,
         xp: 1500,
         level: 5,
@@ -1941,7 +1941,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         await storage.updateUser(adminUser.id, {
           username: "archimedes",
           email: "archimedes@journowl.app",
-          password: hashedPassword,
+          password_hash: hashedPassword,
           role: "admin"
         });
         res.json({ message: "Admin account updated successfully", username: "archimedes" });
@@ -1951,7 +1951,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         const newAdmin = await storage.createUser({
           email: "archimedes@journowl.app",
           username: "archimedes",
-          password: hashedPassword,
+          password_hash: hashedPassword,
           role: "admin",
           level: 99,
           xp: 999999,
@@ -3346,7 +3346,7 @@ Your story shows how every day brings new experiences and emotions, creating the
       }
       
       // Return user without sensitive data
-      const { password, ...safeUser } = user;
+      const { password_hash, ...safeUser } = user;
       res.json(safeUser);
     } catch (error: any) {
       console.error("Error fetching user:", error);
@@ -3459,7 +3459,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         isActive: false,
         email: `deleted_${userId}@journowl.com`,
         username: `deleted_user_${userId}`,
-        password: null,
+        password_hash: null,
         profileImageUrl: null,
         firstName: null,
         lastName: null,
