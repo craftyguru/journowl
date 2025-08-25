@@ -1854,7 +1854,15 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                 <motion.div
                   whileHover={{ scale: 1.02, rotateY: 5 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => openUnifiedJournal()}
+                  onClick={() => {
+                    // Open to most recent entry if entries exist, otherwise create new
+                    if (entries && entries.length > 0) {
+                      const mostRecentEntry = entries[entries.length - 1];
+                      openUnifiedJournal(mostRecentEntry);
+                    } else {
+                      openUnifiedJournal();
+                    }
+                  }}
                   className="relative cursor-pointer group"
                 >
                   {/* Journal Book */}
