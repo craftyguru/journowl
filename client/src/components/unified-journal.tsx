@@ -2798,7 +2798,7 @@ ${cleanedResponse}
                 </Button>
                 
                 {/* Audio Analysis Button */}
-                {audioRecordings.length > 0 && (
+                {(audioRecordings.length > 0 || entry?.audioUrl) && (
                   <Button 
                     onClick={async () => {
                       // Analyze the latest audio recording
