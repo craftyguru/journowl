@@ -1,26 +1,20 @@
-import { readFileSync } from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
 import pkg from "pg";
 const { Pool } = pkg;
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "@shared/schema";
 
-// resolve path relative to this file
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const caPath = process.env.SSL_CA_PATH || path.join(__dirname, "certs", "prod-ca-2021.crt");
-const ca = readFileSync(caPath, "utf8");
-
 const cs = process.env.DATABASE_URL!;
 const u = new URL(cs);
 console.log("DB host in use:", u.hostname, "port:", u.port || "(default)", "db:", u.pathname);
 
+// Test without SSL first to see if credentials work
 export const pool = new Pool({
-  connectionString: cs,                 // keep ?sslmode=require in the URL
-  ssl: { 
-    ca, 
-    rejectUnauthorized: false  // accept the certificate but don't reject chain issues
-  },
+  host: u.hostname,
+  port: parseInt(u.port || '5432'),
+  database: u.pathname.substring(1),
+  user: u.username,
+  password: u.password,
+  ssl: false, // completely disable SSL for testing
   max: 3,
   idleTimeoutMillis: 10_000,
   connectionTimeoutMillis: 10_000,
