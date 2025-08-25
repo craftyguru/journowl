@@ -665,13 +665,17 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           
           canvas.toBlob(async (blob) => {
             if (blob) {
+              console.log('📷 Canvas.toBlob successful, blob size:', blob.size);
               try {
                 // Convert blob to base64 for storage
                 const reader = new FileReader();
                 reader.onloadend = async () => {
+                  console.log('📷 FileReader finished reading blob');
                   const base64String = reader.result as string;
+                  console.log('📷 Base64 string created, length:', base64String.length);
                   
                   // Upload photo to storage
+                  console.log('📷 Uploading to /api/photos/upload...');
                   const storageResponse = await fetch('/api/photos/upload', {
                     method: 'POST',
                     headers: {
@@ -686,6 +690,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   if (storageResponse.ok) {
                     const storageResult = await storageResponse.json();
                     const photoUrl = storageResult.url;
+                    
+                    console.log('📷 Storage successful, creating journal entry with photo:', photoUrl);
                     
                     // Create a new journal entry with the captured photo
                     const newEntry = {
@@ -706,23 +712,46 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                       updatedAt: new Date().toISOString(),
                     };
                     
-                    // Open unified journal with the photo
-                    openUnifiedJournal(newEntry);
+                    console.log('📷 About to call openUnifiedJournal with entry:', newEntry);
                     
-                    console.log('✅ Photo captured and journal opened!', photoUrl);
+                    // Open unified journal with the photo
+                    try {
+                      openUnifiedJournal(newEntry);
+                      console.log('✅ Photo captured and journal opened!', photoUrl);
+                    } catch (error) {
+                      console.error('❌ Error opening unified journal:', error);
+                    }
+                  } else {
+                    console.error('❌ Photo storage failed:', storageResponse.status);
                   }
                 };
                 reader.readAsDataURL(blob);
                 
               } catch (error) {
                 console.error('❌ Failed to process captured photo:', error);
+                // Try to open journal anyway for debugging
+                console.log('📷 Trying to open journal anyway for debugging...');
+                const testEntry = {
+                  id: Date.now(),
+                  title: "Test Entry",
+                  content: "Photo capture failed but testing journal opening",
+                  mood: "😊",
+                  photos: [],
+                  isPrivate: false,
+                  tags: [],
+                  createdAt: new Date().toISOString(),
+                  updatedAt: new Date().toISOString(),
+                };
+                openUnifiedJournal(testEntry);
               }
-              
-              // Cleanup
-              stream.getTracks().forEach(track => track.stop());
-              document.body.removeChild(overlay);
-              setShowCameraModal(false);
+            } else {
+              console.error('❌ Canvas.toBlob failed - no blob created');
             }
+            
+            // Cleanup - moved outside if/else to always run
+            stream.getTracks().forEach(track => track.stop());
+            document.body.removeChild(overlay);
+            setShowCameraModal(false);
           }, 'image/jpeg', 0.8);
         }
       };
