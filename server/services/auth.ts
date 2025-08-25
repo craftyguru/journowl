@@ -18,7 +18,7 @@ export async function createUser(userData: Partial<User>) {
   // ⬇️ write to the real column name
   return await storage.createUser({
     ...userData,
-    password: hashedPassword,      // was password_hash
+    password_hash: hashedPassword,
   } as any);
 }
 
@@ -31,8 +31,7 @@ export async function authenticateUser(identifier: string, password: string) {
 
   if (!user) throw new Error("Invalid credentials");
 
-  // ⬇️ read the real column name
-  const hash = (user as any).password;     // was user.password_hash
+  const hash = user.password_hash;
   console.log("User found:", user.username, user.email, "hasPassword:", !!hash);
 
   const isValid = hash ? await verifyPassword(password, hash) : false;
@@ -52,7 +51,7 @@ export async function createAdminUser() {
   return await storage.createUser({
     email: "archimedes@journowl.app",
     username: "archimedes",
-    password: hashedPassword,      // was password_hash
+    password_hash: hashedPassword,
     role: "admin",
     level: 99,
     xp: 999999,
