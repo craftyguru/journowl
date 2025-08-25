@@ -780,7 +780,32 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
 
   // Enhanced Camera - Using same modal system as orange button
   const capturePhoto = () => {
+    console.log('🔵 Blue camera button clicked - opening modal');
     setShowCameraModal(true); // Open Camera Options modal
+  };
+
+  // Test function to check if journal opens
+  const testJournalOpen = () => {
+    console.log('🧪 Testing journal open...');
+    const testEntry = {
+      id: Date.now(),
+      title: "Test Entry",
+      content: "This is a test to see if the journal opens",
+      mood: "😊",
+      photos: [{
+        id: 1,
+        src: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzBkYTQ4NyIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTVDwvdGV4dD48L3N2Zz4=",
+        filename: "test.svg",
+        uploadedAt: new Date().toISOString(),
+        analysis: null
+      }],
+      isPrivate: false,
+      tags: ["test"],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    console.log('🧪 Calling openUnifiedJournal with test entry:', testEntry);
+    openUnifiedJournal(testEntry);
   };
 
   // File input ref for gallery uploads  
@@ -5933,6 +5958,17 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
             title="Take Photo"
           >
             📸
+          </motion.button>
+          
+          {/* Test button for debugging - Remove later */}
+          <motion.button
+            onClick={testJournalOpen}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-12 h-12 bg-purple-500 hover:bg-purple-600 rounded-full shadow-lg flex items-center justify-center text-white text-sm border-2 border-white transition-all duration-200"
+            title="Test Journal"
+          >
+            🧪
           </motion.button>
           
           <motion.button
