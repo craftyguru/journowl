@@ -687,8 +687,16 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   const capturePhoto = () => {
     console.log('🔵 Blue camera button clicked!');
     console.log('🔵 Opening Camera Options modal...');
+    console.log('🔵 showSmartEditor:', showSmartEditor, 'showUnifiedJournal:', showUnifiedJournal);
     setShowCameraModal(true); // Open Camera Options modal
   };
+  
+  // Debug: Log visibility conditions on render
+  console.log('🔍 Button visibility check:', {
+    showSmartEditor,
+    showUnifiedJournal,
+    buttonsVisible: !showSmartEditor && !showUnifiedJournal
+  });
 
   // File input ref for gallery uploads  
   const fileInputRef = React.useRef<HTMLInputElement>(null);
