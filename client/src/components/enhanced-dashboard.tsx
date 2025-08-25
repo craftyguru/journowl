@@ -687,7 +687,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     // Video recording will be handled by unified journal
   };
 
-  const handleFileUpload = (files: FileList) => {
+  const handleModalFileUpload = (files: FileList) => {
     setShowCameraModal(false);
     setShowUnifiedJournal(true);
     // File handling will be done by unified journal
@@ -886,11 +886,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
 
 
 
-  // File input ref for gallery uploads  
-  const fileInputRef = React.useRef<HTMLInputElement>(null);
-  
-  // Upload from gallery function
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  // Upload from gallery function (using existing fileInputRef)
+  const handleGalleryFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && file.type.startsWith('image/')) {
       try {
@@ -6646,7 +6643,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
         accept="image/*,video/*"
         multiple
         className="hidden"
-        onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+        onChange={(e) => e.target.files && handleModalFileUpload(e.target.files)}
       />
 
     </div>
