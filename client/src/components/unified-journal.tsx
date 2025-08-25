@@ -2035,7 +2035,11 @@ ${cleanedResponse}
             </div>
 
                 {/* Rich Text Editor - Simplified on Mobile */}
-                <div className="flex-1 min-h-0">
+                <div className="flex-1 min-h-0" style={{
+                  fontFamily: selectedFont,
+                  fontSize: `${fontSize}px`,
+                  color: textColor
+                }}>
                   <MDEditor
                     value={content}
                     onChange={(val) => setContent(val || "")}
@@ -2044,9 +2048,9 @@ ${cleanedResponse}
                     data-color-mode="light"
                     height="100%"
                     style={{
-                      fontFamily: `${selectedFont} !important`,
-                      fontSize: `${fontSize}px !important`,
-                      color: `${textColor} !important`,
+                      fontFamily: 'inherit',
+                      fontSize: 'inherit',
+                      color: 'inherit',
                       height: '100%'
                     }}
                   />
