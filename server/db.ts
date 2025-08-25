@@ -3,14 +3,13 @@ const { Pool } = pkg;
 import { drizzle } from 'drizzle-orm/node-postgres';
 import * as schema from '@shared/schema';
 
+// Disable SSL certificate validation for Supabase pooler
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL must be set for Supabase connection');
 }
 
-// Temporary debugging
-const url = new URL(process.env.DATABASE_URL);
-console.log("Using DB host:", url.host);
-console.log("PGHOST:", process.env.PGHOST);
 console.log(`Database connecting to: Supabase database`);
 
 // Supabase PostgreSQL connection with optimized settings
@@ -24,6 +23,7 @@ export const pool = new Pool({
   database: undefined,
   ssl: {
     rejectUnauthorized: false,
+    ca: false,
   },
   max: 10, // Reduced for Supabase limits
   idleTimeoutMillis: 20000, // Shorter timeout

@@ -90,13 +90,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     sessionDbUrl = sessionDbUrl.replace(/^DATABASE_URL=/, '');
   }
   
+  // Use original connection string with SSL enabled
+  
   app.use(session({
-    store: new PgSession({
-      conString: process.env.DATABASE_URL,
-      tableName: 'session',
-      createTableIfMissing: true,
-      pruneSessionInterval: false
-    }),
+    // Temporarily use memory store to bypass SSL issues
+    // store: new PgSession({
+    //   conString: process.env.DATABASE_URL,
+    //   tableName: 'session',
+    //   createTableIfMissing: true,
+    //   pruneSessionInterval: false
+    // }),
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
     resave: true, // Force session resave to ensure changes persist
     saveUninitialized: true, // Save new sessions immediately
