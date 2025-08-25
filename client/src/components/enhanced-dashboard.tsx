@@ -258,7 +258,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     wordsThisWeek: 0
   };
 
-  const entries: JournalEntry[] = entriesResponse || [];
+  // Sort entries by creation date (newest first) to ensure proper ordering
+  const entries: JournalEntry[] = (entriesResponse || []).sort((a, b) => 
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
   // Fresh achievements - all locked until earned
   const defaultAchievements = [
     // Common achievements (easy to get) - ALL START LOCKED
@@ -1906,7 +1909,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                             <div className="text-sm opacity-90">Entries</div>
                             {(entries?.length > 0 || stats?.totalEntries > 0) && (
                               <div className="text-xs opacity-75 mt-2">
-                                Latest: {entries?.length > 0 ? new Date(entries[entries.length - 1]?.createdAt).toLocaleDateString() : 'Today'}
+                                Latest: {entries?.length > 0 ? new Date(entries[0]?.createdAt).toLocaleDateString() : 'Today'}
                               </div>
                             )}
                           </div>
@@ -5998,7 +6001,7 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
               setShowJournalBookReader(false);
               openUnifiedJournal(entry);
             }}
-            initialEntryIndex={entries?.length > 0 ? entries.length - 1 : 0}
+            initialEntryIndex={0}
           />
         )}
       </AnimatePresence>

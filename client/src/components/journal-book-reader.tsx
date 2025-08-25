@@ -43,8 +43,8 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
   // Update to show latest entry when entries change (new entries added)
   useEffect(() => {
     if (entries.length > 0 && !searchQuery.trim()) {
-      // Show most recent entry when new entries are added
-      setCurrentPageIndex(entries.length - 1);
+      // Show most recent entry (now entries[0] since sorted newest first)
+      setCurrentPageIndex(0);
     }
   }, [entries.length, searchQuery]);
 
