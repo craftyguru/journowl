@@ -1849,193 +1849,149 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                 </CardContent>
               </Card>
 
-              {/* Content Creation Tools */}
-              <Card className="bg-gradient-to-br from-emerald-900/60 to-teal-900/60 backdrop-blur-lg border border-emerald-500/20 shadow-2xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <Brush className="w-5 h-5 text-emerald-400" />
-                    Content Creation Tools
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-semibold text-emerald-300 mb-2">📝 Writing Modes</h4>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
-                        <Type className="w-4 h-4 mr-2" />
-                        Rich Text Editor
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
-                        <BookOpen className="w-4 h-4 mr-2" />
-                        Markdown Mode
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
-                        <Brush className="w-4 h-4 mr-2" />
-                        Drawing Canvas
-                      </Button>
+              {/* My Journal Book - Interactive */}
+              <div className="flex justify-center py-8">
+                <motion.div
+                  whileHover={{ scale: 1.02, rotateY: 5 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => openUnifiedJournal()}
+                  className="relative cursor-pointer group"
+                >
+                  {/* Journal Book */}
+                  <div className="relative w-80 h-96 mx-auto">
+                    {/* Book Shadow */}
+                    <div className="absolute inset-0 bg-black/30 rounded-r-2xl transform rotate-1 translate-x-2 translate-y-2" />
+                    
+                    {/* Main Book Cover */}
+                    <div className="relative w-full h-full bg-gradient-to-br from-amber-600 via-orange-700 to-amber-800 rounded-r-2xl border-l-8 border-amber-900 shadow-2xl overflow-hidden">
+                      {/* Book Texture */}
+                      <div 
+                        className="absolute inset-0 opacity-20"
+                        style={{
+                          backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,0 Q50,25 100,0 T200,0 L200,100 Q150,75 100,100 T0,100 Z' fill='%23ffffff' opacity='0.1'/%3E%3C/svg%3E")`,
+                          backgroundSize: '50px 50px'
+                        }}
+                      />
+                      
+                      {/* Cover Design */}
+                      <div className="relative p-8 h-full flex flex-col justify-between">
+                        {/* Title Area */}
+                        <div className="text-center">
+                          <div className="text-4xl mb-4">📖</div>
+                          <h2 className="text-2xl font-bold text-white drop-shadow-lg" style={{ fontFamily: 'Rock Salt, cursive' }}>
+                            My Journal
+                          </h2>
+                          <div className="w-16 h-1 bg-white/50 mx-auto mt-3 rounded-full" />
+                        </div>
+
+                        {/* Stats Badge */}
+                        <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
+                          <div className="text-center text-white">
+                            <div className="text-2xl font-bold">{entries?.length || 0}</div>
+                            <div className="text-sm opacity-90">Entries</div>
+                            {entries?.length > 0 && (
+                              <div className="text-xs opacity-75 mt-2">
+                                Latest: {new Date(entries[entries.length - 1]?.createdAt).toLocaleDateString()}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Decorative Corner */}
+                        <div className="absolute top-4 right-4 w-8 h-8 border-2 border-white/30 rounded-full flex items-center justify-center">
+                          <div className="w-2 h-2 bg-white/50 rounded-full" />
+                        </div>
+                      </div>
+
+                      {/* Bookmark */}
+                      <div className="absolute top-0 right-6 w-6 h-20 bg-red-600 border-2 border-red-700 shadow-lg transform -translate-y-2">
+                        <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-2">
+                          <div className="w-0 h-0 border-l-3 border-r-3 border-t-4 border-l-transparent border-r-transparent border-t-red-600" />
+                        </div>
+                      </div>
+
+                      {/* Pages Effect */}
+                      <div className="absolute right-0 top-2 bottom-2 w-1 bg-white/20" />
+                      <div className="absolute right-1 top-3 bottom-3 w-1 bg-white/15" />
+                      <div className="absolute right-2 top-4 bottom-4 w-1 bg-white/10" />
                     </div>
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-semibold text-emerald-300 mb-2">📊 Templates</h4>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
-                        <Heart className="w-4 h-4 mr-2" />
-                        Daily Reflection
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
-                        <Target className="w-4 h-4 mr-2" />
-                        Goal Planning
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
-                        <Brain className="w-4 h-4 mr-2" />
-                        Dream Journal
-                      </Button>
-                    </div>
-                    <div className="space-y-3">
-                      <h4 className="text-sm font-semibold text-emerald-300 mb-2">🎨 Media Tools</h4>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Upload Photos
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={recordAudio}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Voice Recording
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-emerald-500/10" onClick={() => openUnifiedJournal()}>
-                        <Plus className="w-4 h-4 mr-2" />
-                        File Attachments
-                      </Button>
-                    </div>
+
+                    {/* Binding Rings */}
+                    <div className="absolute left-0 top-1/4 w-3 h-6 bg-amber-900 rounded-r-full" />
+                    <div className="absolute left-0 top-1/2 w-3 h-6 bg-amber-900 rounded-r-full" />
+                    <div className="absolute left-0 top-3/4 w-3 h-6 bg-amber-900 rounded-r-full" />
                   </div>
-                </CardContent>
-              </Card>
 
-              {/* Organization & Management */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="bg-gradient-to-br from-blue-900/60 to-cyan-900/60 backdrop-blur-lg border border-blue-500/20 shadow-2xl">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-white">
-                      <Star className="w-5 h-5 text-blue-400" />
-                      Organization Tools
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-500/10" onClick={() => setActiveTab('calendar')}>
-                      <Calendar className="w-4 h-4 mr-2" />
-                      View Entry Calendar
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-500/10" onClick={() => openUnifiedJournal()}>
-                      <Star className="w-4 h-4 mr-2" />
-                      Bookmark Favorites
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-500/10" onClick={() => openUnifiedJournal()}>
-                      <Trophy className="w-4 h-4 mr-2" />
-                      Tag Management
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-blue-500/10" onClick={() => openUnifiedJournal()}>
-                      <BookOpen className="w-4 h-4 mr-2" />
-                      Search Entries
-                    </Button>
-                  </CardContent>
-                </Card>
+                  {/* Hover Effect Text */}
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ 
+                      opacity: 1, 
+                      y: 0,
+                      transition: { delay: 0.5, duration: 0.3 }
+                    }}
+                    className="text-center mt-6"
+                  >
+                    <p className="text-white/90 text-lg font-medium">Click to open your journal</p>
+                    <p className="text-white/70 text-sm">Flip through your memories like a real book</p>
+                    
+                    {/* Action Indicator */}
+                    <motion.div
+                      animate={{ 
+                        scale: [1, 1.1, 1],
+                        opacity: [0.7, 1, 0.7]
+                      }}
+                      transition={{ 
+                        duration: 2, 
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
+                      className="mt-3 text-amber-300"
+                    >
+                      ✨ Click Here ✨
+                    </motion.div>
+                  </motion.div>
 
-                <Card className="bg-gradient-to-br from-orange-900/60 to-red-900/60 backdrop-blur-lg border border-orange-500/20 shadow-2xl">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-white">
-                      <TrendingUp className="w-5 h-5 text-orange-400" />
-                      Productivity Features
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-orange-500/10" onClick={() => setActiveTab('goals')}>
-                      <Target className="w-4 h-4 mr-2" />
-                      Writing Goals
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-orange-500/10" onClick={() => setActiveTab('achievements')}>
-                      <Award className="w-4 h-4 mr-2" />
-                      Track Streaks
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-orange-500/10" onClick={() => openUnifiedJournal()}>
-                      <Clock className="w-4 h-4 mr-2" />
-                      Writing Timer
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start text-white hover:bg-orange-500/10" onClick={() => setActiveTab('analytics')}>
-                      <BarChart3 className="w-4 h-4 mr-2" />
-                      Progress Analytics
-                    </Button>
-                  </CardContent>
-                </Card>
+                  {/* Quick Preview Cards */}
+                  {entries?.length > 0 && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ 
+                        opacity: 1, 
+                        scale: 1,
+                        transition: { delay: 0.8, duration: 0.4 }
+                      }}
+                      className="absolute -left-16 top-20 w-12 h-16 bg-white/90 rounded shadow-lg transform -rotate-12 border border-amber-200"
+                    >
+                      <div className="p-2 text-xs text-gray-600 truncate">
+                        {entries[entries.length - 1]?.title || "Recent"}
+                      </div>
+                      <div className="text-lg text-center">
+                        {entries[entries.length - 1]?.mood || "😊"}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {entries?.length > 1 && (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ 
+                        opacity: 1, 
+                        scale: 1,
+                        transition: { delay: 1, duration: 0.4 }
+                      }}
+                      className="absolute -right-16 top-32 w-12 h-16 bg-white/80 rounded shadow-lg transform rotate-12 border border-amber-200"
+                    >
+                      <div className="p-2 text-xs text-gray-600 truncate">
+                        {entries[entries.length - 2]?.title || "Entry"}
+                      </div>
+                      <div className="text-lg text-center">
+                        {entries[entries.length - 2]?.mood || "🤔"}
+                      </div>
+                    </motion.div>
+                  )}
+                </motion.div>
               </div>
-
-              {/* Export & Sharing Options */}
-              <Card className="bg-gradient-to-br from-violet-900/60 to-purple-900/60 backdrop-blur-lg border border-violet-500/20 shadow-2xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <Gift className="w-5 h-5 text-violet-400" />
-                    Export & Sharing Tools
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <Button variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => openUnifiedJournal()}>
-                      <BookOpen className="w-4 h-4 mr-2" />
-                      Export PDF
-                    </Button>
-                    <Button variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => openUnifiedJournal()}>
-                      <Type className="w-4 h-4 mr-2" />
-                      Export Text
-                    </Button>
-                    <Button variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => openUnifiedJournal()}>
-                      <Star className="w-4 h-4 mr-2" />
-                      Create Book
-                    </Button>
-                    <Button variant="outline" className="border-violet-500/30 text-violet-300 hover:bg-violet-500/10" onClick={() => openUnifiedJournal()}>
-                      <Shield className="w-4 h-4 mr-2" />
-                      Backup Data
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* AI-Powered Features */}
-              <Card className="bg-gradient-to-br from-pink-900/60 to-rose-900/60 backdrop-blur-lg border border-pink-500/20 shadow-2xl">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-white">
-                    <Brain className="w-5 h-5 text-pink-400" />
-                    AI-Powered Features
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-3">
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => setActiveTab('insights')}>
-                        <Lightbulb className="w-4 h-4 mr-2" />
-                        AI Writing Insights
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => openUnifiedJournal()}>
-                        <Sparkles className="w-4 h-4 mr-2" />
-                        Smart Prompts
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => openUnifiedJournal()}>
-                        <Brain className="w-4 h-4 mr-2" />
-                        Mood Analysis
-                      </Button>
-                    </div>
-                    <div className="space-y-3">
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => setActiveTab('stories')}>
-                        <BookOpen className="w-4 h-4 mr-2" />
-                        AI Story Generator
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => openUnifiedJournal()}>
-                        <Type className="w-4 h-4 mr-2" />
-                        Writing Assistant
-                      </Button>
-                      <Button variant="ghost" className="w-full justify-start text-white hover:bg-pink-500/10" onClick={() => openUnifiedJournal()}>
-                        <Target className="w-4 h-4 mr-2" />
-                        Auto-Tagging
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
 
               {/* Recent Entries Quick Access */}
               <Card className="bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-lg border border-gray-500/20 shadow-2xl">
