@@ -2588,15 +2588,7 @@ ${cleanedResponse}
             >
               <div className="relative flex justify-center">
                 <Button
-                  onClick={showAiChat ? capturePhotoForAI : () => {
-                    // Show options menu for camera or upload
-                    const choice = window.confirm("Camera (OK) or Upload from Gallery (Cancel)?");
-                    if (choice) {
-                      setShowCameraModal(true);
-                    } else {
-                      fileInputRef.current?.click();
-                    }
-                  }}
+                  onClick={() => setShowCameraModal(true)}
                   className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-2xl border-2 sm:border-4 border-white ${
                     showAiChat
                       ? 'bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600'
