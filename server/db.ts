@@ -1,21 +1,23 @@
+import { readFileSync } from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import pkg from "pg";
 const { Pool } = pkg;
 import { drizzle } from "drizzle-orm/node-postgres";
 import * as schema from "@shared/schema";
 
+// resolve path relative to this file
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const caPath = process.env.SSL_CA_PATH || path.join(__dirname, "certs", "prod-ca-2021.crt");
+const ca = readFileSync(caPath, "utf8");
+
 const cs = process.env.DATABASE_URL!;
 const u = new URL(cs);
 console.log("DB host in use:", u.hostname, "port:", u.port || "(default)", "db:", u.pathname);
 
-// Parse the connection string manually to handle SSL properly
-const url = new URL(cs);
 export const pool = new Pool({
-  host: url.hostname,
-  port: parseInt(url.port || '5432'),
-  database: url.pathname.substring(1),
-  user: url.username,
-  password: url.password,
-  ssl: false, // Try without SSL first
+  connectionString: cs,                 // keep ?sslmode=require in the URL
+  ssl: { ca, rejectUnauthorized: true }, // trust Supabase CA and verify
   max: 3,
   idleTimeoutMillis: 10_000,
   connectionTimeoutMillis: 10_000,
