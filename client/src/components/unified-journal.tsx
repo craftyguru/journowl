@@ -71,26 +71,12 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [tags, setTags] = useState<string[]>(entry?.tags || []);
   const [photos, setPhotos] = useState<any[]>(entry?.photos || []);
   
-  // Debug: Log when entry changes to see if photos are included
+  // Update photos when entry changes
   useEffect(() => {
     if (entry) {
-      console.log('🖼️ UNIFIED JOURNAL - Entry received:', {
-        title: entry.title,
-        hasPhotos: !!entry.photos,
-        photoCount: entry.photos?.length || 0,
-        photos: entry.photos
-      });
       setPhotos(entry.photos || []);
     }
   }, [entry]);
-
-  // Debug: Log when photos state changes
-  useEffect(() => {
-    console.log('🖼️ UNIFIED JOURNAL - Photos state updated:', {
-      photoCount: photos.length,
-      photos: photos
-    });
-  }, [photos]);
   const [drawings, setDrawings] = useState<any[]>(entry?.drawings || []);
   const [selectedPhoto, setSelectedPhoto] = useState<any>(null);
   const [photoCanvasRef, setPhotoCanvasRef] = useState<HTMLCanvasElement | null>(null);
@@ -2290,16 +2276,9 @@ ${cleanedResponse}
                               }`}
                               onClick={() => setSelectedPhoto({ ...photo, index })}
                               onError={(e) => {
-                                console.error('❌ Photo failed to load:', {
-                                  photoId: photo.id,
-                                  src: photo.src,
-                                  filename: photo.filename,
-                                  error: e
-                                });
                                 (e.target as HTMLImageElement).style.display = 'none';
                               }}
                               onLoad={() => {
-                                console.log('✅ Photo loaded successfully:', photo.id);
                               }}
                             />
                             {photo.analysis && (
