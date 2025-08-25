@@ -2813,7 +2813,86 @@ ${cleanedResponse}
                 )}
                 {photos.length > 0 && (
                   <Button 
-                    onClick={() => sendToAi("Tell me more about my photos and suggest related writing topics")}
+                    onClick={async () => {
+                      // Analyze the latest photo
+                      const latestPhoto = photos[photos.length - 1];
+                      if (latestPhoto?.src) {
+                        // Show analyzing message
+                        setAiMessages(prev => [...prev, {
+                          type: 'user',
+                          message: '📸 Please analyze this photo and tell me what you see!',
+                          photoUrl: latestPhoto.src
+                        }]);
+                        
+                        setAiMessages(prev => [...prev, {
+                          type: 'ai',
+                          message: '🔍 Analyzing your photo in detail...'
+                        }]);
+
+                        try {
+                          const isStorageUrl = latestPhoto.src && !latestPhoto.src.startsWith('data:');
+                          
+                          const response = await fetch('/api/ai/analyze-photo', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify({ 
+                              photoUrl: isStorageUrl ? latestPhoto.src : undefined,
+                              base64Image: isStorageUrl ? undefined : latestPhoto.src.split(',')[1],
+                              currentMood: mood 
+                            })
+                          });
+
+                          if (response.ok) {
+                            const analysis = await response.json();
+                            
+                            // Update photo with analysis
+                            setPhotos(prev => prev.map(p => 
+                              p.id === latestPhoto.id ? { ...p, analysis } : p
+                            ));
+                            
+                            // Add detailed analysis message
+                            const analysisMessage = `📸 **Photo Analysis Complete!**
+
+🖼️ **What I see:** ${analysis.description}
+
+🎭 **Emotions & Mood:** ${analysis.emotions?.join(', ') || 'Peaceful, content'}
+
+👥 **People:** ${analysis.people?.length > 0 ? analysis.people.join(', ') : 'No people detected'}
+
+🏷️ **Key Objects:** ${analysis.objects?.join(', ') || 'Various interesting elements'}
+
+🌈 **Colors & Setting:** ${analysis.colors || 'Rich, vibrant tones'}
+
+✨ **Writing Prompts for you:**
+${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${prompt}`).join('\n') || '1. What story does this image tell?\n2. How does this moment make you feel?\n3. What memories does this bring up?'}
+
+💭 Ready to write about this photo? I can help you craft the perfect journal entry!`;
+
+                            setAiMessages(prev => [...prev.slice(0, -1), {
+                              type: 'ai',
+                              message: analysisMessage
+                            }]);
+
+                            // Add AI-generated tags
+                            if (analysis.tags) {
+                              setTags(prev => [...new Set([...prev, ...analysis.tags])]);
+                            }
+                          } else {
+                            setAiMessages(prev => [...prev.slice(0, -1), {
+                              type: 'ai',
+                              message: '😅 I had trouble analyzing your photo, but it looks amazing! Tell me what you see and I can help you write about it.'
+                            }]);
+                          }
+                        } catch (error) {
+                          console.error('Photo analysis failed:', error);
+                          setAiMessages(prev => [...prev.slice(0, -1), {
+                            type: 'ai',
+                            message: '🤔 Photo analysis isn\'t working right now, but I can still see your photo! Describe what\'s in it and I\'ll help you write a great journal entry.'
+                          }]);
+                        }
+                      }
+                    }}
                     variant="outline" 
                     size="sm"
                     className="text-xs"
