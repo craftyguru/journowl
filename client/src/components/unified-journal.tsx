@@ -5,7 +5,7 @@ import {
   MessageCircle, MessageSquare, Star, Heart, BookOpen, Settings, Upload,
   Bold, Italic, Underline, List, Quote, Brush, Eraser,
   Undo, Redo, Download, Share, Plus, X, Mic, MicOff, Send,
-  Wand2, Eye, Brain, Lightbulb
+  Wand2, Eye, Brain, Lightbulb, Video
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import MDEditor from '@uiw/react-md-editor';
@@ -1324,10 +1324,12 @@ ${cleanedResponse}
     }]);
   };
 
-  const handlePhotoUpload = useCallback(async (files: FileList) => {
+  const handleMediaUpload = useCallback(async (files: FileList) => {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      if (!file.type.startsWith('image/')) continue;
+      
+      // Handle images
+      if (file.type.startsWith('image/')) {
 
       const reader = new FileReader();
       reader.onload = async (e) => {
@@ -1488,8 +1490,63 @@ ${cleanedResponse}
       };
 
       reader.readAsDataURL(file);
+      }
+      
+      // Handle videos
+      else if (file.type.startsWith('video/')) {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const base64 = e.target?.result as string;
+          console.log('🎥 Video loaded, base64 length:', base64?.length);
+          
+          // Create video element to get duration
+          const video = document.createElement('video');
+          video.src = base64;
+          
+          video.onloadedmetadata = () => {
+            const duration = Math.floor(video.duration);
+            
+            const newVideoRecording = {
+              url: base64,
+              duration: duration,
+              timestamp: new Date(),
+              type: 'video' as const
+            };
+            
+            setVideoRecordings(prev => [...prev, newVideoRecording]);
+            
+            if (showAiChat) {
+              setAiMessages(prev => [...prev, {
+                type: 'user',
+                message: `I just uploaded a video! (${duration}s)`
+              }]);
+              
+              setAiMessages(prev => [...prev, {
+                type: 'ai',
+                message: '🎥 Great! I can see your video upload. Videos can capture so much emotion and movement - what was happening in this moment?'
+              }]);
+            }
+            
+            console.log('🎥 Video added to recordings');
+          };
+          
+          video.onerror = () => {
+            console.error('❌ Error loading video metadata');
+            // Still add the video even if we can't get metadata
+            const newVideoRecording = {
+              url: base64,
+              duration: 0,
+              timestamp: new Date(),
+              type: 'video' as const
+            };
+            
+            setVideoRecordings(prev => [...prev, newVideoRecording]);
+          };
+        };
+        reader.readAsDataURL(file);
+      }
     }
-  }, [mood]);
+  }, [mood, showAiChat, videoRecordings]);
 
   const handleSave = useCallback(() => {
     // Prevent multiple saves - debounce with immediate execution
@@ -2237,12 +2294,12 @@ ${cleanedResponse}
                     ref={fileInputRef}
                     type="file"
                     multiple
-                    accept="image/*"
+                    accept="image/*,video/*"
                     onChange={(e) => {
                       console.log('🔥 File input changed:', e.target.files);
                       console.log('🔥 Files length:', e.target.files?.length);
                       if (e.target.files) {
-                        handlePhotoUpload(e.target.files);
+                        handleMediaUpload(e.target.files);
                       }
                     }}
                     className="hidden"
@@ -2383,7 +2440,7 @@ ${cleanedResponse}
                       onClick={() => fileInputRef.current?.click()}
                     >
                       <Camera className="w-6 h-6 mx-auto text-gray-400 mb-1" />
-                      <p className="text-gray-500 text-xs">Upload photos</p>
+                      <p className="text-gray-500 text-xs">Upload photos & videos</p>
                     </div>
                   )}
 
@@ -3156,10 +3213,13 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                 className="flex items-center gap-3 h-12 justify-start bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
                 variant="outline"
               >
-                <Upload className="w-5 h-5" />
+                <div className="flex items-center gap-1">
+                  <Upload className="w-4 h-4" />
+                  <Video className="w-4 h-4" />
+                </div>
                 <div className="text-left">
                   <div className="font-semibold">Upload from Gallery</div>
-                  <div className="text-xs opacity-75">Choose existing photos</div>
+                  <div className="text-xs opacity-75">Choose photos & videos</div>
                 </div>
               </Button>
             </div>
