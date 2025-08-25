@@ -458,8 +458,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   };
 
   const openUnifiedJournal = (entry?: any) => {
+    console.log('🚀 openUnifiedJournal called with entry:', entry);
     setSelectedEntry(entry);
     setShowUnifiedJournal(true);
+    console.log('🚀 showUnifiedJournal set to true');
   };
 
   const handleDateSelect = (date: Date) => {
@@ -693,7 +695,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                       mood: "😊",
                       photos: [{
                         id: Date.now(),
-                        url: photoUrl,
+                        src: photoUrl,
                         filename: `captured_photo_${Date.now()}.jpg`,
                         uploadedAt: new Date().toISOString(),
                         analysis: null // Will be analyzed when AI is used
@@ -788,7 +790,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               mood: "😊",
               photos: [{
                 id: Date.now(),
-                url: photoUrl,
+                src: photoUrl,
                 filename: file.name,
                 uploadedAt: new Date().toISOString(),
                 analysis: null // Will be analyzed when AI is used
