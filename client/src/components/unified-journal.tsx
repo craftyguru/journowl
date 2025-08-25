@@ -763,7 +763,8 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
 
   // Unified camera function with live preview
   const takeCameraPhoto = () => {
-    openCameraPreview(false);
+    setShowCameraModal(false); // Close modal first
+    setTimeout(() => openCameraPreview(false), 100); // Small delay to ensure modal closes
   };
 
   // Enhanced camera function for AI
@@ -1104,6 +1105,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
   };
 
   const startVideoRecording = async () => {
+    setShowCameraModal(false); // Close modal first
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { facingMode: 'environment' }, 
