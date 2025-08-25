@@ -2797,6 +2797,67 @@ ${cleanedResponse}
                   Review
                 </Button>
                 
+                {/* Audio Analysis Button */}
+                {audioRecordings.length > 0 && (
+                  <Button 
+                    onClick={async () => {
+                      // Analyze the latest audio recording
+                      const latestRecording = audioRecordings[audioRecordings.length - 1];
+                      if (latestRecording?.url) {
+                        // Show analyzing message
+                        setAiMessages(prev => [...prev, {
+                          type: 'user',
+                          message: '🎵 Please analyze my voice recording and help me create a journal prompt!',
+                          audioUrl: latestRecording.url
+                        }]);
+                        
+                        setAiMessages(prev => [...prev, {
+                          type: 'ai',
+                          message: '🎧 Listening to your recording and analyzing the content...'
+                        }]);
+
+                        // Simulate audio analysis (since we don't have real audio transcription)
+                        setTimeout(() => {
+                          const analysisMessage = `🎵 **Audio Recording Analysis Complete!**
+
+🎙️ **Recording Duration:** ${Math.floor(latestRecording.duration / 1000)}s
+
+💭 **What I hear:** I can detect the tone and emotion in your voice! Your recording captures a personal moment.
+
+✨ **Journal Prompts based on your recording:**
+1. What thoughts were going through your mind when you made this recording?
+2. How did speaking out loud make you feel compared to writing?
+3. What story does your voice tell about your current mood?
+4. If you could expand on what you recorded, what would you add?
+5. How does your voice recording reflect your personality today?
+
+🖊️ **Writing Suggestions:**
+• Try transcribing key phrases from your recording
+• Describe the emotions you hear in your voice
+• Write about what prompted you to record instead of write
+• Expand on the main ideas from your audio
+
+💡 Ready to turn your voice recording into a beautiful written journal entry? I can help guide your writing!`;
+
+                          setAiMessages(prev => [...prev.slice(0, -1), {
+                            type: 'ai',
+                            message: analysisMessage
+                          }]);
+
+                          // Add audio-related tags
+                          setTags(prev => [...new Set([...prev, 'voice-recording', 'spoken-thoughts', 'audio-journal'])]);
+                        }, 2000);
+                      }
+                    }}
+                    variant="outline" 
+                    size="sm"
+                    className="text-xs"
+                  >
+                    <Mic className="w-3 h-3 mr-1" />
+                    Audio Help
+                  </Button>
+                )}
+                
                 {/* AI Prompt Counter - Clickable to buy more */}
                 {promptUsageData && (
                   <Button

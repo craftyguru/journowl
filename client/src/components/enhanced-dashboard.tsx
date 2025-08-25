@@ -1105,7 +1105,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     }
   };
 
-  // Brand new simple audio recorder that directly opens journal with audio
+  // Enhanced animated audio recorder with visual feedback
   const recordAudioAndOpenJournal = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -1113,28 +1113,171 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       const overlay = document.createElement('div');
       overlay.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: linear-gradient(135deg, #667eea, #764ba2); z-index: 9999;
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        color: white; font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        z-index: 9999; display: flex; flex-direction: column; align-items: center;
+        justify-content: center; color: white; font-family: system-ui;
+        animation: gradientShift 3s ease-in-out infinite alternate;
       `;
       
+      // Add CSS animation for gradient shifting
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes gradientShift {
+          0% { background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%); }
+          100% { background: linear-gradient(135deg, #f093fb 0%, #667eea 50%, #764ba2 100%); }
+        }
+        @keyframes pulse {
+          0%, 100% { transform: scale(1); opacity: 0.8; }
+          50% { transform: scale(1.1); opacity: 1; }
+        }
+        @keyframes waveAnimation {
+          0%, 100% { transform: scaleY(0.5); }
+          50% { transform: scaleY(1.5); }
+        }
+        @keyframes ripple {
+          0% { transform: scale(0); opacity: 1; }
+          100% { transform: scale(4); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Animated title with pulsing effect
       const title = document.createElement('div');
-      title.innerHTML = '🎤 Recording Audio...';
-      title.style.cssText = 'font-size: 24px; font-weight: bold; margin-bottom: 30px;';
-      
-      const stopBtn = document.createElement('button');
-      stopBtn.innerHTML = '🛑 Stop & Save';
-      stopBtn.style.cssText = `
-        padding: 15px 30px; font-size: 18px; background: #22c55e;
-        color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;
+      title.innerHTML = '🎤 Recording Your Voice';
+      title.style.cssText = `
+        font-size: 32px; font-weight: bold; margin-bottom: 40px;
+        animation: pulse 2s ease-in-out infinite;
+        text-shadow: 0 4px 8px rgba(0,0,0,0.3);
       `;
       
+      // Timer display
+      const timer = document.createElement('div');
+      timer.style.cssText = `
+        font-size: 48px; font-weight: bold; margin-bottom: 30px;
+        font-family: 'Courier New', monospace; color: #fbbf24;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      `;
+      
+      // Animated waveform visualization
+      const waveformContainer = document.createElement('div');
+      waveformContainer.style.cssText = `
+        display: flex; align-items: center; justify-content: center;
+        gap: 4px; margin-bottom: 40px; height: 60px;
+      `;
+      
+      // Create animated wave bars
+      for (let i = 0; i < 12; i++) {
+        const bar = document.createElement('div');
+        bar.style.cssText = `
+          width: 6px; background: linear-gradient(to top, #10b981, #34d399, #6ee7b7);
+          border-radius: 3px; animation: waveAnimation ${0.8 + Math.random() * 0.6}s ease-in-out infinite;
+          animation-delay: ${i * 0.1}s;
+        `;
+        waveformContainer.appendChild(bar);
+      }
+      
+      // Pulsing microphone icon with ripple effects
+      const micContainer = document.createElement('div');
+      micContainer.style.cssText = `
+        position: relative; margin-bottom: 40px; display: flex;
+        align-items: center; justify-content: center;
+      `;
+      
+      const micIcon = document.createElement('div');
+      micIcon.innerHTML = '🎙️';
+      micIcon.style.cssText = `
+        font-size: 80px; z-index: 2; position: relative;
+        animation: pulse 1.5s ease-in-out infinite;
+      `;
+      
+      // Create ripple effects around microphone
+      for (let i = 0; i < 3; i++) {
+        const ripple = document.createElement('div');
+        ripple.style.cssText = `
+          position: absolute; width: 120px; height: 120px;
+          border: 2px solid rgba(255,255,255,0.4);
+          border-radius: 50%; animation: ripple 3s linear infinite;
+          animation-delay: ${i * 1}s;
+        `;
+        micContainer.appendChild(ripple);
+      }
+      micContainer.appendChild(micIcon);
+      
+      // Recording status with animated dot
+      const status = document.createElement('div');
+      status.innerHTML = '● REC';
+      status.style.cssText = `
+        display: flex; align-items: center; gap: 8px; font-size: 18px;
+        color: #ef4444; font-weight: bold; margin-bottom: 30px;
+        animation: pulse 1s ease-in-out infinite;
+      `;
+      
+      // Enhanced stop button with hover effects
+      const stopBtn = document.createElement('button');
+      stopBtn.innerHTML = '🛑 Stop & Save Recording';
+      stopBtn.style.cssText = `
+        padding: 18px 36px; font-size: 20px; background: linear-gradient(45deg, #10b981, #059669);
+        color: white; border: none; border-radius: 15px; cursor: pointer;
+        font-weight: bold; box-shadow: 0 8px 16px rgba(16, 185, 129, 0.4);
+        transition: all 0.3s ease; transform: translateY(0);
+      `;
+      
+      stopBtn.onmouseover = () => {
+        stopBtn.style.transform = 'translateY(-2px)';
+        stopBtn.style.boxShadow = '0 12px 24px rgba(16, 185, 129, 0.6)';
+      };
+      
+      stopBtn.onmouseout = () => {
+        stopBtn.style.transform = 'translateY(0)';
+        stopBtn.style.boxShadow = '0 8px 16px rgba(16, 185, 129, 0.4)';
+      };
+      
+      // Audio level meter (simulated)
+      const levelMeter = document.createElement('div');
+      levelMeter.style.cssText = `
+        width: 300px; height: 8px; background: rgba(255,255,255,0.2);
+        border-radius: 4px; margin: 20px 0; overflow: hidden;
+      `;
+      
+      const levelBar = document.createElement('div');
+      levelBar.style.cssText = `
+        height: 100%; background: linear-gradient(90deg, #10b981, #fbbf24, #ef4444);
+        border-radius: 4px; width: 0%; transition: width 0.1s ease;
+      `;
+      levelMeter.appendChild(levelBar);
+      
+      // Setup MediaRecorder
       const mediaRecorder = new MediaRecorder(stream);
       const chunks: BlobPart[] = [];
+      const startTime = Date.now();
+      
+      // Timer update function
+      const updateTimer = () => {
+        const elapsed = Math.floor((Date.now() - startTime) / 1000);
+        const minutes = Math.floor(elapsed / 60);
+        const seconds = elapsed % 60;
+        timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Animate level bar (simulated audio levels)
+        const randomLevel = 20 + Math.random() * 60;
+        levelBar.style.width = `${randomLevel}%`;
+      };
+      
+      const timerInterval = setInterval(updateTimer, 100);
       
       mediaRecorder.ondataavailable = (event) => chunks.push(event.data);
       
       mediaRecorder.onstop = async () => {
+        clearInterval(timerInterval);
+        
+        // Show processing animation
+        title.innerHTML = '✨ Processing Your Recording...';
+        timer.style.display = 'none';
+        waveformContainer.style.display = 'none';
+        status.style.display = 'none';
+        stopBtn.style.display = 'none';
+        levelMeter.style.display = 'none';
+        
         const audioBlob = new Blob(chunks, { type: 'audio/wav' });
         const reader = new FileReader();
         reader.onload = async () => {
@@ -1150,17 +1293,28 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             
             if (response.ok) {
               const savedEntry = await response.json();
-              stream.getTracks().forEach(track => track.stop());
-              document.body.removeChild(overlay);
               
-              // Refresh data and open journal
-              queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
-              queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
-              setSelectedEntry(savedEntry);
-              setShowUnifiedJournal(true);
+              // Success animation
+              title.innerHTML = '✅ Recording Saved Successfully!';
+              setTimeout(() => {
+                stream.getTracks().forEach(track => track.stop());
+                document.body.removeChild(overlay);
+                document.head.removeChild(style);
+                
+                queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+                queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+                setSelectedEntry(savedEntry);
+                setShowUnifiedJournal(true);
+              }, 1500);
             }
           } catch (error) {
             console.error('Failed to save audio entry:', error);
+            title.innerHTML = '❌ Failed to save recording';
+            setTimeout(() => {
+              stream.getTracks().forEach(track => track.stop());
+              document.body.removeChild(overlay);
+              document.head.removeChild(style);
+            }, 2000);
           }
         };
         reader.readAsDataURL(audioBlob);
@@ -1168,7 +1322,13 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       
       stopBtn.onclick = () => mediaRecorder.stop();
       
+      // Build the interface
       overlay.appendChild(title);
+      overlay.appendChild(timer);
+      overlay.appendChild(micContainer);
+      overlay.appendChild(waveformContainer);
+      overlay.appendChild(status);
+      overlay.appendChild(levelMeter);
       overlay.appendChild(stopBtn);
       document.body.appendChild(overlay);
       
