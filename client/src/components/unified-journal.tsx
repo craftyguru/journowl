@@ -594,87 +594,7 @@ IMPORTANT: Each AI interaction uses 1 prompt from your monthly limit. Check your
     }
   };
 
-  // Start audio recording
-  const startAudioRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      const chunks: BlobPart[] = []; // Use local array instead of state
-      
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data); // Add to local array
-          setAudioChunks(prev => [...prev, event.data]); // Also update state for UI
-        }
-      };
-
-      recorder.onstop = async () => {
-        const audioBlob = new Blob(chunks, { type: 'audio/wav' }); // Use local chunks
-        const audioUrl = URL.createObjectURL(audioBlob);
-        const duration = Math.round((Date.now() - recordingStartTime) / 1000);
-        
-        console.log('🎤 Audio recording complete:', { 
-          blobSize: audioBlob.size, 
-          chunksLength: chunks.length,
-          duration 
-        });
-        
-        // Add to audio recordings
-        const newAudioRecording = {
-          url: audioUrl,
-          duration: duration,
-          timestamp: new Date(),
-          blob: audioBlob
-        };
-        setAudioRecordings(prev => [...prev, newAudioRecording]);
-        
-        // Always analyze audio with AI for better journaling insights
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: `🎵 Audio recorded! Analyzing with AI to help with your journaling...`
-        }]);
-        
-        // Analyze the audio with AI
-        console.log('🎤 About to analyze audio (fixed version):', { audioBlob, duration });
-        await analyzeAudioWithAI(audioBlob, duration);
-        
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      setMediaRecorder(recorder);
-      setAudioChunks([]);
-      setRecordingStartTime(Date.now());
-      setRecordingTimer(0);
-      setIsRecordingAudio(true);
-      recorder.start();
-
-      // Update timer every second
-      const timerInterval = setInterval(() => {
-        setRecordingTimer(prev => {
-          const newTime = prev + 1;
-          if (newTime >= 60) {
-            stopAudioRecording();
-            clearInterval(timerInterval);
-            return 60;
-          }
-          return newTime;
-        });
-      }, 1000);
-
-      // Auto-stop after 60 seconds
-      setTimeout(() => {
-        if (recorder.state === 'recording') {
-          stopAudioRecording();
-          clearInterval(timerInterval);
-        }
-      }, 60000);
-
-    } catch (error) {
-      console.error('Error starting audio recording:', error);
-    }
-  };
-
-  // Stop audio recording
+  // Stop audio recording - unified function for both recording types
   const stopAudioRecording = () => {
     if (mediaRecorder && mediaRecorder.state === 'recording') {
       mediaRecorder.stop();
@@ -2618,7 +2538,7 @@ ${cleanedResponse}
             >
               <div className="relative flex justify-center">
                 <Button
-                  onClick={isRecordingAudio ? stopAudioRecording : (showAiChat ? startAudioRecordingForAI : startAudioRecording)}
+                  onClick={isRecordingAudio ? stopAudioRecording : startAudioRecordingForAI}
                   className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full shadow-2xl border-2 sm:border-4 border-white ${
                     isRecordingAudio 
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
