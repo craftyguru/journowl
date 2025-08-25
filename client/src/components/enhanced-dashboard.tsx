@@ -713,11 +713,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         // Ignore cleanup errors
                       }
                       
-                      // Force journal to open
-                      requestAnimationFrame(() => {
-                        setSelectedEntry(newEntry);
-                        setShowUnifiedJournal(true);
-                      });
+                      // Force journal to open exactly like the journal button
+                      openUnifiedJournal(newEntry);
                     }
                   } catch (error) {
                     // Silent error handling
@@ -966,11 +963,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               };
               
               // Open journal exactly like the "Open Journal Book" button
-              setSelectedEntry(voiceEntry);
-              setShowUnifiedJournal(true);
+              openUnifiedJournal(voiceEntry);
             }
           } catch (error) {
-            console.error('Failed to upload voice recording:', error);
+            // Silent error handling
           }
         };
         reader.readAsDataURL(audioBlob);
