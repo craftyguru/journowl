@@ -2818,14 +2818,78 @@ ${cleanedResponse}
                           message: '🎧 Listening to your recording and analyzing the content...'
                         }]);
 
-                        // Simulate audio analysis (since we don't have real audio transcription)
-                        setTimeout(() => {
-                          const durationText = latestRecording?.duration ? `${Math.floor(latestRecording.duration / 1000)}s` : 'Unknown duration';
-                          const analysisMessage = `🎵 **Audio Recording Analysis Complete!**
+                        // Real audio analysis using the API
+                        try {
+                          // Convert base64 audio to blob for analysis
+                          let audioBlob;
+                          if (audioUrl.startsWith('data:audio')) {
+                            // Base64 audio data
+                            const base64Data = audioUrl.split(',')[1];
+                            const binaryString = atob(base64Data);
+                            const bytes = new Uint8Array(binaryString.length);
+                            for (let i = 0; i < binaryString.length; i++) {
+                              bytes[i] = binaryString.charCodeAt(i);
+                            }
+                            audioBlob = new Blob([bytes], { type: 'audio/wav' });
+                          } else {
+                            // URL reference - try to fetch
+                            audioBlob = await fetch(audioUrl).then(r => r.blob());
+                          }
+
+                          const formData = new FormData();
+                          formData.append('audio', audioBlob, 'recording.wav');
+
+                          const response = await fetch('/api/ai/analyze-audio', {
+                            method: 'POST',
+                            body: formData
+                          });
+
+                          if (response.ok) {
+                            const analysis = await response.json();
+                            const durationText = latestRecording?.duration ? `${Math.floor(latestRecording.duration / 1000)}s` : 'Unknown duration';
+                            
+                            setAiMessages(prev => [...prev.slice(0, -1), {
+                              type: 'ai',
+                              message: `🎵 **Audio Recording Analysis Complete!**
 
 🎙️ **Recording Duration:** ${durationText}
 
-💭 **What I hear:** I can detect the tone and emotion in your voice! Your recording captures a personal moment.
+🎤 **What you said:** "${analysis.transcription || 'Audio processed successfully'}"
+
+💭 **AI Analysis:** ${analysis.analysis || 'I can hear your voice and detect your emotional tone in this recording.'}
+
+✨ **Personalized Journal Prompts:**
+${analysis.prompts ? analysis.prompts.map((prompt, i) => `${i + 1}. ${prompt}`).join('\n') : `1. What thoughts were going through your mind when you made this recording?
+2. How did speaking out loud make you feel compared to writing?
+3. What story does your voice tell about your current mood?
+4. If you could expand on what you recorded, what would you add?
+5. How does your voice recording reflect your personality today?`}
+
+🏷️ **Suggested Tags:** ${analysis.tags ? analysis.tags.join(', ') : 'voice-recording, personal-moment, reflection'}
+
+💡 Ready to turn your voice recording into a beautiful written journal entry? I can help guide your writing!`
+                            }]);
+
+                            // Add AI-generated tags
+                            if (analysis.tags) {
+                              setTags(prev => [...new Set([...prev, ...analysis.tags])]);
+                            } else {
+                              setTags(prev => [...new Set([...prev, 'voice-recording', 'spoken-thoughts', 'audio-journal'])]);
+                            }
+                          } else {
+                            throw new Error('Analysis failed');
+                          }
+                        } catch (error) {
+                          console.error('Audio analysis error:', error);
+                          // Fallback to basic response if analysis fails
+                          const durationText = latestRecording?.duration ? `${Math.floor(latestRecording.duration / 1000)}s` : 'Unknown duration';
+                          setAiMessages(prev => [...prev.slice(0, -1), {
+                            type: 'ai',
+                            message: `🎵 **Audio Recording Detected!**
+
+🎙️ **Recording Duration:** ${durationText}
+
+💭 **Analysis:** I can detect your voice recording! While I can't fully process the audio content right now, I can help you with journal prompts.
 
 ✨ **Journal Prompts based on your recording:**
 1. What thoughts were going through your mind when you made this recording?
@@ -2834,22 +2898,12 @@ ${cleanedResponse}
 4. If you could expand on what you recorded, what would you add?
 5. How does your voice recording reflect your personality today?
 
-🖊️ **Writing Suggestions:**
-• Try transcribing key phrases from your recording
-• Describe the emotions you hear in your voice
-• Write about what prompted you to record instead of write
-• Expand on the main ideas from your audio
-
-💡 Ready to turn your voice recording into a beautiful written journal entry? I can help guide your writing!`;
-
-                          setAiMessages(prev => [...prev.slice(0, -1), {
-                            type: 'ai',
-                            message: analysisMessage
+💡 Ready to turn your voice recording into a beautiful written journal entry? I can help guide your writing!`
                           }]);
 
-                          // Add audio-related tags
+                          // Add audio-related tags even on error
                           setTags(prev => [...new Set([...prev, 'voice-recording', 'spoken-thoughts', 'audio-journal'])]);
-                        }, 2000);
+                        }
                       }
                     }}
                     variant="outline" 
