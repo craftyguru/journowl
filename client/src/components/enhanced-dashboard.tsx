@@ -705,13 +705,19 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         updatedAt: new Date().toISOString(),
                       };
                       
-                      // Close camera modal and open journal exactly like the journal button
-                      stream.getTracks().forEach(track => track.stop());
-                      document.body.removeChild(overlay);
+                      // Close camera and open journal
+                      try {
+                        stream.getTracks().forEach(track => track.stop());
+                        document.body.removeChild(overlay);
+                      } catch (e) {
+                        // Ignore cleanup errors
+                      }
                       
-                      // Open journal exactly like the "Open Journal Book" button
-                      setSelectedEntry(newEntry);
-                      setShowUnifiedJournal(true);
+                      // Force journal to open
+                      requestAnimationFrame(() => {
+                        setSelectedEntry(newEntry);
+                        setShowUnifiedJournal(true);
+                      });
                     }
                   } catch (error) {
                     // Silent error handling
