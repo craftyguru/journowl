@@ -735,8 +735,13 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         // Ignore cleanup errors
                       }
                       
+                      // Clear camera modal state first
+                      setShowCameraModal(false);
+                      
                       // Open journal with photo using shared function
-                      openJournalWithMedia(photoUrl, "photo");
+                      setTimeout(() => {
+                        openJournalWithMedia(photoUrl, "photo");
+                      }, 50);
                     }
                   } catch (error) {
                     // Silent error handling
@@ -972,7 +977,9 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               const audioUrl = result.url;
               
               // Open journal with audio using shared function
-              openJournalWithMedia(audioUrl, "audio");
+              setTimeout(() => {
+                openJournalWithMedia(audioUrl, "audio");
+              }, 50);
             }
           } catch (error) {
             // Silent error handling
