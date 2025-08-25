@@ -1,7 +1,8 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
-import { storage, db } from "./storage";
+import { storage } from "./storage";
+import { db } from "./db";
 import { generateJournalPrompt, generatePersonalizedPrompt, generateInsight, generateTherapyResponse, generatePersonalityAnalysis, generateTherapeuticPrompt, generateCopingStrategy } from "./services/openai";
 import { trackableOpenAICall } from "./middleware/promptTracker";
 import { createUser, authenticateUser } from "./services/auth";
