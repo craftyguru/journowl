@@ -676,55 +676,68 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   
                   // Upload photo to storage
                   console.log('📷 Uploading to /api/photos/upload...');
-                  const storageResponse = await fetch('/api/photos/upload', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                      image: base64String,
-                      filename: `captured_photo_${Date.now()}.jpg`
-                    }),
-                  });
                   
-                  if (storageResponse.ok) {
-                    const storageResult = await storageResponse.json();
-                    const photoUrl = storageResult.url;
+                  try {
+                    const storageResponse = await fetch('/api/photos/upload', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        image: base64String,
+                        filename: `captured_photo_${Date.now()}.jpg`
+                      }),
+                    });
                     
-                    console.log('📷 Storage successful, creating journal entry with photo:', photoUrl);
+                    console.log('📷 Upload response status:', storageResponse.status);
                     
-                    // Create a new journal entry with the captured photo
-                    const newEntry = {
-                      id: Date.now(), // Temporary ID
-                      title: "",
-                      content: "",
-                      mood: "😊",
-                      photos: [{
-                        id: Date.now(),
-                        src: photoUrl,
-                        filename: `captured_photo_${Date.now()}.jpg`,
-                        uploadedAt: new Date().toISOString(),
-                        analysis: null // Will be analyzed when AI is used
-                      }],
-                      isPrivate: false,
-                      tags: [],
-                      createdAt: new Date().toISOString(),
-                      updatedAt: new Date().toISOString(),
-                    };
-                    
-                    console.log('📷 About to call openUnifiedJournal with entry:', newEntry);
-                    
-                    // Ensure we're not in camera modal mode when opening journal
-                    setShowCameraModal(false);
-                    
-                    // Open unified journal with the photo after a small delay
-                    setTimeout(() => {
-                      console.log('📷 Opening unified journal now...');
+                    if (storageResponse.ok) {
+                      const responseText = await storageResponse.text();
+                      console.log('📷 Raw response:', responseText);
+                      
+                      let storageResult;
+                      try {
+                        storageResult = JSON.parse(responseText);
+                      } catch (parseError) {
+                        console.error('📷 JSON parse error:', parseError);
+                        console.error('📷 Response was not JSON:', responseText);
+                        return;
+                      }
+                      
+                      const photoUrl = storageResult.url;
+                      console.log('📷 Storage successful, creating journal entry with photo:', photoUrl);
+                      
+                      // Create a new journal entry with the captured photo
+                      const newEntry = {
+                        id: Date.now(), // Temporary ID
+                        title: "",
+                        content: "",
+                        mood: "😊",
+                        photos: [{
+                          id: Date.now(),
+                          src: photoUrl,
+                          filename: `captured_photo_${Date.now()}.jpg`,
+                          uploadedAt: new Date().toISOString(),
+                          analysis: null // Will be analyzed when AI is used
+                        }],
+                        isPrivate: false,
+                        tags: [],
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                      };
+                      
+                      console.log('📷 FORCING JOURNAL OPEN WITH ENTRY:', newEntry);
+                      
+                      // Close camera modal and open journal immediately
+                      setShowCameraModal(false);
                       openUnifiedJournal(newEntry);
-                      console.log('✅ Photo captured and journal opened!', photoUrl);
-                    }, 200);
-                  } else {
-                    console.error('❌ Photo storage failed:', storageResponse.status);
+                      
+                      console.log('✅ Photo captured and journal should be open!', photoUrl);
+                    } else {
+                      console.error('❌ Photo storage failed:', storageResponse.status, await storageResponse.text());
+                    }
+                  } catch (uploadError) {
+                    console.error('❌ Upload error:', uploadError);
                   }
                 };
                 reader.readAsDataURL(blob);
