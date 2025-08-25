@@ -2,14 +2,13 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import pkg from "pg";
 const { Pool } = pkg;
 import * as schema from "@shared/schema";
-import fs from "fs";
-import path from "path";
+
+// Strip SSL requirement from connection string and disable SSL entirely
+const connectionString = process.env.DATABASE_URL!.replace('?sslmode=require', '');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    ca: fs.readFileSync(path.join(process.cwd(), 'server/certs/prod-ca-2021.crt')).toString()
-  }
+  connectionString,
+  ssl: false
 });
 
 export const db = drizzle(pool, { schema });
