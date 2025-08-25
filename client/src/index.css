@@ -114,7 +114,7 @@
     @apply bg-gray-400 dark:bg-gray-500;
   }
 
-  /* MDEditor font override styles - Super aggressive */
+  /* MDEditor font override styles - NUCLEAR OPTION */
   .w-md-editor,
   .w-md-editor *,
   .w-md-editor .w-md-editor-text-container,
@@ -134,7 +134,24 @@
   .w-md-editor .CodeMirror,
   .w-md-editor .CodeMirror *,
   .w-md-editor .CodeMirror-scroll,
-  .w-md-editor .CodeMirror-scroll * {
+  .w-md-editor .CodeMirror-scroll *,
+  textarea.w-md-editor-text-textarea,
+  .w-md-editor-text textarea,
+  div.w-md-editor-text textarea,
+  .w-md-editor .w-md-editor-text-input,
+  .w-md-editor .w-md-editor-text-input *,
+  .w-md-editor-text-input,
+  .w-md-editor-text-input * {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    color: inherit !important;
+  }
+  
+  /* Force font on specific elements */
+  [data-color-mode="light"] .w-md-editor .w-md-editor-text-area,
+  [data-color-mode="light"] .w-md-editor .w-md-editor-text-area *,
+  [data-color-mode="light"] .w-md-editor .w-md-editor-text-textarea,
+  [data-color-mode="light"] .w-md-editor-text-textarea {
     font-family: inherit !important;
     font-size: inherit !important;
     color: inherit !important;
@@ -175,6 +192,28 @@
     50% {
       opacity: 0.7;
       transform: scale(1.05);
+    }
+  }
+
+  /* AI thinking animation */
+  @keyframes thinking {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(0.95);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.02);
+    }
+  }
+
+  /* Gradient pulse for AI messages */
+  @keyframes gradientPulse {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
     }
   }
 

@@ -2686,15 +2686,30 @@ ${cleanedResponse}
               </div>
 
               <div className="flex-1 overflow-y-auto space-y-2 mb-3 scrollbar-thin scrollbar-thumb-gray-300">
-                {aiMessages.map((msg, index) => (
-                  <div key={index} className={`flex ${msg.type === 'ai' ? 'justify-start' : 'justify-end'}`}>
-                    <div className={`max-w-[85%] p-2 rounded-lg text-sm ${
-                      msg.type === 'ai' 
-                        ? 'bg-gradient-to-r from-purple-100 to-pink-100 text-gray-800 border border-purple-200' 
-                        : 'bg-blue-500 text-white'
-                    }`}>
-                      <div className="whitespace-pre-wrap">{msg.message}</div>
-                      {msg.photoUrl && (
+                {aiMessages.map((msg, index) => {
+                  const isProcessing = msg.type === 'ai' && (
+                    msg.message.includes('Listening to your recording') ||
+                    msg.message.includes('Transcribing your voice') ||
+                    msg.message.includes('Analyzing content') ||
+                    msg.message.includes('Creating personalized prompts') ||
+                    msg.message.includes('Analyzing your photo')
+                  );
+                  
+                  return (
+                    <div key={index} className={`flex ${msg.type === 'ai' ? 'justify-start' : 'justify-end'}`}>
+                      <div className={`max-w-[85%] p-2 rounded-lg text-sm ${
+                        msg.type === 'ai' 
+                          ? `bg-gradient-to-r from-purple-100 to-pink-100 text-gray-800 border border-purple-200 ${
+                              isProcessing ? 'animate-pulse shadow-lg' : ''
+                            }` 
+                          : 'bg-blue-500 text-white'
+                      } ${isProcessing ? 'bg-gradient-to-r from-purple-200 via-pink-200 to-purple-200 bg-[length:200%_200%]' : ''}`}
+                      style={isProcessing ? {
+                        animation: 'gradientPulse 2s ease-in-out infinite, thinking 1.5s ease-in-out infinite'
+                      } : {}}
+                      >
+                        <div className="whitespace-pre-wrap">{msg.message}</div>
+                        {msg.photoUrl && (
                         <div className="mt-2">
                           <img 
                             src={msg.photoUrl} 
@@ -2815,8 +2830,30 @@ ${cleanedResponse}
                         
                         setAiMessages(prev => [...prev, {
                           type: 'ai',
-                          message: '🎧 Listening to your recording and analyzing the content...'
+                          message: '🎧 Listening to your recording...'
                         }]);
+                        
+                        // Show processing phases with delays
+                        setTimeout(() => {
+                          setAiMessages(prev => [
+                            ...prev.slice(0, -1),
+                            { type: 'ai', message: '🧠 Transcribing your voice...' }
+                          ]);
+                        }, 2000);
+                        
+                        setTimeout(() => {
+                          setAiMessages(prev => [
+                            ...prev.slice(0, -1),
+                            { type: 'ai', message: '🔍 Analyzing content and emotions...' }
+                          ]);
+                        }, 4000);
+                        
+                        setTimeout(() => {
+                          setAiMessages(prev => [
+                            ...prev.slice(0, -1),
+                            { type: 'ai', message: '✨ Creating personalized prompts...' }
+                          ]);
+                        }, 6000);
 
                         // Real audio analysis using the API
                         try {
