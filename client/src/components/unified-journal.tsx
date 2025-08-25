@@ -2044,9 +2044,9 @@ ${cleanedResponse}
                     data-color-mode="light"
                     height="100%"
                     style={{
-                      fontFamily: selectedFont,
-                      fontSize: `${fontSize}px`,
-                      color: textColor,
+                      fontFamily: `${selectedFont} !important`,
+                      fontSize: `${fontSize}px !important`,
+                      color: `${textColor} !important`,
                       height: '100%'
                     }}
                   />
@@ -2741,9 +2741,10 @@ ${cleanedResponse}
                           Add to Journal
                         </Button>
                       )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 {aiAnalyzing && (
                   <div className="flex justify-start">
                     <div className="bg-gradient-to-r from-purple-100 to-pink-100 text-gray-800 border border-purple-200 p-2 rounded-lg text-sm">
