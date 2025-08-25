@@ -21,6 +21,7 @@ interface JournalEntry {
   content: string;
   mood: string;
   photos?: string[];
+  audioUrl?: string;
   tags?: string[];
   isPrivate?: boolean;
   isPinned?: boolean;
@@ -146,11 +147,13 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
     
     const moods = [...new Set(dayEntries.map(e => e.mood))];
     const photoCount = dayEntries.reduce((sum, e) => sum + (e.photos?.length || 0), 0);
+    const audioCount = dayEntries.filter(e => e.audioUrl && e.audioUrl.trim() !== "").length;
     const wordCount = dayEntries.reduce((sum, e) => sum + (e.wordCount || 0), 0);
     
     const elements = [];
     if (moods.length > 0) elements.push(moods.slice(0, 3).join(" "));
     if (photoCount > 0) elements.push(`📸 ${photoCount}`);
+    if (audioCount > 0) elements.push(`🎵 ${audioCount}`);
     if (dayEntries.some(e => e.isPinned)) elements.push("⭐");
     if (wordCount > 500) elements.push("📝");
     
@@ -650,6 +653,12 @@ export default function InteractiveCalendar({ entries, onDateSelect, onEntryEdit
                             <span className="flex items-center gap-1">
                               <Camera className="w-3 h-3" />
                               {entry.photos.length}
+                            </span>
+                          )}
+                          {entry.audioUrl && entry.audioUrl.trim() !== "" && (
+                            <span className="flex items-center gap-1">
+                              <Mic className="w-3 h-3" />
+                              <span>🎵</span>
                             </span>
                           )}
                           {entry.tags && entry.tags.length > 0 && (
