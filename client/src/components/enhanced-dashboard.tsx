@@ -939,65 +939,132 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     }
   };
 
-  // Brand new simple camera function that directly opens journal with photo  
+  // Camera function using exact same approach as working unified journal camera
   const takePhotoAndOpenJournal = async () => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      console.error('❌ Camera not supported');
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'environment' } 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }, 
+        audio: false 
       });
       
-      // Create simple camera interface
+      // Create full-screen camera overlay (copied from working camera)
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui;
+      `;
+      
+      // Title
+      const title = document.createElement('div');
+      title.innerHTML = '📸 Take Photo';
+      title.style.cssText = `
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      `;
+      
+      // Video element with live preview
       const video = document.createElement('video');
       video.srcObject = stream;
       video.autoplay = true;
       video.playsInline = true;
-      
-      const overlay = document.createElement('div');
-      overlay.style.cssText = `
-        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: black; z-index: 9999; display: flex; flex-direction: column;
-        align-items: center; justify-content: center;
+      video.muted = true;
+      video.style.cssText = `
+        width: 90%;
+        max-width: 400px;
+        border-radius: 15px;
+        border: 3px solid white;
+        margin-bottom: 20px;
       `;
       
-      video.style.cssText = 'width: 90vw; max-height: 70vh; border-radius: 10px;';
+      // Buttons
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = 'display: flex; gap: 20px;';
       
       const captureBtn = document.createElement('button');
       captureBtn.innerHTML = '📸 Capture';
       captureBtn.style.cssText = `
-        margin-top: 20px; padding: 15px 30px; font-size: 18px; 
-        background: #22c55e; color: white; border: none; border-radius: 10px;
-        cursor: pointer; font-weight: bold;
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
       `;
       
-      captureBtn.onclick = async () => {
+      const cancelBtn = document.createElement('button');
+      cancelBtn.innerHTML = '❌ Cancel';
+      cancelBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      // Handle capture
+      captureBtn.onclick = () => {
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-          ctx.drawImage(video, 0, 0);
+        
+        const context = canvas.getContext('2d');
+        if (context) {
+          context.drawImage(video, 0, 0);
           
           canvas.toBlob(async (blob) => {
             if (blob) {
               const reader = new FileReader();
-              reader.onload = async () => {
+              reader.onload = async (e) => {
+                const base64 = e.target?.result as string;
+                
+                // Create journal entry with photo (using same approach as working camera)
+                const newPhoto = {
+                  id: Date.now(),
+                  src: base64,
+                  filename: `photo_${Date.now()}.jpg`,
+                  uploadedAt: new Date().toISOString()
+                };
+                
                 try {
                   const response = await apiRequest("POST", "/api/journal/entries", {
                     title: "📸 Photo Capture",
                     content: "Captured from camera",
                     mood: "😊",
-                    photos: [{
-                      id: Date.now(),
-                      src: reader.result,
-                      filename: `photo_${Date.now()}.jpg`,
-                      uploadedAt: new Date().toISOString()
-                    }],
+                    photos: [newPhoto],
                     isPrivate: false,
                     tags: ["photo"]
                   });
                   
                   if (response.ok) {
                     const savedEntry = await response.json();
+                    
+                    // Cleanup camera
                     stream.getTracks().forEach(track => track.stop());
                     document.body.removeChild(overlay);
                     
@@ -1009,6 +1076,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   }
                 } catch (error) {
                   console.error('Failed to save photo entry:', error);
+                  stream.getTracks().forEach(track => track.stop());
+                  document.body.removeChild(overlay);
                 }
               };
               reader.readAsDataURL(blob);
@@ -1017,12 +1086,22 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
         }
       };
       
+      // Handle cancel
+      cancelBtn.onclick = () => {
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(overlay);
+      };
+      
+      // Build UI
+      buttonContainer.appendChild(captureBtn);
+      buttonContainer.appendChild(cancelBtn);
+      overlay.appendChild(title);
       overlay.appendChild(video);
-      overlay.appendChild(captureBtn);
+      overlay.appendChild(buttonContainer);
       document.body.appendChild(overlay);
       
     } catch (error) {
-      console.error('Camera access failed:', error);
+      console.error('Camera failed:', error);
     }
   };
 
