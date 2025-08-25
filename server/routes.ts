@@ -1948,10 +1948,124 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Admin endpoint to clean up users (keep only specific ones)  
+  app.post("/api/admin/cleanup-users", requireAuth, async (req: any, res) => {
+    try {
+      const { keepUsers } = req.body;
+      const usersToKeep = keepUsers || ['djfluent', 'archimedes'];
+      
+      // Delete all users except the ones we want to keep
+      const allUsers = await storage.getAllUsers();
+      const deletedUsers = [];
+      
+      console.log(`Found ${allUsers.length} users before cleanup`);
+      console.log('Users to keep:', usersToKeep);
+      
+      for (const user of allUsers) {
+        if (!usersToKeep.includes(user.username)) {
+          console.log(`Deleting user: ${user.username}`);
+          
+          // Delete user's journal entries first
+          try {
+            const entriesDeleted = await db.delete(journalEntries).where(eq(journalEntries.userId, user.id));
+            console.log(`Deleted entries for ${user.username}:`, entriesDeleted);
+          } catch (e) {
+            console.log('Error deleting entries for user', user.username, e);
+          }
+          
+          // Delete the user
+          try {
+            const userDeleted = await db.delete(users).where(eq(users.id, user.id));
+            deletedUsers.push(user.username);
+            console.log(`Deleted user ${user.username}:`, userDeleted);
+          } catch (e) {
+            console.log('Error deleting user', user.username, e);
+          }
+        } else {
+          console.log(`Keeping user: ${user.username}`);
+        }
+      }
+      
+      res.json({ 
+        message: `Cleanup complete. Deleted ${deletedUsers.length} users.`,
+        deletedUsers,
+        keptUsers: usersToKeep
+      });
+    } catch (error: any) {
+      console.error("User cleanup error:", error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Clean database - remove all users except djfluent and archimedes
+  app.get("/api/cleanup-database", async (req: any, res) => {
+    try {
+      // Delete users we don't want (all except djfluent and archimedes)
+      const keepUsers = ['djfluent', 'archimedes'];
+      const allUsers = await storage.getAllUsers();
+      let deletedCount = 0;
+      
+      // First pass: Delete ALL achievements for unwanted users
+      console.log('Deleting all achievements for unwanted users...');
+      await db.execute(sql`DELETE FROM achievements WHERE user_id NOT IN (
+        SELECT id FROM users WHERE username IN ('djfluent', 'archimedes')
+      )`);
+      
+      // Second pass: Delete other related data and users
+      for (const user of allUsers) {
+        if (!keepUsers.includes(user.username)) {
+          console.log(`Processing user: ${user.username} (ID: ${user.id})`);
+          
+          // Delete goals 
+          try {
+            await db.execute(sql`DELETE FROM goals WHERE user_id = ${user.id}`);
+          } catch (e) {
+            console.log('Error deleting goals for user', user.username);
+          }
+          
+          // Delete journal entries
+          try {
+            await db.delete(journalEntries).where(eq(journalEntries.userId, user.id));
+          } catch (e) {
+            console.log('Error deleting entries for user', user.username);
+          }
+          
+          // Delete any other references
+          try {
+            await db.execute(sql`DELETE FROM user_activity_logs WHERE user_id = ${user.id}`);
+          } catch (e) {
+            console.log('No activity logs to delete for user', user.username);
+          }
+          
+          // Now delete the user
+          try {
+            await db.delete(users).where(eq(users.id, user.id));
+            console.log(`Successfully deleted user: ${user.username}`);
+            deletedCount++;
+          } catch (e) {
+            console.log('Error deleting user', user.username, e);
+          }
+        }
+      }
+      
+      // Get updated counts
+      const remainingUsers = await storage.getAllUsers();
+      
+      res.json({
+        message: `Database cleaned! Deleted ${deletedCount} users.`,
+        remainingUsers: remainingUsers.length,
+        usernames: remainingUsers.map(u => u.username)
+      });
+    } catch (error: any) {
+      console.error("Database cleanup error:", error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Test endpoint without auth to debug activity data
   app.get("/api/test/analytics", async (req: any, res) => {
     try {
-      // Return sample activity data for testing
+      // Return sample activity data for testing - but with REAL database counts
       const sampleActivity = [
         {
           id: 1,
@@ -1988,11 +2102,35 @@ Your story shows how every day brings new experiences and emotions, creating the
         }
       ];
       
+      // Get real data from database
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const allUsers = await storage.getAllUsers();
+      const totalUsers = allUsers.length;
+      
+      // Count journal entries
+      const totalEntriesResult = await db.select({ count: sql<number>`count(*)` }).from(journalEntries);
+      const totalEntries = totalEntriesResult[0]?.count || 0;
+
+      // Count entries created today
+      const entriesTodayResult = await db.select({ count: sql<number>`count(*)` })
+        .from(journalEntries)
+        .where(gte(journalEntries.createdAt, today));
+      const entriesToday = entriesTodayResult[0]?.count || 0;
+
+      // Count users who have created entries in the last 24 hours (active users)
+      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const activeUsersResult = await db.select({ count: sql<number>`count(distinct user_id)` })
+        .from(journalEntries)
+        .where(gte(journalEntries.createdAt, yesterday));
+      const activeUsers = activeUsersResult[0]?.count || 0;
+      
       res.json({
-        totalUsers: 25,
-        totalEntries: 150,
-        entriesToday: 8,
-        activeUsers: 12,
+        totalUsers,
+        totalEntries,
+        entriesToday,
+        activeUsers,
         recentActivity: sampleActivity
       });
     } catch (error: any) {
