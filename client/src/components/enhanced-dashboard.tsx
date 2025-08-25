@@ -671,6 +671,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                 const reader = new FileReader();
                 reader.onloadend = async () => {
                   console.log('📷 FileReader finished reading blob');
+                  alert('DEBUG: FileReader finished, uploading photo...');
                   const base64String = reader.result as string;
                   console.log('📷 Base64 string created, length:', base64String.length);
                   
@@ -713,13 +714,16 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                     };
                     
                     console.log('📷 About to call openUnifiedJournal with entry:', newEntry);
+                    alert('DEBUG: About to open journal with photo!');
                     
                     // Open unified journal with the photo
                     try {
                       openUnifiedJournal(newEntry);
                       console.log('✅ Photo captured and journal opened!', photoUrl);
+                      alert('SUCCESS: Journal opened with photo!');
                     } catch (error) {
                       console.error('❌ Error opening unified journal:', error);
+                      alert('ERROR: Failed to open journal: ' + error.message);
                     }
                   } else {
                     console.error('❌ Photo storage failed:', storageResponse.status);
