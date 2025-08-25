@@ -457,6 +457,47 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     setShowSmartEditor(true);
   };
 
+  // Shared function to open journal with optional media
+  const openJournalWithMedia = (mediaUrl?: string, type?: "photo" | "audio") => {
+    let entry = null;
+    
+    if (mediaUrl && type === "photo") {
+      entry = {
+        id: Date.now(),
+        title: "",
+        content: "",
+        mood: "😊",
+        photos: [{
+          id: Date.now(),
+          src: mediaUrl,
+          filename: `captured_photo_${Date.now()}.jpg`,
+          uploadedAt: new Date().toISOString(),
+          analysis: null
+        }],
+        isPrivate: false,
+        tags: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    } else if (mediaUrl && type === "audio") {
+      entry = {
+        id: Date.now(),
+        title: "",
+        content: "🎤 Voice Recording",
+        mood: "😊",
+        photos: [],
+        audioUrl: mediaUrl,
+        isPrivate: false,
+        tags: ["voice", "audio"],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    }
+    
+    setSelectedEntry(entry);
+    setShowUnifiedJournal(true);
+  };
+
   const openUnifiedJournal = (entry?: any) => {
     setSelectedEntry(entry);
     setShowUnifiedJournal(true);
@@ -686,25 +727,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                       const storageResult = await storageResponse.json();
                       const photoUrl = storageResult.url;
                       
-                      // Create a new journal entry with the captured photo
-                      const newEntry = {
-                        id: Date.now(),
-                        title: "",
-                        content: "",
-                        mood: "😊",
-                        photos: [{
-                          id: Date.now(),
-                          src: photoUrl,
-                          filename: `captured_photo_${Date.now()}.jpg`,
-                          uploadedAt: new Date().toISOString(),
-                          analysis: null
-                        }],
-                        isPrivate: false,
-                        tags: [],
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString(),
-                      };
-                      
                       // Close camera and open journal
                       try {
                         stream.getTracks().forEach(track => track.stop());
@@ -713,8 +735,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         // Ignore cleanup errors
                       }
                       
-                      // Force journal to open exactly like the journal button
-                      openUnifiedJournal(newEntry);
+                      // Open journal with photo using shared function
+                      openJournalWithMedia(photoUrl, "photo");
                     }
                   } catch (error) {
                     // Silent error handling
@@ -947,23 +969,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
             
             if (storageResponse.ok) {
               const result = await storageResponse.json();
+              const audioUrl = result.url;
               
-              // Create journal entry with voice recording
-              const voiceEntry = {
-                id: Date.now(),
-                title: "",
-                content: "🎤 Voice Recording",
-                mood: "😊",
-                photos: [], // Voice recordings can be handled differently
-                audioUrl: result.url, // Store audio URL
-                isPrivate: false,
-                tags: ["voice", "audio"],
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              };
-              
-              // Open journal exactly like the "Open Journal Book" button
-              openUnifiedJournal(voiceEntry);
+              // Open journal with audio using shared function
+              openJournalWithMedia(audioUrl, "audio");
             }
           } catch (error) {
             // Silent error handling
@@ -1773,7 +1782,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button 
-                  onClick={() => openUnifiedJournal()}
+                  onClick={() => openJournalWithMedia()}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
