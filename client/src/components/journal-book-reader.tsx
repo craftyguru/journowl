@@ -212,8 +212,15 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
             <div className="absolute top-3/4 left-1 w-2 h-8 bg-amber-900 rounded-r-full opacity-50" />
           </div>
 
+          {/* Mobile Swipe Instructions - Top */}
+          <div className="md:hidden absolute top-2 left-1/2 transform -translate-x-1/2 z-10">
+            <div className="text-xs text-amber-700 bg-amber-100/90 backdrop-blur-sm rounded-full px-3 py-1 border border-amber-300 shadow-sm">
+              👈 Swipe to flip pages 👉
+            </div>
+          </div>
+
           {/* Header Controls */}
-          <div className="absolute top-2 left-12 right-4 z-10 flex items-center justify-between">
+          <div className="absolute top-8 left-12 right-4 z-10 flex items-center justify-between md:top-2">
             {/* Search Bar */}
             <div className="flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 border-2 border-amber-300 shadow-lg">
               <Search className="w-4 h-4 text-amber-700" />
@@ -256,7 +263,7 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
 
           {/* Page Content */}
           <div 
-            className="pl-12 pr-8 pt-16 pb-8 h-full overflow-hidden"
+            className="pl-12 pr-8 pt-20 pb-8 h-full overflow-hidden md:pt-16"
             style={{ touchAction: 'pan-y pinch-zoom' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
@@ -560,8 +567,7 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
 
         {/* Instructions */}
         <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center text-white/80">
-          <p className="text-sm hidden md:block">Use arrow keys or buttons to navigate • Press ESC to close</p>
-          <p className="text-sm md:hidden">👈 Swipe to flip pages 👉 • Tap buttons to navigate</p>
+          <p className="text-sm">Use arrow keys or buttons to navigate • Press ESC to close</p>
         </div>
       </div>
     </motion.div>
