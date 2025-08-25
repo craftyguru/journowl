@@ -998,12 +998,14 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   
                   if (response.ok) {
                     const savedEntry = await response.json();
+                    console.log('📸 CAMERA - Response from server:', savedEntry);
                     stream.getTracks().forEach(track => track.stop());
                     document.body.removeChild(overlay);
                     
                     // Refresh data and open journal
                     queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
                     queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+                    console.log('📸 CAMERA - Setting selected entry:', savedEntry.entry);
                     setSelectedEntry(savedEntry.entry);
                     setShowUnifiedJournal(true);
                   }
