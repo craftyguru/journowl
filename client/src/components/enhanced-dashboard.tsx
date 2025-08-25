@@ -685,6 +685,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
 
   // Enhanced Camera - Using same modal system as orange button
   const capturePhoto = () => {
+    console.log('🔵 Blue camera button clicked!');
+    console.log('🔵 Opening Camera Options modal...');
     setShowCameraModal(true); // Open Camera Options modal
   };
 
