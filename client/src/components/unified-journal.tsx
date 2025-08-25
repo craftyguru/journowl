@@ -2801,14 +2801,16 @@ ${cleanedResponse}
                 {(audioRecordings.length > 0 || entry?.audioUrl) && (
                   <Button 
                     onClick={async () => {
-                      // Analyze the latest audio recording
+                      // Get audio from either source: journal recordings or dashboard recording
                       const latestRecording = audioRecordings[audioRecordings.length - 1];
-                      if (latestRecording?.url) {
+                      const audioUrl = latestRecording?.url || entry?.audioUrl;
+                      
+                      if (audioUrl) {
                         // Show analyzing message
                         setAiMessages(prev => [...prev, {
                           type: 'user',
                           message: '🎵 Please analyze my voice recording and help me create a journal prompt!',
-                          audioUrl: latestRecording.url
+                          audioUrl: audioUrl
                         }]);
                         
                         setAiMessages(prev => [...prev, {
@@ -2818,9 +2820,10 @@ ${cleanedResponse}
 
                         // Simulate audio analysis (since we don't have real audio transcription)
                         setTimeout(() => {
+                          const durationText = latestRecording?.duration ? `${Math.floor(latestRecording.duration / 1000)}s` : 'Unknown duration';
                           const analysisMessage = `🎵 **Audio Recording Analysis Complete!**
 
-🎙️ **Recording Duration:** ${Math.floor(latestRecording.duration / 1000)}s
+🎙️ **Recording Duration:** ${durationText}
 
 💭 **What I hear:** I can detect the tone and emotion in your voice! Your recording captures a personal moment.
 
