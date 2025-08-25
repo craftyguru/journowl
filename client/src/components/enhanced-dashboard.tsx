@@ -681,10 +681,176 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     }
   };
 
-  const startVideoRecording = () => {
+  const startVideoRecording = async () => {
     setShowCameraModal(false);
-    setShowUnifiedJournal(true);
-    // Video recording will be handled by unified journal
+    if (!navigator.mediaDevices?.getUserMedia) {
+      console.error('❌ Camera not supported');
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }, 
+        audio: true 
+      });
+      
+      // Create full-screen video recording overlay
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui;
+      `;
+      
+      const title = document.createElement('div');
+      title.innerHTML = '🎬 Record Video';
+      title.style.cssText = `
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      `;
+      
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.muted = true;
+      video.style.cssText = `
+        width: 90%;
+        max-width: 400px;
+        border-radius: 15px;
+        border: 3px solid white;
+        margin-bottom: 20px;
+      `;
+      
+      // Timer display
+      const timer = document.createElement('div');
+      timer.innerHTML = '00:00';
+      timer.style.cssText = `
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      `;
+      
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = 'display: flex; gap: 20px;';
+      
+      const recordBtn = document.createElement('button');
+      recordBtn.innerHTML = '🔴 Start Recording';
+      recordBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      const cancelBtn = document.createElement('button');
+      cancelBtn.innerHTML = '❌ Cancel';
+      cancelBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #6b7280;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      let mediaRecorder: MediaRecorder | null = null;
+      let recordedChunks: Blob[] = [];
+      let startTime = 0;
+      let timerInterval: NodeJS.Timeout;
+      
+      // Handle start/stop recording
+      recordBtn.onclick = () => {
+        if (!mediaRecorder || mediaRecorder.state === 'inactive') {
+          // Start recording
+          recordedChunks = [];
+          mediaRecorder = new MediaRecorder(stream);
+          
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              recordedChunks.push(event.data);
+            }
+          };
+          
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            // Open unified journal and add video
+            setShowUnifiedJournal(true);
+            // Video will be handled by unified journal's video system
+          };
+          
+          mediaRecorder.start();
+          startTime = Date.now();
+          recordBtn.innerHTML = '⏹️ Stop Recording';
+          recordBtn.style.background = '#10b981';
+          
+          // Start timer (max 30 seconds)
+          timerInterval = setInterval(() => {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            timer.innerHTML = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Auto-stop at 30 seconds
+            if (elapsed >= 30) {
+              mediaRecorder?.stop();
+              clearInterval(timerInterval);
+              stream.getTracks().forEach(track => track.stop());
+              document.body.removeChild(overlay);
+            }
+          }, 1000);
+        } else {
+          // Stop recording
+          mediaRecorder.stop();
+          clearInterval(timerInterval);
+          stream.getTracks().forEach(track => track.stop());
+          document.body.removeChild(overlay);
+        }
+      };
+      
+      // Handle cancel
+      cancelBtn.onclick = () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+          clearInterval(timerInterval);
+        }
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(overlay);
+      };
+      
+      overlay.appendChild(title);
+      overlay.appendChild(video);
+      overlay.appendChild(timer);
+      buttonContainer.appendChild(recordBtn);
+      buttonContainer.appendChild(cancelBtn);
+      overlay.appendChild(buttonContainer);
+      document.body.appendChild(overlay);
+      
+    } catch (error) {
+      console.error('Video recording error:', error);
+    }
   };
 
   const handleModalFileUpload = (files: FileList) => {
