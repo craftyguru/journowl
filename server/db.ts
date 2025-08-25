@@ -7,11 +7,21 @@ if (!process.env.DATABASE_URL) {
   throw new Error('DATABASE_URL must be set for Supabase connection');
 }
 
+// Temporary debugging
+const url = new URL(process.env.DATABASE_URL);
+console.log("Using DB host:", url.host);
+console.log("PGHOST:", process.env.PGHOST);
 console.log(`Database connecting to: Supabase database`);
 
 // Supabase PostgreSQL connection with optimized settings
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  // Force ignore PG* environment variables
+  host: undefined,
+  port: undefined,
+  user: undefined,
+  password: undefined,
+  database: undefined,
   ssl: {
     rejectUnauthorized: false,
   },
