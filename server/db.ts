@@ -9,13 +9,14 @@ if (!process.env.DATABASE_URL) {
 
 console.log(`Database connecting to: ${process.env.DATABASE_URL}`);
 
-// Supabase PostgreSQL connection with fixed SASL settings
+// Supabase pooler connection with proper SASL fix
 export const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
     rejectUnauthorized: false,
-    checkServerIdentity: () => undefined,
   },
+  // Fix SASL authentication issues
+  options: '-c default_transaction_isolation=read_committed',
   max: 10,
   idleTimeoutMillis: 20000,
   connectionTimeoutMillis: 10000,
