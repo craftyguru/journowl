@@ -220,50 +220,95 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
           </div>
 
           {/* Header Controls */}
-          <div className="absolute top-8 left-12 right-4 z-10 flex items-center justify-between md:top-2">
-            {/* Search Bar */}
-            <div className="flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 border-2 border-amber-300 shadow-lg">
-              <Search className="w-4 h-4 text-amber-700" />
-              <Input
-                placeholder="Search entries, words, dates..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="border-none bg-transparent placeholder-amber-600 text-amber-800 focus-visible:ring-0 w-64"
-              />
-              {searchQuery && (
+          <div className="absolute top-8 left-12 right-2 z-10 md:top-2 md:right-4">
+            {/* Mobile Layout */}
+            <div className="flex flex-col gap-3 md:hidden">
+              {/* Action Buttons - Top Row on Mobile */}
+              <div className="flex items-center justify-end gap-2">
                 <Button
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => onEditEntry(currentEntry)}
                   variant="ghost"
-                  className="h-6 w-6 p-0 hover:bg-amber-200 text-amber-600"
+                  className="bg-blue-500/80 hover:bg-blue-600 text-white border border-blue-400 h-9 px-3 rounded-full shadow-lg text-sm"
                 >
-                  <X className="w-3 h-3" />
+                  <Edit className="w-4 h-4 mr-1" />
+                  Edit
                 </Button>
-              )}
+                <Button
+                  onClick={onClose}
+                  variant="ghost"
+                  className="bg-red-500/80 hover:bg-red-600 text-white border border-red-400 h-9 w-9 p-0 rounded-full shadow-lg"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+              
+              {/* Search Bar - Bottom Row on Mobile */}
+              <div className="flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-3 py-2 border-2 border-amber-300 shadow-lg">
+                <Search className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                <Input
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="border-none bg-transparent placeholder-amber-600 text-amber-800 focus-visible:ring-0 text-sm"
+                />
+                {searchQuery && (
+                  <Button
+                    onClick={() => setSearchQuery("")}
+                    variant="ghost"
+                    className="h-6 w-6 p-0 hover:bg-amber-200 text-amber-600 flex-shrink-0"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                )}
+              </div>
             </div>
+            
+            {/* Desktop Layout */}
+            <div className="hidden md:flex items-center justify-between">
+              {/* Search Bar */}
+              <div className="flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 border-2 border-amber-300 shadow-lg">
+                <Search className="w-4 h-4 text-amber-700" />
+                <Input
+                  placeholder="Search entries, words, dates..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="border-none bg-transparent placeholder-amber-600 text-amber-800 focus-visible:ring-0 w-64"
+                />
+                {searchQuery && (
+                  <Button
+                    onClick={() => setSearchQuery("")}
+                    variant="ghost"
+                    className="h-6 w-6 p-0 hover:bg-amber-200 text-amber-600"
+                  >
+                    <X className="w-3 h-3" />
+                  </Button>
+                )}
+              </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center gap-2">
-              <Button
-                onClick={() => onEditEntry(currentEntry)}
-                variant="ghost"
-                className="bg-blue-500/80 hover:bg-blue-600 text-white border border-blue-400 h-10 px-4 rounded-full shadow-lg"
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Edit
-              </Button>
-              <Button
-                onClick={onClose}
-                variant="ghost"
-                className="bg-red-500/80 hover:bg-red-600 text-white border border-red-400 h-10 w-10 p-0 rounded-full shadow-lg"
-              >
-                <X className="w-4 h-4" />
-              </Button>
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={() => onEditEntry(currentEntry)}
+                  variant="ghost"
+                  className="bg-blue-500/80 hover:bg-blue-600 text-white border border-blue-400 h-10 px-4 rounded-full shadow-lg"
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+                <Button
+                  onClick={onClose}
+                  variant="ghost"
+                  className="bg-red-500/80 hover:bg-red-600 text-white border border-red-400 h-10 w-10 p-0 rounded-full shadow-lg"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
             </div>
           </div>
 
           {/* Page Content */}
           <div 
-            className="pl-12 pr-8 pt-20 pb-8 h-full overflow-hidden md:pt-16"
+            className="pl-12 pr-8 pt-36 pb-8 h-full overflow-hidden md:pt-16"
             style={{ touchAction: 'pan-y pinch-zoom' }}
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
