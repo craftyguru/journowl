@@ -1472,12 +1472,120 @@ Your story shows how every day brings new experiences and emotions, creating the
       }
 
       const { analyzePhoto } = await import("./services/photo-ai");
-      const analysis = await analyzePhoto(imageData);
+      const analysis = await analyzePhoto(imageData, req.session?.userId);
       res.json(analysis);
     } catch (error: any) {
       console.error("Error analyzing photo:", error);
       res.status(500).json({ error: "Failed to analyze photo" });
     }
+  });
+
+  // === TIERED MEDIA ANALYSIS API ROUTES ===
+  
+  // Get available analysis tiers and cost estimates
+  app.get("/api/ai/analysis-tiers", requireAuth, async (req: any, res) => {
+    try {
+      const { duration, fileSize } = req.query;
+      
+      const { ANALYSIS_TIERS, getAnalysisCostEstimate } = await import("./services/tiered-media-ai");
+      
+      const estimate = getAnalysisCostEstimate(
+        duration ? parseInt(duration) : undefined,
+        fileSize ? parseInt(fileSize) : undefined
+      );
+      
+      res.json({
+        tiers: ANALYSIS_TIERS,
+        suggested: estimate.suggestedTier,
+        allTiers: estimate.allTiers
+      });
+    } catch (error: any) {
+      console.error("Error getting analysis tiers:", error);
+      res.status(500).json({ error: "Failed to get analysis tiers" });
+    }
+  });
+
+  // Tiered photo analysis
+  app.post("/api/ai/analyze-photo-tiered", requireAuth, requireAIPrompts, async (req: any, res) => {
+    try {
+      const { photoUrl, base64Image, tierId } = req.body;
+      const userId = req.session?.userId;
+      
+      if (!tierId) {
+        return res.status(400).json({ error: "Analysis tier required" });
+      }
+      
+      // Support both storage URLs and base64 for backward compatibility
+      let imageData = base64Image;
+      if (photoUrl && !base64Image) {
+        const response = await fetch(photoUrl);
+        const buffer = await response.arrayBuffer();
+        const base64 = Buffer.from(buffer).toString('base64');
+        imageData = base64;
+      }
+      
+      if (!imageData) {
+        return res.status(400).json({ error: "Image data required" });
+      }
+
+      // Check if user can afford the analysis
+      const { canAffordAnalysis, analyzePhotoWithTier } = await import("./services/tiered-media-ai");
+      const canAfford = await canAffordAnalysis(userId, tierId);
+      
+      if (!canAfford) {
+        return res.status(402).json({ error: "Insufficient prompts for selected analysis tier" });
+      }
+
+      const analysis = await analyzePhotoWithTier(userId, imageData, tierId);
+      res.json(analysis);
+    } catch (error: any) {
+      console.error("Error analyzing photo with tier:", error);
+      res.status(500).json({ error: "Failed to analyze photo" });
+    }
+  });
+
+  // Tiered audio analysis
+  app.post("/api/ai/analyze-audio-tiered", requireAuth, requireAIPrompts, (req: any, res) => {
+    upload.single('audio')(req, res, async (err) => {
+      try {
+        if (err) {
+          console.error('❌ Multer error:', err);
+          return res.status(400).json({ error: "Upload failed: " + err.message });
+        }
+
+        const { tierId, estimatedDuration } = req.body;
+        const userId = req.session?.userId;
+
+        if (!req.file) {
+          return res.status(400).json({ error: "Audio file required" });
+        }
+        
+        if (!tierId) {
+          return res.status(400).json({ error: "Analysis tier required" });
+        }
+
+        // Check if user can afford the analysis
+        const { canAffordAnalysis, analyzeAudioWithTier } = await import("./services/tiered-media-ai");
+        const canAfford = await canAffordAnalysis(userId, tierId);
+        
+        if (!canAfford) {
+          return res.status(402).json({ error: "Insufficient prompts for selected analysis tier" });
+        }
+
+        const analysis = await analyzeAudioWithTier(
+          userId,
+          req.file.buffer, 
+          req.file.originalname,
+          tierId,
+          estimatedDuration ? parseFloat(estimatedDuration) : undefined
+        );
+        
+        res.json(analysis);
+      } catch (error: any) {
+        console.error("❌ Error analyzing audio with tier:", error);
+        res.status(500).json({ error: "Failed to analyze audio", details: error.message });
+      }
+    });
   });
 
   // Audio AI routes - WORKING VERSION
@@ -1511,7 +1619,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         });
 
         const { transcribeAndAnalyzeAudio } = await import("./services/audio-ai");
-        const analysis = await transcribeAndAnalyzeAudio(req.file.buffer, req.file.originalname);
+        const analysis = await transcribeAndAnalyzeAudio(req.file.buffer, req.file.originalname, req.session?.userId);
         res.json(analysis);
       } catch (error: any) {
         console.error("❌ Error analyzing audio:", error);

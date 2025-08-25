@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import { trackableOpenAICall } from "../middleware/promptTracker";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -18,42 +19,82 @@ interface PhotoAnalysis {
   mood: string;
 }
 
-export async function analyzePhoto(base64Image: string): Promise<PhotoAnalysis> {
+export async function analyzePhoto(base64Image: string, userId?: number): Promise<PhotoAnalysis> {
   try {
-    // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o",
-      messages: [
-        {
-          role: "system",
-          content: `You are an AI assistant specialized in analyzing photos for journaling purposes. 
-          Analyze the image and extract detailed information that would help someone journal about this moment.
-          Focus on emotions, activities, people, objects, and context that could inspire meaningful writing.
-          Provide journal prompts based on what you see.
-          Return your analysis in JSON format with the specified structure.`
-        },
-        {
-          role: "user",
-          content: [
+    // Use trackable OpenAI call if userId provided
+    const response = await (userId ?
+      trackableOpenAICall(
+        userId,
+        "photo_analysis",
+        async () => await openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [
             {
-              type: "text",
-              text: `Analyze this photo and provide a comprehensive analysis for journaling. 
-              Include: description, emotions visible, objects/people present, activities happening, 
-              suggested mood, relevant tags, and 3 journal prompts inspired by the image.
-              Return in JSON format: { description, emotions, objects, people, activities, location, timeOfDay, weather, tags, journalPrompts, mood }`
+              role: "system",
+              content: `You are an AI assistant specialized in analyzing photos for journaling purposes. 
+              Analyze the image and extract detailed information that would help someone journal about this moment.
+              Focus on emotions, activities, people, objects, and context that could inspire meaningful writing.
+              Provide journal prompts based on what you see.
+              Return your analysis in JSON format with the specified structure.`
             },
             {
-              type: "image_url",
-              image_url: {
-                url: `data:image/jpeg;base64,${base64Image}`
-              }
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: `Analyze this photo and provide a comprehensive analysis for journaling. 
+                  Include: description, emotions visible, objects/people present, activities happening, 
+                  suggested mood, relevant tags, and 3 journal prompts inspired by the image.
+                  Return in JSON format: { description, emotions, objects, people, activities, location, timeOfDay, weather, tags, journalPrompts, mood }`
+                },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: `data:image/jpeg;base64,${base64Image}`
+                  }
+                }
+              ]
             }
-          ]
-        }
-      ],
-      response_format: { type: "json_object" },
-      max_tokens: 1000,
-    });
+          ],
+          response_format: { type: "json_object" },
+          max_tokens: 1000,
+        }),
+        300 // Estimated tokens for photo analysis
+      ) :
+      openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "system",
+            content: `You are an AI assistant specialized in analyzing photos for journaling purposes. 
+            Analyze the image and extract detailed information that would help someone journal about this moment.
+            Focus on emotions, activities, people, objects, and context that could inspire meaningful writing.
+            Provide journal prompts based on what you see.
+            Return your analysis in JSON format with the specified structure.`
+          },
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `Analyze this photo and provide a comprehensive analysis for journaling. 
+                Include: description, emotions visible, objects/people present, activities happening, 
+                suggested mood, relevant tags, and 3 journal prompts inspired by the image.
+                Return in JSON format: { description, emotions, objects, people, activities, location, timeOfDay, weather, tags, journalPrompts, mood }`
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: `data:image/jpeg;base64,${base64Image}`
+                }
+              }
+            ]
+          }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 1000,
+      })
+    );
 
     const analysis = JSON.parse(response.choices[0].message.content || "{}");
     

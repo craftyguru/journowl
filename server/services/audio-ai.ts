@@ -47,7 +47,7 @@ export interface AudioAnalysis {
   wordCount: number;
 }
 
-export async function transcribeAndAnalyzeAudio(audioBuffer: Buffer, filename: string): Promise<AudioAnalysis> {
+export async function transcribeAndAnalyzeAudio(audioBuffer: Buffer, filename: string, userId?: number): Promise<AudioAnalysis> {
   try {
     console.log('🎵 Transcribing audio with OpenAI Whisper...');
     console.log('📁 Audio file details:', { 
@@ -82,8 +82,12 @@ export async function transcribeAndAnalyzeAudio(audioBuffer: Buffer, filename: s
 
     console.log('📝 Transcription complete, analyzing content...');
 
-    // Analyze the transcription content
-    const analysisResponse = await openai.chat.completions.create({
+    // Analyze the transcription content using trackable OpenAI call
+    const analysisResponse = await (userId ? 
+      trackableOpenAICall(
+        userId,
+        "audio_content_analysis",
+        async () => await openai.chat.completions.create({
       model: "gpt-5", // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
       messages: [
         {
@@ -121,7 +125,49 @@ Return only valid JSON in this format:
         }
       ],
       max_completion_tokens: 1000
-    });
+        }),
+        400 // Estimated tokens for audio analysis
+      ) : 
+      openai.chat.completions.create({
+        model: "gpt-5",
+        messages: [
+          {
+            role: "system",
+            content: `You are an AI assistant specialized in analyzing audio transcriptions for journaling purposes. 
+            Analyze the transcribed text and extract meaningful insights that would help someone reflect on their spoken thoughts.
+            Focus on emotions, key topics, themes, and provide thoughtful journal prompts based on what they said.
+            Return your analysis in JSON format with the specified structure.`
+          },
+          {
+            role: "user",
+            content: `Analyze this audio transcription for journaling insights:
+
+"${transcription}"
+
+Provide a comprehensive analysis in JSON format with:
+- summary: A 1-2 sentence summary of what they talked about
+- emotions: Array of emotions detected in their speech
+- keyTopics: Main topics or themes they discussed
+- mood: Overall mood (happy, contemplative, excited, etc.)
+- journalPrompts: 3 thoughtful questions to help them journal about this topic
+- insights: 2-3 meaningful observations about their thoughts or feelings
+- wordCount: Number of words in the transcription
+
+Return only valid JSON in this format:
+{
+  "summary": "string",
+  "emotions": ["emotion1", "emotion2"],
+  "keyTopics": ["topic1", "topic2"],
+  "mood": "string",
+  "journalPrompts": ["prompt1", "prompt2", "prompt3"],
+  "insights": ["insight1", "insight2"],
+  "wordCount": number
+}`
+          }
+        ],
+        max_completion_tokens: 1000
+      })
+    );
 
     const analysisText = analysisResponse.choices[0]?.message?.content;
     console.log('🤖 Analysis response:', analysisText);
