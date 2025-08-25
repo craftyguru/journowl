@@ -18,7 +18,13 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
   const [searchQuery, setSearchQuery] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
+  
+  // Touch gesture state for mobile swipe navigation
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
+  // Minimum swipe distance for triggering page change
+  const minSwipeDistance = 75;
 
   // Filter entries based on search
   const filteredEntries = useMemo(() => {
@@ -134,6 +140,36 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [currentPageIndex]);
 
+  // Touch gesture handlers for mobile swipe navigation
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      // Swipe left = Next page
+      goToNextPage();
+    } else if (isRightSwipe) {
+      // Swipe right = Previous page  
+      goToPrevPage();
+    }
+    
+    // Reset touch state
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
   if (!entries.length) {
     return (
       <motion.div
@@ -219,7 +255,13 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
           </div>
 
           {/* Page Content */}
-          <div className="pl-12 pr-8 pt-16 pb-8 h-full overflow-hidden">
+          <div 
+            className="pl-12 pr-8 pt-16 pb-8 h-full overflow-hidden"
+            style={{ touchAction: 'pan-y pinch-zoom' }}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPageIndex}
@@ -518,7 +560,8 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
 
         {/* Instructions */}
         <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center text-white/80">
-          <p className="text-sm">Use arrow keys or buttons to navigate • Press ESC to close</p>
+          <p className="text-sm hidden md:block">Use arrow keys or buttons to navigate • Press ESC to close</p>
+          <p className="text-sm md:hidden">👈 Swipe to flip pages 👉 • Tap buttons to navigate</p>
         </div>
       </div>
     </motion.div>
