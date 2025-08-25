@@ -14,6 +14,7 @@ import { PWAMobilePrompt } from "@/components/PWAManager";
 import LandingHeader from "@/components/LandingHeader";
 import { PrivacyModal } from "@/components/PrivacyModal";
 import { TermsModal } from "@/components/TermsModal";
+import { ResourceModal } from "@/components/ResourceModal";
 
 interface LandingHeroProps {
   onGetStarted: () => void;
@@ -96,6 +97,8 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showFaqModal, setShowFaqModal] = useState(false);
+  const [showKnowledgeModal, setShowKnowledgeModal] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -1343,10 +1346,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
               <h4 className="font-semibold text-white mb-3 sm:mb-4">Resources</h4>
               <ul className="space-y-2 text-sm text-gray-300">
                 <li>
-                  <a href="/faq" className="flex items-center gap-2 hover:text-white transition-colors">
+                  <button onClick={() => setShowFaqModal(true)} className="flex items-center gap-2 hover:text-white transition-colors">
                     <HelpCircle className="w-3 h-3" />
                     FAQ & Help
-                  </a>
+                  </button>
                 </li>
                 <li>
                   <button onClick={() => setShowTermsModal(true)} className="flex items-center gap-2 hover:text-white transition-colors">
@@ -1361,10 +1364,10 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
                   </button>
                 </li>
                 <li>
-                  <a href="/faq" className="flex items-center gap-2 hover:text-white transition-colors">
+                  <button onClick={() => setShowKnowledgeModal(true)} className="flex items-center gap-2 hover:text-white transition-colors">
                     <Bookmark className="w-3 h-3" />
                     Knowledge Base
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -1422,6 +1425,20 @@ export default function LandingHero({ onGetStarted }: LandingHeroProps) {
       <TermsModal 
         isOpen={showTermsModal} 
         onClose={() => setShowTermsModal(false)} 
+      />
+      
+      {/* Resource Modals */}
+      <ResourceModal 
+        isOpen={showFaqModal} 
+        onClose={() => setShowFaqModal(false)}
+        title="FAQ & Help"
+        url="https://journowl.app/faq"
+      />
+      <ResourceModal 
+        isOpen={showKnowledgeModal} 
+        onClose={() => setShowKnowledgeModal(false)}
+        title="Knowledge Base"
+        url="https://journowl.app/knowledge-base"
       />
     </div>
   );
