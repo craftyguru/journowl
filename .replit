@@ -4,7 +4,7 @@ hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["unixtools.ping", "gh", "python311Packages.pillow", "imagemagick", "android-tools", "gradle", "openjdk"]
+packages = ["unixtools.ping", "gh", "python311Packages.pillow", "imagemagick", "android-tools", "gradle", "openjdk", "dig"]
 
 [deployment]
 deploymentTarget = "autoscale"
