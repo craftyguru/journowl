@@ -412,7 +412,7 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
                     }}
                   >
                     {/* Audio Recordings */}
-                    {(currentEntry.audioUrl || (currentEntry.audioRecordings && currentEntry.audioRecordings.length > 0)) && (
+                    {(currentEntry.audioUrl || (currentEntry.audioRecordings && currentEntry.audioRecordings.length > 0) || (currentEntry.content && currentEntry.content.includes("Voice note")) || (currentEntry.content && currentEntry.content.includes("audio recording"))) && (
                       <div className="mb-6 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border-2 border-purple-300 shadow-lg">
                         <h3 className="text-xl font-semibold text-purple-800 mb-4 flex items-center gap-2">
                           🎵 Voice Memories 
@@ -501,6 +501,28 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
                               </div>
                             </div>
                           ))}
+                          
+                          {/* Fallback for voice notes mentioned in text but no direct audio URL */}
+                          {!currentEntry.audioUrl && !currentEntry.audioRecordings && (currentEntry.content && (currentEntry.content.includes("Voice note") || currentEntry.content.includes("audio recording"))) && (
+                            <div className="flex items-center gap-4 p-4 bg-amber-50 rounded-lg border border-amber-200 shadow-sm">
+                              <div className="flex items-center gap-3 flex-1">
+                                <div className="text-4xl">🎤</div>
+                                <div className="flex-1">
+                                  <div className="text-sm font-medium text-amber-800">
+                                    Voice Recording Detected
+                                  </div>
+                                  <div className="text-xs text-amber-600 mt-1">
+                                    This entry mentions audio content. The recording may need to be re-linked.
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-xs text-amber-600 font-medium">
+                                  Audio Content
+                                </div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </div>
                     )}
