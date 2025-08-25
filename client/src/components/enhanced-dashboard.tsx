@@ -1860,10 +1860,13 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                     // Open journal book reader for reading/browsing entries
                     // Always force refresh entries before opening journal book
                     queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+                    queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+                    // Force refetch to ensure latest data
+                    queryClient.refetchQueries({ queryKey: ["/api/journal/entries"] });
                     // Wait a moment for the query to refresh, then open
                     setTimeout(() => {
                       setShowJournalBookReader(true);
-                    }, 100);
+                    }, 200);
                   }}
                   className="relative cursor-pointer group"
                 >

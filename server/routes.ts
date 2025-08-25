@@ -972,7 +972,8 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
 
   app.get("/api/journal/entries", requireAuth, async (req: any, res) => {
     try {
-      const limit = req.query.limit ? parseInt(req.query.limit) : 10;
+      // Get all entries by default, allow override with limit parameter
+      const limit = req.query.limit ? parseInt(req.query.limit) : 1000; // Much higher default
       const entries = await storage.getJournalEntries(req.session.userId, limit);
       res.json(entries);
     } catch (error: any) {
