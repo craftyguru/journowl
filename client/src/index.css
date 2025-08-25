@@ -114,21 +114,30 @@
     @apply bg-gray-400 dark:bg-gray-500;
   }
 
-  /* MDEditor font override styles */
-  .w-md-editor .w-md-editor-text-container .w-md-editor-text,
-  .w-md-editor .w-md-editor-text-container .w-md-editor-text-textarea,
+  /* MDEditor font override styles - Super aggressive */
+  .w-md-editor,
+  .w-md-editor *,
+  .w-md-editor .w-md-editor-text-container,
+  .w-md-editor .w-md-editor-text-container *,
+  .w-md-editor .w-md-editor-text,
+  .w-md-editor .w-md-editor-text *,
+  .w-md-editor .w-md-editor-text-textarea,
+  .w-md-editor .w-md-editor-text-textarea *,
   .w-md-editor .w-md-editor-text-area,
-  .w-md-editor .w-md-editor-text-area .w-md-editor-text,
+  .w-md-editor .w-md-editor-text-area *,
   .w-md-editor-text-area,
-  .w-md-editor-text {
+  .w-md-editor-text-area *,
+  .w-md-editor-text,
+  .w-md-editor-text *,
+  .w-md-editor textarea,
+  .w-md-editor textarea *,
+  .w-md-editor .CodeMirror,
+  .w-md-editor .CodeMirror *,
+  .w-md-editor .CodeMirror-scroll,
+  .w-md-editor .CodeMirror-scroll * {
     font-family: inherit !important;
     font-size: inherit !important;
     color: inherit !important;
-  }
-
-  /* Ensure MDEditor respects parent font styles */
-  .w-md-editor * {
-    font-family: inherit !important;
   }
 }
 
