@@ -191,6 +191,7 @@ export class DatabaseStorage implements IStorage {
       tags: entry.tags || [],
       photos: entry.photos || [],
       drawings: entry.drawings || [],
+      audioUrl: entry.audioUrl || null,
       location: entry.location || null,
       weather: entry.weather || null,
       aiInsights: null,
