@@ -463,11 +463,21 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   };
 
   const handleDateSelect = (date: Date) => {
-    // Open journal for selected date
-    openUnifiedJournal();
+    // Find entries for this specific date and open the first one, or create new
+    const dateEntries = entries.filter(entry => {
+      const entryDate = new Date(entry.createdAt);
+      return entryDate.toDateString() === date.toDateString();
+    });
+    
+    if (dateEntries.length > 0) {
+      openUnifiedJournal(dateEntries[0]); // Open first entry for that date
+    } else {
+      openUnifiedJournal(); // Create new entry for that date
+    }
   };
 
   const handleEntryEdit = (entry: any) => {
+    // Make sure we pass the complete entry with all formatting and media
     openUnifiedJournal(entry);
   };
 
@@ -6012,10 +6022,14 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
         {showUnifiedJournal && (
           <UnifiedJournal
             entry={selectedEntry}
+            allEntries={entries || []} // Pass all entries for navigation
             onSave={handleSaveEntry}
             onClose={() => {
               setShowUnifiedJournal(false);
               setSelectedEntry(null);
+            }}
+            onNavigateEntry={(entry) => {
+              setSelectedEntry(entry); // Allow navigation between entries
             }}
           />
         )}

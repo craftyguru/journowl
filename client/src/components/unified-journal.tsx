@@ -43,11 +43,13 @@ const fontFamilies = [
 
 interface UnifiedJournalProps {
   entry?: any;
+  allEntries?: any[];
   onSave: (entry: any) => void;
   onClose: () => void;
+  onNavigateEntry?: (entry: any) => void;
 }
 
-export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJournalProps) {
+export default function UnifiedJournal({ entry, allEntries = [], onSave, onClose, onNavigateEntry }: UnifiedJournalProps) {
   // Fetch user data for personalization
   const { data: user } = useQuery({
     queryKey: ["/api/auth/me"],
@@ -115,6 +117,38 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [isSaving, setIsSaving] = useState(false);
   const [showSupportChat, setShowSupportChat] = useState(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Journal Navigation Functions
+  const getCurrentEntryIndex = () => {
+    if (!entry || !allEntries.length) return -1;
+    return allEntries.findIndex(e => e.id === entry.id);
+  };
+
+  const navigateToPreviousEntry = () => {
+    const currentIndex = getCurrentEntryIndex();
+    if (currentIndex > 0 && onNavigateEntry) {
+      const previousEntry = allEntries[currentIndex - 1];
+      onNavigateEntry(previousEntry);
+    }
+  };
+
+  const navigateToNextEntry = () => {
+    const currentIndex = getCurrentEntryIndex();
+    if (currentIndex >= 0 && currentIndex < allEntries.length - 1 && onNavigateEntry) {
+      const nextEntry = allEntries[currentIndex + 1];
+      onNavigateEntry(nextEntry);
+    }
+  };
+
+  const hasPreviousEntry = () => {
+    const currentIndex = getCurrentEntryIndex();
+    return currentIndex > 0;
+  };
+
+  const hasNextEntry = () => {
+    const currentIndex = getCurrentEntryIndex();
+    return currentIndex >= 0 && currentIndex < allEntries.length - 1;
+  };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -1686,6 +1720,33 @@ ${cleanedResponse}
           </div>
           
           <div className="flex items-center gap-1 sm:gap-4">
+            {/* Journal Navigation */}
+            {allEntries.length > 1 && entry && (
+              <div className="hidden sm:flex items-center gap-1 bg-white/20 rounded-lg px-2 py-1">
+                <Button
+                  onClick={navigateToPreviousEntry}
+                  disabled={!hasPreviousEntry()}
+                  variant="ghost"
+                  className="h-8 w-8 p-0 hover:bg-white/30 disabled:opacity-50 text-white"
+                  title="Previous Entry"
+                >
+                  <span className="text-lg">📖</span>
+                </Button>
+                <span className="text-xs text-white/90 px-2">
+                  {getCurrentEntryIndex() + 1}/{allEntries.length}
+                </span>
+                <Button
+                  onClick={navigateToNextEntry}
+                  disabled={!hasNextEntry()}
+                  variant="ghost"
+                  className="h-8 w-8 p-0 hover:bg-white/30 disabled:opacity-50 text-white"
+                  title="Next Entry"
+                >
+                  <span className="text-lg">📚</span>
+                </Button>
+              </div>
+            )}
+            
             <button 
               onClick={handleSave}
               disabled={isSaving}
@@ -1698,7 +1759,8 @@ ${cleanedResponse}
               style={{ pointerEvents: 'all' }}
             >
               <Save className="w-4 h-4" />
-              <span>{isSaving ? 'Saving...' : 'Save Entry'}</span>
+              <span className="hidden sm:inline">{isSaving ? 'Saving...' : 'Save Entry'}</span>
+              <span className="sm:hidden">💾</span>
             </button>
             <Button 
               onClick={onClose}
