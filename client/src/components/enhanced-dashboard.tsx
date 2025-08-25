@@ -224,8 +224,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     queryKey: ["/api/stats"],
   });
   
-  const { data: entriesResponse } = useQuery<JournalEntry[]>({
+  const { data: entriesResponse, refetch: refetchEntries } = useQuery<JournalEntry[]>({
     queryKey: ["/api/journal/entries"],
+    staleTime: 0, // Always fetch fresh data
+    refetchOnWindowFocus: true,
   });
   
   const { data: achievementsResponse } = useQuery<APIResponse<Achievement[]>>({
@@ -1861,12 +1863,12 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                     // Always force refresh entries before opening journal book
                     queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
                     queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
-                    // Force refetch to ensure latest data
-                    queryClient.refetchQueries({ queryKey: ["/api/journal/entries"] });
+                    // Force fresh refetch
+                    refetchEntries();
                     // Wait a moment for the query to refresh, then open
                     setTimeout(() => {
                       setShowJournalBookReader(true);
-                    }, 200);
+                    }, 300);
                   }}
                   className="relative cursor-pointer group"
                 >

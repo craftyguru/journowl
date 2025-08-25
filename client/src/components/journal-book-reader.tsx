@@ -19,6 +19,7 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
   const [showCalendar, setShowCalendar] = useState(false);
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
 
+
   // Filter entries based on search
   const filteredEntries = useMemo(() => {
     if (!searchQuery.trim()) return entries;
@@ -176,7 +177,7 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
           </div>
 
           {/* Header Controls */}
-          <div className="absolute top-4 left-12 right-4 z-20 flex items-center justify-between">
+          <div className="absolute top-2 left-12 right-4 z-10 flex items-center justify-between">
             {/* Search Bar */}
             <div className="flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 border-2 border-amber-300 shadow-lg">
               <Search className="w-4 h-4 text-amber-700" />
@@ -218,7 +219,7 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
           </div>
 
           {/* Page Content */}
-          <div className="pl-12 pr-8 py-8 h-full overflow-hidden">
+          <div className="pl-12 pr-8 pt-16 pb-8 h-full overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentPageIndex}
