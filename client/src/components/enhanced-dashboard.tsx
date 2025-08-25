@@ -685,18 +685,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
 
   // Enhanced Camera - Using same modal system as orange button
   const capturePhoto = () => {
-    console.log('🔵 Blue camera button clicked!');
-    console.log('🔵 Opening Camera Options modal...');
-    console.log('🔵 showSmartEditor:', showSmartEditor, 'showUnifiedJournal:', showUnifiedJournal);
     setShowCameraModal(true); // Open Camera Options modal
   };
-  
-  // Debug: Log visibility conditions on render
-  console.log('🔍 Button visibility check:', {
-    showSmartEditor,
-    showUnifiedJournal,
-    buttonsVisible: !showSmartEditor && !showUnifiedJournal
-  });
 
   // File input ref for gallery uploads  
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -5820,6 +5810,66 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
         </div>
       )}
 
+      {/* Camera Options Modal - Same as unified journal orange button */}
+      <AlertDialog open={showCameraModal} onOpenChange={setShowCameraModal}>
+        <AlertDialogContent className="bg-gradient-to-br from-slate-900 via-purple-900/20 to-pink-900/20 border-purple-500/30 max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white text-center text-2xl font-bold" style={{ fontFamily: '"Rock Salt", cursive' }}>
+              📸 Camera Options
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-300 text-center">
+              Choose how you'd like to capture your moment
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          
+          <div className="space-y-3 py-4">
+            {/* Take Photo Button */}
+            <Button
+              onClick={takeCameraPhoto}
+              className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
+            >
+              <Camera className="mr-3 h-5 w-5" />
+              Take Photo
+            </Button>
+            
+            {/* Record Video Button */}
+            <Button
+              onClick={startVideoRecording}
+              className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
+            >
+              📹 Record Video
+            </Button>
+            
+            {/* Upload from Gallery Button */}
+            <Button
+              onClick={() => {
+                setShowCameraModal(false);
+                fileInputRef.current?.click();
+              }}
+              className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
+            >
+              <Upload className="mr-3 h-5 w-5" />
+              Upload from Gallery
+            </Button>
+          </div>
+          
+          <AlertDialogFooter className="flex justify-center">
+            <AlertDialogCancel className="bg-gray-600 hover:bg-gray-700 text-white border-gray-500">
+              Cancel
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Hidden file input for gallery uploads */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileUpload}
+        style={{ display: 'none' }}
+      />
+
     </div>
   );
 }
@@ -6223,66 +6273,6 @@ Mood: ${entry.mood}
           )}
         </motion.div>
       )}
-
-      {/* Camera Options Modal - Same as unified journal orange button */}
-      <AlertDialog open={showCameraModal} onOpenChange={setShowCameraModal}>
-        <AlertDialogContent className="bg-gradient-to-br from-slate-900 via-purple-900/20 to-pink-900/20 border-purple-500/30 max-w-md">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-white text-center text-2xl font-bold" style={{ fontFamily: '"Rock Salt", cursive' }}>
-              📸 Camera Options
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-300 text-center">
-              Choose how you'd like to capture your moment
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          
-          <div className="space-y-3 py-4">
-            {/* Take Photo Button */}
-            <Button
-              onClick={takeCameraPhoto}
-              className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
-            >
-              <Camera className="mr-3 h-5 w-5" />
-              Take Photo
-            </Button>
-            
-            {/* Record Video Button */}
-            <Button
-              onClick={startVideoRecording}
-              className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
-            >
-              📹 Record Video
-            </Button>
-            
-            {/* Upload from Gallery Button */}
-            <Button
-              onClick={() => {
-                setShowCameraModal(false);
-                fileInputRef.current?.click();
-              }}
-              className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
-            >
-              <Upload className="mr-3 h-5 w-5" />
-              Upload from Gallery
-            </Button>
-          </div>
-          
-          <AlertDialogFooter className="flex justify-center">
-            <AlertDialogCancel className="bg-gray-600 hover:bg-gray-700 text-white border-gray-500">
-              Cancel
-            </AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* Hidden file input for gallery uploads */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileUpload}
-        style={{ display: 'none' }}
-      />
     </div>
   );
 }
