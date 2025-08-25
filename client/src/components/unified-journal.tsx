@@ -70,6 +70,19 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
   const [isPrivate, setIsPrivate] = useState(entry?.isPrivate || false);
   const [tags, setTags] = useState<string[]>(entry?.tags || []);
   const [photos, setPhotos] = useState<any[]>(entry?.photos || []);
+  
+  // Debug: Log when entry changes to see if photos are included
+  useEffect(() => {
+    if (entry) {
+      console.log('Entry received in unified journal:', {
+        title: entry.title,
+        hasPhotos: !!entry.photos,
+        photoCount: entry.photos?.length || 0,
+        photos: entry.photos
+      });
+      setPhotos(entry.photos || []);
+    }
+  }, [entry]);
   const [drawings, setDrawings] = useState<any[]>(entry?.drawings || []);
   const [selectedPhoto, setSelectedPhoto] = useState<any>(null);
   const [photoCanvasRef, setPhotoCanvasRef] = useState<HTMLCanvasElement | null>(null);
@@ -123,16 +136,16 @@ export default function UnifiedJournal({ entry, onSave, onClose }: UnifiedJourna
       const userName = (user as any)?.username || (user as any)?.email?.split('@')[0] || 'there';
       const welcomeMessage = `Hi ${userName}! 🦉 Welcome to your AI-powered journal companion!
 
-🧠 I CAN HELP YOU:
+I CAN HELP YOU:
 • Write journal entries with personalized prompts
-• Analyze photos to extract emotions, memories, and story ideas  
+• Capture and reflect emotions, memories, and story ideas  
 • Suggest creative writing topics based on your mood
 • Turn your daily moments into meaningful stories
-• Answer questions about your journaling patterns and insights
+• Enhance spiritual, divine your journaling with insights
 
-💫 IMPORTANT: Each AI interaction uses 1 prompt from your monthly limit. Check your remaining prompts in the dashboard above!
+IMPORTANT: Each AI interaction uses 1 prompt from your monthly limit. Check your remaining prompts in the dashboard above!
 
-Ready to capture today's adventure? Let's start journaling! ✨`;
+💡 Simply start writing, attach a photo, or click the sparkle icon for AI assistance!`;
 
       setAiMessages([{ type: 'ai', message: welcomeMessage }]);
       setInitialMessageSet(true);
