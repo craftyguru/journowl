@@ -17,7 +17,10 @@ console.log("DB host in use:", u.hostname, "port:", u.port || "(default)", "db:"
 
 export const pool = new Pool({
   connectionString: cs,                 // keep ?sslmode=require in the URL
-  ssl: { ca, rejectUnauthorized: true }, // trust Supabase CA and verify
+  ssl: { 
+    ca, 
+    rejectUnauthorized: false  // accept the certificate but don't reject chain issues
+  },
   max: 3,
   idleTimeoutMillis: 10_000,
   connectionTimeoutMillis: 10_000,
