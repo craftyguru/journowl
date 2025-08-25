@@ -373,22 +373,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/register", async (req, res) => {
     try {
       console.log('Registration request body:', req.body);
-      const userData = insertUserSchema.parse(req.body);
+      const { promoCode, ...userDataRaw } = req.body;
+      const userData = insertUserSchema.parse(userDataRaw);
       console.log('Parsed user data:', userData);
+      
+      let promoCodeData = null;
+      let bonusPrompts = 0;
+      
+      // Validate promo code if provided
+      if (promoCode) {
+        promoCodeData = await storage.validatePromoCode(promoCode.toUpperCase());
+        if (!promoCodeData) {
+          return res.status(400).json({ 
+            message: "Invalid or expired promo code. Please check the code and try again." 
+          });
+        }
+        
+        // Calculate bonus based on promo type
+        if (promoCodeData.type === 'extra_prompts') {
+          bonusPrompts = promoCodeData.value;
+        }
+      }
       
       // Generate email verification token
       const verificationToken = crypto.randomBytes(32).toString('hex');
       const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
       console.log('Generated verification token:', verificationToken);
       
-      // Create user with email verification required
+      // Create user with email verification required and promo bonus
       console.log('Creating user with verification data...');
       const user = await createUser({
         ...userData,
         emailVerificationToken: verificationToken,
-        emailVerificationExpires: verificationExpires
+        emailVerificationExpires: verificationExpires,
+        promptsRemaining: 100 + bonusPrompts, // Apply promo bonus
       } as any); // Storage layer handles additional email verification fields
       console.log('User created successfully:', user.id, user.email);
+      
+      // Apply promo code if valid
+      if (promoCodeData) {
+        try {
+          await storage.usePromoCode(
+            user.id, 
+            promoCodeData.id, 
+            req.ip, 
+            req.headers['user-agent']
+          );
+          
+          // Apply other promo benefits
+          if (promoCodeData.type === 'pro_time') {
+            // TODO: Add pro subscription for X days
+            console.log(`Applied ${promoCodeData.value} days of pro access for user ${user.id}`);
+          } else if (promoCodeData.type === 'pro_discount') {
+            // TODO: Add discount to user profile
+            console.log(`Applied ${promoCodeData.value}% discount for user ${user.id}`);
+          }
+          
+          console.log(`Promo code ${promoCode} applied successfully for user ${user.id}`);
+        } catch (promoError) {
+          console.error('Failed to apply promo code:', promoError);
+        }
+      }
       
       // Don't log in user until email is verified
       // req.session.userId = user.id;
@@ -424,7 +469,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Account created! Please check your email to verify your account before signing in.",
         emailSent: true,
         email: user.email,
-        username: user.username
+        username: user.username,
+        bonusApplied: bonusPrompts > 0 ? `${bonusPrompts} bonus AI prompts` : null
       });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -4305,6 +4351,95 @@ Your story shows how every day brings new experiences and emotions, creating the
   
   app.get('/auth', (req, res) => {
     res.sendFile(path.join(path.dirname(new URL(import.meta.url).pathname), '../dist/public/index.html'));
+  });
+  
+  app.get('/admin', (req, res) => {
+    res.sendFile(path.join(path.dirname(new URL(import.meta.url).pathname), '../dist/public/index.html'));
+  });
+
+  // Promo Code Management Routes
+  app.get("/api/admin/promo-codes", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const promoCodes = await storage.getAllPromoCodes();
+      res.json(promoCodes);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/admin/promo-codes", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const promoCode = await storage.createPromoCode(req.body, req.session.userId);
+      res.json(promoCode);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put("/api/admin/promo-codes/:id", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      await storage.updatePromoCode(parseInt(req.params.id), req.body);
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete("/api/admin/promo-codes/:id", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      await storage.deletePromoCode(parseInt(req.params.id));
+      res.json({ success: true });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/admin/promo-codes/:id/usage", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const usage = await storage.getPromoCodeUsage(parseInt(req.params.id));
+      res.json(usage);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get("/api/admin/promo-codes-stats", requireAuth, async (req: any, res) => {
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+      
+      const stats = await storage.getPromoCodeStats();
+      res.json(stats);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
 
   const httpServer = createServer(app);

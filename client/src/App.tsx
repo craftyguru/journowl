@@ -13,7 +13,7 @@ import Dashboard from "@/pages/dashboard";
 import InsightsPage from "@/pages/insights";
 import Navbar from "@/components/navbar";
 import AccountSelector from "@/components/account-selector";
-import AdminDashboard from "@/components/admin-dashboard";
+import AdminDashboard from "@/pages/admin";
 import EnhancedDashboard from "@/components/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
 import ReferralPage from "@/components/referral-page";
@@ -33,7 +33,7 @@ import { FAQ } from "@/components/FAQ";
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq" | "admin">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('🔧 App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     console.log('🔧 Demo param detected:', urlParams.get('demo'));
@@ -44,6 +44,7 @@ function App() {
     if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
     if (window.location.pathname === '/login' || window.location.pathname === '/signin' || window.location.pathname === '/auth') return 'auth';
     if (window.location.pathname === '/register' || window.location.pathname === '/signup') return 'auth';
+    if (window.location.pathname === '/admin') return 'admin';
     if (window.location.pathname === '/import') return 'import';
     if (window.location.pathname === '/share') return 'share';
     if (window.location.pathname === '/privacy-policy') return 'privacy-policy';
@@ -66,7 +67,7 @@ function App() {
     if (tabOptions.includes(view)) {
       setActiveTab(view);
       setCurrentView("dashboard");
-    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "faq") {
+    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "faq" || view === "admin") {
       setCurrentView(view);
       if (view === "dashboard") setActiveTab("journal");
     }
@@ -449,8 +450,8 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
     );
   }
 
-  // Admin Dashboard for admin users
-  if ((user as any)?.user?.role === 'admin' || (user as any)?.role === 'admin') {
+  // Admin Dashboard - only show when specifically requested
+  if (currentView === 'admin' && ((user as any)?.user?.role === 'admin' || (user as any)?.role === 'admin')) {
     return (
       <div className="min-h-screen">
         <AdminDashboard />

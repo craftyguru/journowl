@@ -346,3 +346,45 @@ export type Announcement = typeof announcements.$inferSelect;
 export type SupportMessage = typeof supportMessages.$inferSelect;
 export type PromptPurchase = typeof promptPurchases.$inferSelect;
 export type InsertPromptPurchase = typeof promptPurchases.$inferInsert;
+
+// Promo Codes System
+export const promoCodes = pgTable("promo_codes", {
+  id: serial("id").primaryKey(),
+  code: text("code").notNull().unique(),
+  name: text("name").notNull(), // Display name for admin
+  description: text("description"),
+  type: text("type").notNull(), // "extra_prompts", "pro_time", "pro_discount"
+  value: integer("value").notNull(), // Amount/percentage/time in days
+  maxUses: integer("max_uses"), // null for unlimited
+  currentUses: integer("current_uses").default(0),
+  isActive: boolean("is_active").default(true),
+  validFrom: timestamp("valid_from").defaultNow(),
+  validUntil: timestamp("valid_until"),
+  createdBy: integer("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const promoCodeUsage = pgTable("promo_code_usage", {
+  id: serial("id").primaryKey(),
+  promoCodeId: integer("promo_code_id").references(() => promoCodes.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  usedAt: timestamp("used_at").defaultNow(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+});
+
+export const insertPromoCodeSchema = z.object({
+  code: z.string().min(3).max(20).regex(/^[A-Z0-9]+$/, "Code must contain only uppercase letters and numbers"),
+  name: z.string().min(1).max(100),
+  description: z.string().max(500).optional(),
+  type: z.enum(["extra_prompts", "pro_time", "pro_discount"]),
+  value: z.number().min(1),
+  maxUses: z.number().min(1).optional(),
+  validFrom: z.date().optional(),
+  validUntil: z.date().optional(),
+});
+
+export type PromoCode = typeof promoCodes.$inferSelect;
+export type InsertPromoCode = z.infer<typeof insertPromoCodeSchema>;
+export type PromoCodeUsage = typeof promoCodeUsage.$inferSelect;

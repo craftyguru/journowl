@@ -123,7 +123,8 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
     email: "",
     username: "",
     password: "",
-    confirmPassword: ""
+    confirmPassword: "",
+    promoCode: ""
   });
 
   // Security features state
@@ -641,6 +642,22 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                         placeholder="Confirm your password"
                         className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
                         autoComplete="new-password"
+                      />
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.7, duration: 0.5 }}
+                    >
+                      <Label htmlFor="register-promo-code" className="text-gray-300 font-medium">Promo Code (Optional)</Label>
+                      <Input
+                        id="register-promo-code"
+                        type="text"
+                        value={registerData.promoCode}
+                        onChange={(e) => setRegisterData(prev => ({ ...prev, promoCode: e.target.value.toUpperCase() }))}
+                        placeholder="Enter promo code for bonuses"
+                        className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all duration-300 hover:bg-white/10"
+                        maxLength={20}
                       />
                     </motion.div>
                     <Button 

@@ -12,6 +12,8 @@ import {
   announcements,
   supportMessages,
   promptPurchases,
+  promoCodes,
+  promoCodeUsage,
   type User, 
   type InsertUser, 
   type JournalEntry, 
@@ -27,7 +29,10 @@ import {
   type Announcement,
   type SupportMessage,
   type PromptPurchase,
-  type InsertPromptPurchase
+  type InsertPromptPurchase,
+  type PromoCode,
+  type InsertPromoCode,
+  type PromoCodeUsage,
 } from "@shared/schema";
 import { eq, desc, sql, and, gte } from "drizzle-orm";
 
@@ -109,6 +114,16 @@ export interface IStorage {
 
   getUserByReferralCode(referralCode: string): Promise<User | undefined>;
   addUserPrompts(userId: number, promptsToAdd: number): Promise<void>;
+
+  // Promo code methods
+  validatePromoCode(code: string): Promise<PromoCode | null>;
+  usePromoCode(userId: number, promoCodeId: number, ipAddress?: string, userAgent?: string): Promise<void>;
+  createPromoCode(promoCode: InsertPromoCode, createdBy: number): Promise<PromoCode>;
+  getAllPromoCodes(): Promise<PromoCode[]>;
+  getPromoCodeUsage(promoCodeId: number): Promise<PromoCodeUsage[]>;
+  updatePromoCode(id: number, updates: Partial<PromoCode>): Promise<void>;
+  deletePromoCode(id: number): Promise<void>;
+  getPromoCodeStats(): Promise<{ totalCodes: number; activeCodes: number; totalUsage: number; recentUsage: PromoCodeUsage[] }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1303,6 +1318,79 @@ export class DatabaseStorage implements IStorage {
         topFeatures: []
       };
     }
+  }
+
+  // Promo Code Methods
+  async validatePromoCode(code: string): Promise<PromoCode | null> {
+    const result = await db.select().from(promoCodes).where(
+      and(
+        eq(promoCodes.code, code),
+        eq(promoCodes.isActive, true),
+        gte(promoCodes.validUntil, new Date()),
+        sql`(${promoCodes.maxUses} IS NULL OR ${promoCodes.currentUses} < ${promoCodes.maxUses})`
+      )
+    ).limit(1);
+    return result[0] || null;
+  }
+
+  async usePromoCode(userId: number, promoCodeId: number, ipAddress?: string, userAgent?: string): Promise<void> {
+    // Record usage
+    await db.insert(promoCodeUsage).values({
+      promoCodeId,
+      userId,
+      ipAddress,
+      userAgent,
+    });
+
+    // Increment usage count
+    await db.update(promoCodes)
+      .set({ currentUses: sql`${promoCodes.currentUses} + 1` })
+      .where(eq(promoCodes.id, promoCodeId));
+  }
+
+  async createPromoCode(promoCode: InsertPromoCode, createdBy: number): Promise<PromoCode> {
+    const result = await db.insert(promoCodes).values({
+      ...promoCode,
+      createdBy,
+    }).returning();
+    return result[0];
+  }
+
+  async getAllPromoCodes(): Promise<PromoCode[]> {
+    return await db.select().from(promoCodes).orderBy(desc(promoCodes.createdAt));
+  }
+
+  async getPromoCodeUsage(promoCodeId: number): Promise<PromoCodeUsage[]> {
+    return await db.select().from(promoCodeUsage).where(eq(promoCodeUsage.promoCodeId, promoCodeId));
+  }
+
+  async updatePromoCode(id: number, updates: Partial<PromoCode>): Promise<void> {
+    await db.update(promoCodes).set({
+      ...updates,
+      updatedAt: new Date(),
+    }).where(eq(promoCodes.id, id));
+  }
+
+  async deletePromoCode(id: number): Promise<void> {
+    await db.delete(promoCodes).where(eq(promoCodes.id, id));
+  }
+
+  async getPromoCodeStats(): Promise<{ totalCodes: number; activeCodes: number; totalUsage: number; recentUsage: PromoCodeUsage[] }> {
+    const totalCodes = (await db.select({ count: sql<number>`count(*)` }).from(promoCodes))[0].count;
+    const activeCodes = (await db.select({ count: sql<number>`count(*)` }).from(promoCodes).where(eq(promoCodes.isActive, true)))[0].count;
+    const totalUsage = (await db.select({ count: sql<number>`count(*)` }).from(promoCodeUsage))[0].count;
+    
+    const recentUsage = await db.select()
+      .from(promoCodeUsage)
+      .orderBy(desc(promoCodeUsage.usedAt))
+      .limit(10);
+
+    return {
+      totalCodes,
+      activeCodes,
+      totalUsage,
+      recentUsage,
+    };
   }
 }
 
