@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight, BarChart3, Trash2, X, Shield, Camera, Upload } from "lucide-react";
+import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight, BarChart3, Trash2, X, Shield, Camera, Mic, Upload } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -44,7 +44,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   const [showPromptPurchase, setShowPromptPurchase] = useState(false);
   const [showIntroTutorial, setShowIntroTutorial] = useState(false);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
-  const [showCameraModal, setShowCameraModal] = useState(false);
   
   // Analytics Modal States
   const [showWordCloudModal, setShowWordCloudModal] = useState(false);
@@ -457,60 +456,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     setShowSmartEditor(true);
   };
 
-  // Shared function to open journal with optional media - Fixed version
-  const openJournalWithMedia = (mediaUrl?: string, type?: "photo" | "audio") => {
-    // Clear all existing modal states first to prevent conflicts
-    setShowSmartEditor(false);
-    setShowCameraModal(false);
-    
-    let entry = null;
-    
-    if (mediaUrl && type === "photo") {
-      entry = {
-        id: Date.now(),
-        title: "",
-        content: "",
-        mood: "😊",
-        photos: [{
-          id: Date.now(),
-          src: mediaUrl,
-          filename: `captured_photo_${Date.now()}.jpg`,
-          uploadedAt: new Date().toISOString(),
-          analysis: null
-        }],
-        isPrivate: false,
-        tags: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-    } else if (mediaUrl && type === "audio") {
-      entry = {
-        id: Date.now(),
-        title: "",
-        content: "🎤 Voice Recording",
-        mood: "😊",
-        photos: [],
-        audioRecordings: [{
-          url: mediaUrl,
-          duration: 10,
-          timestamp: new Date(),
-          blob: null
-        }],
-        audioUrl: mediaUrl,
-        isPrivate: false,
-        tags: ["voice", "audio"],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        triggerAiAnalysis: true
-      };
-    }
-    
-    // Use React's state batching to ensure these happen together
-    setTimeout(() => {
-      setSelectedEntry(entry);
-      setShowUnifiedJournal(true);
-    }, 100);
-  };
 
   const openUnifiedJournal = (entry?: any) => {
     setSelectedEntry(entry);
@@ -590,31 +535,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     }
   };
 
-  // Camera Modal Functions - Using same system as orange button
-  const takeCameraPhoto = () => {
-    setShowCameraModal(false); // Close modal first
-    setTimeout(() => openCameraPreview(false), 100); // Small delay to ensure modal closes
-  };
-  
-  const startVideoRecording = async () => {
-    setShowCameraModal(false); // Close modal first
-    console.log('Video recording started from enhanced dashboard');
-    
-    // For now, create a blank journal entry to write about the video experience
-    const newEntry = {
-      id: Date.now(),
-      title: "",
-      content: "📹 I wanted to record a video moment...\n\n",
-      mood: "😊",
-      photos: [],
-      isPrivate: false,
-      tags: ["video-moment"],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    
-    openUnifiedJournal(newEntry);
-  };
   
   // Create camera preview with live video feed (same as unified journal)
   const openCameraPreview = async (enableAiAnalysis: boolean = false) => {
@@ -749,8 +669,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         // Ignore cleanup errors
                       }
                       
-                      // Open journal with photo using shared function
-                      openJournalWithMedia(photoUrl, "photo");
+                      // Photo uploaded, open journal normally
+                      openUnifiedJournal();
                     }
                   } catch (error) {
                     // Silent error handling
@@ -790,7 +710,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       cancelBtn.onclick = () => {
         stream.getTracks().forEach(track => track.stop());
         document.body.removeChild(overlay);
-        setShowCameraModal(false);
       };
       
       // Build UI
@@ -808,11 +727,6 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     }
   };
 
-  // Enhanced Camera - Using same modal system as orange button
-  const capturePhoto = () => {
-    console.log('🔵 Blue camera button clicked - opening modal');
-    setShowCameraModal(true); // Open Camera Options modal
-  };
 
 
   // File input ref for gallery uploads  
@@ -985,8 +899,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               const result = await storageResponse.json();
               const audioUrl = result.url;
               
-              // Open journal with audio using shared function
-              openJournalWithMedia(audioUrl, "audio");
+              // Audio uploaded, open journal normally  
+              openUnifiedJournal();
             }
           } catch (error) {
             // Silent error handling
@@ -1022,6 +936,167 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       
     } catch (error) {
       console.error('Failed to start voice recording:', error);
+    }
+  };
+
+  // Brand new simple camera function that directly opens journal with photo  
+  const takePhotoAndOpenJournal = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      
+      // Create simple camera interface
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.playsInline = true;
+      
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: black; z-index: 9999; display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+      `;
+      
+      video.style.cssText = 'width: 90vw; max-height: 70vh; border-radius: 10px;';
+      
+      const captureBtn = document.createElement('button');
+      captureBtn.innerHTML = '📸 Capture';
+      captureBtn.style.cssText = `
+        margin-top: 20px; padding: 15px 30px; font-size: 18px; 
+        background: #22c55e; color: white; border: none; border-radius: 10px;
+        cursor: pointer; font-weight: bold;
+      `;
+      
+      captureBtn.onclick = async () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          ctx.drawImage(video, 0, 0);
+          
+          canvas.toBlob(async (blob) => {
+            if (blob) {
+              const reader = new FileReader();
+              reader.onload = async () => {
+                try {
+                  const response = await apiRequest("POST", "/api/journal/entries", {
+                    title: "📸 Photo Capture",
+                    content: "Captured from camera",
+                    mood: "😊",
+                    photos: [{
+                      id: Date.now(),
+                      src: reader.result,
+                      filename: `photo_${Date.now()}.jpg`,
+                      uploadedAt: new Date().toISOString()
+                    }],
+                    isPrivate: false,
+                    tags: ["photo"]
+                  });
+                  
+                  if (response.ok) {
+                    const savedEntry = await response.json();
+                    stream.getTracks().forEach(track => track.stop());
+                    document.body.removeChild(overlay);
+                    
+                    // Refresh data and open journal
+                    queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+                    queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+                    setSelectedEntry(savedEntry.entry);
+                    setShowUnifiedJournal(true);
+                  }
+                } catch (error) {
+                  console.error('Failed to save photo entry:', error);
+                }
+              };
+              reader.readAsDataURL(blob);
+            }
+          }, 'image/jpeg', 0.8);
+        }
+      };
+      
+      overlay.appendChild(video);
+      overlay.appendChild(captureBtn);
+      document.body.appendChild(overlay);
+      
+    } catch (error) {
+      console.error('Camera access failed:', error);
+    }
+  };
+
+  // Brand new simple audio recorder that directly opens journal with audio
+  const recordAudioAndOpenJournal = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: linear-gradient(135deg, #667eea, #764ba2); z-index: 9999;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        color: white; font-family: Arial, sans-serif;
+      `;
+      
+      const title = document.createElement('div');
+      title.innerHTML = '🎤 Recording Audio...';
+      title.style.cssText = 'font-size: 24px; font-weight: bold; margin-bottom: 30px;';
+      
+      const stopBtn = document.createElement('button');
+      stopBtn.innerHTML = '🛑 Stop & Save';
+      stopBtn.style.cssText = `
+        padding: 15px 30px; font-size: 18px; background: #22c55e;
+        color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;
+      `;
+      
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks: BlobPart[] = [];
+      
+      mediaRecorder.ondataavailable = (event) => chunks.push(event.data);
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+        const reader = new FileReader();
+        reader.onload = async () => {
+          try {
+            const response = await apiRequest("POST", "/api/journal/entries", {
+              title: "🎤 Voice Recording",
+              content: "Voice recording captured",
+              mood: "😊",
+              audioUrl: reader.result,
+              isPrivate: false,
+              tags: ["audio", "voice"]
+            });
+            
+            if (response.ok) {
+              const savedEntry = await response.json();
+              stream.getTracks().forEach(track => track.stop());
+              document.body.removeChild(overlay);
+              
+              // Refresh data and open journal
+              queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+              queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+              setSelectedEntry(savedEntry.entry);
+              setShowUnifiedJournal(true);
+            }
+          } catch (error) {
+            console.error('Failed to save audio entry:', error);
+          }
+        };
+        reader.readAsDataURL(audioBlob);
+      };
+      
+      stopBtn.onclick = () => mediaRecorder.stop();
+      
+      overlay.appendChild(title);
+      overlay.appendChild(stopBtn);
+      document.body.appendChild(overlay);
+      
+      mediaRecorder.start();
+      
+    } catch (error) {
+      console.error('Microphone access failed:', error);
     }
   };
 
@@ -1796,7 +1871,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button 
-                  onClick={() => openJournalWithMedia()}
+                  onClick={() => openUnifiedJournal()}
                   className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
@@ -6098,90 +6173,32 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
         </motion.button>
       )}
 
-      {/* Floating Action Bubbles - Voice and Camera Only */}
+      {/* New Simple Camera and Microphone Buttons */}
       {!showSmartEditor && !showUnifiedJournal && (
         <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
           <motion.button
-            onClick={capturePhoto}
+            onClick={takePhotoAndOpenJournal}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
             title="Take Photo"
           >
-            📸
+            <Camera className="w-8 h-8" />
           </motion.button>
           
           <motion.button
-            onClick={recordAudio}
+            onClick={recordAudioAndOpenJournal}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             className="w-16 h-16 bg-green-500 hover:bg-green-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
             title="Record Audio"
           >
-            🎤
+            <Mic className="w-8 h-8" />
           </motion.button>
         </div>
       )}
 
-      {/* Camera Options Modal - Same as unified journal orange button */}
-      <AlertDialog open={showCameraModal} onOpenChange={setShowCameraModal}>
-        <AlertDialogContent className="bg-gradient-to-br from-slate-900 via-purple-900/20 to-pink-900/20 border-purple-500/30 max-w-md">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-white text-center text-2xl font-bold" style={{ fontFamily: '"Rock Salt", cursive' }}>
-              📸 Camera Options
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-300 text-center">
-              Choose how you'd like to capture your moment
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          
-          <div className="space-y-3 py-4">
-            {/* Take Photo Button */}
-            <Button
-              onClick={takeCameraPhoto}
-              className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
-            >
-              <Camera className="mr-3 h-5 w-5" />
-              Take Photo
-            </Button>
-            
-            {/* Record Video Button */}
-            <Button
-              onClick={startVideoRecording}
-              className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
-            >
-              📹 Record Video
-            </Button>
-            
-            {/* Upload from Gallery Button */}
-            <Button
-              onClick={() => {
-                setShowCameraModal(false);
-                fileInputRef.current?.click();
-              }}
-              className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-4 px-6 rounded-xl shadow-lg transform transition-all duration-200 hover:scale-105"
-            >
-              <Upload className="mr-3 h-5 w-5" />
-              Upload from Gallery
-            </Button>
-          </div>
-          
-          <AlertDialogFooter className="flex justify-center">
-            <AlertDialogCancel className="bg-gray-600 hover:bg-gray-700 text-white border-gray-500">
-              Cancel
-            </AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
-      {/* Hidden file input for gallery uploads */}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileUpload}
-        style={{ display: 'none' }}
-      />
 
     </div>
   );
