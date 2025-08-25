@@ -19,7 +19,7 @@ export async function createUser(userData: Partial<User>) {
   const hashedPassword = await hashPassword((userData as any).password);
   return await storage.createUser({
     ...userData,
-    password: hashedPassword,
+    password_hash: hashedPassword,
   });
 }
 
@@ -41,8 +41,8 @@ export async function authenticateUser(identifier: string, password: string) {
     throw new Error("Invalid credentials");
   }
 
-  console.log('User found:', user.username, user.email, 'hasPassword:', !!user.password);
-  const isValid = await verifyPassword(password, user.password || "");
+  console.log('User found:', user.username, user.email, 'hasPassword:', !!user.password_hash);
+  const isValid = await verifyPassword(password, user.password_hash || "");
   console.log('Password verification result:', isValid);
   
   if (!isValid) {
@@ -74,7 +74,7 @@ export async function createAdminUser() {
     const adminUser = await storage.createUser({
       email: "archimedes@journowl.app",
       username: "archimedes", 
-      password: hashedPassword,
+      password_hash: hashedPassword,
       role: "admin",
       level: 99,
       xp: 999999,
