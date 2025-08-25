@@ -457,8 +457,12 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     setShowSmartEditor(true);
   };
 
-  // Shared function to open journal with optional media
+  // Shared function to open journal with optional media - Fixed version
   const openJournalWithMedia = (mediaUrl?: string, type?: "photo" | "audio") => {
+    // Clear all existing modal states first to prevent conflicts
+    setShowSmartEditor(false);
+    setShowCameraModal(false);
+    
     let entry = null;
     
     if (mediaUrl && type === "photo") {
@@ -486,16 +490,26 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
         content: "🎤 Voice Recording",
         mood: "😊",
         photos: [],
+        audioRecordings: [{
+          url: mediaUrl,
+          duration: 10,
+          timestamp: new Date(),
+          blob: null
+        }],
         audioUrl: mediaUrl,
         isPrivate: false,
         tags: ["voice", "audio"],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        triggerAiAnalysis: true
       };
     }
     
-    setSelectedEntry(entry);
-    setShowUnifiedJournal(true);
+    // Use React's state batching to ensure these happen together
+    setTimeout(() => {
+      setSelectedEntry(entry);
+      setShowUnifiedJournal(true);
+    }, 100);
   };
 
   const openUnifiedJournal = (entry?: any) => {
@@ -735,13 +749,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         // Ignore cleanup errors
                       }
                       
-                      // Clear camera modal state first
-                      setShowCameraModal(false);
-                      
                       // Open journal with photo using shared function
-                      setTimeout(() => {
-                        openJournalWithMedia(photoUrl, "photo");
-                      }, 50);
+                      openJournalWithMedia(photoUrl, "photo");
                     }
                   } catch (error) {
                     // Silent error handling
@@ -977,9 +986,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
               const audioUrl = result.url;
               
               // Open journal with audio using shared function
-              setTimeout(() => {
-                openJournalWithMedia(audioUrl, "audio");
-              }, 50);
+              openJournalWithMedia(audioUrl, "audio");
             }
           } catch (error) {
             // Silent error handling
