@@ -7,7 +7,7 @@ JournOwl is a multi-dashboard journaling application that leverages AI to provid
 Preferred communication style: Simple, everyday language.
 UI/UX preferences: Animated, colorful, inviting design that gets users excited to test and use the app regularly.
 **CRITICAL**: Never add debugging code (alerts, console.logs, etc.) unless explicitly requested by user. User strongly dislikes debugging code being added.
-**CRITICAL RESPONSE CONSTRAINTS**: All responses maximum 5 words. Keep thinking time under 1 minute always. Never exceed 1 minute work time per prompt.
+**CRITICAL RESPONSE CONSTRAINTS**: All responses maximum 10 words. Keep thinking time under 1 minute always. Never exceed 1 minute work time per prompt.
 
 ## System Architecture
 
