@@ -660,6 +660,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             sessionExists: !!req.session
           });
           
+          // Log login activity for admin dashboard
+          logActivity(user.id, 'user_login', {
+            loginMethod: 'password',
+            username: user.username || user.email,
+            userAgent: req.headers['user-agent']
+          }, req).catch(err => console.error('Login activity logging failed:', err));
+          
           res.json({ 
             user: { 
               id: user.id, 
@@ -960,6 +967,14 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
         // Continue without storage tracking if it fails
       }
       
+      // Log this activity for admin dashboard
+      await logActivity(req.session.userId, 'journal_entry_created', {
+        entryId: entry.id,
+        title: entry.title || 'Untitled',
+        wordCount: entry.wordCount || 0,
+        mood: entry.mood || 'Not specified'
+      }, req);
+
       console.log("POST /api/journal/entries - Success, returning entry");
       res.json(entry);
     } catch (error: any) {
@@ -1127,6 +1142,12 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
         // Continue without storage tracking if it fails
       }
       
+      // Log this activity for admin dashboard
+      await logActivity(req.session.userId, 'journal_entry_updated', {
+        entryId: id,
+        title: entryData.title || 'Updated Entry'
+      }, req);
+
       res.json({ message: "Entry updated successfully" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -1165,6 +1186,12 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
         // Continue without storage tracking if it fails
       }
       
+      // Log this activity for admin dashboard
+      await logActivity(req.session.userId, 'journal_entry_deleted', {
+        entryId: id,
+        title: existingEntry.title || 'Untitled'
+      }, req);
+
       console.log(`DELETE /api/journal/entries/${id} - Success`);
       res.json({ message: "Entry deleted successfully" });
     } catch (error: any) {
