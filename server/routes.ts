@@ -92,16 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.use(session({
     store: new PgSession({
-      conObject: {
-        host: 'aws-0-us-east-2.pooler.supabase.com',
-        port: 6543,
-        database: 'postgres',
-        user: 'postgres.asjcxaiabjsbjbasssfe',
-        password: 'KCqwTTy4bwqNrHti',
-        ssl: {
-          rejectUnauthorized: false
-        }
-      },
+      conString: process.env.DATABASE_URL,
       tableName: 'session',
       createTableIfMissing: true,
       pruneSessionInterval: false
