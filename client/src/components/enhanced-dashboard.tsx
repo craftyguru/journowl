@@ -847,21 +847,168 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     }
   };
 
-  // Recording functions - open unified journal for voice recording
+  // Voice recording functions
   const recordAudio = () => {
-    console.log('🎤 Opening journal for voice recording...');
-    const voiceEntry = {
-      id: Date.now(),
-      title: "",
-      content: "🎤 Voice Recording",
-      mood: "😊",
-      photos: [],
-      isPrivate: false,
-      tags: ["voice"],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    openUnifiedJournal(voiceEntry);
+    console.log('🎤 Starting voice recording interface...');
+    startVoiceRecording();
+  };
+
+  const startVoiceRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      
+      // Create overlay for recording interface
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-family: Arial, sans-serif;
+      `;
+      
+      const title = document.createElement('h2');
+      title.innerHTML = '🎤 Voice Recording';
+      title.style.cssText = `
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        text-align: center;
+      `;
+      
+      const status = document.createElement('div');
+      status.innerHTML = '● Recording...';
+      status.style.cssText = `
+        font-size: 1.5rem;
+        color: #ff4444;
+        margin-bottom: 2rem;
+        animation: pulse 2s infinite;
+      `;
+      
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = `
+        display: flex;
+        gap: 20px;
+        margin-top: 2rem;
+      `;
+      
+      const stopBtn = document.createElement('button');
+      stopBtn.innerHTML = '⏹️ Stop & Save';
+      stopBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #22c55e;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      const cancelBtn = document.createElement('button');
+      cancelBtn.innerHTML = '❌ Cancel';
+      cancelBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      // Set up MediaRecorder
+      const mediaRecorder = new MediaRecorder(stream);
+      const chunks: BlobPart[] = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        chunks.push(event.data);
+      };
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(chunks, { type: 'audio/wav' });
+        
+        // Convert to base64 for upload
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          const base64String = reader.result as string;
+          
+          // Upload audio to storage (similar to photo upload)
+          try {
+            const storageResponse = await fetch('/api/photos/upload', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                image: base64String,
+                filename: `voice_recording_${Date.now()}.wav`
+              }),
+            });
+            
+            if (storageResponse.ok) {
+              const result = await storageResponse.json();
+              
+              // Create journal entry with voice recording
+              const voiceEntry = {
+                id: Date.now(),
+                title: "",
+                content: "🎤 Voice Recording",
+                mood: "😊",
+                photos: [], // Voice recordings can be handled differently
+                audioUrl: result.url, // Store audio URL
+                isPrivate: false,
+                tags: ["voice", "audio"],
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+              };
+              
+              // Open journal with voice recording
+              setTimeout(() => {
+                openUnifiedJournal(voiceEntry);
+              }, 200);
+            }
+          } catch (error) {
+            console.error('Failed to upload voice recording:', error);
+          }
+        };
+        reader.readAsDataURL(audioBlob);
+      };
+      
+      // Handle stop recording
+      stopBtn.onclick = () => {
+        mediaRecorder.stop();
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(overlay);
+      };
+      
+      // Handle cancel
+      cancelBtn.onclick = () => {
+        mediaRecorder.stop();
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(overlay);
+      };
+      
+      // Add elements to overlay
+      buttonContainer.appendChild(stopBtn);
+      buttonContainer.appendChild(cancelBtn);
+      overlay.appendChild(title);
+      overlay.appendChild(status);
+      overlay.appendChild(buttonContainer);
+      document.body.appendChild(overlay);
+      
+      // Start recording
+      mediaRecorder.start();
+      
+    } catch (error) {
+      console.error('Failed to start voice recording:', error);
+    }
   };
 
   // Convert entries to calendar format with varied dates
