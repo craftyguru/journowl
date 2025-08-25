@@ -1858,14 +1858,12 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     // Open journal book reader for reading/browsing entries
-                    if (entries && entries.length > 0) {
-                      // Force refresh entries before opening journal book
-                      queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+                    // Always force refresh entries before opening journal book
+                    queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+                    // Wait a moment for the query to refresh, then open
+                    setTimeout(() => {
                       setShowJournalBookReader(true);
-                    } else {
-                      // If no entries, open editor to create first entry
-                      openUnifiedJournal();
-                    }
+                    }, 100);
                   }}
                   className="relative cursor-pointer group"
                 >
@@ -1899,11 +1897,11 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                         {/* Stats Badge */}
                         <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 border border-white/30">
                           <div className="text-center text-white">
-                            <div className="text-2xl font-bold">{entries?.length || 0}</div>
+                            <div className="text-2xl font-bold">{stats?.totalEntries || entries?.length || 0}</div>
                             <div className="text-sm opacity-90">Entries</div>
-                            {entries?.length > 0 && (
+                            {(entries?.length > 0 || stats?.totalEntries > 0) && (
                               <div className="text-xs opacity-75 mt-2">
-                                Latest: {new Date(entries[entries.length - 1]?.createdAt).toLocaleDateString()}
+                                Latest: {entries?.length > 0 ? new Date(entries[entries.length - 1]?.createdAt).toLocaleDateString() : 'Today'}
                               </div>
                             )}
                           </div>

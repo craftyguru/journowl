@@ -317,16 +317,55 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
                     }}
                   >
                     {/* Audio Recordings */}
-                    {currentEntry.audioRecordings && currentEntry.audioRecordings.length > 0 && (
+                    {(currentEntry.audioUrl || (currentEntry.audioRecordings && currentEntry.audioRecordings.length > 0)) && (
                       <div className="mb-6 p-6 bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl border-2 border-purple-300 shadow-lg">
                         <h3 className="text-xl font-semibold text-purple-800 mb-4 flex items-center gap-2">
                           🎵 Voice Memories 
                           <span className="text-sm bg-purple-200 px-2 py-1 rounded-full">
-                            {currentEntry.audioRecordings.length}
+                            {currentEntry.audioUrl ? 1 : currentEntry.audioRecordings?.length || 0}
                           </span>
                         </h3>
                         <div className="space-y-3">
-                          {currentEntry.audioRecordings.map((audio: any, index: number) => (
+                          {/* Single audio URL (for saved entries) */}
+                          {currentEntry.audioUrl && (
+                            <div className="flex items-center gap-4 p-4 bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow">
+                              <div className="flex items-center gap-3 flex-1">
+                                <div className="relative">
+                                  <Button
+                                    onClick={() => handleAudioPlay(currentEntry.audioUrl)}
+                                    variant="ghost"
+                                    className="h-10 w-10 p-0 rounded-full bg-purple-100 hover:bg-purple-200 text-purple-700"
+                                  >
+                                    {playingAudio === currentEntry.audioUrl ? (
+                                      <Pause className="w-5 h-5" />
+                                    ) : (
+                                      <Play className="w-5 h-5" />
+                                    )}
+                                  </Button>
+                                </div>
+                                <div className="flex-1">
+                                  <audio 
+                                    controls 
+                                    className="w-full h-8"
+                                    style={{ filter: 'sepia(20%) saturate(70%) hue-rotate(315deg) brightness(1.1)' }}
+                                  >
+                                    <source src={currentEntry.audioUrl} type="audio/webm" />
+                                    <source src={currentEntry.audioUrl} type="audio/wav" />
+                                    <source src={currentEntry.audioUrl} type="audio/mp3" />
+                                    Your browser does not support audio playback.
+                                  </audio>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-xs text-purple-600 font-medium">
+                                  Voice Recording
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                          
+                          {/* Multiple audio recordings (for live/unsaved entries) */}
+                          {currentEntry.audioRecordings && currentEntry.audioRecordings.map((audio: any, index: number) => (
                             <div key={index} className="flex items-center gap-4 p-4 bg-white rounded-lg border shadow-sm hover:shadow-md transition-shadow">
                               <div className="flex items-center gap-3 flex-1">
                                 <div className="relative">
@@ -385,17 +424,22 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
                             <div key={index} className="relative group">
                               <div className="relative overflow-hidden rounded-xl shadow-lg border-4 border-white hover:shadow-xl transition-all duration-300 group-hover:scale-[1.02]">
                                 <img
-                                  src={photo.url}
-                                  alt={photo.caption || `Photo ${index + 1}`}
+                                  src={photo.url || photo.src}
+                                  alt={photo.caption || photo.analysis?.description || `Photo ${index + 1}`}
                                   className="w-full h-64 object-cover"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                               </div>
-                              {photo.caption && (
+                              {(photo.caption || photo.analysis?.description) && (
                                 <div className="mt-3 p-3 bg-white rounded-lg border border-blue-200 shadow-sm">
                                   <p className="text-sm text-gray-700 italic text-center leading-relaxed">
-                                    "{photo.caption}"
+                                    "{photo.caption || photo.analysis?.description}"
                                   </p>
+                                  {photo.analysis && (
+                                    <div className="mt-2 text-xs text-blue-600">
+                                      AI Analysis: {photo.analysis.mood}
+                                    </div>
+                                  )}
                                 </div>
                               )}
                             </div>
