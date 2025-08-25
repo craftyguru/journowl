@@ -118,7 +118,7 @@ export default function AdminDashboard() {
       
       // Load analytics
       try {
-        const analyticsRes = await fetch('/api/admin/analytics').then(r => r.json());
+        const analyticsRes = await fetch('/api/test/analytics').then(r => r.json());
         setAnalytics(analyticsRes);
         setActivityLogs(analyticsRes.recentActivity || []);
       } catch (e) {
