@@ -459,8 +459,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
 
   const openUnifiedJournal = (entry?: any) => {
     console.log('🚀 openUnifiedJournal called with entry:', entry);
+    alert('DEBUG: openUnifiedJournal called!');
     setSelectedEntry(entry);
     setShowUnifiedJournal(true);
+    alert('DEBUG: showUnifiedJournal set to true!');
     console.log('🚀 showUnifiedJournal set to true');
   };
 
@@ -655,6 +657,7 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
       
       // Handle capture
       captureBtn.onclick = () => {
+        alert('DEBUG: Capture button clicked!');
         const canvas = document.createElement('canvas');
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
@@ -664,8 +667,10 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
           context.drawImage(video, 0, 0);
           
           canvas.toBlob(async (blob) => {
+            alert('DEBUG: Canvas.toBlob called!');
             if (blob) {
               console.log('📷 Canvas.toBlob successful, blob size:', blob.size);
+              alert('DEBUG: Blob created, size: ' + blob.size);
               try {
                 // Convert blob to base64 for storage
                 const reader = new FileReader();
