@@ -1859,6 +1859,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
                   onClick={() => {
                     // Open journal book reader for reading/browsing entries
                     if (entries && entries.length > 0) {
+                      // Force refresh entries before opening journal book
+                      queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
                       setShowJournalBookReader(true);
                     } else {
                       // If no entries, open editor to create first entry

@@ -39,6 +39,14 @@ export default function JournalBookReader({ entries, onClose, onEditEntry, initi
     }
   }, [filteredEntries.length, currentPageIndex]);
 
+  // Update to show latest entry when entries change (new entries added)
+  useEffect(() => {
+    if (entries.length > 0 && !searchQuery.trim()) {
+      // Show most recent entry when new entries are added
+      setCurrentPageIndex(entries.length - 1);
+    }
+  }, [entries.length, searchQuery]);
+
   const currentEntry = filteredEntries[currentPageIndex];
 
   // Generate calendar dates for current month
