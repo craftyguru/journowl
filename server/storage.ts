@@ -115,13 +115,27 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
-    return result[0];
+    try {
+      console.log('Looking up user by email:', email);
+      const result = await db.select().from(users).where(eq(users.email, email)).limit(1);
+      console.log('Email lookup result:', result.length > 0 ? 'found' : 'not found');
+      return result[0];
+    } catch (error) {
+      console.error('Database error in getUserByEmail:', error);
+      throw error;
+    }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
-    return result[0];
+    try {
+      console.log('Looking up user by username:', username);
+      const result = await db.select().from(users).where(eq(users.username, username)).limit(1);
+      console.log('Username lookup result:', result.length > 0 ? 'found' : 'not found');
+      return result[0];
+    } catch (error) {
+      console.error('Database error in getUserByUsername:', error);
+      throw error;
+    }
   }
 
   async createUser(user: Partial<User>): Promise<User> {
