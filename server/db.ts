@@ -9,7 +9,7 @@ console.log("DB host in use:", u.hostname, "port:", u.port || "(default)", "db:"
 
 export const pool = new Pool({
   connectionString: cs,
-  // let connection string's ?sslmode=require handle SSL entirely
+  ssl: { rejectUnauthorized: false }, // Supabase pooler uses self-signed certificates
   max: 3,
   idleTimeoutMillis: 10_000,
   connectionTimeoutMillis: 10_000,
