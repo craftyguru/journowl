@@ -117,6 +117,7 @@ export default function UnifiedJournal({ entry, allEntries = [], onSave, onClose
   const [isSaving, setIsSaving] = useState(false);
   const [showSupportChat, setShowSupportChat] = useState(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Journal Navigation Functions
   const getCurrentEntryIndex = () => {
@@ -150,7 +151,6 @@ export default function UnifiedJournal({ entry, allEntries = [], onSave, onClose
     return currentIndex >= 0 && currentIndex < allEntries.length - 1;
   };
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [brushSize, setBrushSize] = useState(3);
@@ -731,6 +731,134 @@ Ready to turn your thoughts into a beautiful journal entry? I can help you expan
   // Enhanced camera function for AI
   const capturePhotoForAI = () => {
     openCameraPreview(true);
+  };
+
+  // Handle media uploads from gallery (photos and videos)
+  const handleMediaUpload = async (files: FileList) => {
+    setShowCameraModal(false);
+    
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      
+      if (file.type.startsWith('image/')) {
+        // Handle image upload
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const base64 = e.target?.result as string;
+          
+          const newPhoto = {
+            src: base64,
+            uploadedAt: new Date().toISOString(),
+            filename: file.name,
+            analysis: null,
+            aiAnalysis: null
+          };
+          
+          setPhotos(prev => [...prev, newPhoto]);
+          
+          // Auto-trigger AI analysis if AI chat is enabled
+          if (showAiChat) {
+            setTimeout(() => handlePhotoAiAnalysis(base64), 500);
+          }
+        };
+        reader.readAsDataURL(file);
+        
+      } else if (file.type.startsWith('video/')) {
+        // Handle video upload
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          const base64 = e.target?.result as string;
+          
+          // Get video duration
+          const video = document.createElement('video');
+          video.src = base64;
+          
+          video.onloadedmetadata = () => {
+            const duration = Math.round(video.duration);
+            
+            const newVideo = {
+              url: base64,
+              filename: file.name,
+              uploadedAt: new Date().toISOString(),
+              duration: duration,
+              timestamp: new Date(),
+              type: 'video' as const
+            };
+            
+            setVideoRecordings(prev => [...prev, newVideo]);
+            
+            // Auto-trigger AI analysis if AI chat is enabled
+            if (showAiChat) {
+              setTimeout(() => handleVideoAiAnalysis(base64, duration), 500);
+            }
+          };
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  // Handle video AI analysis
+  const handleVideoAiAnalysis = async (base64: string, duration: number) => {
+    setAiMessages(prev => [...prev, {
+      type: 'user',
+      message: `🎬 I just uploaded a video (${duration}s)! Please analyze it.`
+    }]);
+    
+    setAiMessages(prev => [...prev, {
+      type: 'ai',
+      message: '🔍 Analyzing your video...'
+    }]);
+
+    try {
+      const response = await fetch('/api/ai/analyze-video', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          base64Video: base64,
+          currentMood: mood,
+          duration: duration
+        })
+      });
+
+      if (response.ok) {
+        const analysis = await response.json();
+        
+        const analysisMessage = `✨ Video Analysis Complete!
+
+📝 **Description:** ${analysis.description}
+⏱️ **Duration:** ${duration} seconds
+🎭 **Emotions:** ${analysis.emotions?.join(', ') || 'Positive vibes'}
+👥 **People:** ${analysis.people?.length > 0 ? analysis.people.join(', ') : 'None detected'}
+🏷️ **Objects:** ${analysis.objects?.join(', ') || 'Various objects'}
+
+🌟 **Journal Prompts:**
+${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${prompt}`).join('\n') || '1. What story does this video tell?'}
+
+💭 Would you like me to help you write about this video?`;
+
+        setAiMessages(prev => [...prev.slice(0, -1), {
+          type: 'ai',
+          message: analysisMessage
+        }]);
+
+        if (analysis.tags) {
+          setTags(prev => [...new Set([...prev, ...analysis.tags])]);
+        }
+      } else {
+        setAiMessages(prev => [...prev.slice(0, -1), {
+          type: 'ai',
+          message: '😅 I had trouble analyzing your video, but it looks great! Tell me about it.'
+        }]);
+      }
+    } catch (error) {
+      console.error('Video analysis failed:', error);
+      setAiMessages(prev => [...prev.slice(0, -1), {
+        type: 'ai',
+        message: '🎬 Video uploaded! I had a small issue analyzing it, but I can see you shared something interesting!'
+      }]);
+    }
   };
 
   // Create camera preview with live video feed
@@ -1324,229 +1452,6 @@ ${cleanedResponse}
     }]);
   };
 
-  const handleMediaUpload = useCallback(async (files: FileList) => {
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      
-      // Handle images
-      if (file.type.startsWith('image/')) {
-
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        const base64 = e.target?.result as string;
-        console.log('📸 Photo loaded, base64 length:', base64?.length);
-        console.log('📸 Base64 starts with:', base64?.substring(0, 50));
-        
-        // Upload photo to storage first
-        try {
-          const uploadResponse = await fetch('/api/upload/photo', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify({
-              base64Image: base64,
-              filename: file.name
-            })
-          });
-          
-          if (!uploadResponse.ok) {
-            throw new Error('Upload failed');
-          }
-          
-          const { url: storageUrl } = await uploadResponse.json();
-          console.log('✅ Gallery photo uploaded to storage:', storageUrl);
-          
-          const newPhoto = {
-            id: Date.now() + i,
-            src: storageUrl, // Use storage URL
-            analysis: null
-          };
-          
-          console.log('📸 Created new photo object:', { 
-            id: newPhoto.id, 
-            srcLength: newPhoto.src?.length,
-            srcPrefix: newPhoto.src?.substring(0, 50)
-          });
-
-          setPhotos(prev => [...prev, newPhoto]);
-
-          // Trigger AI analysis
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '📸 Analyzing your photo... This will help me suggest better writing prompts!'
-          }]);
-
-          try {
-            const response = await fetch('/api/ai/analyze-photo', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include', // Include cookies for session authentication
-              body: JSON.stringify({ 
-                photoUrl: storageUrl,
-                currentMood: mood 
-              })
-            });
-
-            if (response.ok) {
-              const analysis = await response.json();
-              // Update the latest photo with analysis
-              setPhotos(prev => {
-                const updatedPhotos = [...prev];
-                if (updatedPhotos.length > 0) {
-                  updatedPhotos[updatedPhotos.length - 1] = {
-                    ...updatedPhotos[updatedPhotos.length - 1],
-                    analysis
-                  };
-                }
-                return updatedPhotos;
-              });
-              
-              // Add AI-generated tags
-              if (analysis.tags) {
-                setTags(prev => [...new Set([...prev, ...analysis.tags])]);
-              }
-
-              // Add detailed AI analysis message
-              setAiMessages(prev => [...prev, {
-                type: 'ai',
-                message: `🔍 I analyzed your photo and found:\n\n📝 ${analysis.description}\n🏷️ Key elements: ${analysis.tags?.slice(0, 3).join(', ')}\n💭 Writing prompt: ${analysis.journalPrompts?.[0] || 'What story does this moment tell?'}\n\nWant me to help you write about this?`
-              }]);
-            }
-          } catch (analysisError) {
-            console.error('Photo analysis failed:', analysisError);
-            setAiMessages(prev => [...prev, {
-              type: 'ai',
-              message: '😅 I had trouble analyzing that photo. But I can still help you write about it! What do you see in the image?'
-            }]);
-          }
-        } catch (uploadError) {
-          console.error('❌ Photo upload failed:', uploadError);
-          // Fallback to base64
-          const newPhoto = {
-            id: Date.now() + i,
-            src: base64,
-            analysis: null
-          };
-          
-          setPhotos(prev => [...prev, newPhoto]);
-          
-          setAiMessages(prev => [...prev, {
-            type: 'ai',
-            message: '📸 Photo saved! Analyzing now...'
-          }]);
-
-          try {
-            const response = await fetch('/api/ai/analyze-photo', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              credentials: 'include',
-              body: JSON.stringify({ 
-                base64Image: base64.split(',')[1],
-                currentMood: mood 
-              })
-            });
-
-            if (response.ok) {
-              const analysis = await response.json();
-              // Update the latest photo with analysis
-              setPhotos(prev => {
-                const updatedPhotos = [...prev];
-                if (updatedPhotos.length > 0) {
-                  updatedPhotos[updatedPhotos.length - 1] = {
-                    ...updatedPhotos[updatedPhotos.length - 1],
-                    analysis
-                  };
-                }
-                return updatedPhotos;
-              });
-              
-              // Add AI-generated tags
-              if (analysis.tags) {
-                setTags(prev => [...new Set([...prev, ...analysis.tags])]);
-              }
-
-              // Add detailed AI analysis message
-              setAiMessages(prev => [...prev, {
-                type: 'ai',
-                message: `🔍 I analyzed your photo and found:\n\n📝 ${analysis.description}\n🏷️ Key elements: ${analysis.tags?.slice(0, 3).join(', ')}\n💭 Writing prompt: ${analysis.journalPrompts?.[0] || 'What story does this moment tell?'}\n\nWant me to help you write about this?`
-              }]);
-            }
-          } catch (error) {
-            console.error('Photo analysis failed:', error);
-            setAiMessages(prev => [...prev, {
-              type: 'ai',
-              message: '😅 I had trouble analyzing that photo. But I can still help you write about it! What do you see in the image?'
-            }]);
-          }
-        }
-      };
-
-      reader.onerror = (error) => {
-        console.error('❌ Failed to read file:', file.name, error);
-        setAiMessages(prev => [...prev, {
-          type: 'ai',
-          message: `😅 I had trouble reading the file "${file.name}". Please try uploading the image again, or try a different file format (JPG, PNG).`
-        }]);
-      };
-
-      reader.readAsDataURL(file);
-      }
-      
-      // Handle videos
-      else if (file.type.startsWith('video/')) {
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-          const base64 = e.target?.result as string;
-          console.log('🎥 Video loaded, base64 length:', base64?.length);
-          
-          // Create video element to get duration
-          const video = document.createElement('video');
-          video.src = base64;
-          
-          video.onloadedmetadata = () => {
-            const duration = Math.floor(video.duration);
-            
-            const newVideoRecording = {
-              url: base64,
-              duration: duration,
-              timestamp: new Date(),
-              type: 'video' as const
-            };
-            
-            setVideoRecordings(prev => [...prev, newVideoRecording]);
-            
-            if (showAiChat) {
-              setAiMessages(prev => [...prev, {
-                type: 'user',
-                message: `I just uploaded a video! (${duration}s)`
-              }]);
-              
-              setAiMessages(prev => [...prev, {
-                type: 'ai',
-                message: '🎥 Great! I can see your video upload. Videos can capture so much emotion and movement - what was happening in this moment?'
-              }]);
-            }
-            
-            console.log('🎥 Video added to recordings');
-          };
-          
-          video.onerror = () => {
-            console.error('❌ Error loading video metadata');
-            // Still add the video even if we can't get metadata
-            const newVideoRecording = {
-              url: base64,
-              duration: 0,
-              timestamp: new Date(),
-              type: 'video' as const
-            };
-            
-            setVideoRecordings(prev => [...prev, newVideoRecording]);
-          };
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-  }, [mood, showAiChat, videoRecordings]);
 
   const handleSave = useCallback(() => {
     // Prevent multiple saves - debounce with immediate execution
@@ -3218,7 +3123,7 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
                   <Video className="w-4 h-4" />
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold">Upload from Gallery</div>
+                  <div className="font-semibold">📱 Upload from Gallery</div>
                   <div className="text-xs opacity-75">Choose photos & videos</div>
                 </div>
               </Button>
@@ -3230,6 +3135,16 @@ ${analysis.journalPrompts?.map((prompt: string, i: number) => `${i + 1}. ${promp
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+        
+        {/* Hidden file input for media uploads */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*,video/*"
+          multiple
+          className="hidden"
+          onChange={(e) => e.target.files && handleMediaUpload(e.target.files)}
+        />
 
         {/* Prompt Purchase Modal */}
         <AlertDialog open={showPromptPurchase} onOpenChange={setShowPromptPurchase}>
