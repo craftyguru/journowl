@@ -11,9 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
-import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight, BarChart3, Trash2, X, Shield, Camera, Mic, Upload } from "lucide-react";
+import { BookOpen, TrendingUp, Target, Award, Brain, Heart, Sparkles, Zap, Calendar, Clock, Star, Trophy, Gift, Lightbulb, Type, Brush, Plus, CheckCircle, ChevronLeft, ChevronRight, BarChart3, Trash2, X, Shield, Camera, Mic, Upload, Video } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import InteractiveJournal from "./interactive-journal";
@@ -46,6 +46,8 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
   const [showPromptPurchase, setShowPromptPurchase] = useState(false);
   const [showIntroTutorial, setShowIntroTutorial] = useState(false);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
+  const [showCameraModal, setShowCameraModal] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Analytics Modal States
   const [showWordCloudModal, setShowWordCloudModal] = useState(false);
@@ -552,6 +554,144 @@ function EnhancedDashboard({ onSwitchToKid, initialTab = "journal", onJournalSta
     }
   };
 
+  // Camera Modal Functions
+  const takeCameraPhoto = async () => {
+    setShowCameraModal(false);
+    if (!navigator.mediaDevices?.getUserMedia) {
+      console.error('❌ Camera not supported');
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { 
+          facingMode: 'environment',
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        }, 
+        audio: false 
+      });
+      
+      // Create full-screen camera overlay
+      const overlay = document.createElement('div');
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-family: system-ui;
+      `;
+      
+      const title = document.createElement('div');
+      title.innerHTML = '📸 Take Photo';
+      title.style.cssText = `
+        color: white;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      `;
+      
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.muted = true;
+      video.style.cssText = `
+        width: 90%;
+        max-width: 400px;
+        border-radius: 15px;
+        border: 3px solid white;
+        margin-bottom: 20px;
+      `;
+      
+      const buttonContainer = document.createElement('div');
+      buttonContainer.style.cssText = 'display: flex; gap: 20px;';
+      
+      const captureBtn = document.createElement('button');
+      captureBtn.innerHTML = '📸 Capture';
+      captureBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #10b981;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      const cancelBtn = document.createElement('button');
+      cancelBtn.innerHTML = '❌ Cancel';
+      cancelBtn.style.cssText = `
+        padding: 15px 30px;
+        font-size: 18px;
+        background: #ef4444;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+      `;
+      
+      // Handle capture
+      captureBtn.onclick = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        
+        const context = canvas.getContext('2d');
+        if (context) {
+          context.drawImage(video, 0, 0);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              // Open unified journal and add photo
+              setShowUnifiedJournal(true);
+              // Photo will be handled by unified journal's camera system
+            }
+          }, 'image/jpeg', 0.9);
+        }
+        
+        // Cleanup
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(overlay);
+      };
+      
+      // Handle cancel
+      cancelBtn.onclick = () => {
+        stream.getTracks().forEach(track => track.stop());
+        document.body.removeChild(overlay);
+      };
+      
+      overlay.appendChild(title);
+      overlay.appendChild(video);
+      buttonContainer.appendChild(captureBtn);
+      buttonContainer.appendChild(cancelBtn);
+      overlay.appendChild(buttonContainer);
+      document.body.appendChild(overlay);
+      
+    } catch (error) {
+      console.error('Camera error:', error);
+    }
+  };
+
+  const startVideoRecording = () => {
+    setShowCameraModal(false);
+    setShowUnifiedJournal(true);
+    // Video recording will be handled by unified journal
+  };
+
+  const handleFileUpload = (files: FileList) => {
+    setShowCameraModal(false);
+    setShowUnifiedJournal(true);
+    // File handling will be done by unified journal
+  };
   
   // Create camera preview with live video feed (same as unified journal)
   const openCameraPreview = async (enableAiAnalysis: boolean = false) => {
@@ -6419,11 +6559,11 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
       {!showSmartEditor && !showUnifiedJournal && (
         <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 flex gap-6 z-50">
           <motion.button
-            onClick={() => setShowUnifiedJournal(true)}
+            onClick={() => setShowCameraModal(true)}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             className="w-16 h-16 bg-blue-500 hover:bg-blue-600 rounded-full shadow-lg flex items-center justify-center text-white text-2xl border-4 border-white transition-all duration-200"
-            title="Open Journal with Enhanced Camera"
+            title="Camera Options"
           >
             <Camera className="w-8 h-8" />
           </motion.button>
@@ -6440,7 +6580,74 @@ Your writing style suggests a ${totalWords > 500 ? 'highly reflective' : 'develo
         </div>
       )}
 
-
+      {/* Camera Options Modal */}
+      <AlertDialog open={showCameraModal} onOpenChange={setShowCameraModal}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>📷 Camera Options</AlertDialogTitle>
+            <AlertDialogDescription>
+              Choose how you'd like to capture media for your journal entry.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="flex flex-col gap-3 py-4">
+            <Button 
+              onClick={takeCameraPhoto}
+              className="flex items-center gap-3 h-12 justify-start bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200"
+              variant="outline"
+            >
+              <Camera className="w-5 h-5" />
+              <div className="text-left">
+                <div className="font-semibold">Take Photo</div>
+                <div className="text-xs opacity-75">Capture a moment instantly</div>
+              </div>
+            </Button>
+            
+            <Button 
+              onClick={startVideoRecording}
+              className="flex items-center gap-3 h-12 justify-start bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200"
+              variant="outline"
+            >
+              <div className="w-5 h-5 bg-purple-600 rounded-full flex items-center justify-center">
+                <div className="w-2 h-2 bg-white rounded-full"></div>
+              </div>
+              <div className="text-left">
+                <div className="font-semibold">Record Video</div>
+                <div className="text-xs opacity-75">Up to 30 seconds</div>
+              </div>
+            </Button>
+            
+            <Button 
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-3 h-12 justify-start bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
+              variant="outline"
+            >
+              <div className="flex items-center gap-1">
+                <Upload className="w-4 h-4" />
+                <Video className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <div className="font-semibold">📱 Upload from Gallery</div>
+                <div className="text-xs opacity-75">Choose photos & videos</div>
+              </div>
+            </Button>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setShowCameraModal(false)}>
+              Cancel
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+      
+      {/* Hidden file input for media uploads */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*,video/*"
+        multiple
+        className="hidden"
+        onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+      />
 
     </div>
   );
