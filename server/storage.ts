@@ -820,12 +820,36 @@ export class DatabaseStorage implements IStorage {
         if (entry.photos) {
           const photos = Array.isArray(entry.photos) ? entry.photos : [];
           photos.forEach((photo: any) => {
-            if (photo.data) {
+            if (photo.src) {
               // Estimate photo size from base64 data
-              totalBytes += Math.floor(photo.data.length * 0.75); // base64 is ~33% larger
+              totalBytes += Math.floor(photo.src.length * 0.75); // base64 is ~33% larger
+            } else if (photo.data) {
+              totalBytes += Math.floor(photo.data.length * 0.75);
             }
             if (photo.analysis) {
               totalBytes += Buffer.byteLength(JSON.stringify(photo.analysis), 'utf8');
+            }
+          });
+        }
+        
+        // Count video data
+        if (entry.videoRecordings) {
+          const videos = Array.isArray(entry.videoRecordings) ? entry.videoRecordings : [];
+          videos.forEach((video: any) => {
+            if (video.url && video.url.startsWith('data:video/')) {
+              // Estimate video size from base64 data (videos are typically much larger)
+              totalBytes += Math.floor(video.url.length * 0.75);
+            }
+          });
+        }
+        
+        // Count audio recordings
+        if (entry.audioRecordings) {
+          const audios = Array.isArray(entry.audioRecordings) ? entry.audioRecordings : [];
+          audios.forEach((audio: any) => {
+            if (audio.url && audio.url.startsWith('data:audio/')) {
+              // Estimate audio size from base64 data
+              totalBytes += Math.floor(audio.url.length * 0.75);
             }
           });
         }
@@ -884,6 +908,224 @@ export class DatabaseStorage implements IStorage {
 
     const newPrompts = (user.promptsRemaining || 0) + promptsToAdd;
     await db.update(users).set({ promptsRemaining: newPrompts } as any).where(eq(users.id, userId));
+  }
+
+  async getUserFiles(userId: number): Promise<any[]> {
+    try {
+      const entries = await this.getJournalEntries(userId, 1000);
+      const files: any[] = [];
+      let fileId = 1;
+
+      for (const entry of entries) {
+        // Photos from entries
+        if (entry.photos && Array.isArray(entry.photos)) {
+          entry.photos.forEach((photo: any) => {
+            files.push({
+              id: `photo-${fileId++}`,
+              type: 'photo',
+              name: photo.filename || `photo-${Date.now()}.jpg`,
+              size: photo.size || (photo.src ? Math.floor(photo.src.length * 0.75) : 50000),
+              url: photo.src || photo.url,
+              uploadDate: entry.createdAt,
+              entryTitle: entry.title,
+              entryId: entry.id
+            });
+          });
+        }
+        
+        // Drawings from entries
+        if (entry.drawings && Array.isArray(entry.drawings)) {
+          entry.drawings.forEach((drawing: any) => {
+            files.push({
+              id: `drawing-${fileId++}`,
+              type: 'drawing',
+              name: `drawing-${fileId}.png`,
+              size: drawing.data ? Math.floor(drawing.data.length * 0.75) : 20000,
+              url: drawing.data || drawing.url,
+              uploadDate: entry.createdAt,
+              entryTitle: entry.title,
+              entryId: entry.id
+            });
+          });
+        }
+        
+        // Audio recordings from entries
+        if (entry.audioRecordings && Array.isArray(entry.audioRecordings)) {
+          entry.audioRecordings.forEach((audio: any) => {
+            files.push({
+              id: `audio-${fileId++}`,
+              type: 'audio',
+              name: audio.filename || `audio-${Date.now()}.wav`,
+              size: audio.size || 100000, // Estimate 100KB average
+              url: audio.url,
+              uploadDate: audio.timestamp || entry.createdAt,
+              entryTitle: entry.title,
+              entryId: entry.id
+            });
+          });
+        }
+        
+        // Video recordings from entries 
+        if (entry.videoRecordings && Array.isArray(entry.videoRecordings)) {
+          entry.videoRecordings.forEach((video: any) => {
+            files.push({
+              id: `video-${fileId++}`,
+              type: 'video',
+              name: video.filename || `video-${Date.now()}.mp4`,
+              size: video.size || 500000, // Estimate 500KB average
+              url: video.url,
+              uploadDate: video.timestamp || entry.createdAt,
+              entryTitle: entry.title,
+              entryId: entry.id
+            });
+          });
+        }
+        
+        // Text content as file
+        if (entry.content && entry.content.trim().length > 0) {
+          files.push({
+            id: `text-${entry.id}`,
+            type: 'text',
+            name: `${entry.title || 'untitled'}.md`,
+            size: Buffer.byteLength(entry.content, 'utf8'),
+            url: `/api/journal/entries/${entry.id}/export`,
+            uploadDate: entry.createdAt,
+            entryTitle: entry.title,
+            entryId: entry.id
+          });
+        }
+      }
+      
+      // Sort by upload date, newest first
+      return files.sort((a, b) => new Date(b.uploadDate).getTime() - new Date(a.uploadDate).getTime());
+    } catch (error) {
+      console.error(`Error fetching files for user ${userId}:`, error);
+      return [];
+    }
+  }
+
+  async getStorageStats(userId: number): Promise<any> {
+    try {
+      const files = await this.getUserFiles(userId);
+      const user = await this.getUser(userId);
+      
+      let totalSize = 0;
+      const sizeByType: Record<string, number> = {};
+      
+      files.forEach(file => {
+        totalSize += file.size;
+        if (!sizeByType[file.type]) {
+          sizeByType[file.type] = 0;
+        }
+        sizeByType[file.type] += file.size;
+      });
+      
+      // Determine storage limit based on plan
+      let storageLimit = 100; // Free tier default (MB)
+      if (user?.currentPlan === 'premium') {
+        storageLimit = 1024; // 1GB
+      } else if (user?.currentPlan === 'pro') {
+        storageLimit = 10240; // 10GB
+      }
+      
+      return {
+        totalFiles: files.length,
+        totalSize: totalSize,
+        sizeByType: sizeByType,
+        storageLimit: storageLimit,
+        storageUsed: user?.storageUsedMB || Math.ceil(totalSize / (1024 * 1024))
+      };
+    } catch (error) {
+      console.error(`Error calculating storage stats for user ${userId}:`, error);
+      return {
+        totalFiles: 0,
+        totalSize: 0,
+        sizeByType: {},
+        storageLimit: 100,
+        storageUsed: 0
+      };
+    }
+  }
+
+  async deleteUserFiles(userId: number, fileIds: string[]): Promise<{ deletedCount: number }> {
+    try {
+      let deletedCount = 0;
+      const entries = await this.getJournalEntries(userId, 1000);
+      
+      for (const entry of entries) {
+        let updated = false;
+        
+        // Remove photos
+        if (entry.photos && Array.isArray(entry.photos)) {
+          const originalLength = entry.photos.length;
+          entry.photos = entry.photos.filter((_, index) => 
+            !fileIds.includes(`photo-${index + 1}`)
+          );
+          if (entry.photos.length !== originalLength) {
+            updated = true;
+            deletedCount += originalLength - entry.photos.length;
+          }
+        }
+        
+        // Remove drawings
+        if (entry.drawings && Array.isArray(entry.drawings)) {
+          const originalLength = entry.drawings.length;
+          entry.drawings = entry.drawings.filter((_, index) => 
+            !fileIds.includes(`drawing-${index + 1}`)
+          );
+          if (entry.drawings.length !== originalLength) {
+            updated = true;
+            deletedCount += originalLength - entry.drawings.length;
+          }
+        }
+        
+        // Remove audio recordings
+        if (entry.audioRecordings && Array.isArray(entry.audioRecordings)) {
+          const originalLength = entry.audioRecordings.length;
+          entry.audioRecordings = entry.audioRecordings.filter((_, index) => 
+            !fileIds.includes(`audio-${index + 1}`)
+          );
+          if (entry.audioRecordings.length !== originalLength) {
+            updated = true;
+            deletedCount += originalLength - entry.audioRecordings.length;
+          }
+        }
+        
+        // Remove video recordings
+        if (entry.videoRecordings && Array.isArray(entry.videoRecordings)) {
+          const originalLength = entry.videoRecordings.length;
+          entry.videoRecordings = entry.videoRecordings.filter((_, index) => 
+            !fileIds.includes(`video-${index + 1}`)
+          );
+          if (entry.videoRecordings.length !== originalLength) {
+            updated = true;
+            deletedCount += originalLength - entry.videoRecordings.length;
+          }
+        }
+        
+        // Delete entire text entries if requested
+        if (fileIds.includes(`text-${entry.id}`)) {
+          await this.deleteJournalEntry(userId, entry.id);
+          deletedCount++;
+          continue;
+        }
+        
+        // Update entry if any files were removed
+        if (updated) {
+          await this.updateJournalEntry(userId, entry.id, {
+            photos: entry.photos,
+            drawings: entry.drawings,
+            audioRecordings: entry.audioRecordings,
+            videoRecordings: entry.videoRecordings
+          });
+        }
+      }
+      
+      return { deletedCount };
+    } catch (error) {
+      console.error(`Error deleting files for user ${userId}:`, error);
+      return { deletedCount: 0 };
+    }
   }
 }
 

@@ -6,6 +6,7 @@ import { Sparkles, Cloud, Zap, Crown } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import SubscriptionManager from "./SubscriptionManager";
+import { StorageManager } from "./StorageManager";
 
 interface UsageData {
   tier: string;
@@ -85,6 +86,7 @@ function CircularGauge({
 
 export default function UsageMeters() {
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+  const [showStorageManager, setShowStorageManager] = useState(false);
 
   // Get current usage data
   const { data: usage, isLoading } = useQuery<UsageData>({
@@ -157,7 +159,10 @@ export default function UsageMeters() {
         </Card>
 
         {/* Storage Usage Meter */}
-        <Card className="border-2 border-blue-500/30 bg-gradient-to-br from-slate-800/90 to-blue-900/90 backdrop-blur-lg">
+        <Card 
+          className="border-2 border-blue-500/30 bg-gradient-to-br from-slate-800/90 to-blue-900/90 backdrop-blur-lg cursor-pointer hover:border-blue-400/50 transition-colors"
+          onClick={() => setShowStorageManager(true)}
+        >
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-white">
               <Cloud className="w-5 h-5 text-blue-400" />
@@ -186,6 +191,9 @@ export default function UsageMeters() {
               <div className="text-sm text-gray-300">
                 Photos & files • {usage?.storageUsed || 0}/{usage?.storageLimit || 100} MB used
               </div>
+              <div className="text-xs text-blue-300 opacity-75">
+                Click to manage files
+              </div>
               <Button 
                 onClick={() => setShowSubscriptionModal(true)}
                 className="w-full relative overflow-hidden bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 text-black font-bold text-lg shadow-2xl border-4 border-red-500 animate-pulse hover:scale-105 transition-all duration-300 transform hover:shadow-[0_0_25px_rgba(239,68,68,0.8),0_0_50px_rgba(239,68,68,0.6)] before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700"
@@ -212,6 +220,16 @@ export default function UsageMeters() {
             </DialogTitle>
           </DialogHeader>
           <SubscriptionManager />
+        </DialogContent>
+      </Dialog>
+
+      {/* Storage Manager Modal */}
+      <Dialog open={showStorageManager} onOpenChange={setShowStorageManager}>
+        <DialogContent className="max-w-7xl max-h-[95vh] overflow-y-auto p-0">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle>Storage Management</DialogTitle>
+          </DialogHeader>
+          <StorageManager onClose={() => setShowStorageManager(false)} />
         </DialogContent>
       </Dialog>
     </>

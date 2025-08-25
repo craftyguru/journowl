@@ -957,11 +957,8 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
 
       // Update storage usage after creating entry (simple word-based calculation)
       try {
-        const entries = await storage.getJournalEntries(req.session.userId, 1000);
-        const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
-        const newStorageUsed = Math.max(1, Math.ceil(totalWords / 1000));
-        const user = await storage.getUser(req.session.userId);
-        await storage.updateStorageUsage(req.session.userId, newStorageUsed - (user?.storageUsedMB || 0));
+        // Refresh actual storage usage including all media files
+        await storage.refreshUserStorageUsage(req.session.userId);
       } catch (storageError) {
         console.error("Storage tracking error:", storageError);
         // Continue without storage tracking if it fails
@@ -1132,11 +1129,8 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
       
       // Update storage usage after updating entry (simple word-based calculation)
       try {
-        const entries = await storage.getJournalEntries(req.session.userId, 1000);
-        const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
-        const newStorageUsed = Math.max(1, Math.ceil(totalWords / 1000));
-        const user = await storage.getUser(req.session.userId);
-        await storage.updateStorageUsage(req.session.userId, newStorageUsed - (user?.storageUsedMB || 0));
+        // Refresh actual storage usage including all media files
+        await storage.refreshUserStorageUsage(req.session.userId);
       } catch (storageError) {
         console.error("Storage tracking error:", storageError);
         // Continue without storage tracking if it fails
@@ -1176,11 +1170,8 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
       
       // Update storage usage after deleting entry (simple word-based calculation)
       try {
-        const entries = await storage.getJournalEntries(req.session.userId, 1000);
-        const totalWords = entries.reduce((sum, entry) => sum + (entry.wordCount || 0), 0);
-        const newStorageUsed = Math.max(1, Math.ceil(totalWords / 1000));
-        const user = await storage.getUser(req.session.userId);
-        await storage.updateStorageUsage(req.session.userId, newStorageUsed - (user?.storageUsedMB || 0));
+        // Refresh actual storage usage including all media files
+        await storage.refreshUserStorageUsage(req.session.userId);
       } catch (storageError) {
         console.error("Storage tracking error:", storageError);
         // Continue without storage tracking if it fails
@@ -2714,6 +2705,60 @@ Your story shows how every day brings new experiences and emotions, creating the
     } catch (error: any) {
       console.error("Error fetching storage usage:", error);
       res.status(500).json({ message: "Failed to fetch storage usage" });
+    }
+  });
+
+  // Get detailed file storage data
+  app.get("/api/storage/files", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const files = await storage.getUserFiles(userId);
+      
+      res.json({ 
+        files: files,
+        totalFiles: files.length
+      });
+    } catch (error) {
+      console.error("Error fetching user files:", error);
+      res.status(500).json({ message: "Failed to fetch files" });
+    }
+  });
+
+  // Get storage statistics
+  app.get("/api/storage/stats", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const stats = await storage.getStorageStats(userId);
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching storage stats:", error);
+      res.status(500).json({ message: "Failed to fetch storage stats" });
+    }
+  });
+
+  // Delete files
+  app.delete("/api/storage/files", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { fileIds } = req.body;
+      
+      if (!fileIds || !Array.isArray(fileIds)) {
+        return res.status(400).json({ message: "fileIds array is required" });
+      }
+      
+      const result = await storage.deleteUserFiles(userId, fileIds);
+      
+      // Refresh storage usage after deletion
+      await storage.refreshUserStorageUsage(userId);
+      
+      res.json({ 
+        deletedCount: result.deletedCount,
+        message: `Successfully deleted ${result.deletedCount} file(s)` 
+      });
+    } catch (error) {
+      console.error("Error deleting files:", error);
+      res.status(500).json({ message: "Failed to delete files" });
     }
   });
 
