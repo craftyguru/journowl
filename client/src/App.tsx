@@ -13,7 +13,7 @@ import Dashboard from "@/pages/dashboard";
 import InsightsPage from "@/pages/insights";
 import Navbar from "@/components/navbar";
 import AccountSelector from "@/components/account-selector";
-import AdminDashboard from "@/pages/admin";
+import AdminDashboard from "@/components/admin-dashboard";
 import EnhancedDashboard from "@/components/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
 import ReferralPage from "@/components/referral-page";
