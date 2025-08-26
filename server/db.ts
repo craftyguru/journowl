@@ -1,4 +1,3 @@
-// server/db.ts
 import { drizzle } from "drizzle-orm/node-postgres";
 import pkg from "pg";
 const { Pool } = pkg;
@@ -8,10 +7,11 @@ const connectionString = process.env.DATABASE_URL!;
 
 export const pool = new Pool({
   connectionString,
-  ssl: { rejectUnauthorized: false },
+  ssl: { rejectUnauthorized: false },   // required for Supabase pooler
 });
 
 export const db = drizzle(pool, { schema });
 
-// Database health check
-pool.query("SELECT 1").then(() => console.log("✅ DB OK")).catch(e => console.error("DB FAIL", e));
+// optional health check
+pool.query("SELECT 1").then(() => console.log("✅ DB OK"))
+  .catch(e => console.error("DB FAIL", e));
