@@ -10,6 +10,6 @@ export default defineConfig({
   database: 'postgres',
   user: 'postgres.asjcxaiabjsbjbasssfe',
   password: 'zjJ1W0PFFISI2SK7',
-  ssl: { mode: 'require' },
+ ssl: { rejectUnauthorized: false },
 },
 });
