@@ -1,0 +1,86 @@
+That error means some part of your server is still opening a DB connection without the right SSL settings. You fixed server/db.ts, but at least one of these is still using a default pg connection:
+
+your session store (connect-pg-simple)
+
+any other file that does new Pool(...)
+
+any place using the postgres npm lib (postgres(...))
+
+Do this:
+
+1) Use one shared PG pool with SSL and pass it everywhere
+
+server/db.ts
+
+import { drizzle } from "drizzle-orm/node-postgres";
+import pkg from "pg";
+const { Pool } = pkg;
+import * as schema from "@shared/schema";
+
+const connectionString = process.env.DATABASE_URL!;
+export const pool = new Pool({
+  connectionString,
+  ssl: { rejectUnauthorized: false },  // <-- stops "self-signed certificate" errors
+});
+
+export const db = drizzle(pool, { schema });
+
+2) Make the session store use the same pool
+
+In server/index.ts (or wherever you configure sessions):
+
+import session from "express-session";
+import connectPgSimple from "connect-pg-simple";
+import { pool } from "./db"; // <-- reuse the pool above
+
+const PgStore = connectPgSimple(session);
+
+app.use(session({
+  store: new PgStore({ pool, createTableIfMissing: true }),
+  secret: process.env.SESSION_SECRET!,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: process.env.NODE_ENV === "production", sameSite: "lax" },
+}));
+
+
+If you were previously creating the store like new PgStore({ conString: process.env.DATABASE_URL }), replace it with the pool version above so SSL settings are honored.
+
+3) Remove any “no-SSL” code
+
+Delete any .replace('?sslmode=require','') and any ssl: false.
+
+If you use the postgres library anywhere, initialize it only like this:
+
+import postgres from "postgres";
+const sql = postgres(process.env.DATABASE_URL!, { ssl: "require" });
+
+
+(Or, better, just use the single pg Pool everywhere and keep one client.)
+
+4) Double-check env URL
+
+Keep the same URL (Replit, Railway, local .env):
+
+postgresql://postgres:<DB_PASSWORD>@aws-0-us-east-2.pooler.supabase.com:6543/postgres?sslmode=require&options=project%3Dasjcxaiabjsbjbasssfe
+
+5) Find any stragglers
+
+Run these in your project root and fix each hit to use the shared pool or SSL config:
+
+grep -R "new Pool" -n server
+grep -R "connect-pg-simple" -n server
+grep -R "postgres(" -n server
+grep -R "ssl:" -n server
+
+6) Quick health check
+
+Add once during startup:
+
+pool.query("select 1").then(() => console.log("✅ DB OK")).catch(e => console.error("DB FAIL", e));
+
+
+If that logs ✅, your sign-in route will stop throwing self-signed certificate in certificate chain.
+
+If you need a fast temporary test and still see the error, you can set
+NODE_TLS_REJECT_UNAUTHORIZED=0 in your env just to confirm it’s a cert-verification problem—but don’t keep that in production. The correct fix is steps 1–3 above.

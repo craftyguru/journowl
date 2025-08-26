@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { generateJournalPrompt, generatePersonalizedPrompt, generateInsight, generateTherapyResponse, generatePersonalityAnalysis, generateTherapeuticPrompt, generateCopingStrategy } from "./services/openai";
 import { trackableOpenAICall } from "./middleware/promptTracker";
 import { createUser, authenticateUser } from "./services/auth";
@@ -93,17 +93,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Use original connection string with SSL enabled
   
+  const PgSession = ConnectPgSimple(session);
+  
   app.use(session({
-    // Temporarily use memory store to bypass SSL issues
-    // store: new PgSession({
-    //   conString: process.env.DATABASE_URL,
-    //   tableName: 'session',
-    //   createTableIfMissing: true,
-    //   pruneSessionInterval: false
-    // }),
+    store: new PgSession({
+      pool,
+      createTableIfMissing: true,
+      tableName: 'session'
+    }),
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
-    resave: true, // Force session resave to ensure changes persist
-    saveUninitialized: true, // Save new sessions immediately
+    resave: false,
+    saveUninitialized: false,
     cookie: {
       secure: false,
       httpOnly: true,

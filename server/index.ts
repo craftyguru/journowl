@@ -2,6 +2,9 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+// Bypass SSL certificate verification for development
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 import express, { type Request, type Response, type NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, log } from "./vite";

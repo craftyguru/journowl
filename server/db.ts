@@ -4,12 +4,14 @@ import pkg from "pg";
 const { Pool } = pkg;
 import * as schema from "@shared/schema";
 
-const connectionString = process.env.DATABASE_URL!; // keep sslmode=require & options=project=...
+const connectionString = process.env.DATABASE_URL!;
 
-const pool = new Pool({
+export const pool = new Pool({
   connectionString,
-  ssl: { rejectUnauthorized: false },   // ✅ REQUIRED for Supabase pooler
+  ssl: { rejectUnauthorized: false },
 });
 
 export const db = drizzle(pool, { schema });
-// (optionally) export pool if you need raw queries: export { pool };
+
+// Database health check
+pool.query("SELECT 1").then(() => console.log("✅ DB OK")).catch(e => console.error("DB FAIL", e));
