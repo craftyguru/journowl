@@ -228,6 +228,16 @@ export default function Navbar({ currentView, activeTab, onNavigate, isKidMode =
                 >
                   🎁 Referral
                 </Button>
+                {user?.role === 'admin' && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={`px-1.5 py-1 text-xs font-medium transition-all duration-200 ${currentView === "admin" ? "bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-md" : "text-muted-foreground hover:text-primary hover:bg-primary/10"}`}
+                    onClick={() => onNavigate("admin")}
+                  >
+                    🛡️ Admin
+                  </Button>
+                )}
               </>
             ) : (
               // Kid Mode Tabs
