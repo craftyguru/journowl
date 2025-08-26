@@ -7,12 +7,19 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   username: text("username").notNull().unique(),
   password_hash: text("password"), // Match existing database column
-  level: integer("level").default(1),
-  xp: integer("xp").default(0),
-  role: text("role").default("user"), // "admin", "user", "kid"
-  avatar: text("avatar"),
+  level: integer("experience_level").default(1),
+  xp: integer("experience_points").default(0),
+  role: text("custom_rank").default("user"), // Match existing database column
+  isAdmin: boolean("is_admin").default(false),
+  avatar: text("avatar_url"),
+  coins: integer("coins").default(0),
+  coinBalance: integer("coin_balance").default(0),
+  loginStreak: integer("login_streak").default(0),
+  lastLoginDate: timestamp("last_login_date"),
   theme: text("theme").default("purple"),
   bio: text("bio"),
+  location: text("location"),
+  website: text("website"),
   favoriteQuote: text("favorite_quote"),
   preferences: json("preferences"), // Journal customization preferences
   aiPersonality: text("ai_personality").default("friendly"), // AI sidekick personality
