@@ -4,11 +4,7 @@ const { Pool } = pkg;
 import * as schema from "@shared/schema";
 
 export const pool = new Pool({
-  host: 'aws-0-us-east-2.pooler.supabase.com',
-  port: 6543,
-  database: 'postgres',
-  user: 'postgres.asjcxaiabjsbjbasssfe',
-  password: 'zjJ1W0PFFISI2SK7',
+  connectionString: process.env.DATABASE_URL || 'postgresql://postgres.asjcxaiabjsbjbasssfe:zjJ1W0PFFISI2SK7@aws-0-us-east-2.pooler.supabase.com:6543/postgres',
   ssl: { rejectUnauthorized: false },
 });
 
