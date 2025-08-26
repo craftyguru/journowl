@@ -6,7 +6,7 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   username: text("username").notNull().unique(),
-  password_hash: text("password_hash"), // Match Supabase column name
+  password_hash: text("password"), // Match existing database column
   level: integer("level").default(1),
   xp: integer("xp").default(0),
   role: text("role").default("user"), // "admin", "user", "kid"
