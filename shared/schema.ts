@@ -16,40 +16,15 @@ export const users = pgTable("users", {
   coinBalance: integer("coin_balance").default(0),
   loginStreak: integer("login_streak").default(0),
   lastLoginDate: timestamp("last_login_date"),
-  theme: text("theme").default("purple"),
   bio: text("bio"),
   location: text("location"),
   website: text("website"),
-  favoriteQuote: text("favorite_quote"),
-  preferences: json("preferences"), // Journal customization preferences
-  aiPersonality: text("ai_personality").default("friendly"), // AI sidekick personality
-  provider: text("provider").default("local"), // local, google, facebook, linkedin
-  providerId: text("provider_id"),
-  profileImageUrl: text("profile_image_url"),
-  firstName: text("first_name"),
-  lastName: text("last_name"),
-  isActive: boolean("is_active").default(true),
   isBanned: boolean("is_banned").default(false),
   banReason: text("ban_reason"),
-  bannedAt: timestamp("banned_at"),
-  bannedBy: integer("banned_by"), // Admin user ID who banned them
-  isFlagged: boolean("is_flagged").default(false),
-  flagReason: text("flag_reason"),
-  flaggedAt: timestamp("flagged_at"),
-  flaggedBy: integer("flagged_by"), // Admin user ID who flagged them
-  suspiciousActivityCount: integer("suspicious_activity_count").default(0),
-  lastSuspiciousActivity: timestamp("last_suspicious_activity"),
-  lastLoginAt: timestamp("last_login_at"),
-  emailVerified: boolean("email_verified").default(false),
-  emailVerificationToken: text("email_verification_token"),
-  emailVerificationExpires: timestamp("email_verification_expires"),
-  requiresEmailVerification: boolean("requires_email_verification").default(true),
-  // AI Prompt Usage Tracking
-  currentPlan: text("current_plan").default("free"), // free, pro, power
-  promptsUsedThisMonth: integer("prompts_used_this_month").default(0),
-  promptsRemaining: integer("prompts_remaining").default(100), // Free tier starts with 100
-  storageUsedMB: integer("storage_used_mb").default(0),
-  lastUsageReset: timestamp("last_usage_reset").defaultNow(),
+  isVerified: boolean("is_verified").default(false),
+  verificationToken: text("verification_token"),
+  resetPasswordToken: text("reset_password_token"),
+  totalCoinsEarned: integer("total_coins_earned").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
