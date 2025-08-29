@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Checkbox } from '@/components/ui/checkbox';
-import { X, Shield, Lock, Heart, Sparkles } from 'lucide-react';
+import { X, Shield, Lock, Heart, Sparkles, ExternalLink, FileText } from 'lucide-react';
 
 interface UserAgreementProps {
   onAccept: () => void;
@@ -15,6 +15,10 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+  const [showTermsIframe, setShowTermsIframe] = useState(false);
+  const [showPrivacyIframe, setShowPrivacyIframe] = useState(false);
+  const [termsScrolledToBottom, setTermsScrolledToBottom] = useState(false);
+  const [privacyScrolledToBottom, setPrivacyScrolledToBottom] = useState(false);
 
   const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
     const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
@@ -24,7 +28,19 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
     }
   };
 
-  const canAccept = agreedToTerms && agreedToPrivacy;
+  const canAccept = agreedToTerms && agreedToPrivacy && termsScrolledToBottom && privacyScrolledToBottom;
+
+  const handleIframeScroll = (type: 'terms' | 'privacy') => (event: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = event.currentTarget;
+    const scrollThreshold = scrollHeight - clientHeight - 10;
+    if (scrollTop >= scrollThreshold) {
+      if (type === 'terms') {
+        setTermsScrolledToBottom(true);
+      } else {
+        setPrivacyScrolledToBottom(true);
+      }
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -157,27 +173,27 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                   </h3>
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                      <a 
-                        href="/terms" 
-                        target="_blank" 
+                      <Button
+                        onClick={() => setShowTermsIframe(true)}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
                       >
-                        📋 Terms of Service
-                        <span className="text-xs opacity-75">(opens new tab)</span>
-                      </a>
+                        <FileText className="w-4 h-4" />
+                        📋 Read Terms of Service
+                        <span className="text-xs opacity-75">(opens in popup)</span>
+                      </Button>
                     </div>
                     <div className="flex items-center gap-3">
-                      <a 
-                        href="/privacy-policy" 
-                        target="_blank" 
+                      <Button
+                        onClick={() => setShowPrivacyIframe(true)}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium"
                       >
-                        🔒 Privacy Policy
-                        <span className="text-xs opacity-75">(opens new tab)</span>
-                      </a>
+                        <Lock className="w-4 h-4" />
+                        🔒 Read Privacy Policy
+                        <span className="text-xs opacity-75">(opens in popup)</span>
+                      </Button>
                     </div>
                     <p className="text-blue-700 dark:text-blue-300 text-sm mt-2">
-                      ✨ Please review both documents before creating your account. By checking the boxes below, you confirm you've read and accept our terms.
+                      ✨ Please read both documents completely and scroll to the bottom before you can agree to them.
                     </p>
                   </div>
                 </motion.section>
@@ -420,14 +436,15 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                     id="terms-agreement"
                     checked={agreedToTerms}
                     onCheckedChange={(checked) => setAgreedToTerms(checked === true)}
-                    disabled={!hasScrolledToBottom}
-                    className={`border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 ${hasScrolledToBottom ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
+                    disabled={!hasScrolledToBottom || !termsScrolledToBottom}
+                    className={`border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 ${(hasScrolledToBottom && termsScrolledToBottom) ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                   />
                   <label 
                     htmlFor="terms-agreement" 
-                    className={`text-sm text-gray-700 dark:text-gray-300 ${hasScrolledToBottom ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
+                    className={`text-sm text-gray-700 dark:text-gray-300 ${(hasScrolledToBottom && termsScrolledToBottom) ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                   >
-                    ✅ I have read and agree to the Terms of Service
+                    ✅ I have read and agree to the Terms of Service 
+                    {termsScrolledToBottom ? ' ✓' : ' (📋 Open and read first)'}
                   </label>
                 </motion.div>
                 
@@ -439,14 +456,15 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                     id="privacy-agreement"
                     checked={agreedToPrivacy}
                     onCheckedChange={(checked) => setAgreedToPrivacy(checked === true)}
-                    disabled={!hasScrolledToBottom}
-                    className={`border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 ${hasScrolledToBottom ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
+                    disabled={!hasScrolledToBottom || !privacyScrolledToBottom}
+                    className={`border-purple-400 data-[state=checked]:bg-purple-500 data-[state=checked]:border-purple-500 ${(hasScrolledToBottom && privacyScrolledToBottom) ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                   />
                   <label 
                     htmlFor="privacy-agreement" 
-                    className={`text-sm text-gray-700 dark:text-gray-300 ${hasScrolledToBottom ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
+                    className={`text-sm text-gray-700 dark:text-gray-300 ${(hasScrolledToBottom && privacyScrolledToBottom) ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'}`}
                   >
                     🛡️ I acknowledge the Privacy Policy and data processing practices
+                    {privacyScrolledToBottom ? ' ✓' : ' (🔒 Open and read first)'}
                   </label>
                 </motion.div>
               </div>
@@ -490,6 +508,144 @@ export function UserAgreement({ onAccept, onDecline, isOpen }: UserAgreementProp
                 </motion.div>
               </div>
             </motion.div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Terms of Service Iframe Modal */}
+      {showTermsIframe && (
+        <motion.div 
+          className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div 
+            className="bg-white dark:bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-700"
+            initial={{ scale: 0.8, y: 50 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.8, y: 50 }}
+          >
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <FileText className="w-6 h-6 text-blue-600" />
+                Terms of Service
+              </h2>
+              <Button
+                onClick={() => setShowTermsIframe(false)}
+                variant="ghost"
+                size="sm"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <div className="flex-1 overflow-hidden">
+              {!termsScrolledToBottom && (
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-700 p-3">
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300 text-center">
+                    📜 Please scroll to the bottom to fully read the Terms of Service
+                  </p>
+                </div>
+              )}
+              <div 
+                className="h-full overflow-y-auto p-6" 
+                onScroll={handleIframeScroll('terms')}
+              >
+                <iframe
+                  src="/terms"
+                  className="w-full h-[600px] border border-gray-300 dark:border-gray-600 rounded-lg"
+                  title="Terms of Service"
+                />
+                {termsScrolledToBottom && (
+                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg text-center">
+                    <p className="text-green-700 dark:text-green-300 font-medium">
+                      ✅ You have read the complete Terms of Service
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+              <Button
+                onClick={() => setShowTermsIframe(false)}
+                className="w-full"
+                disabled={!termsScrolledToBottom}
+              >
+                {termsScrolledToBottom ? "Close Terms" : "Scroll to bottom to continue"}
+              </Button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Privacy Policy Iframe Modal */}
+      {showPrivacyIframe && (
+        <motion.div 
+          className="fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <motion.div 
+            className="bg-white dark:bg-gray-900 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-gray-200 dark:border-gray-700"
+            initial={{ scale: 0.8, y: 50 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.8, y: 50 }}
+          >
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <Lock className="w-6 h-6 text-purple-600" />
+                Privacy Policy
+              </h2>
+              <Button
+                onClick={() => setShowPrivacyIframe(false)}
+                variant="ghost"
+                size="sm"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+              >
+                <X className="w-5 h-5" />
+              </Button>
+            </div>
+            
+            <div className="flex-1 overflow-hidden">
+              {!privacyScrolledToBottom && (
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-700 p-3">
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300 text-center">
+                    📜 Please scroll to the bottom to fully read the Privacy Policy
+                  </p>
+                </div>
+              )}
+              <div 
+                className="h-full overflow-y-auto p-6" 
+                onScroll={handleIframeScroll('privacy')}
+              >
+                <iframe
+                  src="/privacy-policy"
+                  className="w-full h-[600px] border border-gray-300 dark:border-gray-600 rounded-lg"
+                  title="Privacy Policy"
+                />
+                {privacyScrolledToBottom && (
+                  <div className="mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg text-center">
+                    <p className="text-green-700 dark:text-green-300 font-medium">
+                      ✅ You have read the complete Privacy Policy
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-6 border-t border-gray-200 dark:border-gray-700">
+              <Button
+                onClick={() => setShowPrivacyIframe(false)}
+                className="w-full"
+                disabled={!privacyScrolledToBottom}
+              >
+                {privacyScrolledToBottom ? "Close Privacy Policy" : "Scroll to bottom to continue"}
+              </Button>
+            </div>
           </motion.div>
         </motion.div>
       )}
