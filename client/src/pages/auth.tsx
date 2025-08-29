@@ -660,16 +660,72 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                         maxLength={20}
                       />
                     </motion.div>
+
+                    {/* Terms & Privacy Agreement */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.8, duration: 0.5 }}
+                      className="bg-white/5 border border-white/20 rounded-lg p-4 space-y-3"
+                    >
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          id="terms-agreement"
+                          checked={hasAgreedToTerms}
+                          onChange={(e) => setHasAgreedToTerms(e.target.checked)}
+                          className="mt-1 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-purple-500 focus:ring-2"
+                        />
+                        <label htmlFor="terms-agreement" className="text-sm text-gray-300 leading-relaxed">
+                          I agree to the{' '}
+                          <button
+                            type="button"
+                            onClick={() => setShowUserAgreement(true)}
+                            className="text-blue-400 hover:text-blue-300 underline"
+                          >
+                            Terms of Service
+                          </button>
+                          {' '}and{' '}
+                          <button
+                            type="button"
+                            onClick={() => setShowUserAgreement(true)}
+                            className="text-purple-400 hover:text-purple-300 underline"
+                          >
+                            Privacy Policy
+                          </button>
+                        </label>
+                      </div>
+                    </motion.div>
+
+                    {/* CAPTCHA Section */}
+                    {hasAgreedToTerms && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        transition={{ duration: 0.3 }}
+                        className="bg-white/5 border border-white/20 rounded-lg p-4"
+                      >
+                        <CaptchaChallenge
+                          onSuccess={handleCaptchaSuccess}
+                          onError={() => setCaptchaToken("")}
+                        />
+                      </motion.div>
+                    )}
+
                     <Button 
                       type="submit" 
-                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300"
-                      disabled={registerMutation.isPending}
+                      className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300 disabled:from-gray-600 disabled:to-gray-600 disabled:transform-none disabled:shadow-none"
+                      disabled={registerMutation.isPending || !hasAgreedToTerms || !captchaToken}
                     >
                       {registerMutation.isPending ? (
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                           Creating account...
                         </div>
+                      ) : !hasAgreedToTerms ? (
+                        "Accept Terms First"
+                      ) : !captchaToken ? (
+                        "Complete Security Check"
                       ) : (
                         "Create Account & Begin"
                       )}
