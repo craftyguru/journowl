@@ -256,6 +256,87 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Trim all fields
+    const trimmedData = {
+      email: registerData.email.trim(),
+      username: registerData.username.trim(),
+      password: registerData.password,
+      confirmPassword: registerData.confirmPassword,
+      promoCode: registerData.promoCode.trim()
+    };
+
+    // Check all required fields are filled
+    if (!trimmedData.email || !trimmedData.username || !trimmedData.password || !trimmedData.confirmPassword) {
+      toast({
+        title: "All fields required",
+        description: "Please fill in your email, username, password, and confirm password.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedData.email)) {
+      toast({
+        title: "Invalid email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate username (minimum 3 characters, alphanumeric + underscore)
+    if (trimmedData.username.length < 3) {
+      toast({
+        title: "Username too short",
+        description: "Username must be at least 3 characters long.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(trimmedData.username)) {
+      toast({
+        title: "Invalid username",
+        description: "Username can only contain letters, numbers, and underscores.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    // Password validation
+    if (trimmedData.password !== trimmedData.confirmPassword) {
+      toast({
+        title: "Password mismatch",
+        description: "Passwords do not match. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (trimmedData.password.length < 8) {
+      toast({
+        title: "Password too weak",
+        description: "Password must be at least 8 characters long and contain letters and numbers.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Check password strength
+    const hasLetter = /[a-zA-Z]/.test(trimmedData.password);
+    const hasNumber = /\d/.test(trimmedData.password);
+    
+    if (!hasLetter || !hasNumber) {
+      toast({
+        title: "Password too weak",
+        description: "Password must contain both letters and numbers for security.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Check if user has agreed to both documents
     if (!hasAgreedToTerms || !hasAgreedToPrivacy) {
       toast({
@@ -268,7 +349,6 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
 
     // Check if CAPTCHA is completed
     if (!captchaToken) {
-      setShowCaptcha(true);
       toast({
         title: "Security verification required",
         description: "Please complete the security verification to continue.",
@@ -276,49 +356,9 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
       });
       return;
     }
-    
-    if (!registerData.email || !registerData.username || !registerData.password || !registerData.confirmPassword) {
-      toast({
-        title: "Missing information",
-        description: "Please fill in all fields.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (registerData.password !== registerData.confirmPassword) {
-      toast({
-        title: "Password mismatch",
-        description: "Passwords do not match. Please try again.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Enhanced password validation
-    if (registerData.password.length < 8) {
-      toast({
-        title: "Password too weak",
-        description: "Password must be at least 8 characters long and contain letters and numbers.",
-        variant: "destructive",
-      });
-      return;
-    }
 
-    // Check password strength
-    const hasLetter = /[a-zA-Z]/.test(registerData.password);
-    const hasNumber = /\d/.test(registerData.password);
-    
-    if (!hasLetter || !hasNumber) {
-      toast({
-        title: "Password too weak",
-        description: "Password must contain both letters and numbers for security.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    registerMutation.mutate({ ...registerData, captchaToken });
+    // Submit with trimmed data
+    registerMutation.mutate({ ...trimmedData, captchaToken });
   };
 
   const handleTermsAgree = () => {
