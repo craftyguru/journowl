@@ -132,6 +132,8 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [showCaptcha, setShowCaptcha] = useState(false);
+  const [hasReadTermsToBottom, setHasReadTermsToBottom] = useState(false);
+  const [hasReadPrivacyToBottom, setHasReadPrivacyToBottom] = useState(false);
 
   const loginMutation = useMutation({
     mutationFn: async (data: typeof loginData) => {
@@ -319,6 +321,14 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
     setHasAgreedToTerms(true);
     setShowUserAgreement(false);
     setShowCaptcha(true);
+  };
+
+  const handleDocumentRead = (documentType: 'terms' | 'privacy') => {
+    if (documentType === 'terms') {
+      setHasReadTermsToBottom(true);
+    } else {
+      setHasReadPrivacyToBottom(true);
+    }
   };
 
   const handleCaptchaSuccess = (token: string) => {
@@ -674,7 +684,8 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                           id="terms-agreement"
                           checked={hasAgreedToTerms}
                           onChange={(e) => setHasAgreedToTerms(e.target.checked)}
-                          className="mt-1 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-purple-500 focus:ring-2"
+                          disabled={!hasReadTermsToBottom || !hasReadPrivacyToBottom}
+                          className="mt-1 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-purple-500 focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         />
                         <label htmlFor="terms-agreement" className="text-sm text-gray-300 leading-relaxed">
                           I agree to the{' '}
