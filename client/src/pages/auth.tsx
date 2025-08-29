@@ -10,7 +10,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Eye, EyeOff, Mail, RefreshCw, CheckCircle } from "lucide-react";
 import { WelcomeTutorial } from "@/components/welcome-tutorial";
-import { UserAgreement } from "@/components/UserAgreement";
+import { LegalDocumentModal } from "@/components/LegalDocumentModal";
 import { CaptchaChallenge } from "@/components/CaptchaChallenge";
 
 // Animated background component
@@ -128,12 +128,12 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
   });
 
   // Security features state
-  const [showUserAgreement, setShowUserAgreement] = useState(false);
+  const [showTermsModal, setShowTermsModal] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [hasAgreedToTerms, setHasAgreedToTerms] = useState(false);
+  const [hasAgreedToPrivacy, setHasAgreedToPrivacy] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
   const [showCaptcha, setShowCaptcha] = useState(false);
-  const [hasReadTermsToBottom, setHasReadTermsToBottom] = useState(false);
-  const [hasReadPrivacyToBottom, setHasReadPrivacyToBottom] = useState(false);
 
   const loginMutation = useMutation({
     mutationFn: async (data: typeof loginData) => {
@@ -256,9 +256,13 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if user has agreed to terms
-    if (!hasAgreedToTerms) {
-      setShowUserAgreement(true);
+    // Check if user has agreed to both documents
+    if (!hasAgreedToTerms || !hasAgreedToPrivacy) {
+      toast({
+        title: "Legal documents required",
+        description: "Please read and agree to both Terms of Service and Privacy Policy.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -317,18 +321,14 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
     registerMutation.mutate({ ...registerData, captchaToken });
   };
 
-  const handleUserAgreementAccept = () => {
+  const handleTermsAgree = () => {
     setHasAgreedToTerms(true);
-    setShowUserAgreement(false);
-    setShowCaptcha(true);
+    setShowTermsModal(false);
   };
 
-  const handleDocumentRead = (documentType: 'terms' | 'privacy') => {
-    if (documentType === 'terms') {
-      setHasReadTermsToBottom(true);
-    } else {
-      setHasReadPrivacyToBottom(true);
-    }
+  const handlePrivacyAgree = () => {
+    setHasAgreedToPrivacy(true);
+    setShowPrivacyModal(false);
   };
 
   const handleCaptchaSuccess = (token: string) => {
@@ -671,45 +671,54 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                       />
                     </motion.div>
 
-                    {/* Terms & Privacy Agreement */}
+                    {/* Legal Documents Section */}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.8, duration: 0.5 }}
-                      className="bg-white/5 border border-white/20 rounded-lg p-4 space-y-3"
+                      className="bg-white/5 border border-white/20 rounded-lg p-4 space-y-4"
                     >
-                      <div className="flex items-start gap-3">
+                      <h3 className="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                        📋 Read Our Legal Documents
+                      </h3>
+                      
+                      <div className="space-y-3">
+                        <Button
+                          type="button"
+                          onClick={() => setShowTermsModal(true)}
+                          className={`w-full ${hasAgreedToTerms ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} text-white transition-colors`}
+                        >
+                          📄 {hasAgreedToTerms ? '✅ Terms of Service (Agreed)' : 'Read Terms of Service'}
+                        </Button>
+                        
+                        <Button
+                          type="button"
+                          onClick={() => setShowPrivacyModal(true)}
+                          className={`w-full ${hasAgreedToPrivacy ? 'bg-green-600 hover:bg-green-700' : 'bg-purple-600 hover:bg-purple-700'} text-white transition-colors`}
+                        >
+                          🔒 {hasAgreedToPrivacy ? '✅ Privacy Policy (Agreed)' : 'Read Privacy Policy'}
+                        </Button>
+                      </div>
+
+                      <div className="flex items-start gap-3 pt-2">
                         <input
                           type="checkbox"
-                          id="terms-agreement"
-                          checked={hasAgreedToTerms}
-                          onChange={(e) => setHasAgreedToTerms(e.target.checked)}
-                          disabled={!hasReadTermsToBottom || !hasReadPrivacyToBottom}
-                          className="mt-1 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-purple-500 focus:ring-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                          id="final-agreement"
+                          checked={hasAgreedToTerms && hasAgreedToPrivacy}
+                          readOnly
+                          disabled={!hasAgreedToTerms || !hasAgreedToPrivacy}
+                          className="mt-1 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-purple-500 focus:ring-2 disabled:opacity-50"
                         />
-                        <label htmlFor="terms-agreement" className="text-sm text-gray-300 leading-relaxed">
-                          I agree to the{' '}
-                          <button
-                            type="button"
-                            onClick={() => setShowUserAgreement(true)}
-                            className="text-blue-400 hover:text-blue-300 underline"
-                          >
-                            Terms of Service
-                          </button>
-                          {' '}and{' '}
-                          <button
-                            type="button"
-                            onClick={() => setShowUserAgreement(true)}
-                            className="text-purple-400 hover:text-purple-300 underline"
-                          >
-                            Privacy Policy
-                          </button>
+                        <label htmlFor="final-agreement" className="text-sm text-gray-300 leading-relaxed">
+                          {hasAgreedToTerms && hasAgreedToPrivacy ? 
+                            '✅ I have read and agree to both documents' : 
+                            '📋 Please read both documents above to proceed'}
                         </label>
                       </div>
                     </motion.div>
 
                     {/* CAPTCHA Section */}
-                    {hasAgreedToTerms && (
+                    {hasAgreedToTerms && hasAgreedToPrivacy && (
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
@@ -726,15 +735,15 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                     <Button 
                       type="submit" 
                       className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300 disabled:from-gray-600 disabled:to-gray-600 disabled:transform-none disabled:shadow-none"
-                      disabled={registerMutation.isPending || !hasAgreedToTerms || !captchaToken}
+                      disabled={registerMutation.isPending || !hasAgreedToTerms || !hasAgreedToPrivacy || !captchaToken}
                     >
                       {registerMutation.isPending ? (
                         <div className="flex items-center gap-2">
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                           Creating account...
                         </div>
-                      ) : !hasAgreedToTerms ? (
-                        "Accept Terms First"
+                      ) : !hasAgreedToTerms || !hasAgreedToPrivacy ? (
+                        "Read Legal Documents First"
                       ) : !captchaToken ? (
                         "Complete Security Check"
                       ) : (
@@ -836,11 +845,19 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
         </motion.div>
       </div>
 
-      {/* User Agreement Modal */}
-      <UserAgreement
-        isOpen={showUserAgreement}
-        onAccept={handleUserAgreementAccept}
-        onDecline={() => setShowUserAgreement(false)}
+      {/* Legal Document Modals */}
+      <LegalDocumentModal
+        isOpen={showTermsModal}
+        onClose={() => setShowTermsModal(false)}
+        onAgree={handleTermsAgree}
+        documentType="terms"
+      />
+      
+      <LegalDocumentModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+        onAgree={handlePrivacyAgree}
+        documentType="privacy"
       />
 
       {/* CAPTCHA Modal */}
