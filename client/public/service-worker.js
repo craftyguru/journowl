@@ -1,5 +1,5 @@
 // Dynamic cache version based on build timestamp
-const BUILD_TIMESTAMP = '2025-08-08T20:00:53.024Z'; // Updated automatically on build // Updated automatically on build // Updated automatically on build
+const BUILD_TIMESTAMP = '2025-08-30T11:15:21.027Z'; // Updated automatically on build // Updated automatically on build // Updated automatically on build // Updated automatically on build
 const CACHE_NAME = `journowl-cache-v${BUILD_TIMESTAMP}`;
 const urlsToCache = [
   '/',

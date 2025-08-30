@@ -7,7 +7,7 @@ import { useTheme } from "@/components/theme-provider";
 import { PrivacyModal } from "@/components/PrivacyModal";
 import { TermsModal } from "@/components/TermsModal";
 
-const APP_VERSION = "1.0.3253";
+const APP_VERSION = "2.0.0";
 
 interface LandingHeaderProps {
   onGetStarted: () => void;

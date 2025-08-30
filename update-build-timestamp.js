@@ -56,10 +56,8 @@ function updatePackageVersion(buildTimestamp) {
   try {
     const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, 'utf8'));
     
-    // Update version with timestamp-based micro version
-    const baseVersion = packageJson.version.split('.').slice(0, 2).join('.');
-    const microVersion = Math.floor(Date.now() / 1000) % 10000; // Last 4 digits of timestamp
-    const newVersion = `${baseVersion}.${microVersion}`;
+    // Update version to 2.0.0
+    const newVersion = "2.0.0";
     
     packageJson.version = newVersion;
     packageJson.buildTimestamp = buildTimestamp;
