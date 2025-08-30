@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { LogIn, UserPlus, FileText, Shield, Palette } from "lucide-react";
+import { LogIn, UserPlus, FileText, Shield, Palette, Tag } from "lucide-react";
 import { ThemeSelector } from "@/components/theme-selector";
 import { useTheme } from "@/components/theme-provider";
 import { PrivacyModal } from "@/components/PrivacyModal";
 import { TermsModal } from "@/components/TermsModal";
+
+const APP_VERSION = "1.0.3253";
 
 interface LandingHeaderProps {
   onGetStarted: () => void;
@@ -60,6 +62,11 @@ export default function LandingHeader({ onGetStarted }: LandingHeaderProps) {
               <FileText className="w-4 h-4" />
               Terms
             </button>
+            {/* Version Badge */}
+            <div className="flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-400/30 rounded-full">
+              <Tag className="w-3 h-3 text-blue-300" />
+              <span className="text-xs font-medium text-blue-200">v{APP_VERSION}</span>
+            </div>
           </nav>
 
           {/* Action Buttons */}
@@ -105,6 +112,11 @@ export default function LandingHeader({ onGetStarted }: LandingHeaderProps) {
             <FileText className="w-3 h-3" />
             Terms
           </button>
+          {/* Mobile Version Badge */}
+          <div className="flex items-center gap-1 px-2 py-1 bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-sm border border-blue-400/30 rounded-full">
+            <Tag className="w-2.5 h-2.5 text-blue-300" />
+            <span className="text-[10px] font-medium text-blue-200">v{APP_VERSION}</span>
+          </div>
           <div className="flex items-center gap-2">
             <ThemeSelector />
             <Button
