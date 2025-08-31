@@ -98,6 +98,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// ---------- EMBED ROUTES MIDDLEWARE ----------
+// Allow embedding by 1ofakindpiece.com
+app.use('/embed', (req, res, next) => {
+  res.removeHeader('X-Frame-Options'); // ensure it's not sent
+  res.setHeader(
+    'Content-Security-Policy',
+    "frame-ancestors 'self' https://1ofakindpiece.com https://www.1ofakindpiece.com"
+  );
+  next();
+});
+
 (async () => {
   // Mount API routes (and get an http server if your registerRoutes returns one)
   const server = await registerRoutes(app);
