@@ -29,11 +29,12 @@ import ImportPage from "@/pages/ImportPage";
 import SharePage from "@/pages/SharePage";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms";
+import OptInPage from "@/pages/opt-in";
 import { FAQ } from "@/components/FAQ";
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq" | "admin">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq" | "admin" | "opt-in">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('🔧 App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     console.log('🔧 Demo param detected:', urlParams.get('demo'));
@@ -49,6 +50,7 @@ function App() {
     if (window.location.pathname === '/share') return 'share';
     if (window.location.pathname === '/privacy-policy') return 'privacy-policy';
     if (window.location.pathname === '/terms') return 'terms';
+    if (window.location.pathname === '/opt-in') return 'opt-in';
     if (window.location.pathname === '/faq' || window.location.pathname === '/help') return 'faq';
     if (window.location.pathname === '/email-verified' || urlParams.get('success') === '1' || urlParams.get('success') === '0' || urlParams.get('verified') === 'true') {
       console.log('Email verified view detected');
@@ -67,7 +69,7 @@ function App() {
     if (tabOptions.includes(view)) {
       setActiveTab(view);
       setCurrentView("dashboard");
-    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "faq" || view === "admin") {
+    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "opt-in" || view === "faq" || view === "admin") {
       setCurrentView(view);
       if (view === "dashboard") setActiveTab("journal");
     }
@@ -227,7 +229,7 @@ function App() {
   }
 
   // Show landing page only if not authenticated AND not on special pages
-  const specialViews = ["auth", "privacy-policy", "terms", "faq", "email-confirmation", "email-verified", "import", "share"];
+  const specialViews = ["auth", "privacy-policy", "terms", "opt-in", "faq", "email-confirmation", "email-verified", "import", "share"];
   console.log('🔧 Landing check - isAuthenticated:', isAuthenticated, 'currentView:', currentView, 'specialViews:', specialViews, 'includes currentView:', specialViews.includes(currentView));
   if ((isAuthenticated === null || isAuthenticated === false) && !specialViews.includes(currentView)) {
     console.log('🔧 Showing landing page - isAuthenticated:', isAuthenticated, 'currentView:', currentView, 'specialViews includes currentView:', specialViews.includes(currentView));
@@ -271,6 +273,20 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <TermsOfService />
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  // Opt-in page (no auth required)
+  if (currentView === "opt-in") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <OptInPage />
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
