@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 // Security + PWA MIME headers (kept tight for PWABuilder compatibility)
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  res.setHeader("X-Frame-Options", "ALLOWALL");
   res.setHeader("X-XSS-Protection", "1; mode=block");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
 
@@ -31,7 +31,7 @@ app.use((req, res, next) => {
  // Disable CSP in development to prevent preview issues
  if (process.env.NODE_ENV !== 'production') {
    // Very permissive CSP for development/Replit preview
-   res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; img-src * data: blob:; font-src * data:; connect-src * ws: wss:; frame-ancestors *;");
+   res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval'; style-src * 'unsafe-inline'; img-src * data: blob:; font-src * data:; connect-src * ws: wss:; frame-ancestors https://www.1ofakindpiece.com https://1ofakindpiece.com;");
  } else {
    res.setHeader('Content-Security-Policy', [
      "default-src 'self' https:",
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
      "img-src 'self' data: https: blob:",
      "connect-src 'self' https: wss:",
      "object-src 'none'",
-     "frame-ancestors 'self' *.replit.dev *.replit.com",
+     "frame-ancestors https://www.1ofakindpiece.com https://1ofakindpiece.com",
      "base-uri 'self'"
    ].join('; '));
  }
