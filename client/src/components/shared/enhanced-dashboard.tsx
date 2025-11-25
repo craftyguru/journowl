@@ -45,6 +45,8 @@ const AIStoryMaker = lazy(() => import("../kid-dashboard/AIStoryMaker").then(m =
 // Eager-loaded critical utilities
 import { MergedHelpSupportBubble } from "../MergedHelpSupportBubble";
 import ErrorBoundary from "../shared/ErrorBoundary";
+import { EnhancedErrorBoundary } from "../shared/EnhancedErrorBoundary";
+import { useToast } from "@/hooks/use-toast";
 
 // Loading skeleton component
 const TabLoadingFallback = () => (
@@ -61,6 +63,7 @@ function EnhancedDashboard({
   initialTab = "journal", 
   onJournalStateChange 
 }: EnhancedDashboardProps) {
+  const { toast } = useToast();
   
   // State management
   const [activeTab, setActiveTab] = useState(initialTab);
@@ -490,7 +493,8 @@ function EnhancedDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 pb-20" data-testid="dashboard-container">
+    <EnhancedErrorBoundary>
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 pb-20" data-testid="dashboard-container">
       <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 max-w-7xl">
         {/* Stats Cards */}
         <StatsCards stats={stats || {}} />
@@ -509,10 +513,22 @@ function EnhancedDashboard({
       </div>
 
       {/* Fixed Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-40" data-testid="navigation-tabs">
+      <div 
+        className="fixed bottom-0 left-0 right-0 z-40" 
+        data-testid="navigation-tabs"
+        role="navigation"
+        aria-label="Dashboard tabs"
+      >
         <JournalTabs
           activeTab={activeTab}
-          onTabChange={setActiveTab}
+          onTabChange={(tab) => {
+            setActiveTab(tab);
+            toast({
+              title: "Tab Changed",
+              description: `Switched to ${tab} view`,
+              duration: 2000,
+            });
+          }}
         >
           <div></div>
         </JournalTabs>
