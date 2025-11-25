@@ -25,6 +25,7 @@ import { GlobalLeaderboard } from "../GlobalLeaderboard";
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
 const GoalsSection = lazy(() => import("../dashboard/GoalsSection").then(m => ({ default: m.GoalsSection })));
 const AnalyticsSection = lazy(() => import("../dashboard/AnalyticsSection").then(m => ({ default: m.AnalyticsSection })));
+const AdvancedAnalytics = lazy(() => import("../dashboard/AdvancedAnalytics").then(m => ({ default: m.AdvancedAnalytics })));
 const InsightsSection = lazy(() => import("../dashboard/InsightsSection").then(m => ({ default: m.InsightsSection })));
 const CalendarSection = lazy(() => import("../dashboard/CalendarSection").then(m => ({ default: m.CalendarSection })));
 const WeeklyChallengesCard = lazy(() => import("../dashboard/WeeklyChallengesCard").then(m => ({ default: m.WeeklyChallengesCard })));
@@ -394,15 +395,20 @@ function EnhancedDashboard({
 
       case 'analytics':
         return (
-          <Suspense fallback={<TabLoadingFallback />}>
-            <AnalyticsSection
-              entries={Array.isArray(entries) ? entries : []}
-              stats={stats || {}}
-              onWordCloudClick={handleWordCloudClick}
-              onTimeHeatmapClick={handleTimeHeatmapClick}
-              onTopicAnalysisClick={handleTopicAnalysisClick}
-            />
-          </Suspense>
+          <div className="space-y-6">
+            <Suspense fallback={<TabLoadingFallback />}>
+              <AdvancedAnalytics />
+            </Suspense>
+            <Suspense fallback={<TabLoadingFallback />}>
+              <AnalyticsSection
+                entries={Array.isArray(entries) ? entries : []}
+                stats={stats || {}}
+                onWordCloudClick={handleWordCloudClick}
+                onTimeHeatmapClick={handleTimeHeatmapClick}
+                onTopicAnalysisClick={handleTopicAnalysisClick}
+              />
+            </Suspense>
+          </div>
         );
 
       case 'achievements':

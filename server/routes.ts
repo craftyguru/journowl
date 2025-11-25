@@ -3935,6 +3935,37 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Advanced Analytics - Mood Analysis with AI
+  app.get("/api/analytics/mood-analysis", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const entries = await storage.getJournalEntries(userId, 100);
+      
+      const moodTrends = entries
+        .filter(e => e.mood)
+        .map(e => ({
+          date: e.createdAt || new Date(),
+          mood: e.mood,
+          value: getMoodValue(e.mood)
+        }))
+        .reverse();
+
+      const { AnalyticsService } = await import("./analyticsService");
+      const analysis = await AnalyticsService.analyzeMoodTrends(moodTrends);
+      const weeklyInsight = await AnalyticsService.generateWeeklyInsights(entries.slice(-7));
+      const strengthAreas = AnalyticsService.calculateStrengthAreas(entries.slice(-30));
+
+      res.json({
+        ...analysis,
+        weeklyInsight,
+        strengthAreas
+      });
+    } catch (error) {
+      console.error("Analytics error:", error);
+      res.status(500).json({ error: "Failed to generate analytics" });
+    }
+  });
+
   // Mood Trends API
   app.get("/api/mood-trends", requireAuth, async (req: any, res) => {
     try {
