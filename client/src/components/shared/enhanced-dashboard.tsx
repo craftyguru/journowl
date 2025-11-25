@@ -28,7 +28,7 @@ import { defaultGoals } from "@/data/defaultGoals";
 import InteractiveJournal from "../journal/interactive-journal";
 import SmartJournalEditor from "../smart-journal-editor";
 import UnifiedJournal from "../journal/journal-entry-modal";
-import InteractiveCalendar from "../interactive-calendar";
+import InteractiveCalendar from "./interactive-calendar";
 import PromptPurchase from "../PromptPurchase";
 import UsageMeters from "../UsageMeters";
 import { AIStoryMaker } from "../kid-dashboard/AIStoryMaker";
@@ -459,9 +459,9 @@ function EnhancedDashboard({
 
         {showUnifiedJournal && (
           <UnifiedJournal
-            entry={selectedEntry}
+            isOpen={showUnifiedJournal}
             onClose={() => setShowUnifiedJournal(false)}
-            onSave={handleSaveEntry}
+            entry={selectedEntry}
           />
         )}
 
