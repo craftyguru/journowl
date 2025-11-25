@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
@@ -15,43 +16,52 @@ import {
   Settings,
   Eye,
   Toggle2,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from "lucide-react";
 
-interface FeatureStats {
-  name: string;
-  icon: React.ReactNode;
-  active: boolean;
-  users: number;
-  description: string;
-  stats: { label: string; value: string | number }[];
+interface Metrics {
+  challenges: any;
+  tournaments: any;
+  achievements: any;
+  emails: any;
+  referrals: any;
+  leaderboards: any;
+  streaks: any;
+  social: any;
+  totalEngagement: number;
+  systemHealth: number;
 }
 
 export function FeatureManagementHub() {
   const [activeTab, setActiveTab] = useState("overview");
+  
+  const { data: metrics, isLoading } = useQuery<Metrics>({
+    queryKey: ["/api/admin/metrics/all"]
+  });
 
-  const features: FeatureStats[] = [
+  const features = metrics ? [
     {
       name: "Daily Challenges",
       icon: <Target className="w-5 h-5" />,
       active: true,
-      users: 347,
+      users: metrics.challenges.activeUsers || 0,
       description: "8 micro-challenges for daily engagement",
       stats: [
-        { label: "Completion Rate", value: "64%" },
-        { label: "Avg Points/Day", value: "42" },
-        { label: "Active Participants", value: "347" }
+        { label: "Completion Rate", value: `${metrics.challenges.completionRate || 0}%` },
+        { label: "Avg Points/Day", value: metrics.challenges.avgPointsPerDay || 0 },
+        { label: "Active Participants", value: metrics.challenges.activeUsers || 0 }
       ]
     },
     {
       name: "Tournaments",
       icon: <Trophy className="w-5 h-5" />,
       active: true,
-      users: 512,
+      users: metrics.tournaments.totalParticipants || 0,
       description: "Weekly, monthly, and seasonal competitions",
       stats: [
-        { label: "Active Tournaments", value: "3" },
-        { label: "Total Participants", value: "512" },
+        { label: "Active Tournaments", value: metrics.tournaments.activeTournaments || 0 },
+        { label: "Total Participants", value: metrics.tournaments.totalParticipants || 0 },
         { label: "Prize Pool/Month", value: "$500" }
       ]
     },
@@ -59,77 +69,85 @@ export function FeatureManagementHub() {
       name: "Achievement Badges",
       icon: <CheckCircle2 className="w-5 h-5" />,
       active: true,
-      users: 892,
+      users: metrics.achievements.usersWithBadges || 0,
       description: "11 badges across 5 categories with 8-level progression",
       stats: [
-        { label: "Unlocked Badges", value: "1,247" },
-        { label: "Users with Badges", value: "892" },
-        { label: "Most Unlocked", value: "First Entry" }
+        { label: "Unlocked Badges", value: metrics.achievements.totalUnlocked || 0 },
+        { label: "Users with Badges", value: metrics.achievements.usersWithBadges || 0 },
+        { label: "Categories", value: "5" }
       ]
     },
     {
       name: "Email Reminders",
       icon: <Mail className="w-5 h-5" />,
       active: true,
-      users: 756,
+      users: metrics.emails.campaigns || 0,
       description: "SendGrid integration for streak & milestone emails",
       stats: [
-        { label: "Emails Sent", value: "1,892" },
-        { label: "Open Rate", value: "38%" },
-        { label: "Click Rate", value: "12%" }
+        { label: "Emails Sent", value: metrics.emails.totalSent || 0 },
+        { label: "Open Rate", value: `${metrics.emails.openRate || 0}%` },
+        { label: "Click Rate", value: `${metrics.emails.clickRate || 0}%` }
       ]
     },
     {
       name: "Referral System",
       icon: <Gift className="w-5 h-5" />,
       active: true,
-      users: 634,
+      users: metrics.referrals.totalReferrals || 0,
       description: "Viral growth with unique codes and tier rewards",
       stats: [
-        { label: "Total Referrals", value: "1,456" },
-        { label: "Successful Redeems", value: "234" },
-        { label: "Bonus Prompts Distributed", value: "11,700" }
+        { label: "Total Referrals", value: metrics.referrals.totalReferrals || 0 },
+        { label: "Successful Redeems", value: metrics.referrals.successful || 0 },
+        { label: "Bonus Prompts Distributed", value: metrics.referrals.bonusDistributed || 0 }
       ]
     },
     {
       name: "Global Leaderboards",
       icon: <BarChart3 className="w-5 h-5" />,
       active: true,
-      users: 1203,
+      users: metrics.leaderboards.activeCompetitors || 0,
       description: "4 leaderboard types: Weekly, All-Time, Streaks, Words",
       stats: [
-        { label: "Active Competitors", value: "1,203" },
-        { label: "Weekly Updates", value: "52" },
-        { label: "Top Score", value: "2,847 pts" }
+        { label: "Active Competitors", value: metrics.leaderboards.activeCompetitors || 0 },
+        { label: "Weekly Updates", value: metrics.leaderboards.weeklyUpdates || 0 },
+        { label: "Top Score", value: metrics.leaderboards.topScore || 0 }
       ]
     },
     {
       name: "Streak Notifications",
       icon: <Flame className="w-5 h-5" />,
       active: true,
-      users: 1891,
+      users: metrics.streaks.activeStreaks || 0,
       description: "Real-time streak tracking and milestone alerts",
       stats: [
-        { label: "Active Streaks", value: "1,891" },
-        { label: "100+ Day Streaks", value: "47" },
-        { label: "Milestones Hit", value: "893" }
+        { label: "Active Streaks", value: metrics.streaks.activeStreaks || 0 },
+        { label: "100+ Day Streaks", value: metrics.streaks.longStreaks || 0 },
+        { label: "Milestones Hit", value: metrics.streaks.milestonesHit || 0 }
       ]
     },
     {
       name: "Social Feed",
       icon: <Users className="w-5 h-5" />,
       active: true,
-      users: 967,
+      users: metrics.social.activeConnections || 0,
       description: "Follow/unfollow system with activity feeds",
       stats: [
-        { label: "Active Connections", value: "3,456" },
-        { label: "Feed Posts", value: "8,923" },
-        { label: "Engagement Rate", value: "21%" }
+        { label: "Active Connections", value: metrics.social.activeConnections || 0 },
+        { label: "Feed Posts", value: metrics.social.feedPosts || 0 },
+        { label: "Engagement Rate", value: `${metrics.social.engagementRate || 0}%` }
       ]
     }
-  ];
+  ] : [];
 
-  const totalUsers = features.reduce((sum, f) => sum + f.users, 0);
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-400" />
+      </div>
+    );
+  }
+
+  const totalUsers = features.reduce((sum: number, f: any) => sum + f.users, 0);
   const activeFeatures = features.filter(f => f.active).length;
 
   return (
@@ -165,7 +183,7 @@ export function FeatureManagementHub() {
             <CardTitle className="text-sm font-semibold text-green-300">System Health</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-white">100%</div>
+            <div className="text-3xl font-bold text-white">{metrics?.systemHealth || 0}%</div>
             <p className="text-xs text-green-200 mt-1">All services running</p>
           </CardContent>
         </Card>
@@ -186,7 +204,7 @@ export function FeatureManagementHub() {
 
         <TabsContent value="overview" className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
-            {features.map((feature, idx) => (
+            {features.map((feature: any, idx: number) => (
               <motion.div
                 key={feature.name}
                 initial={{ opacity: 0, y: 20 }}
@@ -212,7 +230,7 @@ export function FeatureManagementHub() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2">
-                      {feature.stats.map((stat, i) => (
+                      {feature.stats.map((stat: any, i: number) => (
                         <div key={i} className="flex justify-between text-xs">
                           <span className="text-white/60">{stat.label}</span>
                           <span className="font-semibold text-white">{stat.value}</span>
@@ -229,14 +247,20 @@ export function FeatureManagementHub() {
         <TabsContent value="challenges">
           <Card className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle>Daily Challenges Management</CardTitle>
-              <CardDescription>Configure and monitor 8 daily micro-challenges</CardDescription>
+              <CardTitle>Daily Challenges - Live Data</CardTitle>
+              <CardDescription>Real user engagement metrics</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                {["Completion Rate: 64%", "Active: 347 users", "Avg Points/Day: 42", "Easy: 3 | Medium: 3 | Hard: 2"].map((stat) => (
-                  <div key={stat} className="p-3 bg-white/5 rounded-lg border border-white/10">
-                    <p className="text-sm text-white/70">{stat}</p>
+                {[
+                  { label: "Completion Rate", value: `${metrics?.challenges.completionRate || 0}%` },
+                  { label: "Active Users", value: metrics?.challenges.activeUsers || 0 },
+                  { label: "Avg Points/Day", value: metrics?.challenges.avgPointsPerDay || 0 },
+                  { label: "Difficulty: Easy/Med/Hard", value: "3/3/2" }
+                ].map((stat) => (
+                  <div key={stat.label} className="p-3 bg-white/5 rounded-lg border border-white/10">
+                    <p className="text-xs text-white/60">{stat.label}</p>
+                    <p className="text-lg font-bold text-white mt-1">{stat.value}</p>
                   </div>
                 ))}
               </div>
@@ -244,16 +268,20 @@ export function FeatureManagementHub() {
           </Card>
         </TabsContent>
 
+        {/* Other tabs use real data */}
         <TabsContent value="tournaments">
           <Card className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle>Tournament Management</CardTitle>
-              <CardDescription>3 active tournaments with 512 participants</CardDescription>
+              <CardTitle>Tournament Management - Live Data</CardTitle>
+              <CardDescription>{metrics?.tournaments.activeTournaments || 0} active tournaments</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {["Weekly Writing Challenge - 189 participants", "Monthly Consistency - 203 participants", "Seasonal Marathon - 120 participants"].map((t) => (
-                <div key={t} className="p-3 bg-white/5 rounded-lg border border-white/10 flex justify-between items-center">
-                  <p className="text-sm text-white/70">{t}</p>
+              {metrics?.tournaments.tournaments?.map((t: any) => (
+                <div key={t.name} className="p-3 bg-white/5 rounded-lg border border-white/10 flex justify-between items-center">
+                  <div>
+                    <p className="text-sm font-semibold text-white">{t.name}</p>
+                    <p className="text-xs text-white/60">{t.participants} participants • {t.prize}</p>
+                  </div>
                   <Eye className="w-4 h-4 text-white/40" />
                 </div>
               ))}
@@ -264,14 +292,20 @@ export function FeatureManagementHub() {
         <TabsContent value="achievements">
           <Card className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle>Achievement Badges</CardTitle>
-              <CardDescription>11 badges | 1,247 unlocked | 892 users with badges</CardDescription>
+              <CardTitle>Achievement Badges - Live Data</CardTitle>
+              <CardDescription>Real unlock statistics</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
-                {["🏆 Milestones", "🔥 Streaks", "✍️ Writing", "👥 Social", "⭐ Consistency"].map((cat) => (
-                  <div key={cat} className="p-3 bg-white/5 rounded-lg border border-white/10">
-                    <p className="text-sm text-white/70">{cat}</p>
+                {[
+                  { label: "Total Unlocked", value: metrics?.achievements.totalUnlocked || 0 },
+                  { label: "Users with Badges", value: metrics?.achievements.usersWithBadges || 0 },
+                  { label: "Milestones", value: "5" },
+                  { label: "Streaks", value: "2" }
+                ].map((stat) => (
+                  <div key={stat.label} className="p-3 bg-white/5 rounded-lg border border-white/10">
+                    <p className="text-xs text-white/60">{stat.label}</p>
+                    <p className="text-lg font-bold text-white">{stat.value}</p>
                   </div>
                 ))}
               </div>
@@ -282,14 +316,20 @@ export function FeatureManagementHub() {
         <TabsContent value="emails">
           <Card className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle>Email Reminder System</CardTitle>
-              <CardDescription>SendGrid integration | 1,892 sent | 38% open rate</CardDescription>
+              <CardTitle>Email Reminder System - Live Data</CardTitle>
+              <CardDescription>SendGrid metrics</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                {["Streak Milestones: 89", "2-Day Absence: 234", "Weekly Digest: 156", "Referral Alerts: 67"].map((stat) => (
-                  <div key={stat} className="p-3 bg-white/5 rounded-lg border border-white/10">
-                    <p className="text-sm text-white/70">{stat}</p>
+                {[
+                  { label: "Emails Sent", value: metrics?.emails.totalSent || 0 },
+                  { label: "Open Rate", value: `${metrics?.emails.openRate || 0}%` },
+                  { label: "Click Rate", value: `${metrics?.emails.clickRate || 0}%` },
+                  { label: "Campaigns", value: metrics?.emails.campaigns || 0 }
+                ].map((stat) => (
+                  <div key={stat.label} className="p-3 bg-white/5 rounded-lg border border-white/10">
+                    <p className="text-xs text-white/60">{stat.label}</p>
+                    <p className="text-lg font-bold text-white">{stat.value}</p>
                   </div>
                 ))}
               </div>
@@ -300,14 +340,19 @@ export function FeatureManagementHub() {
         <TabsContent value="referrals">
           <Card className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle>Referral Growth System</CardTitle>
-              <CardDescription>1,456 referrals | 234 redeemed | 11,700 bonus prompts distributed</CardDescription>
+              <CardTitle>Referral Growth System - Live Data</CardTitle>
+              <CardDescription>Real referral metrics</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-3 gap-4">
-                {["Advocate (5+): 89", "Ambassador (20+): 34", "VIP (50+): 12"].map((tier) => (
-                  <div key={tier} className="p-3 bg-white/5 rounded-lg border border-white/10">
-                    <p className="text-sm text-white/70">{tier}</p>
+                {[
+                  { label: "Total Referrals", value: metrics?.referrals.totalReferrals || 0 },
+                  { label: "Redeemed", value: metrics?.referrals.successful || 0 },
+                  { label: "Bonus Prompts", value: metrics?.referrals.bonusDistributed || 0 }
+                ].map((stat) => (
+                  <div key={stat.label} className="p-3 bg-white/5 rounded-lg border border-white/10">
+                    <p className="text-xs text-white/60">{stat.label}</p>
+                    <p className="text-lg font-bold text-white">{stat.value}</p>
                   </div>
                 ))}
               </div>
@@ -318,15 +363,19 @@ export function FeatureManagementHub() {
         <TabsContent value="leaderboards">
           <Card className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle>Global Leaderboards</CardTitle>
-              <CardDescription>4 types | 1,203 active competitors</CardDescription>
+              <CardTitle>Global Leaderboards - Live Data</CardTitle>
+              <CardDescription>Real competition metrics</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-3">
-                {["Weekly Rankings", "All-Time Rankings", "Streak Leaders", "Word Count Champions"].map((board) => (
-                  <div key={board} className="p-3 bg-white/5 rounded-lg border border-white/10 flex justify-between">
-                    <p className="text-sm text-white/70">{board}</p>
-                    <Settings className="w-4 h-4 text-white/40" />
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { label: "Active Competitors", value: metrics?.leaderboards.activeCompetitors || 0 },
+                  { label: "Weekly Updates", value: metrics?.leaderboards.weeklyUpdates || 0 },
+                  { label: "Top Score", value: metrics?.leaderboards.topScore || 0 }
+                ].map((stat) => (
+                  <div key={stat.label} className="p-3 bg-white/5 rounded-lg border border-white/10">
+                    <p className="text-xs text-white/60">{stat.label}</p>
+                    <p className="text-lg font-bold text-white">{stat.value}</p>
                   </div>
                 ))}
               </div>
@@ -337,14 +386,19 @@ export function FeatureManagementHub() {
         <TabsContent value="social">
           <Card className="bg-gradient-to-br from-slate-900/50 to-slate-800/50 border-slate-700/50">
             <CardHeader>
-              <CardTitle>Social Features</CardTitle>
-              <CardDescription>3,456 active connections | 8,923 feed posts | 21% engagement</CardDescription>
+              <CardTitle>Social Features - Live Data</CardTitle>
+              <CardDescription>Real engagement statistics</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                {["Follow/Unfollow: Active", "Personal Feed: Live", "Global Feed: Live", "Activity Logging: Enabled"].map((feature) => (
-                  <div key={feature} className="p-3 bg-white/5 rounded-lg border border-white/10">
-                    <p className="text-sm text-white/70">{feature}</p>
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { label: "Active Connections", value: metrics?.social.activeConnections || 0 },
+                  { label: "Feed Posts", value: metrics?.social.feedPosts || 0 },
+                  { label: "Engagement Rate", value: `${metrics?.social.engagementRate || 0}%` }
+                ].map((stat) => (
+                  <div key={stat.label} className="p-3 bg-white/5 rounded-lg border border-white/10">
+                    <p className="text-xs text-white/60">{stat.label}</p>
+                    <p className="text-lg font-bold text-white">{stat.value}</p>
                   </div>
                 ))}
               </div>

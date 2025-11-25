@@ -4492,6 +4492,17 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Real metrics endpoint for admin dashboard
+  app.get("/api/admin/metrics/all", requireAdmin, async (req: any, res) => {
+    try {
+      const { MetricsService } = await import("./metricsService");
+      const metrics = await MetricsService.getAllMetrics();
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch metrics" });
+    }
+  });
+
   // Weather API
   app.get("/api/weather", requireAuth, async (req: any, res) => {
     try {
