@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { motion } from "framer-motion";
@@ -14,6 +15,8 @@ interface LeaderboardEntry {
 }
 
 export function GlobalLeaderboard() {
+  const [, setLocation] = useLocation();
+
   const { data: allTimeData } = useQuery<LeaderboardEntry[]>({
     queryKey: ["/api/leaderboard/all-time"],
     retry: 1,
@@ -47,7 +50,8 @@ export function GlobalLeaderboard() {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: idx * 0.05 }}
-            className="p-3 rounded-lg bg-white/5 border border-purple-500/20 hover:border-purple-500/40 transition flex items-center justify-between"
+            onClick={() => setLocation(`/profile/${entry.userId}`)}
+            className="p-3 rounded-lg bg-white/5 border border-purple-500/20 hover:border-purple-500/40 hover:bg-white/10 transition flex items-center justify-between cursor-pointer"
             data-testid={`leaderboard-entry-${idx}`}
           >
             <div className="flex items-center gap-3">

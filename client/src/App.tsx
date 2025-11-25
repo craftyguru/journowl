@@ -27,6 +27,7 @@ const TermsOfService = lazy(() => import("@/pages/terms"));
 const FAQ = lazy(() => import("@/components/shared/FAQ").then(m => ({ default: m.FAQ })));
 const PricingPage = lazy(() => import("@/pages/PricingPage").then(m => ({ default: m.PricingPage })));
 const OnboardingFlow = lazy(() => import("@/pages/OnboardingFlow").then(m => ({ default: m.OnboardingFlow })));
+const UserProfile = lazy(() => import("@/pages/UserProfile"));
 
 // Eager-loaded critical components
 import Navbar from "@/components/navbar";
@@ -45,7 +46,7 @@ const LoadingFallback = () => (
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq" | "pricing">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq" | "pricing" | "profile">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
@@ -58,6 +59,7 @@ function App() {
     if (window.location.pathname === '/privacy-policy') return 'privacy-policy';
     if (window.location.pathname === '/terms') return 'terms';
     if (window.location.pathname === '/faq' || window.location.pathname === '/help') return 'faq';
+    if (window.location.pathname.startsWith('/profile/')) return 'profile';
     if (window.location.pathname === '/email-verified' || urlParams.get('success') === '1' || urlParams.get('success') === '0' || urlParams.get('verified') === 'true') {
       console.log('Email verified view detected');
       return 'email-verified';
@@ -224,6 +226,22 @@ function App() {
             <Toaster />
             <Suspense fallback={<LoadingFallback />}>
               <PricingPage />
+            </Suspense>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  // User Profile page (public, no auth required)
+  if (currentView === "profile") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Suspense fallback={<LoadingFallback />}>
+              <UserProfile />
             </Suspense>
           </TooltipProvider>
         </ThemeProvider>

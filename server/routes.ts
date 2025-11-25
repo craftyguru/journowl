@@ -658,6 +658,43 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
     }
   });
 
+  // User Profile endpoint (public, no auth required)
+  app.get("/api/users/:userId/profile", async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const user = await storage.getUser(parseInt(userId));
+      
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      const stats = await storage.getUserStats(user.id);
+      const achievements = await storage.getUserAchievements?.(user.id) || [];
+
+      res.json({
+        id: user.id,
+        username: user.username,
+        bio: user.bio,
+        avatar: user.avatar,
+        currentPlan: user.currentPlan || "free",
+        stats: {
+          totalEntries: stats?.totalEntries || 0,
+          totalWords: stats?.totalWords || 0,
+          currentStreak: stats?.currentStreak || 0,
+          longestStreak: stats?.longestStreak || 0
+        },
+        achievements: achievements.slice(0, 6).map((a: any) => ({
+          id: a.achievementId,
+          title: a.title,
+          icon: a.icon || "🏆"
+        }))
+      });
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      res.status(500).json({ error: "Failed to fetch profile" });
+    }
+  });
+
 
 
   // OAuth Routes
