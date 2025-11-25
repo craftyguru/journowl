@@ -84,13 +84,17 @@ declare module 'express-session' {
 const PgSession = ConnectPgSimple(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session middleware with PostgreSQL store - Use environment variable directly
-  const sessionDbUrl = process.env.DATABASE_URL || 
-    'postgresql://postgres.asjcxaiabjsbjbasssfe:KCqwTTy4bwqNrHti@aws-0-us-east-2.pooler.supabase.com:6543/postgres?sslmode=require';
-  
+  // Session middleware with PostgreSQL store - Use explicit connection config for Supabase
   app.use(session({
     store: new PgSession({
-      conString: sessionDbUrl,
+      conObject: {
+        host: 'aws-0-us-east-2.pooler.supabase.com',
+        port: 6543,
+        database: 'postgres',
+        user: 'postgres.asjcxaiabjsbjbasssfe',
+        password: 'KCqwTTy4bwqNrHti',
+        ssl: 'require'
+      },
       tableName: 'session',
       createTableIfMissing: true,
       pruneSessionInterval: false
