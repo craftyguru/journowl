@@ -84,7 +84,7 @@ declare module 'express-session' {
 const PgSession = ConnectPgSimple(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session middleware with PostgreSQL store - Use DATABASE_URL for proper SSL/SASL
+  // Session middleware with PostgreSQL store - Parse URL with proper SSL config
   let sessionDbUrl = process.env.DATABASE_URL;
   if (sessionDbUrl?.includes('DATABASE_URL=')) {
     sessionDbUrl = sessionDbUrl.replace(/^DATABASE_URL=/, '');
@@ -92,9 +92,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.use(session({
     store: new PgSession({
-      conString: sessionDbUrl,
-      ssl: {
-        rejectUnauthorized: false
+      conObject: {
+        connectionString: sessionDbUrl,
+        ssl: {
+          rejectUnauthorized: false
+        }
       },
       tableName: 'session',
       createTableIfMissing: true,
