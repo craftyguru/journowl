@@ -11,9 +11,9 @@ import AuthPage from "@/pages/auth";
 import Dashboard from "@/pages/dashboard";
 import InsightsPage from "@/pages/insights";
 import Navbar from "@/components/navbar";
-import AccountSelector from "@/components/account-selector";
-import AdminDashboard from "@/components/admin-dashboard";
-import EnhancedDashboard from "@/components/enhanced-dashboard";
+import AccountSelector from "@/components/profile/account-selector";
+import AdminDashboard from "@/components/admin/admin-dashboard";
+import EnhancedDashboard from "@/components/shared/enhanced-dashboard";
 import KidDashboard from "@/components/kid-dashboard";
 import ReferralPage from "@/components/referral-page";
 import LandingHero from "@/components/ui/LandingHero";
@@ -28,7 +28,7 @@ import ImportPage from "@/pages/ImportPage";
 import SharePage from "@/pages/SharePage";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms";
-import { FAQ } from "@/components/FAQ";
+import { FAQ } from "@/components/shared/FAQ";
 
 function App() {
   // Check if demo mode is requested from URL params
