@@ -1,28 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-// Import modular components from dashboard folder
+// Eagerly loaded critical components
 import { WelcomeBanner } from "../dashboard/WelcomeBanner";
 import { StatsCards } from "../dashboard/StatsCards";
 import { JournalTabs } from "../dashboard/JournalTabs";
 import { UsageMetersSection } from "../dashboard/UsageMetersSection";
-import { AchievementsSection } from "../dashboard/AchievementsSection";
-import { GoalsSection } from "../dashboard/GoalsSection";
-import { AnalyticsSection } from "../dashboard/AnalyticsSection";
-import { InsightsSection } from "../dashboard/InsightsSection";
-import { CalendarSection } from "../dashboard/CalendarSection";
 import { CameraCapture } from "../dashboard/CameraCapture";
 import { NewGoalForm, GoalDetailsView, EditGoalForm } from "../dashboard/GoalComponents";
 import { TypewriterTitle } from "../dashboard/TypewriterComponents";
-import { WeeklyChallengesCard } from "../dashboard/WeeklyChallengesCard";
-import { MoodTrendsChart } from "../dashboard/MoodTrendsChart";
-import { EmailRemindersPanel } from "../dashboard/EmailRemindersPanel";
-import { ChallengeLeaderboard } from "../dashboard/ChallengeLeaderboard";
-import { AchievementBadges } from "../dashboard/AchievementBadges";
+
+// Lazy-loaded heavy tab components for code splitting
+const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
+const GoalsSection = lazy(() => import("../dashboard/GoalsSection").then(m => ({ default: m.GoalsSection })));
+const AnalyticsSection = lazy(() => import("../dashboard/AnalyticsSection").then(m => ({ default: m.AnalyticsSection })));
+const InsightsSection = lazy(() => import("../dashboard/InsightsSection").then(m => ({ default: m.InsightsSection })));
+const CalendarSection = lazy(() => import("../dashboard/CalendarSection").then(m => ({ default: m.CalendarSection })));
+const WeeklyChallengesCard = lazy(() => import("../dashboard/WeeklyChallengesCard").then(m => ({ default: m.WeeklyChallengesCard })));
+const MoodTrendsChart = lazy(() => import("../dashboard/MoodTrendsChart").then(m => ({ default: m.MoodTrendsChart })));
+const EmailRemindersPanel = lazy(() => import("../dashboard/EmailRemindersPanel").then(m => ({ default: m.EmailRemindersPanel })));
+const ChallengeLeaderboard = lazy(() => import("../dashboard/ChallengeLeaderboard").then(m => ({ default: m.ChallengeLeaderboard })));
+const AchievementBadges = lazy(() => import("../dashboard/AchievementBadges").then(m => ({ default: m.AchievementBadges })));
 
 // Import hooks and data
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -31,16 +33,26 @@ import { defaultGoals } from "@/data/defaultGoals";
 import { defaultChallenges } from "@/data/defaultChallenges";
 import { useQuery } from "@tanstack/react-query";
 
-// Import existing components that weren't refactored
-import InteractiveJournal from "../journal/interactive-journal";
-import SmartJournalEditor from "../smart-journal-editor";
-import UnifiedJournal from "../journal/journal-entry-modal";
-import InteractiveCalendar from "./interactive-calendar";
-import PromptPurchase from "../PromptPurchase";
-import UsageMeters from "../UsageMeters";
-import { AIStoryMaker } from "../kid-dashboard/AIStoryMaker";
+// Lazy-loaded journal components
+const InteractiveJournal = lazy(() => import("../journal/interactive-journal"));
+const SmartJournalEditor = lazy(() => import("../smart-journal-editor"));
+const UnifiedJournal = lazy(() => import("../journal/journal-entry-modal"));
+const InteractiveCalendar = lazy(() => import("./interactive-calendar"));
+const PromptPurchase = lazy(() => import("../PromptPurchase"));
+const UsageMeters = lazy(() => import("../UsageMeters"));
+const AIStoryMaker = lazy(() => import("../kid-dashboard/AIStoryMaker").then(m => ({ default: m.AIStoryMaker })));
+
+// Eager-loaded critical utilities
 import { MergedHelpSupportBubble } from "../MergedHelpSupportBubble";
 import ErrorBoundary from "../shared/ErrorBoundary";
+
+// Loading skeleton component
+const TabLoadingFallback = () => (
+  <div className="space-y-6">
+    <div className="h-64 bg-gradient-to-r from-gray-200 to-gray-100 rounded-lg animate-pulse" />
+    <div className="h-40 bg-gradient-to-r from-gray-100 to-gray-200 rounded-lg animate-pulse" />
+  </div>
+);
 
 import type { EnhancedDashboardProps, JournalEntry } from "../dashboard/types";
 
@@ -339,78 +351,94 @@ function EnhancedDashboard({
       case 'journal':
         return (
           <div className="space-y-6">
-            <InteractiveJournal 
-              onOpenSmartEditor={openSmartEditor}
-              onOpenUnifiedJournal={openUnifiedJournal}
-            />
+            <Suspense fallback={<TabLoadingFallback />}>
+              <InteractiveJournal 
+                onOpenSmartEditor={openSmartEditor}
+                onOpenUnifiedJournal={openUnifiedJournal}
+              />
+            </Suspense>
           </div>
         );
 
       case 'analytics':
         return (
-          <AnalyticsSection
-            entries={Array.isArray(entries) ? entries : []}
-            stats={stats || {}}
-            onWordCloudClick={handleWordCloudClick}
-            onTimeHeatmapClick={handleTimeHeatmapClick}
-            onTopicAnalysisClick={handleTopicAnalysisClick}
-          />
+          <Suspense fallback={<TabLoadingFallback />}>
+            <AnalyticsSection
+              entries={Array.isArray(entries) ? entries : []}
+              stats={stats || {}}
+              onWordCloudClick={handleWordCloudClick}
+              onTimeHeatmapClick={handleTimeHeatmapClick}
+              onTopicAnalysisClick={handleTopicAnalysisClick}
+            />
+          </Suspense>
         );
 
       case 'achievements':
         return (
-          <AchievementsSection achievements={processedAchievements} />
+          <Suspense fallback={<TabLoadingFallback />}>
+            <AchievementsSection achievements={processedAchievements} />
+          </Suspense>
         );
 
       case 'goals':
         return (
-          <GoalsSection
-            goals={Array.isArray(goals) ? goals : []}
-            onCreateGoal={handleGoalCreate}
-            onEditGoal={handleGoalEdit}
-            onDeleteGoal={handleGoalDelete}
-            onViewGoal={handleGoalView}
-          />
+          <Suspense fallback={<TabLoadingFallback />}>
+            <GoalsSection
+              goals={Array.isArray(goals) ? goals : []}
+              onCreateGoal={handleGoalCreate}
+              onEditGoal={handleGoalEdit}
+              onDeleteGoal={handleGoalDelete}
+              onViewGoal={handleGoalView}
+            />
+          </Suspense>
         );
 
       case 'thoughts':
         return (
-          <InsightsSection
-            insights={insights || []}
-            onRefreshInsights={handleRefreshInsights}
-          />
+          <Suspense fallback={<TabLoadingFallback />}>
+            <InsightsSection
+              insights={insights || []}
+              onRefreshInsights={handleRefreshInsights}
+            />
+          </Suspense>
         );
 
       case 'calendar':
         return (
-          <CalendarSection
-            entries={entries}
-            onDateSelect={handleDateSelect}
-            onEntryEdit={handleEntryEdit}
-          />
+          <Suspense fallback={<TabLoadingFallback />}>
+            <CalendarSection
+              entries={entries}
+              onDateSelect={handleDateSelect}
+              onEntryEdit={handleEntryEdit}
+            />
+          </Suspense>
         );
 
       case 'stories':
         return (
           <div className="space-y-6">
-            <AIStoryMaker 
-              entries={Array.isArray(entries) ? entries : []} 
-              stats={stats || {}}
-            />
+            <Suspense fallback={<TabLoadingFallback />}>
+              <AIStoryMaker 
+                entries={Array.isArray(entries) ? entries : []} 
+                stats={stats || {}}
+              />
+            </Suspense>
           </div>
         );
 
       case 'challenges':
         return (
           <div className="space-y-6">
-            <WeeklyChallengesCard 
-              challenges={challenges} 
-              onChallengeClick={(challenge) => console.log('Challenge clicked:', challenge)}
-            />
-            <MoodTrendsChart data={moodTrends} />
-            <ChallengeLeaderboard />
-            <AchievementBadges />
-            <EmailRemindersPanel />
+            <Suspense fallback={<TabLoadingFallback />}>
+              <WeeklyChallengesCard 
+                challenges={challenges} 
+                onChallengeClick={(challenge) => console.log('Challenge clicked:', challenge)}
+              />
+              <MoodTrendsChart data={moodTrends} />
+              <ChallengeLeaderboard />
+              <AchievementBadges />
+              <EmailRemindersPanel />
+            </Suspense>
           </div>
         );
 
