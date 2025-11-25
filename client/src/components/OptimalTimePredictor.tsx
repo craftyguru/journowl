@@ -4,8 +4,16 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { Clock, Bell } from "lucide-react";
 
+interface OptimalTime {
+  bestHour: number;
+  prediction: string;
+  confidence: number;
+  message: string;
+  nextReminder: string;
+}
+
 export function OptimalTimePredictor() {
-  const { data: prediction } = useQuery({
+  const { data: prediction } = useQuery<OptimalTime>({
     queryKey: ["/api/optimal-time"]
   });
 

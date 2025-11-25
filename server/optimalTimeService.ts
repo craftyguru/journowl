@@ -13,11 +13,12 @@ export class OptimalTimeService {
         hourCounts[hour]++;
       });
 
-      const bestHour = Object.entries(hourCounts).sort((a: any, b: any) => b[1] - a[1])[0]?.[0] || 8;
-      const nextReminder = this.getNextReminderTime(parseInt(bestHour));
+      const bestHourEntry = Object.entries(hourCounts).sort((a: any, b: any) => b[1] - a[1])[0];
+      const bestHour = bestHourEntry ? parseInt(bestHourEntry[0] as string) : 8;
+      const nextReminder = this.getNextReminderTime(bestHour);
 
       return {
-        bestHour: parseInt(bestHour),
+        bestHour,
         prediction: `${bestHour}:00`,
         confidence: Math.min((hourCounts[bestHour] / entries.length) * 100, 95),
         nextReminder,

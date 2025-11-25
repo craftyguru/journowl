@@ -4,9 +4,17 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { BookOpen, Download } from "lucide-react";
 
+interface StoryStats {
+  totalEntries: number;
+  totalWords: number;
+  avgMood: string;
+  consistency: number;
+  readingTime: number;
+}
+
 export function StoryMode() {
-  const { data: narrative } = useQuery({ queryKey: ["/api/story/narrative"] });
-  const { data: stats } = useQuery({ queryKey: ["/api/story/stats"] });
+  const { data: narrative } = useQuery<string>({ queryKey: ["/api/story/narrative"] });
+  const { data: stats } = useQuery<StoryStats>({ queryKey: ["/api/story/stats"] });
 
   return (
     <Card className="bg-gradient-to-br from-indigo-500/20 to-purple-500/20 border-indigo-500/50">

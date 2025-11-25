@@ -4,8 +4,21 @@ import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Zap } from "lucide-react";
 
+interface MoodData {
+  mood: string;
+  count: number;
+  percentage: number;
+}
+
+interface EmotionHeatmapData {
+  locations: any[];
+  moodDistribution: MoodData[];
+  totalEntries: number;
+  predominantMood: string;
+}
+
 export function EmotionHeatmap() {
-  const { data: heatmap } = useQuery({ queryKey: ["/api/emotion-heatmap"] });
+  const { data: heatmap } = useQuery<EmotionHeatmapData>({ queryKey: ["/api/emotion-heatmap"] });
 
   return (
     <Card className="bg-gradient-to-br from-red-500/20 to-orange-500/20 border-red-500/50">

@@ -23,7 +23,6 @@ import { ExtendedSummaries } from "../ExtendedSummaries";
 import { SocialFeed } from "../SocialFeed";
 import { GlobalLeaderboard } from "../GlobalLeaderboard";
 import { WeatherMoodPrompt } from "../WeatherMoodPrompt";
-import { AchievementBadges } from "../AchievementBadges";
 import { ReminderNotification } from "../ReminderNotification";
 import { TournamentsList } from "../TournamentsList";
 import { StreakNotificationWidget } from "../StreakNotificationWidget";
