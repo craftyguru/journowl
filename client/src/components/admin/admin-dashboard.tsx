@@ -354,10 +354,13 @@ export default function AdminDashboard() {
             <AdminAIInsightsTab advancedAnalytics={advancedAnalytics} analytics={analytics} loadAdminData={loadAdminData} />
           </TabsContent>
 
-                {/* Predictive Analytics Card */}
-                <Card className="bg-gradient-to-r from-gray-800 to-gray-900 dark:from-gray-900 dark:to-black border-gray-700">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-purple-300 dark:text-purple-200">
+          {/* Analytics Tab */}
+          <TabsContent value="analytics">
+            <AdminAnalyticsTab analytics={analytics} />
+          </TabsContent>
+
+          {/* Email Campaigns Tab */}
+          <TabsContent value="email">
             <EnhancedEmailCampaigns 
               campaignForm={campaignForm}
               setCampaignForm={setCampaignForm as any}
