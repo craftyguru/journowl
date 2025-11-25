@@ -6,17 +6,17 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   email: text("email").notNull().unique(),
   username: text("username").notNull().unique(),
-  password: text("password"), // Optional for OAuth users
+  password: text("password"),
   level: integer("level").default(1),
   xp: integer("xp").default(0),
-  role: text("role").default("user"), // "admin", "user", "kid"
+  role: text("role").default("user"),
   avatar: text("avatar"),
   theme: text("theme").default("purple"),
   bio: text("bio"),
   favoriteQuote: text("favorite_quote"),
-  preferences: json("preferences"), // Journal customization preferences
-  aiPersonality: text("ai_personality").default("friendly"), // AI sidekick personality
-  provider: text("provider").default("local"), // local, google, facebook, linkedin
+  preferences: json("preferences"),
+  aiPersonality: text("ai_personality").default("friendly"),
+  provider: text("provider").default("local"),
   providerId: text("provider_id"),
   profileImageUrl: text("profile_image_url"),
   firstName: text("first_name"),
@@ -25,11 +25,11 @@ export const users = pgTable("users", {
   isBanned: boolean("is_banned").default(false),
   banReason: text("ban_reason"),
   bannedAt: timestamp("banned_at"),
-  bannedBy: integer("banned_by"), // Admin user ID who banned them
+  bannedBy: integer("banned_by"),
   isFlagged: boolean("is_flagged").default(false),
   flagReason: text("flag_reason"),
   flaggedAt: timestamp("flagged_at"),
-  flaggedBy: integer("flagged_by"), // Admin user ID who flagged them
+  flaggedBy: integer("flagged_by"),
   suspiciousActivityCount: integer("suspicious_activity_count").default(0),
   lastSuspiciousActivity: timestamp("last_suspicious_activity"),
   lastLoginAt: timestamp("last_login_at"),
@@ -37,10 +37,9 @@ export const users = pgTable("users", {
   emailVerificationToken: text("email_verification_token"),
   emailVerificationExpires: timestamp("email_verification_expires"),
   requiresEmailVerification: boolean("requires_email_verification").default(true),
-  // AI Prompt Usage Tracking
-  currentPlan: text("current_plan").default("free"), // free, pro, power
+  currentPlan: text("current_plan").default("free"),
   promptsUsedThisMonth: integer("prompts_used_this_month").default(0),
-  promptsRemaining: integer("prompts_remaining").default(100), // Free tier starts with 100
+  promptsRemaining: integer("prompts_remaining").default(100),
   storageUsedMB: integer("storage_used_mb").default(0),
   lastUsageReset: timestamp("last_usage_reset").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
@@ -58,10 +57,10 @@ export const journalEntries = pgTable("journal_entries", {
   fontSize: integer("font_size").default(16),
   textColor: text("text_color").default("#ffffff"),
   backgroundColor: text("background_color").default("#1e293b"),
-  drawings: json("drawings"), // JSON array of drawing data
-  photos: json("photos"), // JSON array of photo data with AI analysis
-  tags: json("tags"), // JSON array of extracted tags
-  aiInsights: json("ai_insights"), // JSON object with AI analysis
+  drawings: json("drawings"),
+  photos: json("photos"),
+  tags: json("tags"),
+  aiInsights: json("ai_insights"),
   isPrivate: boolean("is_private").default(false),
   location: text("location"),
   weather: text("weather"),
@@ -72,15 +71,15 @@ export const journalEntries = pgTable("journal_entries", {
 export const achievements = pgTable("achievements", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  achievementId: text("achievement_id").notNull(), // unique identifier for the achievement type
+  achievementId: text("achievement_id").notNull(),
   title: text("title").notNull(),
   description: text("description").notNull(),
   icon: text("icon").notNull(),
-  rarity: text("rarity").notNull(), // common, rare, epic, legendary
-  type: text("type").notNull(), // 'streak', 'writing', 'mood', etc.
-  targetValue: integer("target_value"), // what they need to achieve
-  currentValue: integer("current_value").default(0), // their current progress
-  unlockedAt: timestamp("unlocked_at"), // null if not unlocked yet
+  rarity: text("rarity").notNull(),
+  type: text("type").notNull(),
+  targetValue: integer("target_value"),
+  currentValue: integer("current_value").default(0),
+  unlockedAt: timestamp("unlocked_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -100,17 +99,17 @@ export const moodTrends = pgTable("mood_trends", {
   userId: integer("user_id").references(() => users.id).notNull(),
   date: timestamp("date").defaultNow().notNull(),
   mood: text("mood").notNull(),
-  value: integer("value").notNull(), // 1-5 scale
+  value: integer("value").notNull(),
 });
 
 export const goals = pgTable("goals", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  goalId: text("goal_id").notNull(), // unique identifier for the goal type
+  goalId: text("goal_id").notNull(),
   title: text("title").notNull(),
   description: text("description"),
-  type: text("type").notNull(), // "streak", "writing", "mood", etc.
-  difficulty: text("difficulty").notNull(), // beginner, intermediate, advanced
+  type: text("type").notNull(),
+  difficulty: text("difficulty").notNull(),
   targetValue: integer("target_value").notNull(),
   currentValue: integer("current_value").default(0),
   isCompleted: boolean("is_completed").default(false),
@@ -123,9 +122,9 @@ export const journalPrompts = pgTable("journal_prompts", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  category: text("category").notNull(), // "reflection", "gratitude", "creativity", "mindfulness"
-  difficulty: text("difficulty").notNull(), // "beginner", "intermediate", "advanced"
-  tags: json("tags").$type<string[]>().default([]),
+  category: text("category").notNull(),
+  difficulty: text("difficulty").notNull(),
+  tags: json("tags").default([]),
   isKidFriendly: boolean("is_kid_friendly").default(false),
 });
 
@@ -139,15 +138,14 @@ export const adminAnalytics = pgTable("admin_analytics", {
   date: timestamp("date").defaultNow().notNull(),
 });
 
-// Email blast system
 export const emailCampaigns = pgTable("email_campaigns", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   subject: text("subject").notNull(),
   content: text("content").notNull(),
   htmlContent: text("html_content"),
-  targetAudience: text("target_audience").default("all"), // all, active, inactive, role-based
-  status: text("status").default("draft"), // draft, scheduled, sending, sent, failed
+  targetAudience: text("target_audience").default("all"),
+  status: text("status").default("draft"),
   scheduledAt: timestamp("scheduled_at"),
   sentAt: timestamp("sent_at"),
   recipientCount: integer("recipient_count").default(0),
@@ -155,242 +153,153 @@ export const emailCampaigns = pgTable("email_campaigns", {
   clickRate: integer("click_rate").default(0),
   createdBy: integer("created_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Site configuration management
 export const siteSettings = pgTable("site_settings", {
   id: serial("id").primaryKey(),
   key: text("key").notNull().unique(),
-  value: text("value"),
-  type: text("type").default("string"), // string, number, boolean, json
-  description: text("description"),
-  updatedBy: integer("updated_by").references(() => users.id),
+  value: text("value").notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// User activity logs for admin monitoring
 export const userActivityLogs = pgTable("user_activity_logs", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  action: text("action").notNull(), // login, logout, entry_created, entry_updated, etc.
-  details: json("details"), // Additional context
+  userId: integer("user_id").references(() => users.id).notNull(),
+  action: text("action").notNull(),
+  details: json("details"),
   ipAddress: text("ip_address"),
   userAgent: text("user_agent"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Content moderation queue
 export const moderationQueue = pgTable("moderation_queue", {
   id: serial("id").primaryKey(),
-  contentType: text("content_type").notNull(), // journal_entry, user_profile, etc.
-  contentId: integer("content_id").notNull(),
-  reportedBy: integer("reported_by").references(() => users.id),
+  userId: integer("user_id").references(() => users.id),
+  contentId: integer("content_id"),
+  contentType: text("content_type").notNull(),
   reason: text("reason").notNull(),
-  status: text("status").default("pending"), // pending, approved, rejected
+  status: text("status").default("pending"),
   reviewedBy: integer("reviewed_by").references(() => users.id),
-  reviewedAt: timestamp("reviewed_at"),
+  action: text("action"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
+  reviewedAt: timestamp("reviewed_at"),
 });
 
-// System announcements
 export const announcements = pgTable("announcements", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  type: text("type").default("info"), // info, warning, success, error
-  targetAudience: text("target_audience").default("all"), // all, users, admins
+  icon: text("icon"),
+  type: text("type").default("info"),
+  priority: integer("priority").default(0),
   isActive: boolean("is_active").default(true),
-  expiresAt: timestamp("expires_at"),
   createdBy: integer("created_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// Support chat messages table
 export const supportMessages = pgTable("support_messages", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  subject: text("subject").notNull(),
   message: text("message").notNull(),
-  sender: varchar("sender", { length: 10 }).notNull(), // 'user' or 'admin'
-  attachmentUrl: varchar("attachment_url"),
-  attachmentType: varchar("attachment_type", { length: 20 }), // 'image' or 'video'
-  adminName: varchar("admin_name"),
-  isRead: boolean("is_read").default(false),
+  status: text("status").default("open"),
+  priority: text("priority").default("normal"),
+  assignedTo: integer("assigned_to").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// AI Prompt Purchases Table
 export const promptPurchases = pgTable("prompt_purchases", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  stripePaymentId: text("stripe_payment_id").notNull().unique(),
-  amount: integer("amount").notNull(), // amount in cents (299 for $2.99)
-  promptsAdded: integer("prompts_added").notNull(), // typically 100
-  status: text("status").default("completed"), // pending, completed, failed, refunded
+  quantity: integer("quantity").notNull(),
+  amount: integer("amount").notNull(),
+  currency: text("currency").default("USD"),
+  stripePaymentId: text("stripe_payment_id"),
+  status: text("status").default("completed"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Admin moderation actions tracking
-export const moderationActions = pgTable("moderation_actions", {
+export const weeklyChallenges = pgTable("weekly_challenges", {
   id: serial("id").primaryKey(),
-  targetUserId: integer("target_user_id").references(() => users.id).notNull(),
-  adminUserId: integer("admin_user_id").references(() => users.id).notNull(),
-  action: text("action").notNull(), // ban, unban, flag, unflag, delete, warn, reset_prompts
-  reason: text("reason").notNull(),
-  notes: text("notes"),
-  severity: text("severity").default("medium"), // low, medium, high, critical
-  expiresAt: timestamp("expires_at"), // for temporary bans
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Weekly Challenges for engagement
-export const weeklyChallenge = pgTable("weekly_challenges", {
-  id: serial("id").primaryKey(),
+  week: integer("week").notNull(),
+  year: integer("year").notNull(),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  icon: text("icon").notNull(),
-  difficulty: text("difficulty").notNull(), // easy, medium, hard
-  rewardXp: integer("reward_xp").default(100),
-  rewardAchievementId: text("reward_achievement_id"),
-  startDate: timestamp("start_date").defaultNow().notNull(),
-  endDate: timestamp("end_date").notNull(),
-  isActive: boolean("is_active").default(true),
+  goal: text("goal").notNull(),
+  reward: integer("reward").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// User Challenge Progress
 export const userChallengeProgress = pgTable("user_challenge_progress", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  challengeId: integer("challenge_id").references(() => weeklyChallenge.id).notNull(),
+  challengeId: integer("challenge_id").references(() => weeklyChallenges.id).notNull(),
   progress: integer("progress").default(0),
   isCompleted: boolean("is_completed").default(false),
   completedAt: timestamp("completed_at"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-// Email Reminder Preferences
-export const emailReminders = pgTable("email_reminders", {
+export const referrals = pgTable("referrals", {
+  id: serial("id").primaryKey(),
+  referrerId: integer("referrer_id").references(() => users.id).notNull(),
+  refereeId: integer("referee_id").references(() => users.id),
+  referralCode: text("referral_code").notNull().unique(),
+  status: text("status").default("pending"),
+  rewardGiven: boolean("reward_given").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+});
+
+export const notifications = pgTable("notifications", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id).notNull(),
-  type: text("type").notNull(), // daily, weekly, streak-warning
-  isEnabled: boolean("is_enabled").default(true),
-  frequency: text("frequency").default("daily"), // daily, weekly (day of week)
-  preferredTime: text("preferred_time").default("09:00"), // HH:MM format
-  lastSentDate: timestamp("last_sent_date"),
+  type: text("type").notNull(),
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  icon: text("icon"),
+  isRead: boolean("is_read").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Shared Journals Tables
+export const sharedJournals = pgTable("shared_journals", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  description: text("description"),
+  ownerId: integer("owner_id").references(() => users.id).notNull(),
+  icon: text("icon").default("📔"),
+  isPublic: boolean("is_public").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-// User Plan Configurations
-export const planLimits = {
-  free: {
-    name: "Free",
-    priceMonthly: 0,
-    priceYearly: 0,
-    storageLimitMB: 500,
-    promptLimit: 100,
-  },
-  pro: {
-    name: "Pro",
-    priceMonthly: 9.99,
-    priceYearly: 99, // 2 months free
-    storageLimitMB: 5000,
-    promptLimit: 500,
-  },
-  power: {
-    name: "Power",
-    priceMonthly: 19.99,
-    priceYearly: 199, // 2 months free
-    storageLimitMB: 10000,
-    promptLimit: 1000,
-  }
-};
-
-// Simple Zod schemas for form validation
-export const insertUserSchema = z.object({
-  email: z.string().email(),
-  username: z.string().min(1),
-  password: z.string().min(6).optional(),
+export const sharedJournalMembers = pgTable("shared_journal_members", {
+  id: serial("id").primaryKey(),
+  sharedJournalId: integer("shared_journal_id").references(() => sharedJournals.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  role: text("role").default("member"),
+  joinedAt: timestamp("joined_at").defaultNow(),
 });
 
-export const insertJournalEntrySchema = z.object({
-  title: z.string().min(1),
-  content: z.string().min(1),
-  mood: z.string().min(1),
-  fontFamily: z.string().optional(),
-  fontSize: z.number().optional(),
-  textColor: z.string().optional(),
-  backgroundColor: z.string().optional(),
-  isPrivate: z.boolean().optional(),
-  tags: z.array(z.string()).optional(),
-  photos: z.array(z.any()).optional(),
-  drawings: z.array(z.any()).optional(),
-  location: z.string().optional(),
-  weather: z.string().optional(),
+export const sharedJournalEntries = pgTable("shared_journal_entries", {
+  id: serial("id").primaryKey(),
+  sharedJournalId: integer("shared_journal_id").references(() => sharedJournals.id).notNull(),
+  journalEntryId: integer("journal_entry_id").references(() => journalEntries.id).notNull(),
+  sharedBy: integer("shared_by").references(() => users.id).notNull(),
+  sharedAt: timestamp("shared_at").defaultNow(),
 });
 
-export const insertAchievementSchema = z.object({
-  userId: z.number(),
-  achievementId: z.string(),
-  type: z.string().min(1),
-  title: z.string().min(1),
-  description: z.string().min(1),
-  icon: z.string().min(1),
-  rarity: z.string(),
-});
-
-export const insertGoalSchema = z.object({
-  userId: z.number(),
-  goalId: z.string(),
-  title: z.string().min(1),
-  description: z.string().optional(),
-  type: z.string().min(1),
-  difficulty: z.string(),
-  targetValue: z.number().min(1),
-  deadline: z.date().optional(),
-});
-
-export const insertJournalPromptSchema = z.object({
-  title: z.string().min(1),
-  content: z.string().min(1),
-  category: z.string().min(1),
-  difficulty: z.string().min(1),
-  tags: z.array(z.string()).optional(),
-  isKidFriendly: z.boolean().optional(),
-});
-
-export const insertWeeklyChallengeSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().min(1),
-  icon: z.string(),
-  difficulty: z.string(),
-  rewardXp: z.number().optional(),
-  rewardAchievementId: z.string().optional(),
-  endDate: z.date(),
-});
-
-export const insertEmailReminderSchema = z.object({
-  userId: z.number(),
-  type: z.string(),
-  isEnabled: z.boolean().optional(),
-  frequency: z.string().optional(),
-  preferredTime: z.string().optional(),
-});
-
+// Types
 export type User = typeof users.$inferSelect;
-export type InsertUser = z.infer<typeof insertUserSchema>;
 export type JournalEntry = typeof journalEntries.$inferSelect;
-export type InsertJournalEntry = z.infer<typeof insertJournalEntrySchema>;
 export type Achievement = typeof achievements.$inferSelect;
-export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
 export type UserStats = typeof userStats.$inferSelect;
 export type Goal = typeof goals.$inferSelect;
-export type InsertGoal = z.infer<typeof insertGoalSchema>;
 export type JournalPrompt = typeof journalPrompts.$inferSelect;
-export type InsertJournalPrompt = z.infer<typeof insertJournalPromptSchema>;
 export type MoodTrend = typeof moodTrends.$inferSelect;
 export type AdminAnalytics = typeof adminAnalytics.$inferSelect;
 export type EmailCampaign = typeof emailCampaigns.$inferSelect;
@@ -400,4 +309,34 @@ export type ModerationQueue = typeof moderationQueue.$inferSelect;
 export type Announcement = typeof announcements.$inferSelect;
 export type SupportMessage = typeof supportMessages.$inferSelect;
 export type PromptPurchase = typeof promptPurchases.$inferSelect;
-export type InsertPromptPurchase = typeof promptPurchases.$inferInsert;
+export type WeeklyChallenge = typeof weeklyChallenges.$inferSelect;
+export type UserChallengeProgress = typeof userChallengeProgress.$inferSelect;
+export type Referral = typeof referrals.$inferSelect;
+export type Notification = typeof notifications.$inferSelect;
+export type SharedJournal = typeof sharedJournals.$inferSelect;
+export type SharedJournalMember = typeof sharedJournalMembers.$inferSelect;
+export type SharedJournalEntry = typeof sharedJournalEntries.$inferSelect;
+
+// Insert schemas
+const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
+const insertJournalEntrySchema = createInsertSchema(journalEntries).omit({ id: true, createdAt: true, updatedAt: true });
+const insertAchievementSchema = createInsertSchema(achievements).omit({ id: true, createdAt: true });
+const insertGoalSchema = createInsertSchema(goals).omit({ id: true, createdAt: true });
+const insertJournalPromptSchema = createInsertSchema(journalPrompts).omit({ id: true });
+const insertPromptPurchaseSchema = createInsertSchema(promptPurchases).omit({ id: true, createdAt: true });
+const insertWeeklyChallengeSchema = createInsertSchema(weeklyChallenges).omit({ id: true, createdAt: true });
+const insertEmailReminderSchema = z.object({
+  userId: z.number(),
+  type: z.string(),
+  isEnabled: z.boolean().optional(),
+  frequency: z.string().optional(),
+  preferredTime: z.string().optional(),
+});
+
+export type InsertUser = z.infer<typeof insertUserSchema>;
+export type InsertJournalEntry = z.infer<typeof insertJournalEntrySchema>;
+export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
+export type InsertGoal = z.infer<typeof insertGoalSchema>;
+export type InsertJournalPrompt = z.infer<typeof insertJournalPromptSchema>;
+export type InsertPromptPurchase = z.infer<typeof insertPromptPurchaseSchema>;
+export type InsertWeeklyChallenge = z.infer<typeof insertWeeklyChallengeSchema>;

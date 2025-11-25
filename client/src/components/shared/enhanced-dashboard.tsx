@@ -18,6 +18,7 @@ import { VoiceJournal } from "../VoiceJournal";
 import { WeeklySummary } from "../WeeklySummary";
 import { AICoaching } from "../AICoaching";
 import { PDFExport } from "../PDFExport";
+import { SharedJournals } from "../SharedJournals";
 import { GlobalLeaderboard } from "../GlobalLeaderboard";
 
 // Lazy-loaded heavy tab components for code splitting

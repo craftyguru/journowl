@@ -4188,6 +4188,60 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Shared Journals API
+  app.post("/api/shared-journals/create", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { name, description, isPublic, icon } = req.body;
+
+      const sharedJournal = await storage.createSharedJournal?.({
+        name,
+        description,
+        ownerId: userId,
+        isPublic: isPublic || false,
+        icon: icon || "📔",
+      } as any);
+
+      res.json(sharedJournal);
+    } catch (error) {
+      console.error("Create shared journal error:", error);
+      res.status(500).json({ error: "Failed to create shared journal" });
+    }
+  });
+
+  app.get("/api/shared-journals", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const journals = await storage.getUserSharedJournals?.(userId) || [];
+      res.json(journals);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch shared journals" });
+    }
+  });
+
+  app.get("/api/shared-journals/:id", requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const journal = await storage.getSharedJournal?.(parseInt(id));
+      res.json(journal);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch shared journal" });
+    }
+  });
+
+  app.post("/api/shared-journals/:id/invite", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { id } = req.params;
+      const { email } = req.body;
+
+      await storage.inviteToSharedJournal?.(parseInt(id), userId, email);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send invite" });
+    }
+  });
+
   // Voice Journaling API
   app.post("/api/journal/voice", requireAuth, async (req: any, res) => {
     try {
