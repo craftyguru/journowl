@@ -170,7 +170,9 @@ function App() {
         <ThemeProvider>
           <TooltipProvider>
             <Toaster />
-            <PrivacyPolicy />
+            <Suspense fallback={<LoadingFallback />}>
+              <PrivacyPolicy />
+            </Suspense>
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
@@ -184,7 +186,9 @@ function App() {
         <ThemeProvider>
           <TooltipProvider>
             <Toaster />
-            <TermsOfService />
+            <Suspense fallback={<LoadingFallback />}>
+              <TermsOfService />
+            </Suspense>
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
@@ -198,7 +202,9 @@ function App() {
         <ThemeProvider>
           <TooltipProvider>
             <Toaster />
-            <FAQ />
+            <Suspense fallback={<LoadingFallback />}>
+              <FAQ />
+            </Suspense>
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
@@ -232,10 +238,12 @@ function App() {
           <TooltipProvider>
             <StarryBackground />
             <Toaster />
-            <EmailConfirmation 
-              email={urlParams.get('email') || undefined}
-              username={urlParams.get('username') || undefined}
-            />
+            <Suspense fallback={<LoadingFallback />}>
+              <EmailConfirmation 
+                email={urlParams.get('email') || undefined}
+                username={urlParams.get('username') || undefined}
+              />
+            </Suspense>
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
@@ -251,7 +259,9 @@ function App() {
           <TooltipProvider>
             <StarryBackground />
             <Toaster />
-            <EmailVerified />
+            <Suspense fallback={<LoadingFallback />}>
+              <EmailVerified />
+            </Suspense>
           </TooltipProvider>
         </ThemeProvider>
       </QueryClientProvider>
@@ -276,18 +286,20 @@ function App() {
                   ← Back to Home
                 </button>
               </div>
-              <AuthPage 
-                setShowAuth={() => setCurrentView("landing")} 
-                onRegistrationSuccess={(email, username) => {
-                  // Redirect to email confirmation page
-                  const params = new URLSearchParams();
-                  if (email) params.set('email', email);
-                  if (username) params.set('username', username);
-                  window.history.pushState({}, '', `/?${params.toString()}`);
-                  setCurrentView("email-confirmation");
-                }}
-                onAuthenticated={handleAuthenticated}
-              />
+              <Suspense fallback={<LoadingFallback />}>
+                <AuthPage 
+                  setShowAuth={() => setCurrentView("landing")} 
+                  onRegistrationSuccess={(email, username) => {
+                    // Redirect to email confirmation page
+                    const params = new URLSearchParams();
+                    if (email) params.set('email', email);
+                    if (username) params.set('username', username);
+                    window.history.pushState({}, '', `/?${params.toString()}`);
+                    setCurrentView("email-confirmation");
+                  }}
+                  onAuthenticated={handleAuthenticated}
+                />
+              </Suspense>
             </div>
 
           </TooltipProvider>
@@ -362,10 +374,12 @@ function App() {
                 </div>
                 
                 <main>
-                  {selectedAccount.type === "admin" && <AdminDashboard />}
-                  {selectedAccount.type === "user" && currentView === "dashboard" && <EnhancedDashboard />}
-                  {selectedAccount.type === "user" && currentView === "insights" && <InsightsPage />}
-                  {selectedAccount.type === "kid" && <KidDashboard />}
+                  <Suspense fallback={<LoadingFallback />}>
+                    {selectedAccount.type === "admin" && <AdminDashboard />}
+                    {selectedAccount.type === "user" && currentView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => {}} />}
+                    {selectedAccount.type === "user" && currentView === "insights" && <InsightsPage />}
+                    {selectedAccount.type === "kid" && <KidDashboard />}
+                  </Suspense>
                 </main>
               </div>
             </TooltipProvider>
@@ -443,7 +457,9 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
   if ((user as any)?.user?.role === 'admin' || (user as any)?.role === 'admin') {
     return (
       <div className="min-h-screen">
-        <AdminDashboard />
+        <Suspense fallback={<LoadingFallback />}>
+          <AdminDashboard />
+        </Suspense>
       </div>
     );
   }
@@ -456,15 +472,17 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
     <div className="min-h-screen bg-background">
       {!isKidMode && <Navbar currentView={validView} activeTab={activeTab} onNavigate={onNavigate} />}
       <main>
-        {isKidMode ? (
-          <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
-        ) : (
-          <>
-            {validView === "dashboard" && <EnhancedDashboard />}
-            {validView === "insights" && <InsightsPage />}
-            {validView === "referral" && <ReferralPage />}
-          </>
-        )}
+        <Suspense fallback={<LoadingFallback />}>
+          {isKidMode ? (
+            <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
+          ) : (
+            <>
+              {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} />}
+              {validView === "insights" && <InsightsPage />}
+              {validView === "referral" && <ReferralPage />}
+            </>
+          )}
+        </Suspense>
       </main>
 
       {/* PWA install functionality is now handled by PWAInstallButton in navbar */}
