@@ -77,6 +77,11 @@ function App() {
     const hasSeenOnboarding = localStorage.getItem("journowl_onboarding_seen");
     return !hasSeenOnboarding;
   });
+
+  const handleOnboardingComplete = () => {
+    localStorage.setItem("journowl_onboarding_seen", "true");
+    setShowOnboarding(false);
+  };
   
   const handleNavigate = (view: string) => {
     // Handle tab navigation within dashboard
