@@ -77,9 +77,9 @@ export function PricingPage() {
         planId,
         amount: planId === "pro" ? 999 : 1999,
       });
-      return res;
+      return res as any;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       if (data?.clientSecret) {
         toast({ title: "Redirecting to checkout..." });
         window.location.href = `/checkout?clientSecret=${data.clientSecret}`;

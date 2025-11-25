@@ -25,6 +25,7 @@ const SharePage = lazy(() => import("@/pages/SharePage"));
 const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy"));
 const TermsOfService = lazy(() => import("@/pages/terms"));
 const FAQ = lazy(() => import("@/components/shared/FAQ").then(m => ({ default: m.FAQ })));
+const PricingPage = lazy(() => import("@/pages/PricingPage").then(m => ({ default: m.PricingPage })));
 
 // Eager-loaded critical components
 import Navbar from "@/components/navbar";
@@ -43,11 +44,12 @@ const LoadingFallback = () => (
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq" | "pricing">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
     if (urlParams.get('email') && urlParams.get('username')) return 'email-confirmation';
+    if (window.location.pathname === '/pricing') return 'pricing';
     if (window.location.pathname === '/login' || window.location.pathname === '/signin' || window.location.pathname === '/auth') return 'auth';
     if (window.location.pathname === '/register' || window.location.pathname === '/signup') return 'auth';
     if (window.location.pathname === '/import') return 'import';
@@ -72,8 +74,8 @@ function App() {
     if (tabOptions.includes(view)) {
       setActiveTab(view);
       setCurrentView("dashboard");
-    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "faq") {
-      setCurrentView(view);
+    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "faq" || view === "pricing") {
+      setCurrentView(view as any);
       if (view === "dashboard") setActiveTab("journal");
     }
   };
@@ -204,6 +206,22 @@ function App() {
             <Toaster />
             <Suspense fallback={<LoadingFallback />}>
               <FAQ />
+            </Suspense>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  // Pricing page (no auth required)
+  if (currentView === "pricing") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Suspense fallback={<LoadingFallback />}>
+              <PricingPage />
             </Suspense>
           </TooltipProvider>
         </ThemeProvider>
