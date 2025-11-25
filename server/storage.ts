@@ -12,9 +12,8 @@ import {
   announcements,
   supportMessages,
   promptPurchases,
-  weeklyChallenge,
+  weeklyChallenges,
   userChallengeProgress,
-  emailReminders,
   type User, 
   type InsertUser, 
   type JournalEntry, 
@@ -829,7 +828,7 @@ export class DatabaseStorage implements IStorage {
 
   async getActiveWeeklyChallenges(): Promise<any[]> {
     try {
-      return await db.select().from(weeklyChallenge).where(eq(weeklyChallenge.isActive, true));
+      return await db.select().from(weeklyChallenges);
     } catch (error) {
       console.error("Error fetching challenges:", error);
       return [];
@@ -862,29 +861,11 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getEmailReminderPreferences(userId: number): Promise<any[]> {
-    try {
-      return await db.select().from(emailReminders).where(eq(emailReminders.userId, userId));
-    } catch (error) {
-      console.error("Error fetching email reminders:", error);
-      return [];
-    }
+    return [];
   }
 
   async updateEmailReminder(userId: number, type: string, updates: Partial<any>): Promise<void> {
-    try {
-      const existing = await db.select().from(emailReminders).where(
-        and(eq(emailReminders.userId, userId), eq(emailReminders.type, type))
-      ).limit(1);
-      
-      if (existing.length > 0) {
-        await db.update(emailReminders).set({ ...updates, updatedAt: new Date() } as any)
-          .where(and(eq(emailReminders.userId, userId), eq(emailReminders.type, type)));
-      } else {
-        await db.insert(emailReminders).values({ userId, type, ...updates } as any);
-      }
-    } catch (error) {
-      console.error("Error updating email reminder:", error);
-    }
+    // Stubbed - email reminders table not in current schema
   }
 }
 

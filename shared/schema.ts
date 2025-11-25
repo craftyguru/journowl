@@ -318,14 +318,14 @@ export type SharedJournalMember = typeof sharedJournalMembers.$inferSelect;
 export type SharedJournalEntry = typeof sharedJournalEntries.$inferSelect;
 
 // Insert schemas
-const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
-const insertJournalEntrySchema = createInsertSchema(journalEntries).omit({ id: true, createdAt: true, updatedAt: true });
-const insertAchievementSchema = createInsertSchema(achievements).omit({ id: true, createdAt: true });
-const insertGoalSchema = createInsertSchema(goals).omit({ id: true, createdAt: true });
-const insertJournalPromptSchema = createInsertSchema(journalPrompts).omit({ id: true });
-const insertPromptPurchaseSchema = createInsertSchema(promptPurchases).omit({ id: true, createdAt: true });
-const insertWeeklyChallengeSchema = createInsertSchema(weeklyChallenges).omit({ id: true, createdAt: true });
-const insertEmailReminderSchema = z.object({
+export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertJournalEntrySchema = createInsertSchema(journalEntries).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAchievementSchema = createInsertSchema(achievements).omit({ id: true, createdAt: true });
+export const insertGoalSchema = createInsertSchema(goals).omit({ id: true, createdAt: true });
+export const insertJournalPromptSchema = createInsertSchema(journalPrompts).omit({ id: true });
+export const insertPromptPurchaseSchema = createInsertSchema(promptPurchases).omit({ id: true, createdAt: true });
+export const insertWeeklyChallengeSchema = createInsertSchema(weeklyChallenges).omit({ id: true, createdAt: true });
+export const insertEmailReminderSchema = z.object({
   userId: z.number(),
   type: z.string(),
   isEnabled: z.boolean().optional(),

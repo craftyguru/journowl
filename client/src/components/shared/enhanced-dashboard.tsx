@@ -492,6 +492,13 @@ function EnhancedDashboard({
           </div>
         );
 
+      case 'shared':
+        return (
+          <Suspense fallback={<TabLoadingFallback />}>
+            <SharedJournals />
+          </Suspense>
+        );
+
       case 'referral':
         return (
           <div className="space-y-6">
