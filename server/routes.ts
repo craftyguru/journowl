@@ -4423,6 +4423,29 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Tournament endpoints
+  app.get("/api/tournaments/active", requireAuth, async (req: any, res) => {
+    try {
+      const { TournamentService } = await import("./tournamentService");
+      const tournaments = TournamentService.getActiveTournaments();
+      res.json(tournaments);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch tournaments" });
+    }
+  });
+
+  app.post("/api/tournaments/:id/join", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { id } = req.params;
+      const { TournamentService } = await import("./tournamentService");
+      const success = TournamentService.joinTournament(id, userId);
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to join tournament" });
+    }
+  });
+
   // Weather API
   app.get("/api/weather", requireAuth, async (req: any, res) => {
     try {

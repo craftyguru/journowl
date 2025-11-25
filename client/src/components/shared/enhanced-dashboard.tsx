@@ -25,6 +25,7 @@ import { GlobalLeaderboard } from "../GlobalLeaderboard";
 import { WeatherMoodPrompt } from "../WeatherMoodPrompt";
 import { AchievementBadges } from "../AchievementBadges";
 import { ReminderNotification } from "../ReminderNotification";
+import { TournamentsList } from "../TournamentsList";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -476,6 +477,9 @@ function EnhancedDashboard({
       case 'challenges':
         return (
           <div className="space-y-6">
+            <Suspense fallback={<TabLoadingFallback />}>
+              <TournamentsList />
+            </Suspense>
             <GlobalLeaderboard />
             <Suspense fallback={<TabLoadingFallback />}>
               <WeeklyChallengesCard 
