@@ -357,6 +357,7 @@ function EnhancedDashboard({
       case 'journal':
         return (
           <div className="space-y-6">
+            <VoiceJournal onEntryCreated={onJournalEntryCreated} />
             <Suspense fallback={<TabLoadingFallback />}>
               <InteractiveJournal 
                 onOpenSmartEditor={openSmartEditor}

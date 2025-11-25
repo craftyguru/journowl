@@ -3916,9 +3916,6 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
-  return httpServer;
-}
-
   // Voice Journaling API
   app.post("/api/journal/voice", requireAuth, async (req: any, res) => {
     try {
@@ -3970,3 +3967,6 @@ Your story shows how every day brings new experiences and emotions, creating the
       res.status(500).json({ error: "Failed to process voice entry" });
     }
   });
+
+  return httpServer;
+}
