@@ -25,6 +25,7 @@ import { setupOAuth, passport } from "./oauth";
 import Stripe from "stripe";
 import path from "path";
 import multer from "multer";
+import MemoryStore from "memorystore";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -84,21 +85,13 @@ declare module 'express-session' {
 const PgSession = ConnectPgSimple(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session middleware with PostgreSQL store - Use DATABASE_URL directly
-  const sessionDbUrl = (process.env.DATABASE_URL || '').replace(/^DATABASE_URL=/, '');
-  
-  // Use in-memory session store as fallback if DB connection fails
-  const sessionStore = sessionDbUrl 
-    ? new PgSession({
-        conString: sessionDbUrl,
-        tableName: 'session',
-        createTableIfMissing: true,
-        pruneSessionInterval: false
-      })
-    : new (require('memorystore'))(session);
+  // Session middleware - use memory store during development to avoid SSL issues
+  const Store = MemoryStore(session);
   
   app.use(session({
-    store: sessionStore,
+    store: new Store({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    }),
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
     resave: true, // Force session resave to ensure changes persist
     saveUninitialized: true, // Save new sessions immediately
