@@ -40,6 +40,11 @@ import { CoachingChat } from "../CoachingChat";
 import { Masterclass } from "../Masterclass";
 import { BuddySystem } from "../BuddySystem";
 import { EmotionHeatmap } from "../EmotionHeatmap";
+import { AccountabilityStreaks } from "../AccountabilityStreaks";
+import { DreamJournal } from "../DreamJournal";
+import { MoodForecast } from "../MoodForecast";
+import { TemplateLibrary } from "../TemplateLibrary";
+import { AnonConfessional } from "../AnonConfessional";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -537,6 +542,11 @@ function EnhancedDashboard({
             <Masterclass />
             <BuddySystem />
             <EmotionHeatmap />
+            <AccountabilityStreaks />
+            <DreamJournal />
+            <MoodForecast />
+            <TemplateLibrary />
+            <AnonConfessional />
           </div>
         );
 

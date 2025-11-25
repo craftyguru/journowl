@@ -4880,6 +4880,99 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Accountability Streak endpoints
+  app.get("/api/accountability/check-ins", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { AccountabilityStreakService } = await import("./accountabilityStreakService");
+      const checkIns = AccountabilityStreakService.getUserCheckIns(userId);
+      res.json(checkIns);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch check-ins" });
+    }
+  });
+
+  app.post("/api/accountability/check-in", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { journalWritten, reflection } = req.body;
+      const { AccountabilityStreakService } = await import("./accountabilityStreakService");
+      const checkIn = AccountabilityStreakService.createCheckIn(userId);
+      AccountabilityStreakService.getUserCheckIns(userId);
+      res.json({ success: true, streak: AccountabilityStreakService.getCurrentStreak(userId) });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create check-in" });
+    }
+  });
+
+  // Dream Journal endpoints
+  app.get("/api/dreams", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { DreamJournalService } = await import("./dreamJournalService");
+      const dreams = DreamJournalService.getUserDreams(userId);
+      res.json(dreams);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch dreams" });
+    }
+  });
+
+  app.get("/api/dreams/analysis", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { DreamJournalService } = await import("./dreamJournalService");
+      const analysis = await DreamJournalService.getDreamAnalysis(userId);
+      res.json(analysis);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch dream analysis" });
+    }
+  });
+
+  // Mood Forecast endpoint
+  app.get("/api/mood/forecast", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { MoodForecastService } = await import("./moodForecastService");
+      const forecast = await MoodForecastService.forecastMood(userId, 7);
+      res.json(forecast);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch mood forecast" });
+    }
+  });
+
+  // Template Library endpoint
+  app.get("/api/templates", requireAuth, async (req: any, res) => {
+    try {
+      const { TemplateLibraryService } = await import("./templateLibraryService");
+      const templates = TemplateLibraryService.getAllTemplates();
+      res.json(templates);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch templates" });
+    }
+  });
+
+  // Anonymous Confessional endpoints
+  app.get("/api/anon-posts", requireAuth, async (req: any, res) => {
+    try {
+      const { AnonConfessionalService } = await import("./anonConfessionalService");
+      const posts = AnonConfessionalService.getAllPosts();
+      res.json(posts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch posts" });
+    }
+  });
+
+  app.post("/api/anon-posts", requireAuth, async (req: any, res) => {
+    try {
+      const { content, mood, category } = req.body;
+      const { AnonConfessionalService } = await import("./anonConfessionalService");
+      const post = AnonConfessionalService.createPost(content, mood, category);
+      res.json(post);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create post" });
+    }
+  });
+
   // Weather API
   app.get("/api/weather", requireAuth, async (req: any, res) => {
     try {
