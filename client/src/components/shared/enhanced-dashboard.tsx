@@ -23,6 +23,7 @@ import { ExtendedSummaries } from "../ExtendedSummaries";
 import { SocialFeed } from "../SocialFeed";
 import { GlobalLeaderboard } from "../GlobalLeaderboard";
 import { WeatherMoodPrompt } from "../WeatherMoodPrompt";
+import { AchievementBadges } from "../AchievementBadges";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -421,7 +422,7 @@ function EnhancedDashboard({
       case 'achievements':
         return (
           <Suspense fallback={<TabLoadingFallback />}>
-            <AchievementsSection achievements={processedAchievements} />
+            <AchievementBadges />
           </Suspense>
         );
 

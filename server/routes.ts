@@ -1116,11 +1116,32 @@ Be warm and reflective.`;
     }
   });
 
+  // Achievement Stats endpoint
+  app.get("/api/achievements/stats", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const stats = await storage.getUserStats(userId);
+      const { AchievementService } = await import("./achievementService");
+      const levelStats = AchievementService.getAchievementStats(stats?.totalEntries || 0);
+      res.json(levelStats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch achievement stats" });
+    }
+  });
+
   // Achievements endpoint
   app.get("/api/achievements", requireAuth, async (req: any, res) => {
     try {
-      const achievements = await storage.getUserAchievements(req.session.userId);
-      res.json({ achievements });
+      const userId = req.session.userId;
+      const stats = await storage.getUserStats(userId);
+      const { AchievementService } = await import("./achievementService");
+      const achievements = AchievementService.checkAchievements(
+        stats?.totalEntries || 0,
+        stats?.totalWords || 0,
+        stats?.currentStreak || 0,
+        stats?.followerCount || 0
+      );
+      res.json(achievements);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
