@@ -106,6 +106,15 @@ export interface IStorage {
 
   getUserByReferralCode(referralCode: string): Promise<User | undefined>;
   addUserPrompts(userId: number, promptsToAdd: number): Promise<void>;
+
+  // Weekly Challenges
+  getActiveWeeklyChallenges(): Promise<any[]>;
+  getUserChallengeProgress(userId: number, challengeId: number): Promise<any | undefined>;
+  updateChallengeProgress(userId: number, challengeId: number, progress: number, isCompleted: boolean): Promise<void>;
+
+  // Email Reminders
+  getEmailReminderPreferences(userId: number): Promise<any[]>;
+  updateEmailReminder(userId: number, type: string, updates: Partial<any>): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -813,6 +822,71 @@ export class DatabaseStorage implements IStorage {
 
     const newPrompts = (user.promptsRemaining || 0) + promptsToAdd;
     await db.update(users).set({ promptsRemaining: newPrompts } as any).where(eq(users.id, userId));
+  }
+
+  async getActiveWeeklyChallenges(): Promise<any[]> {
+    try {
+      const { weeklyChallenge } = await import("@shared/schema");
+      return await db.select().from(weeklyChallenge).where(eq(weeklyChallenge.isActive, true));
+    } catch (error) {
+      console.error("Error fetching challenges:", error);
+      return [];
+    }
+  }
+
+  async getUserChallengeProgress(userId: number, challengeId: number): Promise<any | undefined> {
+    try {
+      const { userChallengeProgress } = await import("@shared/schema");
+      const result = await db.select().from(userChallengeProgress).where(
+        (c: any) => eq(c.userId, userId) && eq(c.challengeId, challengeId)
+      ).limit(1);
+      return result[0];
+    } catch (error) {
+      return undefined;
+    }
+  }
+
+  async updateChallengeProgress(userId: number, challengeId: number, progress: number, isCompleted: boolean): Promise<void> {
+    try {
+      const { userChallengeProgress } = await import("@shared/schema");
+      const existing = await this.getUserChallengeProgress(userId, challengeId);
+      if (existing) {
+        await db.update(userChallengeProgress).set({ progress, isCompleted, completedAt: isCompleted ? new Date() : null } as any)
+          .where((c: any) => eq(c.userId, userId) && eq(c.challengeId, challengeId));
+      } else {
+        await db.insert(userChallengeProgress).values({ userId, challengeId, progress, isCompleted, completedAt: isCompleted ? new Date() : null } as any);
+      }
+    } catch (error) {
+      console.error("Error updating challenge progress:", error);
+    }
+  }
+
+  async getEmailReminderPreferences(userId: number): Promise<any[]> {
+    try {
+      const { emailReminders } = await import("@shared/schema");
+      return await db.select().from(emailReminders).where(eq(emailReminders.userId, userId));
+    } catch (error) {
+      console.error("Error fetching email reminders:", error);
+      return [];
+    }
+  }
+
+  async updateEmailReminder(userId: number, type: string, updates: Partial<any>): Promise<void> {
+    try {
+      const { emailReminders } = await import("@shared/schema");
+      const existing = await db.select().from(emailReminders).where(
+        (r: any) => eq(r.userId, userId) && eq(r.type, type)
+      ).limit(1);
+      
+      if (existing.length > 0) {
+        await db.update(emailReminders).set({ ...updates, updatedAt: new Date() } as any)
+          .where((r: any) => eq(r.userId, userId) && eq(r.type, type));
+      } else {
+        await db.insert(emailReminders).values({ userId, type, ...updates } as any);
+      }
+    } catch (error) {
+      console.error("Error updating email reminder:", error);
+    }
   }
 }
 
