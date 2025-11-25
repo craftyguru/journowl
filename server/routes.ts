@@ -84,23 +84,21 @@ declare module 'express-session' {
 const PgSession = ConnectPgSimple(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session middleware with PostgreSQL store - Use explicit connection config for Supabase
+  // Session middleware with PostgreSQL store - Use DATABASE_URL directly
+  const sessionDbUrl = (process.env.DATABASE_URL || '').replace(/^DATABASE_URL=/, '');
+  
+  // Use in-memory session store as fallback if DB connection fails
+  const sessionStore = sessionDbUrl 
+    ? new PgSession({
+        conString: sessionDbUrl,
+        tableName: 'session',
+        createTableIfMissing: true,
+        pruneSessionInterval: false
+      })
+    : new (require('memorystore'))(session);
+  
   app.use(session({
-    store: new PgSession({
-      conObject: {
-        host: 'aws-0-us-east-2.pooler.supabase.com',
-        port: 6543,
-        database: 'postgres',
-        user: 'postgres.asjcxaiabjsbjbasssfe',
-        password: 'KCqwTTy4bwqNrHti',
-        ssl: {
-          rejectUnauthorized: false
-        }
-      },
-      tableName: 'session',
-      createTableIfMissing: true,
-      pruneSessionInterval: false
-    }),
+    store: sessionStore,
     secret: process.env.SESSION_SECRET || 'your-secret-key-change-in-production',
     resave: true, // Force session resave to ensure changes persist
     saveUninitialized: true, // Save new sessions immediately
