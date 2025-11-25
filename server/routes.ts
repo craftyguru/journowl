@@ -4264,6 +4264,50 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Referral endpoints
+  app.get("/api/referrals/code", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { ReferralService } = await import("./referralService");
+      const code = ReferralService.generateReferralCode(userId);
+      res.json({ code });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate referral code" });
+    }
+  });
+
+  app.get("/api/referrals/stats", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { ReferralService } = await import("./referralService");
+      const stats = ReferralService.getStats(userId);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch referral stats" });
+    }
+  });
+
+  app.post("/api/referrals/redeem", async (req: any, res) => {
+    try {
+      const { code, newUserId } = req.body;
+      if (!code || !newUserId) {
+        return res.status(400).json({ error: "Missing code or userId" });
+      }
+
+      const { ReferralService } = await import("./referralService");
+      const referrerId = ReferralService.getReferralByCode(code);
+
+      if (!referrerId) {
+        return res.status(404).json({ error: "Invalid referral code" });
+      }
+
+      const referral = ReferralService.createReferral(referrerId, newUserId, code);
+      res.json({ success: true, bonus: 50, referral });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to redeem referral" });
+    }
+  });
+
   app.post("/api/notifications/send-email", requireAuth, async (req: any, res) => {
     try {
       const userId = req.session.userId;

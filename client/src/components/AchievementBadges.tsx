@@ -86,11 +86,11 @@ export function AchievementBadges() {
       <Card className="bg-white/5 border-white/10 p-6">
         <Tabs defaultValue="milestone" className="w-full">
           <TabsList className="grid w-full grid-cols-5 bg-white/10 border border-white/20">
-            <TabsTrigger value="milestone" size="sm" className="text-xs" data-testid="tab-milestone">🎯</TabsTrigger>
-            <TabsTrigger value="streak" size="sm" className="text-xs" data-testid="tab-streak">🔥</TabsTrigger>
-            <TabsTrigger value="writing" size="sm" className="text-xs" data-testid="tab-writing">📖</TabsTrigger>
-            <TabsTrigger value="social" size="sm" className="text-xs" data-testid="tab-social">👥</TabsTrigger>
-            <TabsTrigger value="consistency" size="sm" className="text-xs" data-testid="tab-consistency">⭐</TabsTrigger>
+            <TabsTrigger value="milestone" className="text-xs" data-testid="tab-milestone">🎯</TabsTrigger>
+            <TabsTrigger value="streak" className="text-xs" data-testid="tab-streak">🔥</TabsTrigger>
+            <TabsTrigger value="writing" className="text-xs" data-testid="tab-writing">📖</TabsTrigger>
+            <TabsTrigger value="social" className="text-xs" data-testid="tab-social">👥</TabsTrigger>
+            <TabsTrigger value="consistency" className="text-xs" data-testid="tab-consistency">⭐</TabsTrigger>
           </TabsList>
 
           {categories.map((category) => (
