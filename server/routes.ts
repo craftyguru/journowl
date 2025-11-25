@@ -3817,17 +3817,47 @@ Your story shows how every day brings new experiences and emotions, creating the
     return moodScores[mood.toLowerCase()] || 3;
   }
 
-  // Leaderboard API
-  app.get("/api/leaderboard/challenges", requireAuth, async (req: any, res) => {
+  // Global Leaderboards API
+  app.get("/api/leaderboard/weekly", requireAuth, async (req: any, res) => {
     try {
-      const leaderboard = [
-        { userId: 1, username: 'Scholar', score: 950, avatar: '🧠' },
-        { userId: 2, username: 'Writer', score: 850, avatar: '✍️' },
-        { userId: 3, username: 'Thinker', score: 750, avatar: '💭' }
-      ];
+      const { LeaderboardService } = await import("./leaderboardService");
+      const leaderboard = await LeaderboardService.getWeeklyLeaderboard(storage);
       res.json(leaderboard);
     } catch (error) {
-      console.error("Error fetching leaderboard:", error);
+      console.error("Error fetching weekly leaderboard:", error);
+      res.json([]);
+    }
+  });
+
+  app.get("/api/leaderboard/all-time", requireAuth, async (req: any, res) => {
+    try {
+      const { LeaderboardService } = await import("./leaderboardService");
+      const leaderboard = await LeaderboardService.getAllTimeLeaderboard(storage);
+      res.json(leaderboard);
+    } catch (error) {
+      console.error("Error fetching all-time leaderboard:", error);
+      res.json([]);
+    }
+  });
+
+  app.get("/api/leaderboard/streaks", requireAuth, async (req: any, res) => {
+    try {
+      const { LeaderboardService } = await import("./leaderboardService");
+      const leaderboard = await LeaderboardService.getStreakLeaderboard(storage);
+      res.json(leaderboard);
+    } catch (error) {
+      console.error("Error fetching streak leaderboard:", error);
+      res.json([]);
+    }
+  });
+
+  app.get("/api/leaderboard/words", requireAuth, async (req: any, res) => {
+    try {
+      const { LeaderboardService } = await import("./leaderboardService");
+      const leaderboard = await LeaderboardService.getWordsLeaderboard(storage);
+      res.json(leaderboard);
+    } catch (error) {
+      console.error("Error fetching words leaderboard:", error);
       res.json([]);
     }
   });

@@ -15,6 +15,7 @@ import { NewGoalForm, GoalDetailsView, EditGoalForm } from "../dashboard/GoalCom
 import { TypewriterTitle } from "../dashboard/TypewriterComponents";
 import { VoiceJournal } from "../VoiceJournal";
 import { WeeklySummary } from "../WeeklySummary";
+import { GlobalLeaderboard } from "../GlobalLeaderboard";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -442,13 +443,13 @@ function EnhancedDashboard({
       case 'challenges':
         return (
           <div className="space-y-6">
+            <GlobalLeaderboard />
             <Suspense fallback={<TabLoadingFallback />}>
               <WeeklyChallengesCard 
                 challenges={challenges} 
                 onChallengeClick={(challenge) => console.log('Challenge clicked:', challenge)}
               />
               <MoodTrendsChart data={moodTrends} />
-              <ChallengeLeaderboard />
               <AchievementBadges />
               <EmailRemindersPanel />
             </Suspense>
