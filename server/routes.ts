@@ -2385,7 +2385,7 @@ Your story shows how every day brings new experiences and emotions, creating the
           .where(and(
             gte(journalEntries.createdAt, today),
             lt(journalEntries.createdAt, tomorrow)
-          )).then(result => parseInt(result[0]?.count) || 0),
+          )).then(result => parseInt(String(result[0]?.count)) || 0),
         
         // AI prompts used today - simplified count
         Promise.resolve(Math.floor(Math.random() * 50) + 10), // Placeholder until activity logs are properly populated
@@ -2395,7 +2395,7 @@ Your story shows how every day brings new experiences and emotions, creating the
           .where(and(
             gte(users.lastLoginAt, today),
             lt(users.lastLoginAt, tomorrow)
-          )).then(result => parseInt(result[0]?.count) || 0),
+          )).then(result => parseInt(String(result[0]?.count)) || 0),
         
         // Total users
         storage.getAllUsers().then(users => users.length),
@@ -2409,24 +2409,24 @@ Your story shows how every day brings new experiences and emotions, creating the
         // Power users (users with >50 XP)
         db.select({ count: sql`count(*)` }).from(users)
           .where(gte(users.xp, 50))
-          .then(result => parseInt(result[0]?.count) || 0),
+          .then(result => parseInt(String(result[0]?.count)) || 0),
         
         // Regular users (users with 10-50 XP)
         db.select({ count: sql`count(*)` }).from(users)
           .where(and(gte(users.xp, 10), lt(users.xp, 50)))
-          .then(result => parseInt(result[0]?.count) || 0),
+          .then(result => parseInt(String(result[0]?.count)) || 0),
         
         // New users (created in last 7 days)
         db.select({ count: sql`count(*)` }).from(users)
           .where(gte(users.createdAt, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)))
-          .then(result => parseInt(result[0]?.count) || 0),
+          .then(result => parseInt(String(result[0]?.count)) || 0),
         
         // Inactive users (no login in last 30 days or never logged in)
         db.select({ count: sql`count(*)` }).from(users)
           .where(or(
             isNull(users.lastLoginAt),
             lt(users.lastLoginAt, new Date(Date.now() - 30 * 24 * 60 * 60 * 1000))
-          )).then(result => parseInt(result[0]?.count) || 0)
+          )).then(result => parseInt(String(result[0]?.count)) || 0)
       ]);
 
       // Calculate real growth metrics

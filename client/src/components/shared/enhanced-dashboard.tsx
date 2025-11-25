@@ -18,6 +18,8 @@ import { CalendarSection } from "../dashboard/CalendarSection";
 import { CameraCapture } from "../dashboard/CameraCapture";
 import { NewGoalForm, GoalDetailsView, EditGoalForm } from "../dashboard/GoalComponents";
 import { TypewriterTitle } from "../dashboard/TypewriterComponents";
+import { WeeklyChallengesCard } from "../dashboard/WeeklyChallengesCard";
+import { MoodTrendsChart } from "../dashboard/MoodTrendsChart";
 
 // Import hooks and data
 import { useDashboardData } from "@/hooks/useDashboardData";
