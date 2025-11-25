@@ -14,6 +14,9 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { apiRequest } from "@/lib/queryClient";
 import { ReactSketchCanvas } from "react-sketch-canvas";
 import UsageMeters from "@/components/UsageMeters";
+import { AIStoryMaker } from "@/components/kid-dashboard/AIStoryMaker";
+import { KidAchievements } from "@/components/kid-dashboard/KidAchievements";
+import { KidGoals } from "@/components/kid-dashboard/KidGoals";
 
 // Web Speech API types
 declare global {
@@ -1595,190 +1598,12 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
 
           {/* Achievements Tab */}
           <TabsContent value="achievements" className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Card className="bg-white shadow-lg border-2 border-amber-200">
-                <CardHeader className="bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-t-lg">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Trophy className="w-6 h-6" />
-                    My Awesome Badges!
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {achievements.slice(0, showAllAchievements ? achievements.length : 6).map((achievement, index) => (
-                      <motion.div
-                        key={achievement.id}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.5 + index * 0.1 }}
-                        className={`p-4 rounded-lg text-center transition-all cursor-pointer ${
-                          achievement.unlocked
-                            ? 'bg-gradient-to-br from-amber-100 to-amber-200 border-2 border-amber-300 shadow-md hover:shadow-lg'
-                            : 'bg-gray-100 border-2 border-gray-200 opacity-60'
-                        }`}
-                      >
-                        <div className={`text-3xl mb-2 ${achievement.unlocked ? '' : 'grayscale'}`}>
-                          {achievement.icon}
-                        </div>
-                        <h4 className={`font-semibold text-sm ${achievement.unlocked ? 'text-amber-800' : 'text-gray-500'}`}>
-                          {achievement.title}
-                        </h4>
-                        <p className={`text-xs mt-1 ${achievement.unlocked ? 'text-amber-600' : 'text-gray-400'}`}>
-                          {achievement.description}
-                        </p>
-                        <div className="mt-2">
-                          {achievement.unlocked ? (
-                            <Badge className="bg-amber-500 text-white text-xs">Unlocked! 🎉</Badge>
-                          ) : (
-                            <div className="space-y-1">
-                              <div className="flex justify-between text-xs">
-                                <span className="text-gray-600">{achievement.currentProgress}/{achievement.targetValue}</span>
-                                <span className="text-gray-600">{achievement.progressPercentage}%</span>
-                              </div>
-                              <div className="w-full bg-gray-200 rounded-full h-1.5">
-                                <div 
-                                  className="bg-gradient-to-r from-amber-400 to-orange-400 h-1.5 rounded-full transition-all"
-                                  style={{ width: `${achievement.progressPercentage}%` }}
-                                ></div>
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                  {achievements.length > 6 && (
-                    <div className="text-center mt-6">
-                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                        <Button
-                          onClick={() => setShowAllAchievements(!showAllAchievements)}
-                          className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-2 px-6 rounded-xl shadow-lg"
-                        >
-                          {showAllAchievements ? "Show Less 🔼" : "Show More Badges! 🔽"}
-                        </Button>
-                      </motion.div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </motion.div>
+            <KidAchievements achievements={achievements} />
           </TabsContent>
 
           {/* Goals Tab */}
           <TabsContent value="goals" className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-            >
-              <Card className="bg-white shadow-lg border-2 border-emerald-200">
-                <CardHeader className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-t-lg">
-                  <CardTitle className="flex items-center gap-2 text-xl">
-                    <Target className="w-6 h-6" />
-                    My Amazing Goals!
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {goals.map((goal, index) => {
-                      // Calculate REAL progress based on actual user stats
-                      let actualCurrentValue = 0;
-                      let actualTargetValue = (goal as any).targetValue || 100;
-
-                      // Map goals to real user stats
-                      switch (goal.title) {
-                        case 'Getting Started':
-                        case 'First Steps':
-                          actualCurrentValue = Math.min(stats.totalEntries || 0, actualTargetValue);
-                          break;
-                        case 'Early Bird':
-                          actualCurrentValue = Math.min(stats.currentStreak || 0, actualTargetValue);
-                          break;
-                        case 'Word Explorer':
-                        case 'Word Warrior':
-                        case 'Prolific Writer':
-                          actualCurrentValue = Math.min(stats.totalWords || 0, actualTargetValue);
-                          break;
-                        case 'Week Warrior':
-                        case 'Dedicated Writer':
-                        case 'Monthly Habit':
-                        case 'Three Week Wonder':
-                        case 'Monthly Master':
-                          actualCurrentValue = Math.min(stats.currentStreak || 0, actualTargetValue);
-                          break;
-                        case 'Momentum Builder':
-                          actualCurrentValue = Math.min(stats.totalEntries || 0, actualTargetValue);
-                          break;
-                        case 'Night Owl':
-                          // Count entries written after 6 PM (would need timestamp analysis)
-                          actualCurrentValue = Math.floor((stats.totalEntries || 0) * 0.3); // Estimate
-                          break;
-                        case 'Story Teller':
-                          actualCurrentValue = Math.min(stats.totalWords || 0, actualTargetValue);
-                          break;
-                        case 'Novelist Dreams':
-                          actualCurrentValue = Math.min(stats.totalWords || 0, actualTargetValue);
-                          break;
-                        case 'Quarter Master':
-                          actualCurrentValue = Math.min(stats.currentStreak || 0, actualTargetValue);
-                          break;
-                        default:
-                          // Fallback to entries for unknown goals
-                          actualCurrentValue = Math.min(stats.totalEntries || 0, actualTargetValue);
-                      }
-
-                      const progressPercentage = actualTargetValue > 0 ? Math.min(100, Math.round((actualCurrentValue / actualTargetValue) * 100)) : 0;
-                      const isCompleted = progressPercentage >= 100;
-                      
-                      return (
-                        <motion.div
-                          key={goal.id}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.1 + index * 0.05 }}
-                          className={`p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                            isCompleted
-                              ? 'bg-gradient-to-br from-emerald-100 to-teal-100 border-emerald-300 shadow-md hover:shadow-lg'
-                              : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 hover:border-emerald-200'
-                          }`}
-                        >
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="text-2xl">{isCompleted ? '🎯' : '⭐'}</span>
-                            <h4 className={`font-semibold text-sm ${isCompleted ? 'text-emerald-800' : 'text-gray-700'}`}>
-                              {goal.title}
-                            </h4>
-                          </div>
-                          <p className={`text-xs mb-3 ${isCompleted ? 'text-emerald-600' : 'text-gray-500'}`}>
-                            {goal.description}
-                          </p>
-                          <div className="space-y-2">
-                            <div className="flex justify-between text-xs">
-                              <span className="font-medium">{actualCurrentValue}/{actualTargetValue}</span>
-                              <span className={`font-bold ${isCompleted ? 'text-emerald-600' : 'text-gray-600'}`}>
-                                {progressPercentage}%
-                              </span>
-                            </div>
-                            <Progress 
-                              value={progressPercentage} 
-                              className={`h-2 ${isCompleted ? 'bg-emerald-100' : 'bg-gray-100'}`}
-                            />
-                            {isCompleted && (
-                              <Badge className="w-full justify-center bg-emerald-500 text-white text-xs">
-                                🎉 Goal Completed!
-                              </Badge>
-                            )}
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <KidGoals goals={goals} stats={stats} />
           </TabsContent>
 
           {/* AI Story Maker Tab */}
@@ -3125,7 +2950,5 @@ function KidDashboard({ onSwitchToAdult }: KidDashboardProps) {
   );
 }
 
-import { AIStoryMaker } from "@/components/kid-dashboard/AIStoryMaker";
-
 export default KidDashboard;
-export { AIStoryMaker };
+export { AIStoryMaker, KidAchievements, KidGoals };
