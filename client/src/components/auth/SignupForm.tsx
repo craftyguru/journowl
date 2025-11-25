@@ -1,0 +1,178 @@
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+interface SignupFormProps {
+  registerData: { email: string; username: string; password: string; confirmPassword: string };
+  setRegisterData: (data: any) => void;
+  onSubmit: (e: React.FormEvent) => void;
+  isLoading: boolean;
+  hasAgreedToTerms: boolean;
+  captchaToken: string;
+}
+
+export const SignupForm = ({ 
+  registerData, 
+  setRegisterData, 
+  onSubmit, 
+  isLoading,
+  hasAgreedToTerms,
+  captchaToken
+}: SignupFormProps) => {
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!registerData.email || !registerData.username || !registerData.password || !registerData.confirmPassword) {
+      toast({
+        title: "Missing information",
+        description: "Please fill in all fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (registerData.password !== registerData.confirmPassword) {
+      toast({
+        title: "Password mismatch",
+        description: "Passwords do not match. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    if (registerData.password.length < 8) {
+      toast({
+        title: "Password too weak",
+        description: "Password must be at least 8 characters long and contain letters and numbers.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const hasLetter = /[a-zA-Z]/.test(registerData.password);
+    const hasNumber = /\d/.test(registerData.password);
+    
+    if (!hasLetter || !hasNumber) {
+      toast({
+        title: "Password too weak",
+        description: "Password must contain both letters and numbers for security.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    onSubmit(e);
+  };
+
+  return (
+    <motion.form
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.2 }}
+      onSubmit={handleSubmit} 
+      className="space-y-4"
+    >
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3, duration: 0.5 }}
+      >
+        <Label htmlFor="register-email" className="text-gray-300 font-medium">Email</Label>
+        <Input
+          id="register-email"
+          type="email"
+          value={registerData.email}
+          onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
+          placeholder="Enter your email"
+          className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+          autoComplete="email"
+        />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+      >
+        <Label htmlFor="register-username" className="text-gray-300 font-medium">Username</Label>
+        <Input
+          id="register-username"
+          type="text"
+          value={registerData.username}
+          onChange={(e) => setRegisterData({ ...registerData, username: e.target.value })}
+          placeholder="Choose a username"
+          className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+          autoComplete="username"
+        />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+      >
+        <Label htmlFor="register-password" className="text-gray-300 font-medium">Password</Label>
+        <Input
+          id="register-password"
+          type="password"
+          value={registerData.password}
+          onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+          placeholder="Create a password"
+          className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+          autoComplete="new-password"
+        />
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.6, duration: 0.5 }}
+      >
+        <Label htmlFor="register-confirm-password" className="text-gray-300 font-medium">Confirm Password</Label>
+        <Input
+          id="register-confirm-password"
+          type="password"
+          value={registerData.confirmPassword}
+          onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+          placeholder="Confirm your password"
+          className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 hover:bg-white/10"
+          autoComplete="new-password"
+        />
+      </motion.div>
+      <Button 
+        type="submit" 
+        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300"
+        disabled={isLoading}
+      >
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            Creating account...
+          </div>
+        ) : (
+          "Create Account & Begin"
+        )}
+      </Button>
+
+      {/* Security indicators */}
+      {hasAgreedToTerms && (
+        <div className="flex items-center gap-2 text-green-400 text-sm">
+          <CheckCircle className="w-4 h-4" />
+          Terms of Service accepted
+        </div>
+      )}
+      {captchaToken && (
+        <div className="flex items-center gap-2 text-green-400 text-sm">
+          <CheckCircle className="w-4 h-4" />
+          Security verification complete
+        </div>
+      )}
+      
+      <p className="text-xs text-gray-400 text-center mt-2">
+        Password must be at least 8 characters with letters and numbers
+      </p>
+    </motion.form>
+  );
+};
