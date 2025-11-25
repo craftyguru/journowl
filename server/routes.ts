@@ -4503,6 +4503,50 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Feature toggle endpoints
+  app.get("/api/admin/feature-toggles", requireAdmin, async (req: any, res) => {
+    try {
+      const { AdminControlsService } = await import("./adminControlsService");
+      const toggles = AdminControlsService.getFeatureToggles();
+      res.json(toggles);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch feature toggles" });
+    }
+  });
+
+  app.post("/api/admin/feature-toggles/update", requireAdmin, async (req: any, res) => {
+    try {
+      const { name, enabled, segment, rollout } = req.body;
+      const { AdminControlsService } = await import("./adminControlsService");
+      const toggle = AdminControlsService.toggleFeature(name, enabled, segment, rollout);
+      res.json(toggle);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update feature toggle" });
+    }
+  });
+
+  // System alerts endpoints
+  app.get("/api/admin/system-alerts", requireAdmin, async (req: any, res) => {
+    try {
+      const { AdminControlsService } = await import("./adminControlsService");
+      const alerts = AdminControlsService.getRecentAlerts(10);
+      res.json(alerts);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch system alerts" });
+    }
+  });
+
+  app.post("/api/admin/system-alerts/:id/resolve", requireAdmin, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { AdminControlsService } = await import("./adminControlsService");
+      const resolved = AdminControlsService.resolveAlert(id);
+      res.json({ resolved });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to resolve alert" });
+    }
+  });
+
   // Weather API
   app.get("/api/weather", requireAuth, async (req: any, res) => {
     try {
