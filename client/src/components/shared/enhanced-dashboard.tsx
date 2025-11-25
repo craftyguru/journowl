@@ -22,6 +22,7 @@ import { SharedJournals } from "../SharedJournals";
 import { ExtendedSummaries } from "../ExtendedSummaries";
 import { SocialFeed } from "../SocialFeed";
 import { GlobalLeaderboard } from "../GlobalLeaderboard";
+import { WeatherMoodPrompt } from "../WeatherMoodPrompt";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -379,6 +380,7 @@ function EnhancedDashboard({
                 Export PDF
               </Button>
             </div>
+            <WeatherMoodPrompt />
             <ExtendedSummaries />
             <WeeklySummary />
             <AICoaching />

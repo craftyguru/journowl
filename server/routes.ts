@@ -4259,6 +4259,17 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Weather API
+  app.get("/api/weather", requireAuth, async (req: any, res) => {
+    try {
+      const { WeatherService } = await import("./weatherService");
+      const weatherData = await WeatherService.getWeatherContext();
+      res.json(weatherData);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch weather context" });
+    }
+  });
+
   // Shared Journals API
   app.post("/api/shared-journals/create", requireAuth, async (req: any, res) => {
     try {

@@ -1,0 +1,146 @@
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ChevronRight, BookOpen, Zap, Users, Target, CheckCircle } from "lucide-react";
+
+interface OnboardingProps {
+  onComplete: () => void;
+}
+
+export function Onboarding({ onComplete }: OnboardingProps) {
+  const [step, setStep] = useState(0);
+
+  const steps = [
+    {
+      icon: <BookOpen className="w-12 h-12 text-blue-500" />,
+      title: "Welcome to JournOwl",
+      subtitle: "Your AI-powered journaling companion",
+      description: "Write freely, reflect deeply, and discover yourself through the power of daily journaling.",
+      cta: "Get Started"
+    },
+    {
+      icon: <Zap className="w-12 h-12 text-yellow-500" />,
+      title: "AI-Powered Insights",
+      subtitle: "Discover patterns in your thoughts",
+      description: "Get personalized coaching, mood trends, and intelligent recommendations based on your entries.",
+      cta: "Next"
+    },
+    {
+      icon: <Users className="w-12 h-12 text-pink-500" />,
+      title: "Connect & Compete",
+      subtitle: "Share your journey with others",
+      description: "Follow friends, see their achievements, and compete on global leaderboards.",
+      cta: "Next"
+    },
+    {
+      icon: <Target className="w-12 h-12 text-purple-500" />,
+      title: "Unlock Premium",
+      subtitle: "Extended AI summaries & more",
+      description: "Premium features unlock deeper insights, monthly reviews, and PDF exports.",
+      cta: "Next"
+    },
+    {
+      icon: <CheckCircle className="w-12 h-12 text-green-500" />,
+      title: "Ready to Begin",
+      subtitle: "Your journal awaits",
+      description: "Write your first entry today and start your transformation journey.",
+      cta: "Start Journaling"
+    }
+  ];
+
+  const current = steps[step];
+
+  const handleNext = () => {
+    if (step < steps.length - 1) {
+      setStep(step + 1);
+    } else {
+      onComplete();
+    }
+  };
+
+  const handleSkip = () => {
+    onComplete();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center z-50 p-4"
+      data-testid="onboarding-container"
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={step}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+        >
+          <Card className="w-full max-w-md bg-gradient-to-br from-slate-800 to-slate-900 border-purple-500/30 shadow-2xl">
+            <div className="p-8 text-center space-y-6">
+              {/* Icon */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="flex justify-center"
+              >
+                {current.icon}
+              </motion.div>
+
+              {/* Content */}
+              <div className="space-y-3">
+                <h1 className="text-3xl font-bold text-white">{current.title}</h1>
+                <p className="text-purple-300 text-lg font-semibold">{current.subtitle}</p>
+                <p className="text-white/70 text-base leading-relaxed">{current.description}</p>
+              </div>
+
+              {/* Progress Dots */}
+              <div className="flex gap-2 justify-center">
+                {steps.map((_, idx) => (
+                  <motion.div
+                    key={idx}
+                    className={`h-2 rounded-full transition-all ${
+                      idx === step ? "bg-purple-500 w-8" : "bg-white/20 w-2"
+                    }`}
+                    layoutId={`dot-${idx}`}
+                  />
+                ))}
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 pt-4">
+                {step > 0 && (
+                  <Button
+                    onClick={() => setStep(step - 1)}
+                    variant="ghost"
+                    className="flex-1 text-white/70 hover:text-white"
+                    data-testid="button-back"
+                  >
+                    Back
+                  </Button>
+                )}
+                {step < steps.length - 1 && (
+                  <Button
+                    onClick={handleSkip}
+                    variant="ghost"
+                    className="flex-1 text-white/70 hover:text-white"
+                    data-testid="button-skip"
+                  >
+                    Skip
+                  </Button>
+                )}
+                <Button
+                  onClick={handleNext}
+                  className="flex-1 bg-purple-600 hover:bg-purple-700 gap-2"
+                  data-testid="button-onboarding-next"
+                >
+                  {current.cta}
+                  {step < steps.length - 1 && <ChevronRight className="w-4 h-4" />}
+                </Button>
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+      </AnimatePresence>
+    </div>
+  );
+}

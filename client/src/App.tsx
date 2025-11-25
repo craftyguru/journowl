@@ -29,6 +29,9 @@ const PricingPage = lazy(() => import("@/pages/PricingPage").then(m => ({ defaul
 const OnboardingFlow = lazy(() => import("@/pages/OnboardingFlow").then(m => ({ default: m.OnboardingFlow })));
 const UserProfile = lazy(() => import("@/pages/UserProfile"));
 
+// Onboarding component
+const Onboarding = lazy(() => import("@/components/Onboarding").then(m => ({ default: m.Onboarding })));
+
 // Eager-loaded critical components
 import Navbar from "@/components/navbar";
 import AccountSelector from "@/components/profile/account-selector";
@@ -69,7 +72,11 @@ function App() {
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   const [activeTab, setActiveTab] = useState("journal");
-  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    // Show onboarding if user is new (first time seeing dashboard)
+    const hasSeenOnboarding = localStorage.getItem("journowl_onboarding_seen");
+    return !hasSeenOnboarding;
+  });
   
   const handleNavigate = (view: string) => {
     // Handle tab navigation within dashboard
