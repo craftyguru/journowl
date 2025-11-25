@@ -4787,6 +4787,99 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Story Mode endpoints
+  app.get("/api/story/narrative", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { StoryModeService } = await import("./storyModeService");
+      const narrative = await StoryModeService.generateNarrative(userId);
+      res.json(narrative);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to generate narrative" });
+    }
+  });
+
+  app.get("/api/story/stats", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { StoryModeService } = await import("./storyModeService");
+      const stats = await StoryModeService.getStoryStats(userId);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch story stats" });
+    }
+  });
+
+  // Coaching Chat endpoints
+  app.get("/api/coaching/chat", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { CoachingChatService } = await import("./coachingChatService");
+      const messages = CoachingChatService.getUserChat(userId);
+      res.json(messages);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch chat" });
+    }
+  });
+
+  app.post("/api/coaching/chat", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { message } = req.body;
+      const { CoachingChatService } = await import("./coachingChatService");
+      const response = await CoachingChatService.getCoachResponse(userId, message);
+      res.json({ response });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send message" });
+    }
+  });
+
+  // Masterclass endpoints
+  app.get("/api/masterclass/lessons", requireAuth, async (req: any, res) => {
+    try {
+      const { MasterclassService } = await import("./masterclassService");
+      const lessons = MasterclassService.getAllLessons();
+      res.json(lessons);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch lessons" });
+    }
+  });
+
+  // Buddy System endpoints
+  app.get("/api/buddies", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { BuddySystemService } = await import("./buddySystemService");
+      const buddies = BuddySystemService.getBuddies(userId);
+      res.json(buddies);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch buddies" });
+    }
+  });
+
+  app.post("/api/buddies/:id/challenge", requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { BuddySystemService } = await import("./buddySystemService");
+      const success = BuddySystemService.startStreakChallenge(id);
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to start challenge" });
+    }
+  });
+
+  // Emotion Heatmap endpoint
+  app.get("/api/emotion-heatmap", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { EmotionHeatmapService } = await import("./emotionHeatmapService");
+      const heatmap = await EmotionHeatmapService.getEmotionHeatmap(userId);
+      res.json(heatmap);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch emotion heatmap" });
+    }
+  });
+
   // Weather API
   app.get("/api/weather", requireAuth, async (req: any, res) => {
     try {

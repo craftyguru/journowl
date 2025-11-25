@@ -36,6 +36,11 @@ import { MomentCapture } from "../MomentCapture";
 import { MilestoneReel } from "../MilestoneReel";
 import { WritingSprints } from "../WritingSprints";
 import { LocationTags } from "../LocationTags";
+import { StoryMode } from "../StoryMode";
+import { CoachingChat } from "../CoachingChat";
+import { Masterclass } from "../Masterclass";
+import { BuddySystem } from "../BuddySystem";
+import { EmotionHeatmap } from "../EmotionHeatmap";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -528,6 +533,11 @@ function EnhancedDashboard({
             <MilestoneReel />
             <MomentCapture />
             <LocationTags />
+            <StoryMode />
+            <CoachingChat />
+            <Masterclass />
+            <BuddySystem />
+            <EmotionHeatmap />
           </div>
         );
 
