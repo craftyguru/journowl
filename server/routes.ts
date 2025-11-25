@@ -4266,17 +4266,116 @@ Your story shows how every day brings new experiences and emotions, creating the
 
   app.post("/api/notifications/send-email", requireAuth, async (req: any, res) => {
     try {
-      res.json({ success: true, message: "Email notification sent" });
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      const { type, data } = req.body;
+      
+      const { ReminderService } = await import("./reminderService");
+      ReminderService.initializeSendGrid(process.env.SENDGRID_API_KEY || "");
+
+      let success = false;
+      if (type === "streak" && data?.streak) {
+        success = await ReminderService.sendStreakMilestoneReminder(user, data.streak);
+      } else {
+        success = await ReminderService.sendStrengthReminder(user);
+      }
+
+      res.json({ success, message: success ? "Email sent successfully" : "Failed to send email" });
     } catch (error) {
+      console.error("Email send error:", error);
       res.status(500).json({ error: "Failed to send email" });
     }
   });
 
   app.post("/api/notifications/streak-reminder", requireAuth, async (req: any, res) => {
     try {
-      res.json({ success: true, streak: 0 });
+      const userId = req.session.userId;
+      const stats = await storage.getUserStats(userId);
+      const user = await storage.getUser(userId);
+
+      const { ReminderService } = await import("./reminderService");
+      ReminderService.initializeSendGrid(process.env.SENDGRID_API_KEY || "");
+
+      if (stats?.currentStreak && [7, 14, 30, 60, 100].includes(stats.currentStreak)) {
+        const success = await ReminderService.sendStreakMilestoneReminder(user, stats.currentStreak);
+        res.json({ success, streak: stats.currentStreak, message: "Streak reminder sent" });
+      } else {
+        res.json({ success: false, streak: stats?.currentStreak || 0, message: "No milestone reached" });
+      }
     } catch (error) {
       res.status(500).json({ error: "Failed to send reminder" });
+    }
+  });
+
+  app.post("/api/notifications/check-reminders", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      const entries = await storage.getJournalEntries(userId, 10);
+      
+      if (entries.length === 0) {
+        return res.json({ reminder: "Start your first entry to unlock insights!", type: "first_entry" });
+      }
+
+      const lastEntry = entries[0];
+      const daysSince = Math.floor(
+        (new Date().getTime() - new Date(lastEntry.createdAt).getTime()) / (1000 * 60 * 60 * 24)
+      );
+
+      if (daysSince >= 2) {
+        return res.json({ 
+          reminder: `You haven't journaled in ${daysSince} days. Your thoughts are waiting...`,
+          type: "missed_days",
+          daysSince 
+        });
+      }
+
+      const stats = await storage.getUserStats(userId);
+      if (stats?.currentStreak && stats.currentStreak > 0) {
+        return res.json({ 
+          reminder: `Keep your ${stats.currentStreak}-day streak alive! Write something today.`,
+          type: "maintain_streak",
+          streak: stats.currentStreak
+        });
+      }
+
+      res.json({ reminder: null, type: "none" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to check reminders" });
+    }
+  });
+
+  // Push Notification endpoints
+  app.post("/api/notifications/subscribe", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { subscription } = req.body;
+
+      const { PushNotificationService, pushStore } = await import("./pushNotificationService");
+      pushStore.addSubscription(userId, {
+        endpoint: subscription.endpoint,
+        auth: subscription.keys.auth,
+        p256dh: subscription.keys.p256dh
+      });
+
+      res.json({ success: true, message: "Push notification subscription saved" });
+    } catch (error) {
+      console.error("Push subscription error:", error);
+      res.status(500).json({ error: "Failed to subscribe to push notifications" });
+    }
+  });
+
+  app.post("/api/notifications/unsubscribe", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { endpoint } = req.body;
+
+      const { pushStore } = await import("./pushNotificationService");
+      pushStore.removeSubscription(userId, endpoint);
+
+      res.json({ success: true, message: "Push notification unsubscribed" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to unsubscribe from push notifications" });
     }
   });
 

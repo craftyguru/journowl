@@ -24,6 +24,7 @@ import { SocialFeed } from "../SocialFeed";
 import { GlobalLeaderboard } from "../GlobalLeaderboard";
 import { WeatherMoodPrompt } from "../WeatherMoodPrompt";
 import { AchievementBadges } from "../AchievementBadges";
+import { ReminderNotification } from "../ReminderNotification";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
