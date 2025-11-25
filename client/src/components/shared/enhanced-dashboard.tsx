@@ -25,6 +25,8 @@ import { MoodTrendsChart } from "../dashboard/MoodTrendsChart";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { defaultAchievements } from "@/data/defaultAchievements";
 import { defaultGoals } from "@/data/defaultGoals";
+import { defaultChallenges } from "@/data/defaultChallenges";
+import { useQuery } from "@tanstack/react-query";
 
 // Import existing components that weren't refactored
 import InteractiveJournal from "../journal/interactive-journal";
@@ -71,6 +73,28 @@ function EnhancedDashboard({
   
   // Fetch dashboard data
   const { user, stats, entries, achievements, goals, insights, subscription, promptUsage } = useDashboardData();
+  
+  // Fetch weekly challenges
+  const { data: challenges = defaultChallenges } = useQuery({
+    queryKey: ['/api/challenges'],
+    queryFn: async () => {
+      const res = await fetch('/api/challenges', { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to fetch challenges');
+      return res.json();
+    },
+    staleTime: 5 * 60 * 1000
+  });
+  
+  // Fetch mood trends data
+  const { data: moodTrends = [] } = useQuery({
+    queryKey: ['/api/mood-trends'],
+    queryFn: async () => {
+      const res = await fetch('/api/mood-trends', { credentials: 'include' });
+      if (!res.ok) throw new Error('Failed to fetch mood trends');
+      return res.json();
+    },
+    staleTime: 10 * 60 * 1000
+  });
 
   // Process achievements with real-time unlock checking
   const achievementsArray = Array.isArray(achievements) ? achievements : 
@@ -370,6 +394,17 @@ function EnhancedDashboard({
               entries={Array.isArray(entries) ? entries : []} 
               stats={stats || {}}
             />
+          </div>
+        );
+
+      case 'challenges':
+        return (
+          <div className="space-y-6">
+            <WeeklyChallengesCard 
+              challenges={challenges} 
+              onChallengeClick={(challenge) => console.log('Challenge clicked:', challenge)}
+            />
+            <MoodTrendsChart data={moodTrends} />
           </div>
         );
 

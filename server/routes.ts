@@ -2494,7 +2494,7 @@ Your story shows how every day brings new experiences and emotions, creating the
           aiPrompts: totalPromptsToday,
           photoAnalysis: photosUploaded,
           moodTracking: allEntries.filter(e => e.mood).length,
-          drawingTools: allEntries.filter(e => e.drawings && e.drawings.length > 0).length
+          drawingTools: allEntries.filter(e => e.drawings && Array.isArray(e.drawings) && e.drawings.length > 0).length
         },
         predictive: {
           userGrowthPrediction,

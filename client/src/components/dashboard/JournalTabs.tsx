@@ -12,6 +12,7 @@ export function JournalTabs({ activeTab, onTabChange, children }: JournalTabsPro
     { id: "analytics", label: "Analytics", icon: "📊" },
     { id: "achievements", label: "Achievements", icon: "🏆" },
     { id: "goals", label: "Goals", icon: "🎯" },
+    { id: "challenges", label: "Challenges", icon: "⚡" },
     { id: "thoughts", label: "AI Thoughts", icon: "🧠" },
     { id: "calendar", label: "Memory Calendar", icon: "📅" },
     { id: "stories", label: "AI Stories", icon: "✨" },
@@ -21,7 +22,7 @@ export function JournalTabs({ activeTab, onTabChange, children }: JournalTabsPro
   return (
     <div className="bg-gray-800 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-2">
-        <div className="grid grid-cols-8 gap-1">
+        <div className="grid grid-cols-9 gap-1">
           {tabs.map((tab) => (
             <button
               key={tab.id}
