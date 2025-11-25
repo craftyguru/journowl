@@ -33,7 +33,7 @@ import PromptPurchase from "../PromptPurchase";
 import UsageMeters from "../UsageMeters";
 import { AIStoryMaker } from "../kid-dashboard/AIStoryMaker";
 import { MergedHelpSupportBubble } from "../MergedHelpSupportBubble";
-import ErrorBoundary from "../ErrorBoundary";
+import ErrorBoundary from "../shared/ErrorBoundary";
 
 import type { EnhancedDashboardProps, JournalEntry } from "../dashboard/types";
 
