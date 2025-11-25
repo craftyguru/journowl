@@ -84,7 +84,7 @@ declare module 'express-session' {
 const PgSession = ConnectPgSimple(session);
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session middleware with PostgreSQL store - Supabase SSL compatible
+  // Session middleware with PostgreSQL store - Use DATABASE_URL for proper SSL/SASL
   let sessionDbUrl = process.env.DATABASE_URL;
   if (sessionDbUrl?.includes('DATABASE_URL=')) {
     sessionDbUrl = sessionDbUrl.replace(/^DATABASE_URL=/, '');
@@ -92,16 +92,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   app.use(session({
     store: new PgSession({
-      conObject: {
-        host: 'aws-0-us-east-2.pooler.supabase.com',
-        port: 6543,
-        database: 'postgres',
-        user: 'postgres.asjcxaiabjsbjbasssfe',
-        password: 'KCqwTTy4bwqNrHti',
-        ssl: {
-          rejectUnauthorized: false
-        }
-      },
+      conString: sessionDbUrl,
       tableName: 'session',
       createTableIfMissing: true,
       pruneSessionInterval: false
