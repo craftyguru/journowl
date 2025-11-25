@@ -359,7 +359,11 @@ function EnhancedDashboard({
         return (
           <div className="space-y-6">
             <WeeklySummary />
-            <VoiceJournal onEntryCreated={onJournalEntryCreated} />
+            <VoiceJournal onEntryCreated={() => {
+              queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
+              queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
+              queryClient.invalidateQueries({ queryKey: ["/api/journal/summaries"] });
+            }} />
             <Suspense fallback={<TabLoadingFallback />}>
               <InteractiveJournal 
                 onOpenSmartEditor={openSmartEditor}

@@ -3,8 +3,15 @@ import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { Brain, TrendingUp, Sparkles } from "lucide-react";
 
+interface SummaryData {
+  insights: string[];
+  moodArc: string;
+  keyThemes: string[];
+  journeyLine: string;
+}
+
 export function WeeklySummary() {
-  const { data: summary, isLoading } = useQuery({
+  const { data: summary, isLoading } = useQuery<SummaryData>({
     queryKey: ["/api/journal/summaries"],
     retry: 1,
   });
@@ -21,7 +28,7 @@ export function WeeklySummary() {
     );
   }
 
-  if (!summary || !summary.insights) {
+  if (!summary?.insights) {
     return null;
   }
 
