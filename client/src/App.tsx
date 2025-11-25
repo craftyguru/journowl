@@ -463,7 +463,7 @@ function App() {
           <PWAUpdateBanner />
           <PWAMobilePrompt />
           <Toaster />
-          <AuthenticatedApp currentView={currentView} activeTab={activeTab} onNavigate={handleNavigate} />
+          <AuthenticatedApp currentView={currentView} activeTab={activeTab} onNavigate={handleNavigate} showOnboarding={showOnboarding} onOnboardingComplete={handleOnboardingComplete} />
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
@@ -471,7 +471,7 @@ function App() {
 }
 
 // Authenticated App Component with Role-Based Access
-function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView: string, activeTab: string, onNavigate: (view: string) => void }) {
+function AuthenticatedApp({ currentView, activeTab, onNavigate, showOnboarding, onOnboardingComplete }: { currentView: string, activeTab: string, onNavigate: (view: string) => void, showOnboarding: boolean, onOnboardingComplete: () => void }) {
   const [isKidMode, setIsKidMode] = useState(false);
   
   const { data: user, isLoading, error } = useQuery({
@@ -520,6 +520,11 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
   
   return (
     <div className="min-h-screen bg-background">
+      {showOnboarding && (
+        <Suspense fallback={null}>
+          <Onboarding onComplete={onOnboardingComplete} />
+        </Suspense>
+      )}
       {!isKidMode && <Navbar currentView={validView} activeTab={activeTab} onNavigate={onNavigate} />}
       <main>
         <Suspense fallback={<LoadingFallback />}>
