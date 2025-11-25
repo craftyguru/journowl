@@ -4189,17 +4189,57 @@ Your story shows how every day brings new experiences and emotions, creating the
   // Social & Notification APIs
   app.get("/api/social/following", requireAuth, async (req: any, res) => {
     try {
-      res.json([]);
+      const userId = req.session.userId;
+      const { SocialService } = await import("./socialService");
+      const stats = await SocialService.getFollowerStats(userId);
+      res.json(stats);
     } catch (error) {
-      res.json([]);
+      res.json({ followerCount: 0, followingCount: 0, isFollowedBack: false });
     }
   });
 
   app.post("/api/social/follow", requireAuth, async (req: any, res) => {
     try {
-      res.json({ success: true, isFollowing: false });
+      const userId = req.session.userId;
+      const { targetUserId } = req.body;
+      const { SocialService } = await import("./socialService");
+      const success = SocialService.follow(userId, targetUserId);
+      res.json({ success, isFollowing: success });
     } catch (error) {
       res.status(500).json({ error: "Failed to follow user" });
+    }
+  });
+
+  app.post("/api/social/unfollow", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { targetUserId } = req.body;
+      const { SocialService } = await import("./socialService");
+      const success = SocialService.unfollow(userId, targetUserId);
+      res.json({ success });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to unfollow user" });
+    }
+  });
+
+  app.get("/api/social/feed/personal", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { SocialService } = await import("./socialService");
+      const feed = SocialService.getPersonalFeed(userId, 50);
+      res.json(feed);
+    } catch (error) {
+      res.json([]);
+    }
+  });
+
+  app.get("/api/social/feed/global", requireAuth, async (req: any, res) => {
+    try {
+      const { SocialService } = await import("./socialService");
+      const feed = SocialService.getGlobalFeed(100);
+      res.json(feed);
+    } catch (error) {
+      res.json([]);
     }
   });
 

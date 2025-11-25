@@ -20,6 +20,7 @@ import { AICoaching } from "../AICoaching";
 import { PDFExport } from "../PDFExport";
 import { SharedJournals } from "../SharedJournals";
 import { ExtendedSummaries } from "../ExtendedSummaries";
+import { SocialFeed } from "../SocialFeed";
 import { GlobalLeaderboard } from "../GlobalLeaderboard";
 
 // Lazy-loaded heavy tab components for code splitting
@@ -488,7 +489,7 @@ function EnhancedDashboard({
         return (
           <div className="space-y-6">
             <Suspense fallback={<TabLoadingFallback />}>
-              <SocialFeatures />
+              <SocialFeed />
             </Suspense>
           </div>
         );
