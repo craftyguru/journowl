@@ -25,6 +25,8 @@ const MoodTrendsChart = lazy(() => import("../dashboard/MoodTrendsChart").then(m
 const EmailRemindersPanel = lazy(() => import("../dashboard/EmailRemindersPanel").then(m => ({ default: m.EmailRemindersPanel })));
 const ChallengeLeaderboard = lazy(() => import("../dashboard/ChallengeLeaderboard").then(m => ({ default: m.ChallengeLeaderboard })));
 const AchievementBadges = lazy(() => import("../dashboard/AchievementBadges").then(m => ({ default: m.AchievementBadges })));
+const SocialFeatures = lazy(() => import("../dashboard/SocialFeatures").then(m => ({ default: m.SocialFeatures })));
+const StreakNotifications = lazy(() => import("../dashboard/StreakNotifications").then(m => ({ default: m.StreakNotifications })));
 
 // Import hooks and data
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -441,6 +443,24 @@ function EnhancedDashboard({
               <ChallengeLeaderboard />
               <AchievementBadges />
               <EmailRemindersPanel />
+            </Suspense>
+          </div>
+        );
+
+      case 'social':
+        return (
+          <div className="space-y-6">
+            <Suspense fallback={<TabLoadingFallback />}>
+              <SocialFeatures />
+            </Suspense>
+          </div>
+        );
+
+      case 'streaks':
+        return (
+          <div className="space-y-6">
+            <Suspense fallback={<TabLoadingFallback />}>
+              <StreakNotifications streak={stats?.currentStreak || 0} />
             </Suspense>
           </div>
         );
