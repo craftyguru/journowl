@@ -93,7 +93,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         database: 'postgres',
         user: 'postgres.asjcxaiabjsbjbasssfe',
         password: 'KCqwTTy4bwqNrHti',
-        ssl: 'require'
+        ssl: {
+          rejectUnauthorized: false
+        }
       },
       tableName: 'session',
       createTableIfMissing: true,
