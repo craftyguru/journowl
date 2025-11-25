@@ -352,7 +352,7 @@ function App() {
                 
                 <main>
                   {selectedAccount.type === "admin" && <AdminDashboard />}
-                  {selectedAccount.type === "user" && currentView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => {}} />}
+                  {selectedAccount.type === "user" && currentView === "dashboard" && <EnhancedDashboard />}
                   {selectedAccount.type === "user" && currentView === "insights" && <InsightsPage />}
                   {selectedAccount.type === "kid" && <KidDashboard />}
                 </main>
@@ -449,7 +449,7 @@ function AuthenticatedApp({ currentView, activeTab, onNavigate }: { currentView:
           <KidDashboard onSwitchToAdult={() => setIsKidMode(false)} />
         ) : (
           <>
-            {validView === "dashboard" && <EnhancedDashboard onSwitchToKid={() => setIsKidMode(true)} initialTab={activeTab} />}
+            {validView === "dashboard" && <EnhancedDashboard />}
             {validView === "insights" && <InsightsPage />}
             {validView === "referral" && <ReferralPage />}
           </>
