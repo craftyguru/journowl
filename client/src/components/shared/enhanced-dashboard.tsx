@@ -26,6 +26,8 @@ import { WeatherMoodPrompt } from "../WeatherMoodPrompt";
 import { AchievementBadges } from "../AchievementBadges";
 import { ReminderNotification } from "../ReminderNotification";
 import { TournamentsList } from "../TournamentsList";
+import { StreakNotificationWidget } from "../StreakNotificationWidget";
+import { DailyChallenges } from "../DailyChallenges";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -371,6 +373,7 @@ function EnhancedDashboard({
       case 'journal':
         return (
           <div className="space-y-6">
+            <StreakNotificationWidget />
             <div className="flex justify-end">
               <Button
                 onClick={() => setShowPDFExport(true)}
@@ -477,6 +480,9 @@ function EnhancedDashboard({
       case 'challenges':
         return (
           <div className="space-y-6">
+            <Suspense fallback={<TabLoadingFallback />}>
+              <DailyChallenges />
+            </Suspense>
             <Suspense fallback={<TabLoadingFallback />}>
               <TournamentsList />
             </Suspense>

@@ -4446,6 +4446,52 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Daily Challenges endpoints
+  app.get("/api/challenges/daily", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { DailyChallengeService } = await import("./dailyChallengesService");
+      const challenges = DailyChallengeService.getDailyChallenges(userId);
+      res.json(challenges);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch daily challenges" });
+    }
+  });
+
+  app.post("/api/challenges/:id/complete", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { id } = req.params;
+      const { DailyChallengeService } = await import("./dailyChallengesService");
+      const result = DailyChallengeService.completeChallenge(userId, id);
+      
+      if (result.success) {
+        const stats = await storage.getUserStats(userId);
+        if (stats) {
+          await storage.updateUserStats(userId, {
+            ...stats,
+            totalPrompts: (stats.totalPrompts || 100) + result.reward
+          });
+        }
+      }
+      
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to complete challenge" });
+    }
+  });
+
+  app.get("/api/challenges/stats", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { DailyChallengeService } = await import("./dailyChallengesService");
+      const stats = DailyChallengeService.getCompletionStats(userId);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch challenge stats" });
+    }
+  });
+
   // Weather API
   app.get("/api/weather", requireAuth, async (req: any, res) => {
     try {

@@ -23,8 +23,13 @@ export function TournamentsList() {
   });
 
   const joinMutation = useMutation({
-    mutationFn: (tournamentId: string) =>
-      apiRequest(`/api/tournaments/${tournamentId}/join`, { method: "POST" })
+    mutationFn: async (tournamentId: string) => {
+      const response = await fetch(`/api/tournaments/${tournamentId}/join`, {
+        method: "POST",
+        credentials: "include"
+      });
+      return response.json();
+    }
   });
 
   const getTournamentIcon = (type: string) => {
