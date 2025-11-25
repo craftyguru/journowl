@@ -13,7 +13,7 @@ export class ReferralSystem {
       const awardXp = 50;
       const user = await storage.getUser(referrerUserId);
       if (user) {
-        await storage.updateUserXp(referrerUserId, (user.xp || 0) + awardXp);
+        await storage.updateUserXP(referrerUserId, (user.xp || 0) + awardXp);
       }
       console.log(`✅ Referral tracked: ${referrerUserId} → ${newUserId}, +${awardXp} XP`);
       return { success: true, xpAwarded: awardXp };
