@@ -419,8 +419,8 @@ function EnhancedDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 pb-20">
-      <div className="container mx-auto px-4 py-6 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 pb-20" data-testid="dashboard-container">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 max-w-7xl">
         {/* Stats Cards */}
         <StatsCards stats={stats || {}} />
 
@@ -433,12 +433,12 @@ function EnhancedDashboard({
       </div>
 
       {/* Tab Content */}
-      <div className="container mx-auto px-4 pb-24 max-w-7xl">
+      <div className="container mx-auto px-2 sm:px-4 pb-24 max-w-7xl">
         {renderTabContent()}
       </div>
 
       {/* Fixed Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 z-40">
+      <div className="fixed bottom-0 left-0 right-0 z-40" data-testid="navigation-tabs">
         <JournalTabs
           activeTab={activeTab}
           onTabChange={setActiveTab}
