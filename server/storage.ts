@@ -12,6 +12,9 @@ import {
   announcements,
   supportMessages,
   promptPurchases,
+  weeklyChallenge,
+  userChallengeProgress,
+  emailReminders,
   type User, 
   type InsertUser, 
   type JournalEntry, 
@@ -826,7 +829,6 @@ export class DatabaseStorage implements IStorage {
 
   async getActiveWeeklyChallenges(): Promise<any[]> {
     try {
-      const { weeklyChallenge } = await import("@shared/schema");
       return await db.select().from(weeklyChallenge).where(eq(weeklyChallenge.isActive, true));
     } catch (error) {
       console.error("Error fetching challenges:", error);
@@ -836,9 +838,8 @@ export class DatabaseStorage implements IStorage {
 
   async getUserChallengeProgress(userId: number, challengeId: number): Promise<any | undefined> {
     try {
-      const { userChallengeProgress } = await import("@shared/schema");
       const result = await db.select().from(userChallengeProgress).where(
-        (c: any) => eq(c.userId, userId) && eq(c.challengeId, challengeId)
+        and(eq(userChallengeProgress.userId, userId), eq(userChallengeProgress.challengeId, challengeId))
       ).limit(1);
       return result[0];
     } catch (error) {
@@ -848,11 +849,10 @@ export class DatabaseStorage implements IStorage {
 
   async updateChallengeProgress(userId: number, challengeId: number, progress: number, isCompleted: boolean): Promise<void> {
     try {
-      const { userChallengeProgress } = await import("@shared/schema");
       const existing = await this.getUserChallengeProgress(userId, challengeId);
       if (existing) {
         await db.update(userChallengeProgress).set({ progress, isCompleted, completedAt: isCompleted ? new Date() : null } as any)
-          .where((c: any) => eq(c.userId, userId) && eq(c.challengeId, challengeId));
+          .where(and(eq(userChallengeProgress.userId, userId), eq(userChallengeProgress.challengeId, challengeId)));
       } else {
         await db.insert(userChallengeProgress).values({ userId, challengeId, progress, isCompleted, completedAt: isCompleted ? new Date() : null } as any);
       }
@@ -863,7 +863,6 @@ export class DatabaseStorage implements IStorage {
 
   async getEmailReminderPreferences(userId: number): Promise<any[]> {
     try {
-      const { emailReminders } = await import("@shared/schema");
       return await db.select().from(emailReminders).where(eq(emailReminders.userId, userId));
     } catch (error) {
       console.error("Error fetching email reminders:", error);
@@ -873,14 +872,13 @@ export class DatabaseStorage implements IStorage {
 
   async updateEmailReminder(userId: number, type: string, updates: Partial<any>): Promise<void> {
     try {
-      const { emailReminders } = await import("@shared/schema");
       const existing = await db.select().from(emailReminders).where(
-        (r: any) => eq(r.userId, userId) && eq(r.type, type)
+        and(eq(emailReminders.userId, userId), eq(emailReminders.type, type))
       ).limit(1);
       
       if (existing.length > 0) {
         await db.update(emailReminders).set({ ...updates, updatedAt: new Date() } as any)
-          .where((r: any) => eq(r.userId, userId) && eq(r.type, type));
+          .where(and(eq(emailReminders.userId, userId), eq(emailReminders.type, type)));
       } else {
         await db.insert(emailReminders).values({ userId, type, ...updates } as any);
       }
