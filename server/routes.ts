@@ -4326,5 +4326,60 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Extended AI Summaries API (Premium Feature)
+  app.get("/api/summaries/weekly", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (user?.currentPlan === "free") {
+        return res.json({
+          title: "Weekly Summary",
+          summary: "Upgrade to Pro to unlock extended summaries!",
+          highlights: ["This is a premium feature"],
+          mood_arc: "Premium only",
+          recommendations: ["Upgrade to Pro plan"]
+        });
+      }
+
+      const entries = await storage.getJournalEntries(userId, 100);
+      const { SummaryService } = await import("./summaryService");
+      const summary = await SummaryService.generateWeeklySummary(entries);
+      
+      res.json(summary);
+    } catch (error) {
+      console.error("Weekly summary error:", error);
+      res.status(500).json({ error: "Failed to generate summary" });
+    }
+  });
+
+  app.get("/api/summaries/monthly", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      
+      if (user?.currentPlan === "free") {
+        return res.json({
+          title: "Monthly Summary",
+          overview: "Upgrade to Pro to unlock extended summaries!",
+          top_themes: [],
+          growth_areas: [],
+          mood_evolution: "Premium only",
+          next_month_focus: ["Upgrade to Pro plan"],
+          stats: { total_entries: 0, total_words: 0, avg_mood: "Premium" }
+        });
+      }
+
+      const entries = await storage.getJournalEntries(userId, 100);
+      const { SummaryService } = await import("./summaryService");
+      const summary = await SummaryService.generateMonthlySummary(entries);
+      
+      res.json(summary);
+    } catch (error) {
+      console.error("Monthly summary error:", error);
+      res.status(500).json({ error: "Failed to generate summary" });
+    }
+  });
+
   return httpServer;
 }
