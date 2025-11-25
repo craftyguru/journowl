@@ -20,6 +20,9 @@ import { NewGoalForm, GoalDetailsView, EditGoalForm } from "../dashboard/GoalCom
 import { TypewriterTitle } from "../dashboard/TypewriterComponents";
 import { WeeklyChallengesCard } from "../dashboard/WeeklyChallengesCard";
 import { MoodTrendsChart } from "../dashboard/MoodTrendsChart";
+import { EmailRemindersPanel } from "../dashboard/EmailRemindersPanel";
+import { ChallengeLeaderboard } from "../dashboard/ChallengeLeaderboard";
+import { AchievementBadges } from "../dashboard/AchievementBadges";
 
 // Import hooks and data
 import { useDashboardData } from "@/hooks/useDashboardData";
@@ -405,6 +408,9 @@ function EnhancedDashboard({
               onChallengeClick={(challenge) => console.log('Challenge clicked:', challenge)}
             />
             <MoodTrendsChart data={moodTrends} />
+            <ChallengeLeaderboard />
+            <AchievementBadges />
+            <EmailRemindersPanel />
           </div>
         );
 

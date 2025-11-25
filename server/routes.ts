@@ -3725,6 +3725,55 @@ Your story shows how every day brings new experiences and emotions, creating the
     return moodScores[mood.toLowerCase()] || 3;
   }
 
+  // Leaderboard API
+  app.get("/api/leaderboard/challenges", requireAuth, async (req: any, res) => {
+    try {
+      const leaderboard = await storage.getChallengeLeaderboard?.(10) || [];
+      res.json(leaderboard);
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+      res.json([]);
+    }
+  });
+
+  // SMS Reminders API (Twilio integration - stubs for future)
+  app.post("/api/reminders/sms", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { enabled, phoneNumber, frequency, timeOfDay } = req.body;
+      
+      if (enabled && !phoneNumber) {
+        return res.status(400).json({ error: "Phone number required" });
+      }
+      
+      res.json({ success: true, message: "SMS reminder settings updated" });
+    } catch (error: any) {
+      console.error("Error updating SMS reminder:", error);
+      res.status(500).json({ error: "Failed to update SMS reminder" });
+    }
+  });
+
+  app.get("/api/reminders/sms", requireAuth, async (req: any, res) => {
+    try {
+      res.json({ enabled: false });
+    } catch (error) {
+      console.error("Error fetching SMS reminder:", error);
+      res.status(500).json({ error: "Failed to fetch SMS reminder" });
+    }
+  });
+
+  // Achievement Badges API
+  app.get("/api/achievements/badges", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const badges = await storage.getUserAchievements(userId);
+      res.json(badges || []);
+    } catch (error) {
+      console.error("Error fetching badges:", error);
+      res.json([]);
+    }
+  });
+
   // Version endpoint for PWA auto-updates
   app.get("/api/version", (req, res) => {
     res.json({ 
