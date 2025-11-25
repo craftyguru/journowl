@@ -4724,15 +4724,66 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
-  app.post("/api/goals", requireAuth, async (req: any, res) => {
+  // Optimal Time endpoint
+  app.get("/api/optimal-time", requireAuth, async (req: any, res) => {
     try {
       const userId = req.session.userId;
-      const { title, type, target, unit } = req.body;
-      const { GoalService } = await import("./goalService");
-      const goal = GoalService.createGoal(userId, title, type, target, unit);
-      res.json(goal);
+      const { OptimalTimeService } = await import("./optimalTimeService");
+      const prediction = await OptimalTimeService.getPredictedBestTime(userId);
+      res.json(prediction);
     } catch (error) {
-      res.status(500).json({ error: "Failed to create goal" });
+      res.status(500).json({ error: "Failed to fetch optimal time" });
+    }
+  });
+
+  // Milestones endpoint
+  app.get("/api/milestones", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { MilestoneService } = await import("./milestoneService");
+      const milestones = await MilestoneService.checkMilestones(userId);
+      res.json(milestones);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch milestones" });
+    }
+  });
+
+  // Writing Sprints endpoints
+  app.post("/api/sprints", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { duration } = req.body;
+      const { SprintService } = await import("./sprintService");
+      const sprint = SprintService.createSprint(userId, duration);
+      res.json(sprint);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create sprint" });
+    }
+  });
+
+  app.post("/api/sprints/:id/complete", requireAuth, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { wordsWritten } = req.body;
+      const { SprintService } = await import("./sprintService");
+      const completed = SprintService.completeSprint(id, wordsWritten);
+      res.json(completed);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to complete sprint" });
+    }
+  });
+
+  // Location Tags endpoints
+  app.post("/api/locations", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { entryId, latitude, longitude, placeName } = req.body;
+      const { LocationService } = await import("./locationService");
+      const emoji = LocationService.getEmojiForPlace(placeName);
+      const location = LocationService.addLocation(entryId, latitude, longitude, placeName, emoji);
+      res.json(location);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add location" });
     }
   });
 

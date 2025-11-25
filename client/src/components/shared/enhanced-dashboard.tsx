@@ -31,10 +31,11 @@ import { DailyChallenges } from "../DailyChallenges";
 import { JournalHeatmap } from "../JournalHeatmap";
 import { WellnessScore } from "../WellnessScore";
 import { WritingStats } from "../WritingStats";
-import { SmartInsights } from "../SmartInsights";
-import { PersonalGoals } from "../PersonalGoals";
-import { MoodTimeline } from "../MoodTimeline";
-import { DataManagement } from "../DataManagement";
+import { OptimalTimePredictor } from "../OptimalTimePredictor";
+import { MomentCapture } from "../MomentCapture";
+import { MilestoneReel } from "../MilestoneReel";
+import { WritingSprints } from "../WritingSprints";
+import { LocationTags } from "../LocationTags";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -521,11 +522,12 @@ function EnhancedDashboard({
             <StreakNotificationWidget />
             <WellnessScore />
             <JournalHeatmap />
-            <MoodTimeline />
             <WritingStats />
-            <SmartInsights />
-            <PersonalGoals />
-            <DataManagement />
+            <OptimalTimePredictor />
+            <WritingSprints />
+            <MilestoneReel />
+            <MomentCapture />
+            <LocationTags />
           </div>
         );
 
