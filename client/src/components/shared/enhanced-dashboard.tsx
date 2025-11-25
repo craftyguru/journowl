@@ -361,6 +361,7 @@ function EnhancedDashboard({
         return (
           <div className="space-y-6">
             <WeeklySummary />
+            <AICoaching />
             <VoiceJournal onEntryCreated={() => {
               queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
               queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
