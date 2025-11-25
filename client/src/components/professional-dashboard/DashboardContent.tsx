@@ -4,7 +4,7 @@ import { Plus, Edit, Sparkles } from "lucide-react";
 import RecentEntries from "@/components/recent-entries";
 import MoodTracker from "@/components/mood-tracker";
 import ProgressCard from "@/components/progress-card";
-import InteractiveCalendar from "@/components/interactive-calendar";
+import InteractiveCalendar from "@/components/shared/interactive-calendar";
 import { type JournalEntry, type Achievement } from "@/lib/types";
 
 interface DashboardContentProps {

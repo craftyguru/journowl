@@ -8,7 +8,7 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { WelcomeTutorial } from "@/components/welcome-tutorial";
 import { UserAgreement } from "@/components/UserAgreement";
-import { CaptchaChallenge } from "@/components/CaptchaChallenge";
+import { CaptchaChallenge } from "@/components/shared/CaptchaChallenge";
 import { AnimatedBackground } from "@/components/auth/AnimatedBackground";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { SignupForm } from "@/components/auth/SignupForm";
