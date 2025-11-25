@@ -28,6 +28,13 @@ import { ReminderNotification } from "../ReminderNotification";
 import { TournamentsList } from "../TournamentsList";
 import { StreakNotificationWidget } from "../StreakNotificationWidget";
 import { DailyChallenges } from "../DailyChallenges";
+import { JournalHeatmap } from "../JournalHeatmap";
+import { WellnessScore } from "../WellnessScore";
+import { WritingStats } from "../WritingStats";
+import { SmartInsights } from "../SmartInsights";
+import { PersonalGoals } from "../PersonalGoals";
+import { MoodTimeline } from "../MoodTimeline";
+import { DataManagement } from "../DataManagement";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -511,9 +518,14 @@ function EnhancedDashboard({
       case 'streaks':
         return (
           <div className="space-y-6">
-            <Suspense fallback={<TabLoadingFallback />}>
-              <StreakNotifications streak={stats?.currentStreak || 0} />
-            </Suspense>
+            <StreakNotificationWidget />
+            <WellnessScore />
+            <JournalHeatmap />
+            <MoodTimeline />
+            <WritingStats />
+            <SmartInsights />
+            <PersonalGoals />
+            <DataManagement />
           </div>
         );
 

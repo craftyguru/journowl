@@ -4588,6 +4588,154 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // Heatmap endpoint
+  app.get("/api/heatmap/activity", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { HeatmapService } = await import("./heatmapService");
+      const heatmap = await HeatmapService.getUserActivityHeatmap(userId);
+      res.json(heatmap);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch heatmap" });
+    }
+  });
+
+  // Wellness endpoint
+  app.get("/api/wellness/score", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { WellnessService } = await import("./wellnessService");
+      const score = await WellnessService.calculateWellnessScore(userId);
+      res.json(score);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch wellness score" });
+    }
+  });
+
+  // Writing stats endpoint
+  app.get("/api/writing/stats", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { WritingStatsService } = await import("./writingStatsService");
+      const stats = await WritingStatsService.getDetailedStats(userId);
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch writing stats" });
+    }
+  });
+
+  // Mood timeline endpoint
+  app.get("/api/mood/timeline", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { WellnessService } = await import("./wellnessService");
+      const timeline = await WellnessService.getDailyWellness(userId);
+      res.json(timeline);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch mood timeline" });
+    }
+  });
+
+  // Bookmark endpoints
+  app.get("/api/bookmarks", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { BookmarkService } = await import("./bookmarkService");
+      const bookmarks = BookmarkService.getBookmarks(userId);
+      res.json(bookmarks);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch bookmarks" });
+    }
+  });
+
+  app.post("/api/bookmarks", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { entryId, title, tags } = req.body;
+      const { BookmarkService } = await import("./bookmarkService");
+      const bookmark = BookmarkService.addBookmark(userId, entryId, title, tags);
+      res.json(bookmark);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to add bookmark" });
+    }
+  });
+
+  // Export endpoints
+  app.get("/api/export/json", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { ExportService } = await import("./exportService");
+      const json = await ExportService.exportAsJSON(userId);
+      res.setHeader("Content-Type", "application/json");
+      res.setHeader("Content-Disposition", 'attachment; filename="journal-export.json"');
+      res.send(json);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to export JSON" });
+    }
+  });
+
+  app.get("/api/export/markdown", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { ExportService } = await import("./exportService");
+      const markdown = await ExportService.exportAsMarkdown(userId);
+      res.setHeader("Content-Type", "text/markdown");
+      res.setHeader("Content-Disposition", 'attachment; filename="journal-export.md"');
+      res.send(markdown);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to export markdown" });
+    }
+  });
+
+  app.get("/api/export/csv", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { ExportService } = await import("./exportService");
+      const csv = await ExportService.exportAsCSV(userId);
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", 'attachment; filename="journal-export.csv"');
+      res.send(csv);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to export CSV" });
+    }
+  });
+
+  // Insights endpoint
+  app.get("/api/insights/writing", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { InsightsService } = await import("./insightsService");
+      const insights = await InsightsService.getWritingInsights(userId);
+      res.json(insights);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch insights" });
+    }
+  });
+
+  // Goals endpoints
+  app.get("/api/goals", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { GoalService } = await import("./goalService");
+      const goals = GoalService.getGoals(userId);
+      res.json(goals);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch goals" });
+    }
+  });
+
+  app.post("/api/goals", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { title, type, target, unit } = req.body;
+      const { GoalService } = await import("./goalService");
+      const goal = GoalService.createGoal(userId, title, type, target, unit);
+      res.json(goal);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create goal" });
+    }
+  });
+
   // Weather API
   app.get("/api/weather", requireAuth, async (req: any, res) => {
     try {
