@@ -4,6 +4,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 // Eagerly loaded critical components
 import { WelcomeBanner } from "../dashboard/WelcomeBanner";
@@ -671,6 +672,13 @@ function EnhancedDashboard({
         isOpen={showCameraCapture}
         onClose={() => setShowCameraCapture(false)}
         onCapture={handleCameraCapture}
+      />
+
+      {/* PDF Export Component */}
+      <PDFExport
+        entries={Array.isArray(entries) ? entries : []}
+        isOpen={showPDFExport}
+        onClose={() => setShowPDFExport(false)}
       />
     </div>
     </EnhancedErrorBoundary>
