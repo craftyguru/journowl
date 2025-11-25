@@ -37,7 +37,7 @@ export class StripeService {
 
   async cancelSubscription(subscriptionId: string) {
     const stripe = await getUncachableStripeClient();
-    return await stripe.subscriptions.del(subscriptionId);
+    return await stripe.subscriptions.cancel(subscriptionId);
   }
 }
 
