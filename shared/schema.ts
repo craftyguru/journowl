@@ -245,6 +245,45 @@ export const moderationActions = pgTable("moderation_actions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Weekly Challenges for engagement
+export const weeklyChallenge = pgTable("weekly_challenges", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  icon: text("icon").notNull(),
+  difficulty: text("difficulty").notNull(), // easy, medium, hard
+  rewardXp: integer("reward_xp").default(100),
+  rewardAchievementId: text("reward_achievement_id"),
+  startDate: timestamp("start_date").defaultNow().notNull(),
+  endDate: timestamp("end_date").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// User Challenge Progress
+export const userChallengeProgress = pgTable("user_challenge_progress", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  challengeId: integer("challenge_id").references(() => weeklyChallenge.id).notNull(),
+  progress: integer("progress").default(0),
+  isCompleted: boolean("is_completed").default(false),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Email Reminder Preferences
+export const emailReminders = pgTable("email_reminders", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  type: text("type").notNull(), // daily, weekly, streak-warning
+  isEnabled: boolean("is_enabled").default(true),
+  frequency: text("frequency").default("daily"), // daily, weekly (day of week)
+  preferredTime: text("preferred_time").default("09:00"), // HH:MM format
+  lastSentDate: timestamp("last_sent_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // User Plan Configurations
 export const planLimits = {
   free: {
@@ -321,6 +360,24 @@ export const insertJournalPromptSchema = z.object({
   difficulty: z.string().min(1),
   tags: z.array(z.string()).optional(),
   isKidFriendly: z.boolean().optional(),
+});
+
+export const insertWeeklyChallengeSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().min(1),
+  icon: z.string(),
+  difficulty: z.string(),
+  rewardXp: z.number().optional(),
+  rewardAchievementId: z.string().optional(),
+  endDate: z.date(),
+});
+
+export const insertEmailReminderSchema = z.object({
+  userId: z.number(),
+  type: z.string(),
+  isEnabled: z.boolean().optional(),
+  frequency: z.string().optional(),
+  preferredTime: z.string().optional(),
 });
 
 export type User = typeof users.$inferSelect;
