@@ -1003,6 +1003,77 @@ Be warm and reflective.`;
     }
   });
 
+  // Notification endpoints
+  app.post("/api/notifications/subscribe", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { subscription } = req.body;
+      
+      if (!subscription) {
+        return res.status(400).json({ error: "No subscription provided" });
+      }
+
+      res.json({ success: true, subscriptionId: `push_${Date.now()}` });
+    } catch (error) {
+      console.error("Subscription error:", error);
+      res.status(500).json({ error: "Failed to subscribe" });
+    }
+  });
+
+  app.get("/api/notifications/streak-reminder", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const stats = await storage.getUserStats(userId);
+      
+      if (!stats) {
+        return res.json({ message: "Start journaling to get reminders!" });
+      }
+
+      const { NotificationService } = await import("./notificationService");
+      const reminderMessage = NotificationService.buildStreakReminderMessage(
+        stats.currentStreak || 0,
+        stats.longestStreak || 0
+      );
+
+      res.json({
+        message: reminderMessage,
+        currentStreak: stats.currentStreak || 0,
+        longestStreak: stats.longestStreak || 0
+      });
+    } catch (error) {
+      console.error("Reminder error:", error);
+      res.status(500).json({ error: "Failed to get reminder" });
+    }
+  });
+
+  app.post("/api/notifications/check-milestones", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const stats = await storage.getUserStats(userId);
+      
+      if (!stats) {
+        return res.json({ milestones: [] });
+      }
+
+      const { NotificationService } = await import("./notificationService");
+      const milestones = [];
+
+      const streakMilestone = NotificationService.checkStreakMilestones(stats.currentStreak || 0);
+      if (streakMilestone) milestones.push(streakMilestone);
+
+      const wordsMilestone = NotificationService.checkWordCountMilestones(stats.totalWords || 0);
+      if (wordsMilestone) milestones.push(wordsMilestone);
+
+      const entriesMilestone = NotificationService.checkEntryMilestones(stats.totalEntries || 0);
+      if (entriesMilestone) milestones.push(entriesMilestone);
+
+      res.json({ milestones });
+    } catch (error) {
+      console.error("Milestone check error:", error);
+      res.status(500).json({ error: "Failed to check milestones" });
+    }
+  });
+
   // Achievements endpoint
   app.get("/api/achievements", requireAuth, async (req: any, res) => {
     try {

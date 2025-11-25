@@ -4,9 +4,10 @@ import { Sun, Moon, Menu, X } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { PWAInstallButton } from "@/components/PWAManager";
 import { ThemeSelector } from "./theme-selector";
+import { NotificationCenter } from "./NotificationCenter";
 
 
 interface NavbarProps {
@@ -68,6 +69,10 @@ export default function Navbar({ currentView, activeTab, onNavigate }: NavbarPro
             <PWAInstallButton />
             
             <ThemeSelector />
+
+            <Suspense fallback={<div className="w-10 h-10" />}>
+              <NotificationCenter />
+            </Suspense>
             
             <Button
               variant="ghost"
