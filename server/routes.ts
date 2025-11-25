@@ -854,6 +854,98 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
     }
   });
 
+  // Weekly Summaries endpoint
+  app.get("/api/journal/summaries", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const entries = await storage.getJournalEntries(userId, 100);
+      
+      // Get entries from last 7 days
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      
+      const weeklyEntries = entries.filter((e: any) => {
+        const entryDate = new Date(e.createdAt);
+        return entryDate >= sevenDaysAgo;
+      });
+
+      if (weeklyEntries.length === 0) {
+        return res.json({
+          insights: ["Start journaling this week to get personalized AI insights!"],
+          moodArc: "No entries yet",
+          keyThemes: [],
+          journeyLine: "Your journey awaits..."
+        });
+      }
+
+      // Extract mood pattern
+      const moods = weeklyEntries.map((e: any) => e.mood);
+      const moodCounts: Record<string, number> = {};
+      moods.forEach((m: string) => {
+        moodCounts[m] = (moodCounts[m] || 0) + 1;
+      });
+      const dominantMood = Object.entries(moodCounts).sort(([,a], [,b]) => b - a)[0]?.[0] || "reflective";
+
+      // Extract themes from tags
+      const allTags = weeklyEntries
+        .flatMap((e: any) => e.tags || [])
+        .slice(0, 5);
+
+      // Combine content for analysis
+      const combinedContent = weeklyEntries.map((e: any) => e.content).join("\n\n");
+      const wordCount = weeklyEntries.reduce((sum: number, e: any) => sum + (e.wordCount || 0), 0);
+
+      // Generate AI insights using OpenAI
+      const { OpenAI } = await import("openai");
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+      const insightsPrompt = `Analyze this person's journal entries from the last week and provide 3 brief, actionable insights about their emotional journey:
+
+${combinedContent}
+
+Respond with exactly 3 short insights (2-3 sentences each), separated by newlines starting with "- ".`;
+
+      const journeyPrompt = `Summarize this person's week in 1-2 sentences based on these journal entries:
+
+${combinedContent}
+
+Be warm and reflective.`;
+
+      const [insightsResponse, journeyResponse] = await Promise.all([
+        openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [{ role: "user", content: insightsPrompt }],
+          max_tokens: 300,
+        }),
+        openai.chat.completions.create({
+          model: "gpt-4o",
+          messages: [{ role: "user", content: journeyPrompt }],
+          max_tokens: 100,
+        }),
+      ]);
+
+      const insightsText = insightsResponse.choices[0].message.content || "";
+      const insights = insightsText.split("\n").filter((i: string) => i.trim().startsWith("- ")).map((i: string) => i.replace(/^- /, "").trim());
+
+      const journeyLine = journeyResponse.choices[0].message.content || "A reflective week of self-discovery.";
+
+      res.json({
+        insights: insights.length > 0 ? insights : ["Great week of journaling!", "Keep exploring your thoughts.", "Your consistency is paying off!"],
+        moodArc: `Your dominant mood this week was ${dominantMood} (${moods.length} entries)`,
+        keyThemes: allTags,
+        journeyLine,
+        stats: {
+          entriesCount: weeklyEntries.length,
+          totalWords: wordCount,
+          daysCovered: Math.ceil((new Date().getTime() - sevenDaysAgo.getTime()) / (1000 * 60 * 60 * 24))
+        }
+      });
+    } catch (error: any) {
+      console.error("Summaries error:", error);
+      res.status(500).json({ error: "Failed to generate weekly summary" });
+    }
+  });
+
   // Stats endpoint
   app.get("/api/stats", requireAuth, async (req: any, res) => {
     try {

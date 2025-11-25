@@ -14,6 +14,7 @@ import { CameraCapture } from "../dashboard/CameraCapture";
 import { NewGoalForm, GoalDetailsView, EditGoalForm } from "../dashboard/GoalComponents";
 import { TypewriterTitle } from "../dashboard/TypewriterComponents";
 import { VoiceJournal } from "../VoiceJournal";
+import { WeeklySummary } from "../WeeklySummary";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));
@@ -357,6 +358,7 @@ function EnhancedDashboard({
       case 'journal':
         return (
           <div className="space-y-6">
+            <WeeklySummary />
             <VoiceJournal onEntryCreated={onJournalEntryCreated} />
             <Suspense fallback={<TabLoadingFallback />}>
               <InteractiveJournal 
