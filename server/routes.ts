@@ -1074,6 +1074,48 @@ Be warm and reflective.`;
     }
   });
 
+  // AI Coaching endpoint
+  app.get("/api/coaching/daily-prompt", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const stats = await storage.getUserStats(userId);
+      
+      if (!stats) {
+        return res.status(400).json({ error: "No stats found" });
+      }
+
+      // Get last 30 days of entries for mood analysis
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const recentEntries = await storage.getEntriesByDateRange?.(userId, thirtyDaysAgo, new Date()) || [];
+
+      const recentMoods = recentEntries.map((e: any) => e.mood || "😐").slice(-14);
+      const recentTags = recentEntries.flatMap((e: any) => e.tags || []);
+
+      const { CoachingService } = await import("./coachingService");
+      
+      const { prompt, tip, focus } = await CoachingService.generatePersonalizedPrompt(
+        recentMoods,
+        recentTags,
+        stats.currentStreak || 0,
+        recentEntries
+      );
+
+      const moodTrend = CoachingService.analyzeMoodTrend(recentMoods);
+      const recommendations = CoachingService.generateGrowthRecommendations(stats);
+
+      res.json({
+        prompt,
+        tip,
+        focus,
+        moodTrend,
+        recommendations: recommendations.slice(0, 3)
+      });
+    } catch (error) {
+      console.error("Coaching error:", error);
+      res.status(500).json({ error: "Failed to generate coaching" });
+    }
+  });
+
   // Achievements endpoint
   app.get("/api/achievements", requireAuth, async (req: any, res) => {
     try {

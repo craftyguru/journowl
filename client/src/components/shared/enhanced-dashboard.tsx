@@ -15,6 +15,7 @@ import { NewGoalForm, GoalDetailsView, EditGoalForm } from "../dashboard/GoalCom
 import { TypewriterTitle } from "../dashboard/TypewriterComponents";
 import { VoiceJournal } from "../VoiceJournal";
 import { WeeklySummary } from "../WeeklySummary";
+import { AICoaching } from "../AICoaching";
 import { GlobalLeaderboard } from "../GlobalLeaderboard";
 
 // Lazy-loaded heavy tab components for code splitting
