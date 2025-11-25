@@ -13,6 +13,7 @@ import { UsageMetersSection } from "../dashboard/UsageMetersSection";
 import { CameraCapture } from "../dashboard/CameraCapture";
 import { NewGoalForm, GoalDetailsView, EditGoalForm } from "../dashboard/GoalComponents";
 import { TypewriterTitle } from "../dashboard/TypewriterComponents";
+import { VoiceJournal } from "../VoiceJournal";
 
 // Lazy-loaded heavy tab components for code splitting
 const AchievementsSection = lazy(() => import("../dashboard/AchievementsSection").then(m => ({ default: m.AchievementsSection })));

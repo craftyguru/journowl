@@ -3918,3 +3918,55 @@ Your story shows how every day brings new experiences and emotions, creating the
 
   return httpServer;
 }
+
+  // Voice Journaling API
+  app.post("/api/journal/voice", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const audioFile = (req as any).files?.audio;
+
+      if (!audioFile) {
+        return res.status(400).json({ error: "No audio file provided" });
+      }
+
+      console.log(`📢 Voice entry received from user ${userId}, file size: ${audioFile.size}`);
+
+      // Save temp audio file
+      const tempPath = `/tmp/audio_${Date.now()}.webm`;
+      await audioFile.mv(tempPath);
+
+      // Transcribe audio
+      const { VoiceService } = await import("./voiceService");
+      const transcribedText = await VoiceService.transcribeAudio(tempPath);
+
+      if (!transcribedText) {
+        return res.status(400).json({ error: "Failed to transcribe audio" });
+      }
+
+      console.log(`✅ Transcribed: "${transcribedText.substring(0, 50)}..."`);
+
+      // Detect mood and generate tags
+      const mood = await VoiceService.detectMood(transcribedText);
+      const tags = await VoiceService.generateTags(transcribedText);
+
+      // Create journal entry
+      const entry = await storage.createJournalEntry(userId, {
+        title: `Voice Entry - ${new Date().toLocaleDateString()}`,
+        content: transcribedText,
+        mood,
+        tags: tags || [],
+      } as any);
+
+      // Clean up temp file
+      try {
+        require("fs").unlinkSync(tempPath);
+      } catch (e) {
+        console.log("Temp file cleanup skipped");
+      }
+
+      res.json({ success: true, entry, mood, tags });
+    } catch (error: any) {
+      console.error("Voice journal error:", error);
+      res.status(500).json({ error: "Failed to process voice entry" });
+    }
+  });
