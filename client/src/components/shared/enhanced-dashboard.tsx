@@ -628,35 +628,8 @@ function EnhancedDashboard({
         onCapture={handleCameraCapture}
       />
     </div>
+    </EnhancedErrorBoundary>
   );
 }
 
-// Main Enhanced Dashboard Export with Merged Help & Support
-export default function EnhancedDashboardWithSupport({ 
-  onSwitchToKid, 
-  initialTab = "journal", 
-  isJournalOpen = false 
-}: EnhancedDashboardProps) {
-  const [journalOpen, setJournalOpen] = useState(isJournalOpen);
-
-  const handleJournalStateChange = (isOpen: boolean) => {
-    setJournalOpen(isOpen);
-  };
-
-  return (
-    <ErrorBoundary>
-      <div className="relative">
-        <EnhancedDashboard 
-          onSwitchToKid={onSwitchToKid} 
-          initialTab={initialTab} 
-          onJournalStateChange={handleJournalStateChange} 
-        />
-        
-        {/* Fixed positioned support bubble in bottom right */}
-        <div className="fixed bottom-6 right-6 z-50">
-          <MergedHelpSupportBubble hideWhenJournalOpen={journalOpen} />
-        </div>
-      </div>
-    </ErrorBoundary>
-  );
-}
+export default EnhancedDashboard;
