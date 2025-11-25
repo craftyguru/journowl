@@ -3627,6 +3627,104 @@ Your story shows how every day brings new experiences and emotions, creating the
     });
   });
   
+  // Weekly Challenges API
+  app.get("/api/challenges", requireAuth, async (req: any, res) => {
+    try {
+      const challenges = await storage.getActiveWeeklyChallenges();
+      const userId = req.session.userId;
+      
+      const enrichedChallenges = await Promise.all(challenges.map(async (c: any) => {
+        const progress = await storage.getUserChallengeProgress(userId, c.id);
+        return {
+          ...c,
+          progress: progress?.progress || 0,
+          isCompleted: progress?.isCompleted || false
+        };
+      }));
+      
+      res.json(enrichedChallenges);
+    } catch (error) {
+      console.error("Error fetching challenges:", error);
+      res.status(500).json({ error: "Failed to fetch challenges" });
+    }
+  });
+
+  app.post("/api/challenges/progress", requireAuth, async (req: any, res) => {
+    try {
+      const { challengeId, progress, isCompleted } = req.body;
+      const userId = req.session.userId;
+      
+      await storage.updateChallengeProgress(userId, challengeId, progress, isCompleted);
+      
+      if (isCompleted) {
+        await storage.updateUserXP(userId, 100);
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating challenge progress:", error);
+      res.status(500).json({ error: "Failed to update progress" });
+    }
+  });
+
+  // Email Reminders API
+  app.get("/api/reminders", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const reminders = await storage.getEmailReminderPreferences(userId);
+      res.json(reminders);
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+      res.status(500).json({ error: "Failed to fetch reminders" });
+    }
+  });
+
+  app.put("/api/reminders/:type", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { type } = req.params;
+      const updates = req.body;
+      
+      await storage.updateEmailReminder(userId, type, updates);
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error updating reminder:", error);
+      res.status(500).json({ error: "Failed to update reminder" });
+    }
+  });
+
+  // Mood Trends API
+  app.get("/api/mood-trends", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const entries = await storage.getJournalEntries(userId, 100);
+      
+      const moodTrends = entries
+        .filter(e => e.mood)
+        .map(e => ({
+          date: e.createdAt || new Date(),
+          mood: e.mood,
+          value: getMoodValue(e.mood)
+        }))
+        .reverse();
+      
+      res.json(moodTrends);
+    } catch (error) {
+      console.error("Error fetching mood trends:", error);
+      res.status(500).json({ error: "Failed to fetch mood trends" });
+    }
+  });
+
+  function getMoodValue(mood: string): number {
+    const moodScores: Record<string, number> = {
+      happy: 5, excited: 5, grateful: 5,
+      calm: 4, neutral: 3,
+      anxious: 2, sad: 2,
+      angry: 1
+    };
+    return moodScores[mood.toLowerCase()] || 3;
+  }
+
   // Version endpoint for PWA auto-updates
   app.get("/api/version", (req, res) => {
     res.json({ 
