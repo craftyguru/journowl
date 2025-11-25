@@ -378,12 +378,15 @@ function EnhancedDashboard({
                 Export PDF
               </Button>
             </div>
+            <ExtendedSummaries />
             <WeeklySummary />
             <AICoaching />
             <VoiceJournal onEntryCreated={() => {
               queryClient.invalidateQueries({ queryKey: ["/api/journal/entries"] });
               queryClient.invalidateQueries({ queryKey: ["/api/stats"] });
               queryClient.invalidateQueries({ queryKey: ["/api/journal/summaries"] });
+              queryClient.invalidateQueries({ queryKey: ["/api/summaries/weekly"] });
+              queryClient.invalidateQueries({ queryKey: ["/api/summaries/monthly"] });
             }} />
             <Suspense fallback={<TabLoadingFallback />}>
               <InteractiveJournal 
