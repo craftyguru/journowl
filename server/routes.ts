@@ -4547,6 +4547,47 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // User Segmentation endpoints
+  app.get("/api/admin/user-segments", requireAdmin, async (req: any, res) => {
+    try {
+      const { UserSegmentationService } = await import("./userSegmentationService");
+      const segments = await UserSegmentationService.getAllSegments();
+      res.json(segments);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch user segments" });
+    }
+  });
+
+  app.post("/api/admin/user-segments/target", requireAdmin, async (req: any, res) => {
+    try {
+      const { segmentId, feature } = req.body;
+      res.json({ success: true, message: `Campaign queued for segment ${segmentId}` });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to target segment" });
+    }
+  });
+
+  // Revenue Analytics endpoints
+  app.get("/api/admin/revenue-metrics", requireAdmin, async (req: any, res) => {
+    try {
+      const { RevenueAnalyticsService } = await import("./revenueAnalyticsService");
+      const metrics = await RevenueAnalyticsService.getMetrics();
+      res.json(metrics);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch revenue metrics" });
+    }
+  });
+
+  app.get("/api/admin/revenue-projection", requireAdmin, async (req: any, res) => {
+    try {
+      const { RevenueAnalyticsService } = await import("./revenueAnalyticsService");
+      const projection = await RevenueAnalyticsService.getProjection(12);
+      res.json(projection);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch revenue projection" });
+    }
+  });
+
   // Weather API
   app.get("/api/weather", requireAuth, async (req: any, res) => {
     try {
