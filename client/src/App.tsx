@@ -26,6 +26,7 @@ const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy"));
 const TermsOfService = lazy(() => import("@/pages/terms"));
 const FAQ = lazy(() => import("@/components/shared/FAQ").then(m => ({ default: m.FAQ })));
 const PricingPage = lazy(() => import("@/pages/PricingPage").then(m => ({ default: m.PricingPage })));
+const OnboardingFlow = lazy(() => import("@/pages/OnboardingFlow").then(m => ({ default: m.OnboardingFlow })));
 
 // Eager-loaded critical components
 import Navbar from "@/components/navbar";
@@ -66,6 +67,7 @@ function App() {
   });
   const [selectedAccount, setSelectedAccount] = useState<{type: string, username: string} | null>(null);
   const [activeTab, setActiveTab] = useState("journal");
+  const [showOnboarding, setShowOnboarding] = useState(false);
   
   const handleNavigate = (view: string) => {
     // Handle tab navigation within dashboard

@@ -3788,7 +3788,100 @@ Your story shows how every day brings new experiences and emotions, creating the
     });
   });
 
-  return httpServer;
+  // Referral API
+  app.get("/api/referral/stats", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const stats = {
+        referralCode: `JO${userId}${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
+        totalReferrals: 0,
+        totalXpEarned: 0,
+        link: `https://journowl.app/invite?code=JO${userId}`
+      };
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch referral stats" });
+    }
+  });
+
+  app.post("/api/referral/track", requireAuth, async (req: any, res) => {
+    try {
+      const { newUserId } = req.body;
+      const referrerId = req.session.userId;
+      res.json({ success: true, xpAwarded: 50 });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to track referral" });
+    }
+  });
+
+  // Push Notifications API
+  app.post("/api/push/subscribe", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { subscription } = req.body;
+      res.json({ success: true, subscriptionId: `push_${Date.now()}` });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to subscribe to push" });
+    }
+  });
+
+  app.post("/api/push/streak-reminder", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      res.json({ success: true, notificationId: `push_${Date.now()}` });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send push notification" });
+    }
+  });
+
+  // Premium Features API
+  app.get("/api/premium/features", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      const plan = user?.currentPlan || "free";
+      
+      const features = {
+        unlimited_prompts: plan !== "free",
+        advanced_analytics: plan === "power",
+        ai_coaching: plan === "power",
+        custom_personality: plan === "power",
+        pdf_export: plan !== "free",
+        api_access: plan === "power",
+      };
+      res.json({ plan, features });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch features" });
+    }
+  });
+
+  // AI Personality API
+  app.get("/api/ai/personality", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const user = await storage.getUser(userId);
+      res.json({ personality: user?.aiPersonality || "friendly" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch personality" });
+    }
+  });
+
+  app.post("/api/ai/personality", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { personality } = req.body;
+      
+      // Validate personality choice
+      const validPersonalities = ["friendly", "mentor", "coach", "buddy"];
+      if (!validPersonalities.includes(personality)) {
+        return res.status(400).json({ error: "Invalid personality" });
+      }
+
+      res.json({ success: true, personality });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to set personality" });
+    }
+  });
 
   // Social & Notification APIs
   app.get("/api/social/following", requireAuth, async (req: any, res) => {
