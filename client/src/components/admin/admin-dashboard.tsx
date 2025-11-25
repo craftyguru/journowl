@@ -228,16 +228,16 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 dark:from-black dark:via-gray-900 dark:to-black p-2 sm:p-4 lg:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800 dark:from-black dark:via-gray-900 dark:to-black p-2 sm:p-4 lg:p-6" data-testid="admin-dashboard">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-4 sm:mb-6 lg:mb-8">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-4">
             <div>
-              <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-1 sm:mb-2">
+              <h1 className="text-lg sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-1 sm:mb-2" data-testid="admin-title">
                 🦉 JournOwl Admin Dashboard
               </h1>
-              <p className="text-sm sm:text-base text-gray-300 dark:text-gray-400">
+              <p className="text-xs sm:text-base text-gray-300 dark:text-gray-400">
                 Welcome back, {user?.username?.replace('_Admin', '') || 'Admin'}! Manage your wise journaling community
               </p>
             </div>
@@ -254,6 +254,7 @@ export default function AdminDashboard() {
               }}
               className="border-red-300 text-red-600 hover:bg-red-50 w-full sm:w-auto"
               size="sm"
+              data-testid="button-logout"
             >
               Logout
             </Button>
@@ -261,66 +262,66 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8">
-          <Card className="bg-gray-800/90 dark:bg-gray-900/90 backdrop-blur-sm border-gray-700 shadow-xl">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 mb-4 sm:mb-6 lg:mb-8" data-testid="admin-stats">
+          <Card className="bg-gray-800/90 dark:bg-gray-900/90 backdrop-blur-sm border-gray-700 shadow-xl" data-testid="stat-total-users">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2">
               <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Total Users</CardTitle>
               <Users className="h-3 w-3 sm:h-4 sm:w-4 text-purple-400" />
             </CardHeader>
             <CardContent className="pt-1 sm:pt-2">
-              <div className="text-lg sm:text-2xl font-bold text-purple-400">{analytics.totalUsers || 0}</div>
+              <div className="text-base sm:text-2xl font-bold text-purple-400">{analytics.totalUsers || 0}</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800/90 dark:bg-gray-900/90 backdrop-blur-sm border-gray-700 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">Active Users</CardTitle>
-              <UserCheck className="h-4 w-4 text-green-400" />
+          <Card className="bg-gray-800/90 dark:bg-gray-900/90 backdrop-blur-sm border-gray-700 shadow-xl" data-testid="stat-active-users">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Active Users</CardTitle>
+              <UserCheck className="h-3 w-3 sm:h-4 sm:w-4 text-green-400" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-400">{analytics.activeUsers || 0}</div>
+            <CardContent className="pt-1 sm:pt-2">
+              <div className="text-base sm:text-2xl font-bold text-green-400">{analytics.activeUsers || 0}</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800/90 dark:bg-gray-900/90 backdrop-blur-sm border-gray-700 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">Email Campaigns</CardTitle>
-              <Mail className="h-4 w-4 text-blue-400" />
+          <Card className="bg-gray-800/90 dark:bg-gray-900/90 backdrop-blur-sm border-gray-700 shadow-xl" data-testid="stat-campaigns">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Email Campaigns</CardTitle>
+              <Mail className="h-3 w-3 sm:h-4 sm:w-4 text-blue-400" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-blue-400">{campaigns.length}</div>
+            <CardContent className="pt-1 sm:pt-2">
+              <div className="text-base sm:text-2xl font-bold text-blue-400">{campaigns.length}</div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800/90 dark:bg-gray-900/90 backdrop-blur-sm border-gray-700 shadow-xl">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-gray-300">Recent Activity</CardTitle>
-              <Activity className="h-4 w-4 text-orange-400" />
+          <Card className="bg-gray-800/90 dark:bg-gray-900/90 backdrop-blur-sm border-gray-700 shadow-xl" data-testid="stat-activity">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 sm:pb-2">
+              <CardTitle className="text-xs sm:text-sm font-medium text-gray-300">Recent Activity</CardTitle>
+              <Activity className="h-3 w-3 sm:h-4 sm:w-4 text-orange-400" />
             </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-orange-400">{activityLogs.length}</div>
+            <CardContent className="pt-1 sm:pt-2">
+              <div className="text-base sm:text-2xl font-bold text-orange-400">{activityLogs.length}</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="users" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-gray-800/80 dark:bg-gray-900/80 border-gray-700">
-            <TabsTrigger value="users" className="flex items-center gap-2">
-              <Users className="h-4 w-4" />
-              Users
+        <Tabs defaultValue="users" className="space-y-4 sm:space-y-6" data-testid="admin-tabs">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 bg-gray-800/80 dark:bg-gray-900/80 border-gray-700" data-testid="admin-tab-list">
+            <TabsTrigger value="users" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" data-testid="tab-users">
+              <Users className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Users</span>
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
-              <BarChart3 className="h-4 w-4" />
-              Analytics
+            <TabsTrigger value="analytics" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" data-testid="tab-analytics">
+              <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden md:inline">Analytics</span>
             </TabsTrigger>
-            <TabsTrigger value="revenue" className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Revenue
+            <TabsTrigger value="revenue" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" data-testid="tab-revenue">
+              <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden lg:inline">Revenue</span>
             </TabsTrigger>
-            <TabsTrigger value="insights" className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4" />
-              AI Insights
+            <TabsTrigger value="insights" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm" data-testid="tab-insights">
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden lg:inline">AI Insights</span>
             </TabsTrigger>
             <TabsTrigger value="email" className="flex items-center gap-2">
               <Mail className="h-4 w-4" />
