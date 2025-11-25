@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { queryClient } from "./lib/queryClient";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,28 +7,39 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { getCurrentUser } from "@/lib/auth";
 import { checkForPWAUpdate, clearPWACache } from "@/lib/pwa-utils";
 import { apiRequest } from "@/lib/queryClient";
-import AuthPage from "@/pages/auth";
-import Dashboard from "@/pages/dashboard";
-import InsightsPage from "@/pages/insights";
+
+// Lazy-loaded dashboard components for code splitting
+const AuthPage = lazy(() => import("@/pages/auth"));
+const Dashboard = lazy(() => import("@/pages/dashboard"));
+const InsightsPage = lazy(() => import("@/pages/insights"));
+const AdminDashboard = lazy(() => import("@/components/admin/admin-dashboard"));
+const EnhancedDashboard = lazy(() => import("@/components/shared/enhanced-dashboard"));
+const KidDashboard = lazy(() => import("@/components/kid-dashboard"));
+const ReferralPage = lazy(() => import("@/components/referral-page"));
+
+// Lazy-loaded pages for static routes
+const EmailConfirmation = lazy(() => import("@/pages/email-confirmation").then(m => ({ default: m.EmailConfirmation })));
+const EmailVerified = lazy(() => import("@/pages/email-verified"));
+const ImportPage = lazy(() => import("@/pages/ImportPage"));
+const SharePage = lazy(() => import("@/pages/SharePage"));
+const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy"));
+const TermsOfService = lazy(() => import("@/pages/terms"));
+const FAQ = lazy(() => import("@/components/shared/FAQ").then(m => ({ default: m.FAQ })));
+
+// Eager-loaded critical components
 import Navbar from "@/components/navbar";
 import AccountSelector from "@/components/profile/account-selector";
-import AdminDashboard from "@/components/admin/admin-dashboard";
-import EnhancedDashboard from "@/components/shared/enhanced-dashboard";
-import KidDashboard from "@/components/kid-dashboard";
-import ReferralPage from "@/components/referral-page";
 import LandingHero from "@/components/ui/LandingHero";
-
 import { StarryBackground } from "@/components/starry-background";
 import { PWAUpdateBanner } from "@/components/PWAUpdateBanner";
 import { PWAMobilePrompt } from "@/components/PWAManager";
 
-import { EmailConfirmation } from "@/pages/email-confirmation";
-import EmailVerified from "@/pages/email-verified";
-import ImportPage from "@/pages/ImportPage";
-import SharePage from "@/pages/SharePage";
-import PrivacyPolicy from "@/pages/privacy-policy";
-import TermsOfService from "@/pages/terms";
-import { FAQ } from "@/components/shared/FAQ";
+// Loading fallback component
+const LoadingFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent"></div>
+  </div>
+);
 
 function App() {
   // Check if demo mode is requested from URL params
