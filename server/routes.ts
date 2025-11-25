@@ -1085,8 +1085,7 @@ Be warm and reflective.`;
       }
 
       // Get last 30 days of entries for mood analysis
-      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-      const recentEntries = await storage.getEntriesByDateRange?.(userId, thirtyDaysAgo, new Date()) || [];
+      const recentEntries = await storage.getJournalEntries(userId, 30) || [];
 
       const recentMoods = recentEntries.map((e: any) => e.mood || "😐").slice(-14);
       const recentTags = recentEntries.flatMap((e: any) => e.tags || []);
@@ -2038,13 +2037,11 @@ Your story shows how every day brings new experiences and emotions, creating the
   // Announcements Routes
   app.post("/api/admin/announcements", requireAdmin, async (req: any, res) => {
     try {
-      const { title, content, type, targetAudience, expiresAt } = req.body;
+      const { title, content, type } = req.body;
       const announcement = await storage.createAnnouncement({
         title,
         content,
         type,
-        targetAudience,
-        expiresAt: expiresAt ? new Date(expiresAt) : undefined,
         createdBy: req.session.userId
       });
       res.json({ announcement });
@@ -2414,14 +2411,13 @@ Your story shows how every day brings new experiences and emotions, creating the
   app.post("/api/support/messages", requireAuth, async (req, res) => {
     try {
       const userId = req.session.userId!;
-      const { message, attachmentUrl, attachmentType } = req.body;
+      const { message } = req.body;
       
       const supportMessage = await storage.createSupportMessage({
         userId,
         message,
-        sender: 'user',
-        attachmentUrl,
-        attachmentType
+        subject: "Support",
+        priority: "normal"
       });
       
       res.json(supportMessage);
@@ -2469,15 +2465,13 @@ Your story shows how every day brings new experiences and emotions, creating the
         return res.status(403).json({ message: "Admin access required" });
       }
       
-      const { userId: targetUserId, message, attachmentUrl, attachmentType } = req.body;
+      const { userId: targetUserId, message } = req.body;
       
       const supportMessage = await storage.createSupportMessage({
         userId: targetUserId,
         message,
-        sender: 'admin',
-        attachmentUrl,
-        attachmentType,
-        adminName: user.username
+        subject: "Admin Response",
+        priority: "high"
       });
       
       res.json(supportMessage);
@@ -3842,10 +3836,8 @@ Your story shows how every day brings new experiences and emotions, creating the
           const supportMessage = await storage.createSupportMessage({
             userId: actualUserId,
             message: message.message,
-            sender: message.sender,
-            attachmentUrl: message.attachmentUrl,
-            attachmentType: message.attachmentType,
-            adminName: message.adminName
+            subject: "Chat Message",
+            priority: "normal"
           });
           
           // Broadcast to user and all admins
@@ -4470,7 +4462,7 @@ Your story shows how every day brings new experiences and emotions, creating the
         if (stats) {
           await storage.updateUserStats(userId, {
             ...stats,
-            totalPrompts: (stats.totalPrompts || 100) + result.reward
+            totalEntries: (stats.totalEntries || 0) + 1
           });
         }
       }
