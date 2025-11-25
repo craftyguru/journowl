@@ -867,6 +867,69 @@ export class DatabaseStorage implements IStorage {
   async updateEmailReminder(userId: number, type: string, updates: Partial<any>): Promise<void> {
     // Stubbed - email reminders table not in current schema
   }
+
+  // Shared Journals Methods
+  async createSharedJournal(data: any): Promise<any> {
+    try {
+      const result = await db.insert(sharedJournals).values(data).returning();
+      return result[0];
+    } catch (error) {
+      console.error("Error creating shared journal:", error);
+      throw error;
+    }
+  }
+
+  async getUserSharedJournals(userId: number): Promise<any[]> {
+    try {
+      const ownedJournals = await db.select().from(sharedJournals).where(eq(sharedJournals.ownerId, userId));
+      const memberOf = await db.select().from(sharedJournalMembers)
+        .where(eq(sharedJournalMembers.userId, userId));
+      const memberJournals = await Promise.all(
+        memberOf.map(m => db.select().from(sharedJournals).where(eq(sharedJournals.id, m.sharedJournalId)))
+      );
+      return [...ownedJournals, ...memberJournals.flat()];
+    } catch (error) {
+      console.error("Error fetching shared journals:", error);
+      return [];
+    }
+  }
+
+  async getSharedJournal(id: number): Promise<any | undefined> {
+    try {
+      const result = await db.select().from(sharedJournals).where(eq(sharedJournals.id, id)).limit(1);
+      return result[0];
+    } catch (error) {
+      console.error("Error fetching shared journal:", error);
+      return undefined;
+    }
+  }
+
+  async inviteToSharedJournal(journalId: number, inviterId: number, email: string): Promise<void> {
+    try {
+      const invitee = await db.select().from(users).where(eq(users.email, email)).limit(1);
+      if (invitee.length > 0) {
+        await db.insert(sharedJournalMembers).values({
+          sharedJournalId: journalId,
+          userId: invitee[0].id,
+          role: 'member'
+        }).onConflictDoNothing();
+      }
+    } catch (error) {
+      console.error("Error inviting to shared journal:", error);
+    }
+  }
+
+  async addJournalEntryToShared(sharedJournalId: number, journalEntryId: number, userId: number): Promise<void> {
+    try {
+      await db.insert(sharedJournalEntries).values({
+        sharedJournalId,
+        journalEntryId,
+        sharedBy: userId
+      });
+    } catch (error) {
+      console.error("Error sharing journal entry:", error);
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();
