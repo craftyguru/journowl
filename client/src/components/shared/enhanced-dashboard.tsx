@@ -16,6 +16,7 @@ import { TypewriterTitle } from "../dashboard/TypewriterComponents";
 import { VoiceJournal } from "../VoiceJournal";
 import { WeeklySummary } from "../WeeklySummary";
 import { AICoaching } from "../AICoaching";
+import { PDFExport } from "../PDFExport";
 import { GlobalLeaderboard } from "../GlobalLeaderboard";
 
 // Lazy-loaded heavy tab components for code splitting
@@ -84,6 +85,7 @@ function EnhancedDashboard({
   const [showIntroTutorial, setShowIntroTutorial] = useState(false);
   const [isFirstLogin, setIsFirstLogin] = useState(false);
   const [showCameraCapture, setShowCameraCapture] = useState(false);
+  const [showPDFExport, setShowPDFExport] = useState(false);
   
   // Analytics Modal States
   const [showWordCloudModal, setShowWordCloudModal] = useState(false);
@@ -360,6 +362,18 @@ function EnhancedDashboard({
       case 'journal':
         return (
           <div className="space-y-6">
+            <div className="flex justify-end">
+              <Button
+                onClick={() => setShowPDFExport(true)}
+                variant="outline"
+                size="sm"
+                className="gap-2"
+                data-testid="button-export-pdf"
+              >
+                <Download className="w-4 h-4" />
+                Export PDF
+              </Button>
+            </div>
             <WeeklySummary />
             <AICoaching />
             <VoiceJournal onEntryCreated={() => {
