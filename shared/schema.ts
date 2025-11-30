@@ -1,6 +1,102 @@
-import { pgTable, text, serial, integer, boolean, timestamp, json, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, json, varchar, index, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+
+// ============ ENTERPRISE: ORGANIZATIONS & MULTI-TENANCY ============
+
+export const organizations = pgTable("organizations", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  slug: text("slug").notNull().unique(),
+  plan: text("plan").default("free"), // free|pro|power|enterprise
+  dataRegion: text("data_region").default("us"), // us|eu
+  logoUrl: text("logo_url"),
+  website: text("website"),
+  industry: text("industry"), // healthcare|fitness|corporate|education|other
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const organizationMembers = pgTable("organization_members", {
+  id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  role: text("role").notNull(), // owner|admin|coach|therapist|member|viewer
+  invitedBy: integer("invited_by").references(() => users.id),
+  inviteEmail: text("invite_email"),
+  joinedAt: timestamp("joined_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  orgUserUnique: unique().on(table.organizationId, table.userId),
+}));
+
+export const organizationAiSettings = pgTable("organization_ai_settings", {
+  id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull().unique(),
+  allowCoachingChat: boolean("allow_coaching_chat").default(true),
+  allowPersonalDataToAi: boolean("allow_personal_data_to_ai").default(false),
+  maxTokensPerMonth: integer("max_tokens_per_month").default(100000),
+  allowedModels: json("allowed_models").default(["gpt-4o-mini"]),
+  storeAiResponses: boolean("store_ai_responses").default(false),
+  redactPii: boolean("redact_pii").default(true),
+  kidsModeEnabled: boolean("kids_mode_enabled").default(false),
+  traderModeEnabled: boolean("trader_mode_enabled").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const identityProviders = pgTable("identity_providers", {
+  id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  type: text("type").notNull(), // saml|oidc
+  name: text("name").notNull(),
+  issuer: text("issuer").notNull(),
+  ssoUrl: text("sso_url").notNull(),
+  entityId: text("entity_id"),
+  certificate: text("certificate"),
+  clientId: text("client_id"),
+  clientSecret: text("client_secret"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const aiRequests = pgTable("ai_requests", {
+  id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  feature: text("feature").notNull(), // coaching_chat|dream_analysis|mood_forecast|summary|story_mode
+  model: text("model").notNull(),
+  promptHash: text("prompt_hash").notNull(),
+  tokensIn: integer("tokens_in").default(0),
+  tokensOut: integer("tokens_out").default(0),
+  costUsd: integer("cost_usd").default(0),
+  status: text("status").default("success"), // success|error|blocked|redacted
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+  orgFeatureIdx: index().on(table.organizationId, table.feature),
+}));
+
+export const auditLogs = pgTable("audit_logs", {
+  id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  actorId: integer("actor_id").references(() => users.id),
+  actorType: text("actor_type").notNull(), // user|system|admin
+  action: text("action").notNull(), // view_data|export_data|delete_data|update_settings|create_campaign
+  resourceType: text("resource_type"), // user|journal_entry|settings|ai_policy
+  resourceId: integer("resource_id"),
+  details: json("details"),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  orgActionIdx: index().on(table.organizationId, table.action),
+  orgActorIdx: index().on(table.organizationId, table.actorId),
+}));
+
+// ============ CORE TABLES (with org_id added) ============
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -48,6 +144,7 @@ export const users = pgTable("users", {
 
 export const journalEntries = pgTable("journal_entries", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   title: text("title").notNull(),
   content: text("content").notNull(),
@@ -66,10 +163,13 @@ export const journalEntries = pgTable("journal_entries", {
   weather: text("weather"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+}));
 
 export const achievements = pgTable("achievements", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   achievementId: text("achievement_id").notNull(),
   title: text("title").notNull(),
@@ -81,10 +181,13 @@ export const achievements = pgTable("achievements", {
   currentValue: integer("current_value").default(0),
   unlockedAt: timestamp("unlocked_at"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+}));
 
 export const userStats = pgTable("user_stats", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   totalEntries: integer("total_entries").default(0),
   totalWords: integer("total_words").default(0),
@@ -92,18 +195,24 @@ export const userStats = pgTable("user_stats", {
   longestStreak: integer("longest_streak").default(0),
   lastEntryDate: timestamp("last_entry_date"),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => ({
+  orgUserUnique: unique().on(table.organizationId, table.userId),
+}));
 
 export const moodTrends = pgTable("mood_trends", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   date: timestamp("date").defaultNow().notNull(),
   mood: text("mood").notNull(),
   value: integer("value").notNull(),
-});
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+}));
 
 export const goals = pgTable("goals", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   goalId: text("goal_id").notNull(),
   title: text("title").notNull(),
@@ -116,7 +225,9 @@ export const goals = pgTable("goals", {
   deadline: timestamp("deadline"),
   createdAt: timestamp("created_at").defaultNow(),
   completedAt: timestamp("completed_at"),
-});
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+}));
 
 export const journalPrompts = pgTable("journal_prompts", {
   id: serial("id").primaryKey(),
@@ -140,6 +251,7 @@ export const adminAnalytics = pgTable("admin_analytics", {
 
 export const emailCampaigns = pgTable("email_campaigns", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   title: text("title").notNull(),
   subject: text("subject").notNull(),
   content: text("content").notNull(),
@@ -153,7 +265,9 @@ export const emailCampaigns = pgTable("email_campaigns", {
   clickRate: integer("click_rate").default(0),
   createdBy: integer("created_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  orgIdx: index().on(table.organizationId),
+}));
 
 export const siteSettings = pgTable("site_settings", {
   id: serial("id").primaryKey(),
@@ -164,16 +278,20 @@ export const siteSettings = pgTable("site_settings", {
 
 export const userActivityLogs = pgTable("user_activity_logs", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   action: text("action").notNull(),
   details: json("details"),
   ipAddress: text("ip_address"),
   userAgent: text("user_agent"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  orgActionIdx: index().on(table.organizationId, table.action),
+}));
 
 export const moderationQueue = pgTable("moderation_queue", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id),
   contentId: integer("content_id"),
   contentType: text("content_type").notNull(),
@@ -184,10 +302,13 @@ export const moderationQueue = pgTable("moderation_queue", {
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),
   reviewedAt: timestamp("reviewed_at"),
-});
+}, (table) => ({
+  orgStatusIdx: index().on(table.organizationId, table.status),
+}));
 
 export const announcements = pgTable("announcements", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   title: text("title").notNull(),
   content: text("content").notNull(),
   icon: text("icon"),
@@ -197,10 +318,13 @@ export const announcements = pgTable("announcements", {
   createdBy: integer("created_by").references(() => users.id).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => ({
+  orgIdx: index().on(table.organizationId),
+}));
 
 export const supportMessages = pgTable("support_messages", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   subject: text("subject").notNull(),
   message: text("message").notNull(),
@@ -209,10 +333,13 @@ export const supportMessages = pgTable("support_messages", {
   assignedTo: integer("assigned_to").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => ({
+  orgStatusIdx: index().on(table.organizationId, table.status),
+}));
 
 export const promptPurchases = pgTable("prompt_purchases", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   quantity: integer("quantity").notNull(),
   amount: integer("amount").notNull(),
@@ -220,10 +347,13 @@ export const promptPurchases = pgTable("prompt_purchases", {
   stripePaymentId: text("stripe_payment_id"),
   status: text("status").default("completed"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+}));
 
 export const weeklyChallenges = pgTable("weekly_challenges", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   week: integer("week").notNull(),
   year: integer("year").notNull(),
   title: text("title").notNull(),
@@ -231,20 +361,26 @@ export const weeklyChallenges = pgTable("weekly_challenges", {
   goal: text("goal").notNull(),
   reward: integer("reward").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  orgWeekIdx: index().on(table.organizationId, table.week, table.year),
+}));
 
 export const userChallengeProgress = pgTable("user_challenge_progress", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   challengeId: integer("challenge_id").references(() => weeklyChallenges.id).notNull(),
   progress: integer("progress").default(0),
   isCompleted: boolean("is_completed").default(false),
   completedAt: timestamp("completed_at"),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+}));
 
 export const referrals = pgTable("referrals", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   referrerId: integer("referrer_id").references(() => users.id).notNull(),
   refereeId: integer("referee_id").references(() => users.id),
   referralCode: text("referral_code").notNull().unique(),
@@ -252,10 +388,13 @@ export const referrals = pgTable("referrals", {
   rewardGiven: boolean("reward_given").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   completedAt: timestamp("completed_at"),
-});
+}, (table) => ({
+  orgReferrerIdx: index().on(table.organizationId, table.referrerId),
+}));
 
 export const notifications = pgTable("notifications", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   type: text("type").notNull(),
   title: text("title").notNull(),
@@ -263,11 +402,14 @@ export const notifications = pgTable("notifications", {
   icon: text("icon"),
   isRead: boolean("is_read").default(false),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+}));
 
 // Shared Journals Tables
 export const sharedJournals = pgTable("shared_journals", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   name: text("name").notNull(),
   description: text("description"),
   ownerId: integer("owner_id").references(() => users.id).notNull(),
@@ -275,25 +417,41 @@ export const sharedJournals = pgTable("shared_journals", {
   isPublic: boolean("is_public").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
-});
+}, (table) => ({
+  orgIdx: index().on(table.organizationId),
+}));
 
 export const sharedJournalMembers = pgTable("shared_journal_members", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   sharedJournalId: integer("shared_journal_id").references(() => sharedJournals.id).notNull(),
   userId: integer("user_id").references(() => users.id).notNull(),
   role: text("role").default("member"),
   joinedAt: timestamp("joined_at").defaultNow(),
-});
+}, (table) => ({
+  orgJournalIdx: index().on(table.organizationId, table.sharedJournalId),
+}));
 
 export const sharedJournalEntries = pgTable("shared_journal_entries", {
   id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
   sharedJournalId: integer("shared_journal_id").references(() => sharedJournals.id).notNull(),
   journalEntryId: integer("journal_entry_id").references(() => journalEntries.id).notNull(),
   sharedBy: integer("shared_by").references(() => users.id).notNull(),
   sharedAt: timestamp("shared_at").defaultNow(),
-});
+}, (table) => ({
+  orgJournalIdx: index().on(table.organizationId, table.sharedJournalId),
+}));
 
-// Types
+// Enterprise Types
+export type Organization = typeof organizations.$inferSelect;
+export type OrganizationMember = typeof organizationMembers.$inferSelect;
+export type OrganizationAiSettings = typeof organizationAiSettings.$inferSelect;
+export type IdentityProvider = typeof identityProviders.$inferSelect;
+export type AiRequest = typeof aiRequests.$inferSelect;
+export type AuditLog = typeof auditLogs.$inferSelect;
+
+// Core Types
 export type User = typeof users.$inferSelect;
 export type JournalEntry = typeof journalEntries.$inferSelect;
 export type Achievement = typeof achievements.$inferSelect;
@@ -317,7 +475,15 @@ export type SharedJournal = typeof sharedJournals.$inferSelect;
 export type SharedJournalMember = typeof sharedJournalMembers.$inferSelect;
 export type SharedJournalEntry = typeof sharedJournalEntries.$inferSelect;
 
-// Insert schemas
+// Enterprise Insert Schemas
+export const insertOrganizationSchema = createInsertSchema(organizations).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertOrganizationMemberSchema = createInsertSchema(organizationMembers).omit({ id: true, createdAt: true });
+export const insertOrganizationAiSettingsSchema = createInsertSchema(organizationAiSettings).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertIdentityProviderSchema = createInsertSchema(identityProviders).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAiRequestSchema = createInsertSchema(aiRequests).omit({ id: true, createdAt: true });
+export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({ id: true, createdAt: true });
+
+// Core Insert Schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertJournalEntrySchema = createInsertSchema(journalEntries).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertAchievementSchema = createInsertSchema(achievements).omit({ id: true, createdAt: true });
@@ -332,6 +498,13 @@ export const insertEmailReminderSchema = z.object({
   frequency: z.string().optional(),
   preferredTime: z.string().optional(),
 });
+
+export type InsertOrganization = z.infer<typeof insertOrganizationSchema>;
+export type InsertOrganizationMember = z.infer<typeof insertOrganizationMemberSchema>;
+export type InsertOrganizationAiSettings = z.infer<typeof insertOrganizationAiSettingsSchema>;
+export type InsertIdentityProvider = z.infer<typeof insertIdentityProviderSchema>;
+export type InsertAiRequest = z.infer<typeof insertAiRequestSchema>;
+export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertJournalEntry = z.infer<typeof insertJournalEntrySchema>;
