@@ -5,10 +5,9 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCurrentUser } from "@/lib/auth";
 import { apiRequest } from "@/lib/queryClient";
 import UnifiedJournal from "@/components/unified-journal";
+import { ModeDashboard } from "@/components/mode-specific/ModeDashboard";
 import { type JournalEntry, type UserStats, type Achievement } from "@/lib/types";
-import { DashboardHeader } from "@/components/professional-dashboard/DashboardHeader";
-import { DashboardNav } from "@/components/professional-dashboard/DashboardNav";
-import { DashboardContent } from "@/components/professional-dashboard/DashboardContent";
+import { type InterfaceMode } from "@/lib/modes";
 
 export default function Dashboard() {
   const [isJournalOpen, setIsJournalOpen] = useState(false);
@@ -37,6 +36,7 @@ export default function Dashboard() {
   const stats = statsResponse?.stats;
   const achievements = statsResponse?.achievements || [];
   const entries = entriesResponse || [];
+  const interfaceMode = (user?.interfaceMode || 'wellness') as InterfaceMode;
 
   const openNewEntry = () => {
     setEditingEntry(undefined);
@@ -143,17 +143,13 @@ export default function Dashboard() {
 
   return (
     <div className="mobile-container mobile-safe-area py-4 sm:py-6 lg:py-8">
-      <DashboardHeader user={user} stats={stats} />
-      <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
-      <DashboardContent
-        activeTab={activeTab}
+      {/* Render mode-specific dashboard */}
+      <ModeDashboard
+        mode={interfaceMode}
+        user={user}
+        stats={stats}
         entries={entries}
-        achievements={achievements}
-        insightResponse={insightResponse}
-        onOpenNewEntry={openNewEntry}
-        onEditEntry={handleEntryEdit}
-        onDateSelect={handleDateSelect}
-        onTrackMood={openNewEntry}
+        onNewEntry={openNewEntry}
       />
 
       {/* Floating Action Button */}

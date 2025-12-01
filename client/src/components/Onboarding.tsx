@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, BookOpen, Zap, Users, Target, CheckCircle } from "lucide-react";
-import { getModeOptions } from "@/lib/modes";
+import { getModeOptions, type InterfaceMode } from "@/lib/modes";
+import { ModeOnboarding } from "./mode-specific/ModeOnboarding";
 import { apiRequest } from "@/lib/queryClient";
 
 interface OnboardingProps {
@@ -32,17 +33,14 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       type: "mode-selector"
     },
     {
+      type: "mode-onboarding",
+      mode: selectedMode as InterfaceMode
+    },
+    {
       icon: <Zap className="w-12 h-12 text-yellow-500" />,
       title: "AI-Powered Insights",
       subtitle: "Discover patterns in your thoughts",
       description: "Get personalized coaching, mood trends, and intelligent recommendations based on your entries.",
-      cta: "Next"
-    },
-    {
-      icon: <Users className="w-12 h-12 text-pink-500" />,
-      title: "Connect & Compete",
-      subtitle: "Share your journey with others",
-      description: "Follow friends, see their achievements, and compete on global leaderboards.",
       cta: "Next"
     },
     {
@@ -63,9 +61,17 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           method: 'PATCH',
           body: JSON.stringify({ interfaceMode: selectedMode })
         });
+        setStep(step + 1); // Go to mode-specific onboarding
       } catch (error) {
         console.error('Failed to save interface mode:', error);
+        setStep(step + 1);
       }
+      return;
+    }
+
+    if (current.type === "mode-onboarding") {
+      onComplete();
+      return;
     }
     
     if (step < steps.length - 1) {
@@ -93,8 +99,13 @@ export function Onboarding({ onComplete }: OnboardingProps) {
         >
           <Card className="w-full max-w-2xl bg-gradient-to-br from-slate-800 to-slate-900 border-purple-500/30 shadow-2xl">
             <div className="p-8 space-y-6">
-              {/* Mode Selector */}
-              {current.type === "mode-selector" ? (
+              {/* Mode-Specific Onboarding */}
+              {current.type === "mode-onboarding" && selectedMode ? (
+                <ModeOnboarding
+                  mode={selectedMode as InterfaceMode}
+                  onComplete={() => handleNext()}
+                />
+              ) : current.type === "mode-selector" ? (
                 <>
                   <div className="text-center space-y-3">
                     <h1 className="text-3xl font-bold text-white">{current.title}</h1>
