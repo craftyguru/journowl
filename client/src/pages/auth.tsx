@@ -202,6 +202,26 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
     },
   });
 
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (email: string) => {
+      const response = await apiRequest("POST", "/api/auth/forgot-password", { email });
+      return await response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Reset link sent!",
+        description: "Please check your inbox for the password reset link.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Failed to send reset link",
+        description: error.message || "Please try again",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (!loginData.identifier || !loginData.password) {
@@ -353,6 +373,8 @@ export default function AuthPage({ setShowAuth, onRegistrationSuccess, onAuthent
                     setLoginData={setLoginData}
                     onSubmit={handleLogin}
                     isLoading={loginMutation.isPending}
+                    onForgotPassword={(email) => forgotPasswordMutation.mutate(email)}
+                    onResendVerification={(email) => resendVerificationMutation.mutate(email)}
                   />
                   <OAuthButtons />
                 </TabsContent>

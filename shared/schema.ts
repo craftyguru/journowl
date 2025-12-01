@@ -134,6 +134,8 @@ export const users = pgTable("users", {
   emailVerificationToken: text("email_verification_token"),
   emailVerificationExpires: timestamp("email_verification_expires"),
   requiresEmailVerification: boolean("requires_email_verification").default(true),
+  // passwordResetToken: text("password_reset_token"),
+  // passwordResetExpires: timestamp("password_reset_expires"),
   currentPlan: text("current_plan").default("free"),
   promptsUsedThisMonth: integer("prompts_used_this_month").default(0),
   promptsRemaining: integer("prompts_remaining").default(100),

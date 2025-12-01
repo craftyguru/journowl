@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,10 +10,16 @@ interface LoginFormProps {
   setLoginData: (data: { identifier: string; password: string }) => void;
   onSubmit: (e: React.FormEvent) => void;
   isLoading: boolean;
+  onForgotPassword?: (email: string) => void;
+  onResendVerification?: (email: string) => void;
 }
 
-export const LoginForm = ({ loginData, setLoginData, onSubmit, isLoading }: LoginFormProps) => {
+export const LoginForm = ({ loginData, setLoginData, onSubmit, isLoading, onForgotPassword, onResendVerification }: LoginFormProps) => {
   const { toast } = useToast();
+  const [showForgotModal, setShowForgotModal] = useState(false);
+  const [showResendModal, setShowResendModal] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [resendEmail, setResendEmail] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +74,31 @@ export const LoginForm = ({ loginData, setLoginData, onSubmit, isLoading }: Logi
           autoComplete="current-password"
         />
       </motion.div>
+
+      {/* Forgot Password & Resend Verification Links */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
+        className="flex gap-2 justify-center text-sm"
+      >
+        <button
+          type="button"
+          onClick={() => setShowForgotModal(true)}
+          className="text-purple-400 hover:text-purple-300 underline"
+        >
+          Forgot Password?
+        </button>
+        <span className="text-gray-500">•</span>
+        <button
+          type="button"
+          onClick={() => setShowResendModal(true)}
+          className="text-purple-400 hover:text-purple-300 underline"
+        >
+          Resend Verification
+        </button>
+      </motion.div>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -89,6 +121,100 @@ export const LoginForm = ({ loginData, setLoginData, onSubmit, isLoading }: Logi
           )}
         </Button>
       </motion.div>
+
+      {/* Forgot Password Modal */}
+      {showForgotModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowForgotModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-gray-900 rounded-lg p-6 w-full max-w-sm border border-white/10 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-white mb-4">Reset Password</h3>
+            <p className="text-gray-300 text-sm mb-4">Enter your email and we'll send you a link to reset your password.</p>
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={forgotEmail}
+              onChange={(e) => setForgotEmail(e.target.value)}
+              className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 mb-4"
+            />
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setShowForgotModal(false)}
+                className="flex-1 bg-white/10 hover:bg-white/20"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  if (forgotEmail) {
+                    onForgotPassword?.(forgotEmail);
+                    setShowForgotModal(false);
+                    setForgotEmail("");
+                  } else {
+                    toast({
+                      title: "Please enter your email",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+              >
+                Send Reset Link
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Resend Verification Modal */}
+      {showResendModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={() => setShowResendModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-gray-900 rounded-lg p-6 w-full max-w-sm border border-white/10 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-lg font-semibold text-white mb-4">Resend Verification Email</h3>
+            <p className="text-gray-300 text-sm mb-4">Enter your email and we'll send you a new verification link.</p>
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={resendEmail}
+              onChange={(e) => setResendEmail(e.target.value)}
+              className="bg-white/5 border-white/20 text-white placeholder:text-gray-400 mb-4"
+            />
+            <div className="flex gap-2">
+              <Button
+                onClick={() => setShowResendModal(false)}
+                className="flex-1 bg-white/10 hover:bg-white/20"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  if (resendEmail) {
+                    onResendVerification?.(resendEmail);
+                    setShowResendModal(false);
+                    setResendEmail("");
+                  } else {
+                    toast({
+                      title: "Please enter your email",
+                      variant: "destructive",
+                    });
+                  }
+                }}
+                className="flex-1 bg-purple-600 hover:bg-purple-700"
+              >
+                Resend Email
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </motion.form>
   );
 };

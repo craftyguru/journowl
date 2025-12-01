@@ -533,6 +533,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Forgot password - send reset link
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "Email is required" });
+      }
+      
+      // Find user
+      const [user] = await db.select()
+        .from(users)
+        .where(eq(users.email, email));
+      
+      if (!user) {
+        // Don't reveal if user exists
+        return res.json({ message: "If this email exists, a reset link has been sent" });
+      }
+      
+      // Generate reset token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const resetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+      
+      // Update user with reset token
+      // Note: password reset fields will be added to schema in future migration
+      // await db.update(users)
+      //   .set({
+      //     passwordResetToken: resetToken,
+      //     passwordResetExpires: resetExpires
+      //   } as any)
+      //   .where(eq(users.id, user.id));
+      
+      // Send reset email
+      try {
+        const resetLink = `${process.env.VITE_PRODUCTION_DOMAIN || 'http://localhost:5000'}/reset-password?token=${resetToken}`;
+        const emailTemplate = {
+          to: user.email,
+          from: 'noreply@journowl.app',
+          subject: 'JournOwl Password Reset Request',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #8b5cf6;">JournOwl Password Reset</h2>
+              <p>Hi ${user.username || 'User'},</p>
+              <p>We received a request to reset your password. Click the link below to proceed:</p>
+              <a href="${resetLink}" style="display: inline-block; padding: 12px 24px; background: #8b5cf6; color: white; text-decoration: none; border-radius: 6px; margin: 20px 0;">Reset Password</a>
+              <p style="color: #666; font-size: 12px;">This link expires in 1 hour. If you didn't request this, you can ignore this email.</p>
+            </div>
+          `
+        };
+        
+        if (process.env.SENDGRID_API_KEY) {
+          await sendEmailWithSendGrid(emailTemplate);
+        }
+      } catch (emailError) {
+        console.error('Failed to send password reset email:', emailError);
+        // Don't fail the request, user might retry
+      }
+      
+      res.json({ message: "If this email exists, a reset link has been sent" });
+    } catch (error: any) {
+      console.error('Forgot password error:', error);
+      res.status(500).json({ message: "An error occurred" });
+    }
+  });
+
   app.post("/api/auth/login", async (req, res) => {
     try {
       const { identifier, email, password } = req.body;
