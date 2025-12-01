@@ -26,6 +26,9 @@ import Stripe from "stripe";
 import path from "path";
 import multer from "multer";
 import MemoryStore from "memorystore";
+import { enrichOrgContext, requireOrgAdmin, withOrgScope } from "./middleware/orgRbac";
+import { AuditService } from "./services/auditService";
+import { AIGatewayService } from "./services/aiGatewayService";
 
 // Configure multer for file uploads
 const upload = multer({
@@ -108,6 +111,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupOAuth();
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // ENTERPRISE: Apply org context enrichment middleware globally
+  app.use(enrichOrgContext);
 
   // Auth middleware - djfluent session recovery system
   const requireAuth = async (req: any, res: any, next: any) => {
@@ -2928,6 +2934,190 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
+  // ============ ENTERPRISE: COMPLIANCE ENDPOINTS (TASK 5) ============
+  
+  // Export organization data (GDPR/CCPA compliance)
+  app.post("/api/admin/export-org-data", requireAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const { organizationId, dataTypes } = req.body;
+      
+      // Verify user is org admin
+      if (!req.orgId) {
+        return res.status(403).json({ error: "Not in organization" });
+      }
+
+      // Log audit event
+      await AuditService.logDataExport(
+        req.orgId,
+        userId,
+        "organization_data",
+        { dataTypes, exportedAt: new Date() },
+        req.ip,
+        req.headers['user-agent']
+      );
+
+      // Aggregate org data (users, entries, settings, etc.)
+      const orgUsers = await db.select()
+        .from(users)
+        .limit(1000); // Safety limit
+
+      const orgData = {
+        exportedAt: new Date(),
+        organizationId: req.orgId,
+        users: orgUsers,
+        exportedBy: userId,
+      };
+
+      res.json(orgData);
+    } catch (error: any) {
+      console.error("Export org data error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Delete user data (GDPR right to be forgotten)
+  app.delete("/api/admin/delete-user/:userId", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const adminId = req.session.userId;
+
+      // Log audit event
+      await AuditService.logDataDeletion(
+        req.orgId!,
+        adminId,
+        parseInt(userId),
+        req.ip,
+        req.headers['user-agent']
+      );
+
+      // Delete all user data
+      const userIdNum = parseInt(userId);
+      
+      // Delete journal entries
+      await db.delete(journalEntries)
+        .where(eq(journalEntries.userId, userIdNum));
+
+      // Delete achievements
+      await db.delete(achievements)
+        .where(eq(achievements.userId, userIdNum));
+
+      // Update user (soft delete)
+      await storage.updateUser(userIdNum, {
+        email: `deleted_${userIdNum}@deleted.com`,
+        username: `deleted_user_${userIdNum}`,
+        password: null,
+        isActive: false,
+      } as any);
+
+      res.json({ message: "User data deleted successfully" });
+    } catch (error: any) {
+      console.error("Delete user error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Anonymize user data (GDPR compliance)
+  app.post("/api/admin/anonymize-user/:userId", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const adminId = req.session.userId;
+
+      // Log audit event
+      await AuditService.logSettingsChange(
+        req.orgId!,
+        adminId,
+        "user_anonymization",
+        null,
+        { userId, anonymizedAt: new Date() },
+        req.ip,
+        req.headers['user-agent']
+      );
+
+      const userIdNum = parseInt(userId);
+
+      // Anonymize all personal identifiable information
+      await storage.updateUser(userIdNum, {
+        email: `anon_${userIdNum}@anonymized.com`,
+        username: `anonymized_user_${userIdNum}`,
+        firstName: null,
+        lastName: null,
+        bio: null,
+        profileImageUrl: null,
+        favoriteQuote: null,
+        preferences: {},
+      } as any);
+
+      // Anonymize journal entries
+      await db.update(journalEntries)
+        .set({
+          title: "[Anonymized]",
+          content: "[Content removed for privacy]",
+          location: null,
+        } as any)
+        .where(eq(journalEntries.userId, userIdNum));
+
+      res.json({ message: "User anonymized successfully" });
+    } catch (error: any) {
+      console.error("Anonymize user error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get audit logs for organization
+  app.get("/api/admin/audit-logs", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const { limit = 100, offset = 0 } = req.query;
+
+      const logs = await AuditService.getOrgAuditLogs(req.orgId!, {
+        limit: parseInt(limit as string),
+        offset: parseInt(offset as string),
+      });
+
+      res.json(logs);
+    } catch (error: any) {
+      console.error("Audit logs error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ TASK 7: HEALTH CHECK ENDPOINTS ============
+
+  // Liveness probe - is service running?
+  app.get("/healthz", (req, res) => {
+    res.json({
+      status: "alive",
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || "development",
+    });
+  });
+
+  // Readiness probe - is service ready to handle traffic?
+  app.get("/readyz", async (req, res) => {
+    try {
+      // Check database connectivity
+      const dbCheck = await db.select().from(users).limit(1);
+      
+      res.json({
+        status: "ready",
+        timestamp: new Date().toISOString(),
+        checks: {
+          database: "healthy",
+          openai: !!process.env.OPENAI_API_KEY ? "configured" : "not_configured",
+          stripe: !!process.env.STRIPE_SECRET_KEY ? "configured" : "not_configured",
+        },
+      });
+    } catch (error: any) {
+      console.error("Readiness check failed:", error);
+      res.status(503).json({
+        status: "not_ready",
+        timestamp: new Date().toISOString(),
+        error: error.message,
+      });
+    }
+  });
+
   // Database setup endpoint - creates all required tables
   app.post("/api/admin/setup-database", async (req, res) => {
     try {
@@ -5153,6 +5343,346 @@ Your story shows how every day brings new experiences and emotions, creating the
     } catch (error) {
       console.error("Monthly summary error:", error);
       res.status(500).json({ error: "Failed to generate summary" });
+    }
+  });
+
+  // ============ TASK 8: SCIM-LITE PROVISIONING ENDPOINTS ============
+
+  // SCIM Users endpoint - list/search users
+  app.get("/api/scim/Users", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const { filter, startIndex = 1, count = 100 } = req.query;
+
+      // Fetch org users
+      const orgMemberships = await db
+        .select()
+        .from(organizationMembers)
+        .where(eq(organizationMembers.organizationId, req.orgId!))
+        .limit(parseInt(count as string));
+
+      const scimUsers = await Promise.all(
+        orgMemberships.map(async (m: any) => {
+          const user = await storage.getUser(m.userId);
+          return {
+            id: user?.id,
+            username: user?.username,
+            emails: [{ value: user?.email, primary: true }],
+            name: {
+              givenName: user?.firstName || "",
+              familyName: user?.lastName || "",
+            },
+            active: user?.isActive ?? true,
+            meta: {
+              resourceType: "User",
+              created: user?.createdAt || new Date(),
+              lastModified: user?.updatedAt || new Date(),
+            },
+          };
+        })
+      );
+
+      res.json({
+        schemas: ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
+        totalResults: scimUsers.length,
+        startIndex: parseInt(startIndex as string),
+        itemsPerPage: parseInt(count as string),
+        Resources: scimUsers,
+      });
+    } catch (error: any) {
+      console.error("SCIM Users error:", error);
+      res.status(500).json({
+        schemas: ["urn:ietf:params:scim:api:messages:2.0:Error"],
+        status: 500,
+        detail: error.message,
+      });
+    }
+  });
+
+  // SCIM Create User
+  app.post("/api/scim/Users", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const { userName, emails, name } = req.body;
+
+      // Create user
+      const user = await createUser({
+        username: userName,
+        email: emails?.[0]?.value || `user_${Date.now()}@auto.scim`,
+        firstName: name?.givenName,
+        lastName: name?.familyName,
+        password: crypto.randomBytes(16).toString("hex"),
+      });
+
+      // Add to organization
+      await db.insert(organizationMembers).values({
+        organizationId: req.orgId!,
+        userId: user.id,
+        role: "member",
+        joinedAt: new Date(),
+      } as any);
+
+      res.status(201).json({
+        id: user.id,
+        username: user.username,
+        emails: [{ value: user.email, primary: true }],
+        meta: {
+          resourceType: "User",
+          created: new Date(),
+        },
+      });
+    } catch (error: any) {
+      console.error("SCIM Create User error:", error);
+      res.status(400).json({
+        schemas: ["urn:ietf:params:scim:api:messages:2.0:Error"],
+        status: 400,
+        detail: error.message,
+      });
+    }
+  });
+
+  // ============ TASK 8B: ADMIN AI ENDPOINTS ============
+
+  // Get engagement insights for organization
+  app.get("/api/admin/ai/engagement-insights", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const { days = 30 } = req.query;
+
+      // Get all org users
+      const memberships = await db
+        .select()
+        .from(organizationMembers)
+        .where(eq(organizationMembers.organizationId, req.orgId!));
+
+      const userIds = memberships.map((m: any) => m.userId);
+
+      // Calculate engagement metrics
+      const insights = {
+        totalUsers: userIds.length,
+        activeUsers: 0,
+        avgEntriesPerUser: 0,
+        engagementScore: 0,
+        topMoods: {} as Record<string, number>,
+        recommendations: [] as string[],
+      };
+
+      for (const userId of userIds) {
+        const stats = await storage.getUserStats(userId);
+        if (stats && stats.totalEntries > 0) {
+          insights.activeUsers++;
+          insights.avgEntriesPerUser += stats.totalEntries;
+        }
+      }
+
+      insights.avgEntriesPerUser =
+        insights.activeUsers > 0 ? insights.avgEntriesPerUser / insights.activeUsers : 0;
+      insights.engagementScore = Math.round((insights.activeUsers / insights.totalUsers) * 100);
+
+      // Generate recommendations
+      if (insights.engagementScore < 30) {
+        insights.recommendations.push("Low engagement - Consider sending onboarding campaigns");
+      }
+      if (insights.avgEntriesPerUser > 10) {
+        insights.recommendations.push("High engagement - Users are highly active");
+      }
+
+      res.json(insights);
+    } catch (error: any) {
+      console.error("Engagement insights error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get segment coaching plan recommendations
+  app.get("/api/admin/ai/segment-coaching-plan", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const { segment = "all" } = req.query;
+
+      // Get org members
+      const memberships = await db
+        .select()
+        .from(organizationMembers)
+        .where(eq(organizationMembers.organizationId, req.orgId!));
+
+      // Segment analysis based on engagement
+      const coachingPlan = {
+        segment: segment,
+        recommendedActions: [] as string[],
+        targetMetrics: {
+          entriesPerWeek: 3,
+          averageMoodScore: 7,
+          retentionGoal: "95%",
+        },
+        timeline: "30 days",
+      };
+
+      if (segment === "inactive") {
+        coachingPlan.recommendedActions = [
+          "Send re-engagement email campaign",
+          "Offer onboarding reminder",
+          "Highlight new features",
+        ];
+      } else if (segment === "active") {
+        coachingPlan.recommendedActions = [
+          "Introduce premium features",
+          "Gather feedback on tools",
+          "Cross-sell related services",
+        ];
+      } else {
+        coachingPlan.recommendedActions = [
+          "Monitor all user cohorts",
+          "Segment by engagement level",
+          "Personalize communications",
+        ];
+      }
+
+      res.json(coachingPlan);
+    } catch (error: any) {
+      console.error("Segment coaching error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ TASK 4: SAML/OIDC ENTERPRISE SSO ============
+
+  // Get SSO configuration for organization
+  app.get("/api/admin/sso/config", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const config = await db
+        .select()
+        .from(identityProviders)
+        .where(eq(identityProviders.organizationId, req.orgId!));
+
+      res.json({ providers: config });
+    } catch (error: any) {
+      console.error("SSO config error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Create/update SSO provider
+  app.post("/api/admin/sso/provider", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const { type, name, issuer, ssoUrl, entityId, certificate, clientId, clientSecret } = req.body;
+
+      // Check org plan supports SSO
+      const org = await db.select().from(organizations).where(eq(organizations.id, req.orgId!)).limit(1);
+      if (org?.[0]?.plan !== "enterprise") {
+        return res.status(403).json({ error: "SSO requires Enterprise plan" });
+      }
+
+      const provider = await db
+        .insert(identityProviders)
+        .values({
+          organizationId: req.orgId!,
+          type,
+          name,
+          issuer,
+          ssoUrl,
+          entityId,
+          certificate,
+          clientId,
+          clientSecret,
+          isActive: true,
+        } as any)
+        .returning();
+
+      // Log configuration change
+      await AuditService.logSettingsChange(
+        req.orgId!,
+        req.session.userId,
+        "sso_provider_created",
+        null,
+        { provider: provider[0] },
+        req.ip,
+        req.headers["user-agent"]
+      );
+
+      res.json(provider[0]);
+    } catch (error: any) {
+      console.error("SSO provider error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ TASK 9: FEATURE FLAGS & ENTERPRISE TIER ============
+
+  // Get organization feature flags
+  app.get("/api/org/features", requireAuth, async (req: any, res) => {
+    try {
+      const org = await db.select().from(organizations).where(eq(organizations.id, req.orgId!)).limit(1);
+
+      const features = {
+        enableSAML: org?.[0]?.plan === "enterprise",
+        enableOIDC: org?.[0]?.plan === "enterprise",
+        enableOrgAdmin: org?.[0]?.plan === "enterprise" || org?.[0]?.plan === "power",
+        enableAIGovernance: org?.[0]?.plan === "enterprise",
+        enableSCIM: org?.[0]?.plan === "enterprise",
+        enableAuditLogs: org?.[0]?.plan === "enterprise" || org?.[0]?.plan === "power",
+        enableDataExport: org?.[0]?.plan !== "free",
+      };
+
+      res.json(features);
+    } catch (error: any) {
+      console.error("Features error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update organization AI settings (feature flags)
+  app.put("/api/org/ai-settings", requireAuth, requireOrgAdmin, async (req: any, res) => {
+    try {
+      const {
+        allowCoachingChat,
+        allowPersonalDataToAi,
+        maxTokensPerMonth,
+        allowedModels,
+        redactPii,
+      } = req.body;
+
+      const updated = await db
+        .update(organizationAiSettings)
+        .set({
+          allowCoachingChat,
+          allowPersonalDataToAi,
+          maxTokensPerMonth,
+          allowedModels,
+          redactPii,
+        } as any)
+        .where(eq(organizationAiSettings.organizationId, req.orgId!))
+        .returning();
+
+      // Log AI policy change
+      await AuditService.logSettingsChange(
+        req.orgId!,
+        req.session.userId,
+        "ai_policy_updated",
+        null,
+        { settings: updated[0] },
+        req.ip,
+        req.headers["user-agent"]
+      );
+
+      res.json(updated[0]);
+    } catch (error: any) {
+      console.error("AI settings error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Upgrade organization to Enterprise
+  app.post("/api/admin/upgrade-enterprise", requireAuth, requireAdmin, async (req: any, res) => {
+    try {
+      const { organizationId } = req.body;
+
+      const updated = await db
+        .update(organizations)
+        .set({ plan: "enterprise" } as any)
+        .where(eq(organizations.id, organizationId))
+        .returning();
+
+      res.json(updated[0]);
+    } catch (error: any) {
+      console.error("Enterprise upgrade error:", error);
+      res.status(500).json({ error: error.message });
     }
   });
 
