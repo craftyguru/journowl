@@ -26,6 +26,8 @@ export const SignupForm = ({
 }: SignupFormProps) => {
   const { toast } = useToast();
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+  const [showDocModal, setShowDocModal] = useState(false);
+  const [docType, setDocType] = useState<"terms" | "privacy" | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -155,29 +157,26 @@ export const SignupForm = ({
           <Checkbox
             id="terms"
             checked={hasAgreedToTerms}
-            onCheckedChange={(checked) => {
-              if (!checked) {
-                toast({
-                  title: "Terms required",
-                  description: "You must accept the Terms of Service to continue.",
-                  variant: "destructive",
-                });
-              }
-            }}
-            disabled
-            className="mt-1"
+            onCheckedChange={() => {}}
+            className="mt-1 pointer-events-none"
+            disabled={!hasAgreedToTerms}
           />
-          <Label htmlFor="terms" className="text-sm text-gray-300 cursor-pointer font-normal">
-            I accept the{" "}
-            <a
-              href="/terms"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1"
+          <Label htmlFor="terms" className="text-sm text-gray-300 font-normal">
+            <span className={hasAgreedToTerms ? "text-green-400" : "text-gray-400"}>
+              I accept the
+            </span>{" "}
+            <button
+              type="button"
+              className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1 cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                setDocType("terms");
+                setShowDocModal(true);
+              }}
             >
               Terms of Service
               <ExternalLink className="w-3 h-3" />
-            </a>
+            </button>
           </Label>
         </div>
 
@@ -188,17 +187,20 @@ export const SignupForm = ({
             onCheckedChange={(checked) => setAgreedToPrivacy(checked as boolean)}
             className="mt-1"
           />
-          <Label htmlFor="privacy" className="text-sm text-gray-300 cursor-pointer font-normal">
+          <Label htmlFor="privacy" className="text-sm text-gray-300 font-normal">
             I have read and agree to the{" "}
-            <a
-              href="/privacy-policy"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1"
+            <button
+              type="button"
+              className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1 cursor-pointer"
+              onClick={(e) => {
+                e.preventDefault();
+                setDocType("privacy");
+                setShowDocModal(true);
+              }}
             >
               Privacy Policy
               <ExternalLink className="w-3 h-3" />
-            </a>
+            </button>
           </Label>
         </div>
       </motion.div>
@@ -235,6 +237,53 @@ export const SignupForm = ({
       <p className="text-xs text-gray-400 text-center mt-2">
         Password must be at least 8 characters with letters and numbers
       </p>
+
+      {/* Document Modal with Iframe */}
+      {showDocModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-gray-900 rounded-lg max-w-2xl w-full h-[80vh] flex flex-col shadow-2xl border border-white/10"
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 border-b border-white/10">
+              <h3 className="text-lg font-semibold text-white">
+                {docType === "terms" ? "Terms of Service" : "Privacy Policy"}
+              </h3>
+              <button
+                onClick={() => {
+                  setShowDocModal(false);
+                  setDocType(null);
+                }}
+                className="text-gray-400 hover:text-white text-2xl leading-none"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Iframe Content */}
+            <iframe
+              src={docType === "terms" ? "/terms" : "/privacy-policy"}
+              className="flex-1 w-full border-none bg-gray-800"
+              title={docType === "terms" ? "Terms of Service" : "Privacy Policy"}
+            />
+
+            {/* Footer */}
+            <div className="p-4 border-t border-white/10 flex gap-2">
+              <button
+                onClick={() => {
+                  setShowDocModal(false);
+                  setDocType(null);
+                }}
+                className="flex-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </motion.form>
   );
 };
