@@ -40,16 +40,28 @@ import {
 import { eq, desc, sql, and, gte, lt } from "drizzle-orm";
 import crypto from 'crypto';
 
-// Setup DB client with SSL enabled
-let dbUrl = process.env.DATABASE_URL;
-if (!dbUrl || dbUrl.includes("DATABASE_URL=")) {
-  dbUrl = "postgresql://postgres.asjcxaiabjsbjbasssfe:KCqwTTy4bwqNrHti@aws-0-us-east-2.pooler.supabase.com:6543/postgres";
+// Setup DB client - prefer Replit native DB over DATABASE_URL
+let dbUrl: string;
+
+// Check for Replit native database first
+if (process.env.PGHOST && process.env.PGPORT && process.env.PGUSER && process.env.PGDATABASE) {
+  const password = process.env.PGPASSWORD || '';
+  dbUrl = `postgresql://${process.env.PGUSER}${password ? ':' + password : ''}@${process.env.PGHOST}:${process.env.PGPORT}/${process.env.PGDATABASE}`;
+  console.log("Using Replit native database:", process.env.PGHOST);
+} else if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes("DATABASE_URL=")) {
+  // Use DATABASE_URL if it's valid
+  dbUrl = process.env.DATABASE_URL;
+  console.log("Using DATABASE_URL");
+} else {
+  // Fallback (should not reach here in production)
+  throw new Error("No database configuration found. Set PGHOST/PGPORT/PGUSER/PGDATABASE or DATABASE_URL");
 }
+
 dbUrl = dbUrl.replace(/^DATABASE_URL=/, "");
-console.log("Database connecting to:", dbUrl.split("@")[1]?.split("?")[0]);
+console.log("Database connecting to:", dbUrl.split("@")[1]?.split("?")[0] || "local database");
 
 const client = postgres(dbUrl, {
-  ssl: { rejectUnauthorized: false },
+  ssl: process.env.PGHOST === "helium" ? undefined : { rejectUnauthorized: false },
   max: 20,
   idle_timeout: 20,
   connect_timeout: 10,
