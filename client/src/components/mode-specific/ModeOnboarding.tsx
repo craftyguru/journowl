@@ -86,25 +86,25 @@ const MODE_FLOWS: Record<InterfaceMode, any> = {
   },
 
   team: {
-    title: 'Corporate Team Setup',
+    title: 'Corporate Wellness Setup',
     questions: [
       {
-        id: 'use_level',
-        question: 'Usage model:',
+        id: 'user_role',
+        question: 'What\'s your role in this initiative?',
         type: 'select',
-        options: ['Individual wellness', 'Team-wide initiative', 'Department program']
+        options: ['HR Administrator', 'Team Manager', 'Employee/Team Member', 'Executive/Leadership']
       },
       {
-        id: 'anonymized_dashboards',
-        question: 'Organization sees anonymized dashboards?',
+        id: 'wellness_goals',
+        question: 'What are your primary wellness goals?',
         type: 'select',
-        options: ['Yes - aggregated data only', 'No - private only']
+        options: ['Employee engagement & retention', 'Mental health support', 'Compliance & reporting', 'Team morale & culture']
       },
       {
-        id: 'privacy_level',
-        question: 'Privacy preference:',
+        id: 'privacy_commitment',
+        question: 'Privacy is critical. We guarantee:',
         type: 'select',
-        options: ['Strict - no org visibility', 'Standard - anonymized trends']
+        options: ['Individual entries always private', 'Only anonymized data shared with organization']
       }
     ]
   },
