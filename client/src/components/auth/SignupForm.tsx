@@ -27,8 +27,6 @@ export const SignupForm = ({
   const { toast } = useToast();
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState<"terms" | "privacy" | null>(null);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,17 +161,15 @@ export const SignupForm = ({
           />
           <Label htmlFor="terms" className="text-sm text-gray-300 font-normal">
             I accept the{" "}
-            <button
-              type="button"
-              onClick={() => {
-                setModalType("terms");
-                setShowModal(true);
-              }}
+            <a
+              href="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1 cursor-pointer hover:underline"
             >
               Terms of Service
               <ExternalLink className="w-3 h-3" />
-            </button>
+            </a>
           </Label>
         </div>
 
@@ -186,17 +182,15 @@ export const SignupForm = ({
           />
           <Label htmlFor="privacy" className="text-sm text-gray-300 font-normal">
             I have read and agree to the{" "}
-            <button
-              type="button"
-              onClick={() => {
-                setModalType("privacy");
-                setShowModal(true);
-              }}
+            <a
+              href="/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1 cursor-pointer hover:underline"
             >
               Privacy Policy
               <ExternalLink className="w-3 h-3" />
-            </button>
+            </a>
           </Label>
         </div>
       </motion.div>
@@ -233,50 +227,6 @@ export const SignupForm = ({
       <p className="text-xs text-gray-400 text-center mt-2">
         Password must be at least 8 characters with letters and numbers
       </p>
-
-      {/* Modal with Iframe */}
-      {showModal && modalType && (
-        <div 
-          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
-          onClick={() => setShowModal(false)}
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-gray-900 rounded-lg w-full max-w-3xl h-[80vh] flex flex-col border border-white/10 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-white/10">
-              <h3 className="text-lg font-semibold text-white">
-                {modalType === "terms" ? "Terms of Service" : "Privacy Policy"}
-              </h3>
-              <button
-                onClick={() => setShowModal(false)}
-                className="text-gray-400 hover:text-white text-2xl"
-              >
-                ×
-              </button>
-            </div>
-
-            {/* Iframe */}
-            <iframe
-              src={modalType === "terms" ? "/terms" : "/privacy-policy"}
-              className="flex-1 border-none bg-gray-800"
-            />
-
-            {/* Footer */}
-            <div className="p-4 border-t border-white/10">
-              <button
-                onClick={() => setShowModal(false)}
-                className="w-full px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors"
-              >
-                Close
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      )}
     </motion.form>
   );
 };
