@@ -25,6 +25,7 @@ export const SignupForm = ({
   captchaToken
 }: SignupFormProps) => {
   const { toast } = useToast();
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -154,15 +155,12 @@ export const SignupForm = ({
         <div className="flex items-start gap-2">
           <Checkbox
             id="terms"
-            checked={hasAgreedToTerms}
-            onCheckedChange={() => {}}
-            className="mt-1 pointer-events-none"
-            disabled={!hasAgreedToTerms}
+            checked={agreedToTerms}
+            onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+            className="mt-1"
           />
           <Label htmlFor="terms" className="text-sm text-gray-300 font-normal">
-            <span className={hasAgreedToTerms ? "text-green-400" : "text-gray-400"}>
-              I accept the
-            </span>{" "}
+            I accept the{" "}
             <a
               href="/terms"
               target="_blank"
@@ -200,7 +198,7 @@ export const SignupForm = ({
       <Button 
         type="submit" 
         className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={isLoading || !agreedToPrivacy}
+        disabled={isLoading || !agreedToTerms || !agreedToPrivacy}
       >
         {isLoading ? (
           <div className="flex items-center gap-2">
@@ -213,7 +211,7 @@ export const SignupForm = ({
       </Button>
 
       {/* Security indicators */}
-      {hasAgreedToTerms && agreedToPrivacy && (
+      {agreedToTerms && agreedToPrivacy && (
         <div className="flex items-center gap-2 text-green-400 text-sm">
           <CheckCircle className="w-4 h-4" />
           All agreements accepted
