@@ -2,8 +2,10 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckCircle, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface SignupFormProps {
   registerData: { email: string; username: string; password: string; confirmPassword: string };
@@ -23,6 +25,7 @@ export const SignupForm = ({
   captchaToken
 }: SignupFormProps) => {
   const { toast } = useToast();
+  const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,10 +144,69 @@ export const SignupForm = ({
           autoComplete="new-password"
         />
       </motion.div>
+      {/* Terms and Privacy Policy Checkboxes */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="space-y-3 bg-white/5 p-3 rounded-lg border border-white/10"
+      >
+        <div className="flex items-start gap-2">
+          <Checkbox
+            id="terms"
+            checked={hasAgreedToTerms}
+            onCheckedChange={(checked) => {
+              if (!checked) {
+                toast({
+                  title: "Terms required",
+                  description: "You must accept the Terms of Service to continue.",
+                  variant: "destructive",
+                });
+              }
+            }}
+            disabled
+            className="mt-1"
+          />
+          <Label htmlFor="terms" className="text-sm text-gray-300 cursor-pointer font-normal">
+            I accept the{" "}
+            <a
+              href="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1"
+            >
+              Terms of Service
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </Label>
+        </div>
+
+        <div className="flex items-start gap-2">
+          <Checkbox
+            id="privacy"
+            checked={agreedToPrivacy}
+            onCheckedChange={(checked) => setAgreedToPrivacy(checked as boolean)}
+            className="mt-1"
+          />
+          <Label htmlFor="privacy" className="text-sm text-gray-300 cursor-pointer font-normal">
+            I have read and agree to the{" "}
+            <a
+              href="/privacy-policy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-purple-400 hover:text-purple-300 inline-flex items-center gap-1"
+            >
+              Privacy Policy
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </Label>
+        </div>
+      </motion.div>
+
       <Button 
         type="submit" 
-        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300"
-        disabled={isLoading}
+        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-purple-500/25 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={isLoading || !agreedToPrivacy}
       >
         {isLoading ? (
           <div className="flex items-center gap-2">
@@ -157,10 +219,10 @@ export const SignupForm = ({
       </Button>
 
       {/* Security indicators */}
-      {hasAgreedToTerms && (
+      {hasAgreedToTerms && agreedToPrivacy && (
         <div className="flex items-center gap-2 text-green-400 text-sm">
           <CheckCircle className="w-4 h-4" />
-          Terms of Service accepted
+          All agreements accepted
         </div>
       )}
       {captchaToken && (
