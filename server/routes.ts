@@ -112,8 +112,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  // ENTERPRISE: Apply org context enrichment middleware globally
-  app.use(enrichOrgContext);
+  // ENTERPRISE: Apply org context enrichment middleware (after auth routes)
+  // Skip for auth endpoints since they run before user is authenticated
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api/auth/') || req.path.startsWith('/oauth')) {
+      return next();
+    }
+    enrichOrgContext(req, res, next);
+  });
 
   // Auth middleware - djfluent session recovery system
   const requireAuth = async (req: any, res: any, next: any) => {
