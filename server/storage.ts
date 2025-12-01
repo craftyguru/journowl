@@ -14,6 +14,12 @@ import {
   promptPurchases,
   weeklyChallenges,
   userChallengeProgress,
+  organizations,
+  organizationMembers,
+  pendingInvitations,
+  complianceExports,
+  complianceDeletions,
+  auditLogs,
   type User, 
   type InsertUser, 
   type JournalEntry, 
@@ -31,7 +37,8 @@ import {
   type PromptPurchase,
   type InsertPromptPurchase
 } from "@shared/schema";
-import { eq, desc, sql, and, gte } from "drizzle-orm";
+import { eq, desc, sql, and, gte, lt } from "drizzle-orm";
+import crypto from 'crypto';
 
 // Setup DB client with SSL enabled
 let dbUrl = process.env.DATABASE_URL;
@@ -117,6 +124,44 @@ export interface IStorage {
   // Email Reminders
   getEmailReminderPreferences(userId: number): Promise<any[]>;
   updateEmailReminder(userId: number, type: string, updates: Partial<any>): Promise<void>;
+
+  // Organization Management
+  getOrganization(id: number): Promise<any | undefined>;
+  getOrganizationMembers(organizationId: number): Promise<any[]>;
+  getOrganizationMember(organizationId: number, userId: number): Promise<any | undefined>;
+  updateOrganization(id: number, updates: Partial<any>): Promise<void>;
+  createOrganizationMember(organizationId: number, userId: number, role: string): Promise<void>;
+  updateOrganizationMemberRole(organizationId: number, userId: number, role: string): Promise<void>;
+  removeOrganizationMember(organizationId: number, userId: number): Promise<void>;
+
+  // Pending Invitations
+  createPendingInvitation(organizationId: number, email: string, role: string, invitedBy: number, expiresAt: Date): Promise<any>;
+  getPendingInvitation(token: string): Promise<any | undefined>;
+  getPendingInvitationsByOrg(organizationId: number): Promise<any[]>;
+  acceptInvitation(invitationId: number, userId: number): Promise<void>;
+  expireInvitations(): Promise<void>;
+
+  // Compliance
+  createComplianceExport(organizationId: number, userId: number, requestedBy: number, format: string): Promise<any>;
+  getComplianceExports(organizationId: number): Promise<any[]>;
+  updateComplianceExportStatus(id: number, status: string, downloadUrl?: string): Promise<void>;
+  
+  createComplianceDeletion(organizationId: number, userId: number, requestedBy: number, reason?: string): Promise<any>;
+  getComplianceDeletions(organizationId: number): Promise<any[]>;
+  updateComplianceDeletionStatus(id: number, status: string): Promise<void>;
+  approveDeletion(id: number): Promise<void>;
+
+  // Audit Logging
+  createAuditLog(organizationId: number, actorId: number | null, actorType: string, action: string, resourceType?: string, resourceId?: number, details?: any, ipAddress?: string, userAgent?: string): Promise<void>;
+  getAuditLogs(organizationId: number, limit?: number): Promise<any[]>;
+
+  // Analytics
+  getTeamAnalytics(organizationId: number): Promise<any>;
+  getManagerDashboardData(organizationId: number): Promise<any>;
+
+  // Notification Preferences
+  getUserNotificationPreferences(userId: number, organizationId: number): Promise<any | undefined>;
+  updateNotificationPreferences(userId: number, organizationId: number, preferences: any): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -879,6 +924,244 @@ export class DatabaseStorage implements IStorage {
 
   async addJournalEntryToShared(sharedJournalId: number, journalEntryId: number, userId: number): Promise<void> {
     // Stubbed
+  }
+
+  // ============ ENTERPRISE METHODS ============
+
+  // Organization Management
+  async getOrganization(id: number): Promise<any | undefined> {
+    const result = await db.select().from(organizations).where(eq(organizations.id, id)).limit(1);
+    return result[0];
+  }
+
+  async getOrganizationMembers(organizationId: number): Promise<any[]> {
+    return db.select({
+      id: organizationMembers.id,
+      userId: organizationMembers.userId,
+      organizationId: organizationMembers.organizationId,
+      role: organizationMembers.role,
+      invitedBy: organizationMembers.invitedBy,
+      joinedAt: organizationMembers.joinedAt,
+      createdAt: organizationMembers.createdAt,
+      userName: users.username,
+      userEmail: users.email
+    })
+    .from(organizationMembers)
+    .leftJoin(users, eq(organizationMembers.userId, users.id))
+    .where(eq(organizationMembers.organizationId, organizationId));
+  }
+
+  async getOrganizationMember(organizationId: number, userId: number): Promise<any | undefined> {
+    const result = await db.select().from(organizationMembers)
+      .where(and(eq(organizationMembers.organizationId, organizationId), eq(organizationMembers.userId, userId)))
+      .limit(1);
+    return result[0];
+  }
+
+  async updateOrganization(id: number, updates: Partial<any>): Promise<void> {
+    await db.update(organizations).set({ ...updates, updatedAt: new Date() } as any).where(eq(organizations.id, id));
+  }
+
+  async createOrganizationMember(organizationId: number, userId: number, role: string): Promise<void> {
+    await db.insert(organizationMembers).values({ organizationId, userId, role } as any);
+  }
+
+  async updateOrganizationMemberRole(organizationId: number, userId: number, role: string): Promise<void> {
+    await db.update(organizationMembers).set({ role } as any)
+      .where(and(eq(organizationMembers.organizationId, organizationId), eq(organizationMembers.userId, userId)));
+  }
+
+  async removeOrganizationMember(organizationId: number, userId: number): Promise<void> {
+    await db.delete(organizationMembers)
+      .where(and(eq(organizationMembers.organizationId, organizationId), eq(organizationMembers.userId, userId)));
+  }
+
+  // Pending Invitations
+  async createPendingInvitation(organizationId: number, email: string, role: string, invitedBy: number, expiresAt: Date): Promise<any> {
+    const magicToken = crypto.randomBytes(32).toString('hex');
+    const result = await db.insert(pendingInvitations).values({
+      organizationId,
+      email,
+      role,
+      magicToken,
+      invitedBy,
+      expiresAt
+    } as any).returning();
+    return result[0];
+  }
+
+  async getPendingInvitation(token: string): Promise<any | undefined> {
+    const result = await db.select().from(pendingInvitations)
+      .where(eq(pendingInvitations.magicToken, token))
+      .limit(1);
+    return result[0];
+  }
+
+  async getPendingInvitationsByOrg(organizationId: number): Promise<any[]> {
+    return db.select().from(pendingInvitations)
+      .where(eq(pendingInvitations.organizationId, organizationId));
+  }
+
+  async acceptInvitation(invitationId: number, userId: number): Promise<void> {
+    const invitation = await db.select().from(pendingInvitations).where(eq(pendingInvitations.id, invitationId)).limit(1);
+    if (invitation.length > 0) {
+      const inv = invitation[0];
+      // Mark invitation as accepted
+      await db.update(pendingInvitations).set({ status: 'accepted', acceptedAt: new Date() } as any)
+        .where(eq(pendingInvitations.id, invitationId));
+      // Add user to organization
+      await this.createOrganizationMember(inv.organizationId, userId, inv.role);
+    }
+  }
+
+  async expireInvitations(): Promise<void> {
+    const now = new Date();
+    await db.update(pendingInvitations)
+      .set({ status: 'expired' } as any)
+      .where(and(lt(pendingInvitations.expiresAt, now), eq(pendingInvitations.status, 'pending')));
+  }
+
+  // Compliance
+  async createComplianceExport(organizationId: number, userId: number, requestedBy: number, format: string): Promise<any> {
+    const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+    const result = await db.insert(complianceExports).values({
+      organizationId,
+      userId,
+      requestedBy,
+      exportFormat: format,
+      expiresAt
+    } as any).returning();
+    return result[0];
+  }
+
+  async getComplianceExports(organizationId: number): Promise<any[]> {
+    return db.select().from(complianceExports)
+      .where(eq(complianceExports.organizationId, organizationId));
+  }
+
+  async updateComplianceExportStatus(id: number, status: string, downloadUrl?: string): Promise<void> {
+    const updates: any = { status };
+    if (downloadUrl) updates.downloadUrl = downloadUrl;
+    if (status === 'completed') updates.completedAt = new Date();
+    await db.update(complianceExports).set(updates).where(eq(complianceExports.id, id));
+  }
+
+  async createComplianceDeletion(organizationId: number, userId: number, requestedBy: number, reason?: string): Promise<any> {
+    const result = await db.insert(complianceDeletions).values({
+      organizationId,
+      userId,
+      requestedBy,
+      reason
+    } as any).returning();
+    return result[0];
+  }
+
+  async getComplianceDeletions(organizationId: number): Promise<any[]> {
+    return db.select().from(complianceDeletions)
+      .where(eq(complianceDeletions.organizationId, organizationId));
+  }
+
+  async updateComplianceDeletionStatus(id: number, status: string): Promise<void> {
+    const updates: any = { status };
+    if (status === 'completed') updates.completedAt = new Date();
+    await db.update(complianceDeletions).set(updates).where(eq(complianceDeletions.id, id));
+  }
+
+  async approveDeletion(id: number): Promise<void> {
+    await db.update(complianceDeletions).set({ status: 'approved', approvedAt: new Date() } as any)
+      .where(eq(complianceDeletions.id, id));
+  }
+
+  // Audit Logging
+  async createAuditLog(organizationId: number, actorId: number | null, actorType: string, action: string, resourceType?: string, resourceId?: number, details?: any, ipAddress?: string, userAgent?: string): Promise<void> {
+    await db.insert(auditLogs).values({
+      organizationId,
+      actorId,
+      actorType,
+      action,
+      resourceType,
+      resourceId,
+      details,
+      ipAddress,
+      userAgent
+    } as any);
+  }
+
+  async getAuditLogs(organizationId: number, limit?: number): Promise<any[]> {
+    let query = db.select().from(auditLogs)
+      .where(eq(auditLogs.organizationId, organizationId))
+      .orderBy(desc(auditLogs.createdAt));
+    if (limit) query = query.limit(limit);
+    return query;
+  }
+
+  // Analytics
+  async getTeamAnalytics(organizationId: number): Promise<any> {
+    const members = await this.getOrganizationMembers(organizationId);
+    const totalMembers = members.length;
+    
+    const entries = await db.select({ count: sql<number>`count(*)` })
+      .from(journalEntries)
+      .where(eq(journalEntries.organizationId, organizationId));
+    
+    const activities = await db.select({ count: sql<number>`count(*)` })
+      .from(userActivityLogs)
+      .where(eq(userActivityLogs.organizationId, organizationId));
+    
+    const recentEntries = await db.select({ count: sql<number>`count(*)` })
+      .from(journalEntries)
+      .where(and(
+        eq(journalEntries.organizationId, organizationId),
+        gte(journalEntries.createdAt, new Date(Date.now() - 7 * 24 * 60 * 60 * 1000))
+      ));
+
+    return {
+      totalMembers,
+      totalEntries: entries[0]?.count || 0,
+      totalActivities: activities[0]?.count || 0,
+      entriesThisWeek: recentEntries[0]?.count || 0,
+      participationRate: totalMembers > 0 ? Math.round(((recentEntries[0]?.count || 0) / totalMembers) * 100) : 0
+    };
+  }
+
+  async getManagerDashboardData(organizationId: number): Promise<any> {
+    const analytics = await this.getTeamAnalytics(organizationId);
+    
+    const moodCounts = await db.select({ mood: journalEntries.mood, count: sql<number>`count(*)` })
+      .from(journalEntries)
+      .where(eq(journalEntries.organizationId, organizationId))
+      .groupBy(journalEntries.mood);
+    
+    const avgWordsPerEntry = await db.select({ avg: sql<number>`avg(word_count)` })
+      .from(journalEntries)
+      .where(eq(journalEntries.organizationId, organizationId));
+
+    return {
+      ...analytics,
+      moodDistribution: moodCounts,
+      avgWordsPerEntry: avgWordsPerEntry[0]?.avg || 0
+    };
+  }
+
+  // Notification Preferences
+  async getUserNotificationPreferences(userId: number, organizationId: number): Promise<any | undefined> {
+    // For now, store preferences in a simple in-memory cache
+    // In production, this would be stored in a database table like `userNotificationPreferences`
+    const key = `${organizationId}:${userId}:digest_prefs`;
+    const stored = (global as any).__notificationPrefs?.[key];
+    return stored;
+  }
+
+  async updateNotificationPreferences(userId: number, organizationId: number, preferences: any): Promise<void> {
+    // Store preferences in memory cache
+    if (!(global as any).__notificationPrefs) {
+      (global as any).__notificationPrefs = {};
+    }
+    const key = `${organizationId}:${userId}:digest_prefs`;
+    (global as any).__notificationPrefs[key] = {
+      ...preferences,
+      updatedAt: new Date()
+    };
   }
 }
 

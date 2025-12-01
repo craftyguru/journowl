@@ -444,6 +444,56 @@ export const sharedJournalEntries = pgTable("shared_journal_entries", {
   orgJournalIdx: index().on(table.organizationId, table.sharedJournalId),
 }));
 
+// ============ ENTERPRISE: INVITATIONS & COMPLIANCE ============
+
+export const pendingInvitations = pgTable("pending_invitations", {
+  id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  email: text("email").notNull(),
+  role: text("role").notNull(), // owner|admin|coach|therapist|member|viewer
+  magicToken: text("magic_token").notNull().unique(),
+  invitedBy: integer("invited_by").references(() => users.id).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  acceptedAt: timestamp("accepted_at"),
+  status: text("status").default("pending"), // pending|accepted|expired|rejected
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  orgEmailIdx: index().on(table.organizationId, table.email),
+  tokenIdx: index().on(table.magicToken),
+}));
+
+export const complianceExports = pgTable("compliance_exports", {
+  id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  requestedBy: integer("requested_by").references(() => users.id).notNull(),
+  exportFormat: text("export_format").default("json"), // json|csv|pdf
+  dataIncluded: json("data_included").default(["journalEntries", "userStats", "activities"]),
+  status: text("status").default("pending"), // pending|processing|completed|failed
+  downloadUrl: text("download_url"),
+  expiresAt: timestamp("expires_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at"),
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+  statusIdx: index().on(table.status),
+}));
+
+export const complianceDeletions = pgTable("compliance_deletions", {
+  id: serial("id").primaryKey(),
+  organizationId: integer("organization_id").references(() => organizations.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  requestedBy: integer("requested_by").references(() => users.id).notNull(),
+  reason: text("reason"),
+  status: text("status").default("pending"), // pending|approved|processing|completed|cancelled
+  approvedAt: timestamp("approved_at"),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  orgUserIdx: index().on(table.organizationId, table.userId),
+  statusIdx: index().on(table.status),
+}));
+
 // Enterprise Types
 export type Organization = typeof organizations.$inferSelect;
 export type OrganizationMember = typeof organizationMembers.$inferSelect;
@@ -451,6 +501,9 @@ export type OrganizationAiSettings = typeof organizationAiSettings.$inferSelect;
 export type IdentityProvider = typeof identityProviders.$inferSelect;
 export type AiRequest = typeof aiRequests.$inferSelect;
 export type AuditLog = typeof auditLogs.$inferSelect;
+export type PendingInvitation = typeof pendingInvitations.$inferSelect;
+export type ComplianceExport = typeof complianceExports.$inferSelect;
+export type ComplianceDeletion = typeof complianceDeletions.$inferSelect;
 
 // Core Types
 export type User = typeof users.$inferSelect;
@@ -483,6 +536,9 @@ export const insertOrganizationAiSettingsSchema = createInsertSchema(organizatio
 export const insertIdentityProviderSchema = createInsertSchema(identityProviders).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertAiRequestSchema = createInsertSchema(aiRequests).omit({ id: true, createdAt: true });
 export const insertAuditLogSchema = createInsertSchema(auditLogs).omit({ id: true, createdAt: true });
+export const insertPendingInvitationSchema = createInsertSchema(pendingInvitations).omit({ id: true, createdAt: true });
+export const insertComplianceExportSchema = createInsertSchema(complianceExports).omit({ id: true, createdAt: true, completedAt: true });
+export const insertComplianceDeletionSchema = createInsertSchema(complianceDeletions).omit({ id: true, createdAt: true });
 
 // Core Insert Schemas
 export const insertUserSchema = createInsertSchema(users).omit({ id: true, createdAt: true, updatedAt: true });
@@ -506,6 +562,9 @@ export type InsertOrganizationAiSettings = z.infer<typeof insertOrganizationAiSe
 export type InsertIdentityProvider = z.infer<typeof insertIdentityProviderSchema>;
 export type InsertAiRequest = z.infer<typeof insertAiRequestSchema>;
 export type InsertAuditLog = z.infer<typeof insertAuditLogSchema>;
+export type InsertPendingInvitation = z.infer<typeof insertPendingInvitationSchema>;
+export type InsertComplianceExport = z.infer<typeof insertComplianceExportSchema>;
+export type InsertComplianceDeletion = z.infer<typeof insertComplianceDeletionSchema>;
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type InsertJournalEntry = z.infer<typeof insertJournalEntrySchema>;

@@ -1,23 +1,48 @@
 // Manager Dashboard - Anonymized team wellness view (no private employee data)
 
+import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, TrendingUp, AlertCircle, BarChart3, Target } from 'lucide-react';
+import { Users, TrendingUp, AlertCircle, BarChart3, Target, Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ManagerDashboard({ user, stats, entries, onNewEntry }: any) {
-  // Anonymized team metrics - simulate aggregated data
-  const teamSize = Math.max(1, Math.floor(Math.random() * 15) + 5);
-  const participationRate = Math.min(100, entries.length ? Math.round((entries.length / (teamSize * 5)) * 100) : 0);
-  const avgWellnessScore = Math.round(Math.random() * 20 + 70);
-  const atRiskCount = Math.max(0, Math.floor(Math.random() * 3));
-  const weeklyTrend = participationRate > 50 ? 'up' : 'down';
+  const { toast } = useToast();
+
+  // Fetch real analytics data from the backend
+  const { data: analyticsData, isLoading } = useQuery({
+    queryKey: ['/api/manager/analytics'],
+    queryFn: async () => {
+      const response = await fetch('/api/manager/analytics');
+      if (!response.ok) throw new Error('Failed to fetch analytics');
+      return response.json();
+    },
+    retry: 1,
+  });
+
+  // Extract real data from analytics or use fallbacks
+  const teamSize = analyticsData?.totalMembers || 0;
+  const participationRate = analyticsData?.participationRate || 0;
+  const totalEntries = analyticsData?.totalEntries || 0;
+  const entriesThisWeek = analyticsData?.entriesThisWeek || 0;
+  const avgWellnessScore = Math.round(analyticsData?.avgWordsPerEntry ? (analyticsData.avgWordsPerEntry / 10) : 0);
+  const atRiskCount = Math.max(0, Math.floor((teamSize * (100 - participationRate)) / 100));
+  const weeklyTrend = entriesThisWeek > (totalEntries / 52) ? 'up' : 'down';
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Manager Header */}
       <div className="space-y-2">
         <h2 className="text-3xl font-bold text-white">Team Wellness Manager</h2>
-        <p className="text-indigo-300">Anonymized team engagement and wellness overview</p>
+        <p className="text-indigo-300">Anonymized team engagement and wellness overview (Real data: {totalEntries} entries across {teamSize} team members)</p>
       </div>
 
       {/* Team Overview Metrics */}

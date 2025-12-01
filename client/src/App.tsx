@@ -28,6 +28,8 @@ const FAQ = lazy(() => import("@/components/shared/FAQ").then(m => ({ default: m
 const PricingPage = lazy(() => import("@/pages/PricingPage").then(m => ({ default: m.PricingPage })));
 const OnboardingFlow = lazy(() => import("@/pages/OnboardingFlow").then(m => ({ default: m.OnboardingFlow })));
 const UserProfile = lazy(() => import("@/pages/UserProfile"));
+const OrganizationSettings = lazy(() => import("@/pages/OrganizationSettings"));
+const TeamMembers = lazy(() => import("@/pages/TeamMembers"));
 
 // Onboarding component
 const Onboarding = lazy(() => import("@/components/Onboarding").then(m => ({ default: m.Onboarding })));

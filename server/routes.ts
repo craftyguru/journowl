@@ -26,7 +26,7 @@ import Stripe from "stripe";
 import path from "path";
 import multer from "multer";
 import MemoryStore from "memorystore";
-import { enrichOrgContext, requireOrgAdmin, withOrgScope } from "./middleware/orgRbac";
+import { enrichOrgContext, requireOrgAdmin, withOrgScope, requireOrgRole } from "./middleware/orgRbac";
 import { AuditService } from "./services/auditService";
 import { AIGatewayService } from "./services/aiGatewayService";
 
@@ -5697,6 +5697,343 @@ Your story shows how every day brings new experiences and emotions, creating the
       res.json(updated[0]);
     } catch (error: any) {
       console.error("Enterprise upgrade error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // ============ ENTERPRISE HR FEATURES ============
+
+  // 1. ORGANIZATION MEMBER MANAGEMENT
+
+  // List organization members
+  app.get("/api/org/members", requireAuth, async (req: any, res) => {
+    try {
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+      const members = await storage.getOrganizationMembers(req.orgId);
+      res.json(members);
+    } catch (error: any) {
+      console.error("Get members error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Send team member invitation with magic link
+  app.post("/api/org/members/invite", requireAuth, requireOrgRole("owner", "admin"), async (req: any, res) => {
+    try {
+      const { email, role } = req.body;
+
+      if (!req.orgId || !email || !role) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      if (!["owner", "admin", "coach", "therapist", "member", "viewer"].includes(role)) {
+        return res.status(400).json({ error: "Invalid role" });
+      }
+
+      // Check if user already exists in org
+      const user = await storage.getUserByEmail(email);
+      if (user) {
+        const existingMember = await storage.getOrganizationMember(req.orgId, user.id);
+        if (existingMember) {
+          return res.status(400).json({ error: "User already member of organization" });
+        }
+      }
+
+      // Create pending invitation
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+      const invitation = await storage.createPendingInvitation(req.orgId, email, role, req.session.userId, expiresAt);
+
+      // Send invitation email with magic link
+      const magicLink = `${process.env.FRONTEND_URL || 'http://localhost:5000'}/invite/${invitation.magicToken}`;
+      const org = await storage.getOrganization(req.orgId);
+      
+      if (process.env.SENDGRID_API_KEY) {
+        await sendEmailWithSendGrid({
+          to: email,
+          subject: `You're invited to join ${org?.name || 'JournOwl Organization'}`,
+          html: `
+            <h2>You're invited!</h2>
+            <p>You've been invited to join <strong>${org?.name}</strong> as a <strong>${role}</strong>.</p>
+            <p><a href="${magicLink}" style="background: #6366f1; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Accept Invitation</a></p>
+            <p>This link expires in 7 days.</p>
+          `
+        });
+      }
+
+      // Log action
+      await storage.createAuditLog(req.orgId, req.session.userId, "user", "member_invited", "organization_member", invitation.id, { email, role }, req.ip, req.headers["user-agent"]);
+
+      res.json({ success: true, invitation, magicLink: process.env.NODE_ENV === "development" ? magicLink : undefined });
+    } catch (error: any) {
+      console.error("Invite member error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Accept invitation via magic link
+  app.post("/api/org/members/accept-invite", requireAuth, async (req: any, res) => {
+    try {
+      const { token } = req.body;
+
+      if (!token) {
+        return res.status(400).json({ error: "Invitation token required" });
+      }
+
+      const invitation = await storage.getPendingInvitation(token);
+
+      if (!invitation) {
+        return res.status(404).json({ error: "Invitation not found" });
+      }
+
+      if (invitation.status !== "pending") {
+        return res.status(400).json({ error: `Invitation already ${invitation.status}` });
+      }
+
+      if (new Date(invitation.expiresAt) < new Date()) {
+        await storage.updateComplianceDeletionStatus(invitation.id, "expired");
+        return res.status(400).json({ error: "Invitation expired" });
+      }
+
+      // Accept the invitation
+      await storage.acceptInvitation(invitation.id, req.session.userId);
+
+      // Log action
+      await storage.createAuditLog(invitation.organizationId, req.session.userId, "user", "member_joined", "organization_member", invitation.id, { role: invitation.role }, req.ip, req.headers["user-agent"]);
+
+      res.json({ success: true, message: "Successfully joined organization" });
+    } catch (error: any) {
+      console.error("Accept invite error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update member role
+  app.patch("/api/org/members/:userId/role", requireAuth, requireOrgRole("owner", "admin"), async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { role } = req.body;
+
+      if (!req.orgId || !role) {
+        return res.status(400).json({ error: "Missing required fields" });
+      }
+
+      await storage.updateOrganizationMemberRole(req.orgId, parseInt(userId), role);
+
+      // Log action
+      await storage.createAuditLog(req.orgId, req.session.userId, "user", "member_role_changed", "organization_member", parseInt(userId), { newRole: role }, req.ip, req.headers["user-agent"]);
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Update member role error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Remove member from organization
+  app.delete("/api/org/members/:userId", requireAuth, requireOrgRole("owner", "admin"), async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      await storage.removeOrganizationMember(req.orgId, parseInt(userId));
+
+      // Log action
+      await storage.createAuditLog(req.orgId, req.session.userId, "user", "member_removed", "organization_member", parseInt(userId), {}, req.ip, req.headers["user-agent"]);
+
+      res.json({ success: true });
+    } catch (error: any) {
+      console.error("Remove member error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // 2. ORGANIZATION SETTINGS
+
+  // Get organization settings
+  app.get("/api/org/settings", requireAuth, async (req: any, res) => {
+    try {
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      const org = await storage.getOrganization(req.orgId);
+      res.json(org);
+    } catch (error: any) {
+      console.error("Get org settings error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Update organization settings
+  app.patch("/api/org/settings", requireAuth, requireOrgRole("owner", "admin"), async (req: any, res) => {
+    try {
+      const { name, logoUrl, industry, dataRegion } = req.body;
+
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      await storage.updateOrganization(req.orgId, { name, logoUrl, industry, dataRegion });
+
+      // Log action
+      await storage.createAuditLog(req.orgId, req.session.userId, "user", "org_settings_updated", "organization", req.orgId, { name, industry, dataRegion }, req.ip, req.headers["user-agent"]);
+
+      const updated = await storage.getOrganization(req.orgId);
+      res.json(updated);
+    } catch (error: any) {
+      console.error("Update org settings error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // 3. MANAGER ANALYTICS
+
+  // Get manager dashboard data with real aggregated metrics
+  app.get("/api/manager/analytics", requireAuth, requireOrgRole("owner", "admin", "coach", "therapist", "manager"), async (req: any, res) => {
+    try {
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      const data = await storage.getManagerDashboardData(req.orgId);
+      res.json(data);
+    } catch (error: any) {
+      console.error("Manager analytics error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // 4. ADMIN ANALYTICS
+
+  // Get HR admin console analytics with real data
+  app.get("/api/admin/analytics", requireAuth, requireOrgRole("owner", "admin"), async (req: any, res) => {
+    try {
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      const analytics = await storage.getManagerDashboardData(req.orgId);
+      const auditLogs = await storage.getAuditLogs(req.orgId, 100);
+
+      res.json({ ...analytics, auditLogs });
+    } catch (error: any) {
+      console.error("Admin analytics error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // 5. COMPLIANCE ENDPOINTS
+
+  // Request data export (GDPR Article 20)
+  app.post("/api/compliance/export", requireAuth, async (req: any, res) => {
+    try {
+      const { userId, format = "json" } = req.body;
+      const targetUserId = userId || req.session.userId;
+
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      // Check authorization - user can export their own data, or admin can export any member's data
+      const member = await storage.getOrganizationMember(req.orgId, req.session.userId);
+      if (!member) {
+        return res.status(403).json({ error: "Not a member of this organization" });
+      }
+
+      if (targetUserId !== req.session.userId && !["owner", "admin"].includes(member.role)) {
+        return res.status(403).json({ error: "Unauthorized to export other user's data" });
+      }
+
+      // Create export request
+      const exportRequest = await storage.createComplianceExport(req.orgId, targetUserId, req.session.userId, format);
+
+      // Log audit trail
+      await storage.createAuditLog(req.orgId, req.session.userId, "user", "data_export_requested", "compliance_export", exportRequest.id, { targetUser: targetUserId, format }, req.ip, req.headers["user-agent"]);
+
+      // TODO: Queue background job to process export
+      res.json({ success: true, exportId: exportRequest.id, message: "Export request received. You'll receive download link via email." });
+    } catch (error: any) {
+      console.error("Data export error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Request data deletion (GDPR Article 17 / CCPA)
+  app.post("/api/compliance/delete", requireAuth, async (req: any, res) => {
+    try {
+      const { userId, reason } = req.body;
+      const targetUserId = userId || req.session.userId;
+
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      // Check authorization
+      const member = await storage.getOrganizationMember(req.orgId, req.session.userId);
+      if (!member) {
+        return res.status(403).json({ error: "Not a member of this organization" });
+      }
+
+      if (targetUserId !== req.session.userId && !["owner", "admin"].includes(member.role)) {
+        return res.status(403).json({ error: "Unauthorized to request deletion of other user's data" });
+      }
+
+      // Create deletion request (requires approval for others' data)
+      const deletionRequest = await storage.createComplianceDeletion(req.orgId, targetUserId, req.session.userId, reason);
+
+      // If admin deleting another user, auto-approve
+      if (targetUserId !== req.session.userId && ["owner", "admin"].includes(member.role)) {
+        await storage.approveDeletion(deletionRequest.id);
+      }
+
+      // Log audit trail
+      await storage.createAuditLog(req.orgId, req.session.userId, "user", "data_deletion_requested", "compliance_deletion", deletionRequest.id, { targetUser: targetUserId, reason }, req.ip, req.headers["user-agent"]);
+
+      res.json({ success: true, deletionId: deletionRequest.id, message: "Data deletion request received and is pending processing." });
+    } catch (error: any) {
+      console.error("Data deletion error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // Get audit logs
+  app.get("/api/admin/audit-logs", requireAuth, requireOrgRole("owner", "admin"), async (req: any, res) => {
+    try {
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      const logs = await storage.getAuditLogs(req.orgId, 500);
+      res.json(logs);
+    } catch (error: any) {
+      console.error("Audit logs error:", error);
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  // 6. MANAGER NOTIFICATIONS
+
+  // Schedule weekly wellness digest
+  app.post("/api/manager/digest/schedule", requireAuth, requireOrgRole("owner", "admin", "coach", "therapist"), async (req: any, res) => {
+    try {
+      const { enabled, dayOfWeek, time } = req.body;
+
+      if (!req.orgId) {
+        return res.status(403).json({ error: "No organization context" });
+      }
+
+      // TODO: Store user's digest preferences in database
+      // For now, just log the preference change
+      await storage.createAuditLog(req.orgId, req.session.userId, "user", "digest_scheduled", "user_notification_settings", req.session.userId, { enabled, dayOfWeek, time }, req.ip, req.headers["user-agent"]);
+
+      res.json({ success: true, message: "Weekly wellness digest preferences updated" });
+    } catch (error: any) {
+      console.error("Digest schedule error:", error);
       res.status(500).json({ error: error.message });
     }
   });

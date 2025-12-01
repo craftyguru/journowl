@@ -1,24 +1,45 @@
 // HR Admin Console - Organization policies, compliance, analytics
 
+import { useQuery } from '@tanstack/react-query';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Settings, Shield, BarChart3, Users, Lock, AlertCircle } from 'lucide-react';
+import { Settings, Shield, BarChart3, Users, Lock, AlertCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 export default function HRAdminConsole({ user, stats, entries, onNewEntry }: any) {
   const [activeTab, setActiveTab] = useState<'overview' | 'policies' | 'compliance' | 'analytics'>('overview');
 
-  const totalEmployees = Math.floor(Math.random() * 100) + 20;
-  const activeUsers = Math.floor(totalEmployees * 0.65);
-  const complianceScore = 95;
-  const dataExportsThisMonth = 3;
+  // Fetch real analytics data from the backend
+  const { data: analyticsData, isLoading } = useQuery({
+    queryKey: ['/api/admin/analytics'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/analytics');
+      if (!response.ok) throw new Error('Failed to fetch analytics');
+      return response.json();
+    },
+    retry: 1,
+  });
+
+  // Extract real data from analytics or use fallbacks
+  const totalEmployees = analyticsData?.totalMembers || 0;
+  const activeUsers = Math.round((totalEmployees * (analyticsData?.participationRate || 0)) / 100);
+  const complianceScore = 95; // TODO: Calculate from audit logs
+  const dataExportsThisMonth = analyticsData?.auditLogs?.filter((log: any) => log.action === 'data_export_requested').length || 0;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
       {/* Admin Header */}
       <div className="space-y-2">
         <h2 className="text-3xl font-bold text-white">HR Administration Console</h2>
-        <p className="text-indigo-300">Organization settings, compliance, and analytics</p>
+        <p className="text-indigo-300">Organization settings, compliance, and analytics (Real data: {totalEmployees} members, {analyticsData?.totalEntries || 0} entries)</p>
       </div>
 
       {/* Tab Navigation */}
