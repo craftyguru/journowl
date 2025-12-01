@@ -112,6 +112,7 @@ export const users = pgTable("users", {
   favoriteQuote: text("favorite_quote"),
   preferences: json("preferences"),
   aiPersonality: text("ai_personality").default("friendly"),
+  interfaceMode: text("interface_mode").default("wellness"), // wellness|productivity|trader|team|therapy
   provider: text("provider").default("local"),
   providerId: text("provider_id"),
   profileImageUrl: text("profile_image_url"),

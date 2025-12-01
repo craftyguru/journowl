@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChevronRight, BookOpen, Zap, Users, Target, CheckCircle } from "lucide-react";
+import { getModeOptions } from "@/lib/modes";
+import { apiRequest } from "@/lib/queryClient";
 
 interface OnboardingProps {
   onComplete: () => void;
@@ -10,6 +12,8 @@ interface OnboardingProps {
 
 export function Onboarding({ onComplete }: OnboardingProps) {
   const [step, setStep] = useState(0);
+  const [selectedMode, setSelectedMode] = useState<string | null>(null);
+  const modeOptions = getModeOptions();
 
   const steps = [
     {
@@ -18,6 +22,14 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       subtitle: "Your AI-powered journaling companion",
       description: "Write freely, reflect deeply, and discover yourself through the power of daily journaling.",
       cta: "Get Started"
+    },
+    {
+      icon: null,
+      title: "How do you want to use JournOwl?",
+      subtitle: "Choose your interface mode",
+      description: "Select the interface that best matches your journaling goals. You can change this anytime.",
+      cta: "Next",
+      type: "mode-selector"
     },
     {
       icon: <Zap className="w-12 h-12 text-yellow-500" />,
@@ -34,13 +46,6 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       cta: "Next"
     },
     {
-      icon: <Target className="w-12 h-12 text-purple-500" />,
-      title: "Unlock Premium",
-      subtitle: "Extended AI summaries & more",
-      description: "Premium features unlock deeper insights, monthly reviews, and PDF exports.",
-      cta: "Next"
-    },
-    {
       icon: <CheckCircle className="w-12 h-12 text-green-500" />,
       title: "Ready to Begin",
       subtitle: "Your journal awaits",
@@ -51,7 +56,18 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
   const current = steps[step];
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    if (current.type === "mode-selector" && selectedMode) {
+      try {
+        await apiRequest('/api/user/interface-mode', {
+          method: 'PATCH',
+          body: JSON.stringify({ interfaceMode: selectedMode })
+        });
+      } catch (error) {
+        console.error('Failed to save interface mode:', error);
+      }
+    }
+    
     if (step < steps.length - 1) {
       setStep(step + 1);
     } else {
@@ -75,23 +91,57 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="w-full max-w-md bg-gradient-to-br from-slate-800 to-slate-900 border-purple-500/30 shadow-2xl">
-            <div className="p-8 text-center space-y-6">
-              {/* Icon */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="flex justify-center"
-              >
-                {current.icon}
-              </motion.div>
+          <Card className="w-full max-w-2xl bg-gradient-to-br from-slate-800 to-slate-900 border-purple-500/30 shadow-2xl">
+            <div className="p-8 space-y-6">
+              {/* Mode Selector */}
+              {current.type === "mode-selector" ? (
+                <>
+                  <div className="text-center space-y-3">
+                    <h1 className="text-3xl font-bold text-white">{current.title}</h1>
+                    <p className="text-purple-300 text-lg font-semibold">{current.subtitle}</p>
+                    <p className="text-white/70 text-base leading-relaxed">{current.description}</p>
+                  </div>
 
-              {/* Content */}
-              <div className="space-y-3">
-                <h1 className="text-3xl font-bold text-white">{current.title}</h1>
-                <p className="text-purple-300 text-lg font-semibold">{current.subtitle}</p>
-                <p className="text-white/70 text-base leading-relaxed">{current.description}</p>
-              </div>
+                  {/* Mode Options Grid */}
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                    {modeOptions.map(mode => (
+                      <motion.button
+                        key={mode.value}
+                        onClick={() => setSelectedMode(mode.value)}
+                        className={`p-4 rounded-lg border-2 transition-all text-left ${
+                          selectedMode === mode.value
+                            ? 'border-purple-500 bg-purple-500/20'
+                            : 'border-white/20 bg-white/5 hover:border-white/40'
+                        }`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <div className="text-2xl mb-2">{mode.icon}</div>
+                        <div className="text-sm font-semibold text-white">{mode.label}</div>
+                        <div className="text-xs text-white/60">{mode.description}</div>
+                      </motion.button>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Regular Onboarding Step */}
+                  <div className="text-center space-y-3">
+                    {current.icon && (
+                      <motion.div
+                        animate={{ y: [0, -10, 0] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                        className="flex justify-center"
+                      >
+                        {current.icon}
+                      </motion.div>
+                    )}
+                    <h1 className="text-3xl font-bold text-white">{current.title}</h1>
+                    <p className="text-purple-300 text-lg font-semibold">{current.subtitle}</p>
+                    <p className="text-white/70 text-base leading-relaxed">{current.description}</p>
+                  </div>
+                </>
+              )}
 
               {/* Progress Dots */}
               <div className="flex gap-2 justify-center">
@@ -130,7 +180,8 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 )}
                 <Button
                   onClick={handleNext}
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 gap-2"
+                  disabled={current.type === "mode-selector" && !selectedMode}
+                  className="flex-1 bg-purple-600 hover:bg-purple-700 gap-2 disabled:opacity-50"
                   data-testid="button-onboarding-next"
                 >
                   {current.cta}
