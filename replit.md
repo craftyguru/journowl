@@ -3,9 +3,15 @@
 ## Overview
 JournOwl is a multi-mode enterprise journaling platform with a single core engine adapting its user experience, metrics, and AI tone based on preferences. The platform serves 5 distinct use cases from a unified backend: personal wellness, creative productivity, financial trading, corporate team wellness, and clinical therapy. Enterprise-grade features include multi-tenancy, RBAC, AI governance, and full compliance support.
 
-## BUILD STATUS: ✅ PRODUCTION-READY (December 1, 2025)
+## BUILD STATUS: ✅ PRODUCTION-READY (December 7, 2025)
 
-### Latest Updates (December 1, 2025):
+### Latest Updates (December 7, 2025):
+- ✅ **Email Verification FIXED**: Verification links now use correct dynamic URL from request headers
+- ✅ **SendGrid Integration Working**: Email delivery confirmed via SendGrid (status 202)
+- ✅ **User Registration Complete**: Full signup flow with email verification functional
+- 📝 **Known Issue**: Outlook/Live.com deferring emails due to SendGrid IP reputation (see "KNOWN ISSUES" section)
+
+### Earlier Updates (December 1, 2025):
 - ✅ **CRITICAL FIX**: Resolved SASL authentication error - switched from Supabase to Replit native database
 - ✅ **Signup Security Enhanced**: Added CAPTCHA verification + Terms of Service + Privacy Policy checkboxes
 - ✅ **Login Working**: Email/password authentication fully functional (test: archimedes / 7756guru)
@@ -208,7 +214,20 @@ All tables properly indexed for multi-tenant query performance.
 
 ---
 
-## KNOWN NOTES
+## KNOWN ISSUES
+
+**Email Delivery to Outlook/Live.com (DEFERRED - Not Bounced):**
+- **Status**: Emails are being sent by SendGrid (202 confirmation) but Outlook temporarily defers them
+- **Root Cause**: SendGrid shared IP reputation is flagged as suspicious by Outlook
+- **Error Code**: "4.7.650 IP reputation - temporarily rate limited"
+- **Impact**: 
+  - ✅ Gmail, Yahoo, ProtonMail - Emails deliver normally
+  - ⏳ Outlook/Live.com - Emails deferred (will retry, may arrive in Spam folder)
+- **Solutions**:
+  1. **Test with Gmail** - Use @gmail.com for immediate verification
+  2. **IP Warmup** - Contact SendGrid support for IP warmup program
+  3. **Dedicated IP** - Purchase dedicated SendGrid IP for better reputation
+  4. **Check Spam** - Outlook users should check Junk folder
 
 **OAuth Error (Normal):**
 - Google/Facebook OAuth buttons show error because they require real API credentials
