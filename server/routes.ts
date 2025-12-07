@@ -404,7 +404,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         console.log('Attempting to send welcome email to:', user.email);
         console.log('SendGrid API Key configured:', !!process.env.SENDGRID_API_KEY);
-        const emailTemplate = createWelcomeEmailTemplate(user.email, user.username || 'New User', verificationToken);
+        // Get the base URL from request headers (handles proxies) or use production domain
+        const forwardedProto = req.get('x-forwarded-proto') || req.protocol || 'https';
+        const forwardedHost = req.get('x-forwarded-host') || req.get('host');
+        let baseUrl = 'https://journowl.app'; // Default to production
+        
+        if (forwardedHost && !forwardedHost.includes('localhost')) {
+          baseUrl = `${forwardedProto}://${forwardedHost}`;
+          console.log('Using forwarded URL for verification link:', baseUrl);
+        } else {
+          console.log('Using production domain for verification link:', baseUrl);
+        }
+        
+        const emailTemplate = createWelcomeEmailTemplate(user.email, user.username || 'New User', verificationToken, baseUrl);
         const emailSent = await sendEmailWithSendGrid(emailTemplate);
         console.log('Email sent successfully:', emailSent);
       } catch (emailError) {

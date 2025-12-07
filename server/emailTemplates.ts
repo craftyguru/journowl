@@ -9,25 +9,15 @@ export interface EmailTemplate {
   text: string;
 }
 
-// Get base URL for verification links
-function getBaseUrl(): string {
-  // Use Replit URL in development, production domain in production
-  if (process.env.REPLIT_URL) {
-    console.log('Using Replit URL for email verification:', process.env.REPLIT_URL);
-    return process.env.REPLIT_URL;
-  }
-  // Fallback to production domain
-  console.log('Using production domain for email verification');
-  return 'https://journowl.app';
-}
-
 export function createWelcomeEmailTemplate(
   userEmail: string,
   userName: string,
-  verificationToken: string
+  verificationToken: string,
+  baseUrl?: string
 ): EmailTemplate {
-  const baseUrl = getBaseUrl();
-  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${verificationToken}`;
+  // Use provided baseUrl, or fallback to production domain
+  const finalBaseUrl = baseUrl || 'https://journowl.app';
+  const verificationUrl = `${finalBaseUrl}/api/auth/verify-email?token=${verificationToken}`;
   
 const html = `<!DOCTYPE html>
 <html lang="en">
