@@ -157,8 +157,8 @@ const html = `<!DOCTYPE html>
   return {
     to: userEmail,
     from: {
-      email: 'noreply@journowl.app',
-      name: 'JournOwl'
+      email: 'archimedes@journowl.app',
+      name: 'JournOwl Team'
     },
     replyTo: 'support@journowl.app',
     subject: '🦉 Welcome to JournOwl - Verify Your Account',
