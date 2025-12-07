@@ -9,10 +9,15 @@ export interface EmailTemplate {
   text: string;
 }
 
-// Get base URL for verification links - ALWAYS USE PRODUCTION DOMAIN
+// Get base URL for verification links
 function getBaseUrl(): string {
-  // FORCE PRODUCTION DOMAIN - NO MORE LOCALHOST IN EMAILS
-  console.log('FORCING PRODUCTION DOMAIN FOR EMAIL VERIFICATION');
+  // Use Replit URL in development, production domain in production
+  if (process.env.REPLIT_URL) {
+    console.log('Using Replit URL for email verification:', process.env.REPLIT_URL);
+    return process.env.REPLIT_URL;
+  }
+  // Fallback to production domain
+  console.log('Using production domain for email verification');
   return 'https://journowl.app';
 }
 
