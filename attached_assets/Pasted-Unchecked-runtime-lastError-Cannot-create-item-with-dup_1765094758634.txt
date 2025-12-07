@@ -1,0 +1,52 @@
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass https://chatgpt.com/
+Unchecked runtime.lastError: Cannot create item with duplicate id separator https://chatgpt.com/
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item https://chatgpt.com/
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password https://chatgpt.com/
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address https://chatgpt.com/
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card https://chatgpt.com/
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item https://chatgpt.com/
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data https://chatgpt.com/
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password https://chatgpt.com/
+background-redux-new.js:1 Uncaught (in promise) Error: No tab with id: 1066452884.
+background-redux-new.js:1 Uncaught (in promise) Error: No tab with id: 1066452902.
+background-redux-new.js:2 Error: Invalid frameId for foreground frameId: 0
+    at le (background-redux-new.js:2:9565220)
+    at p (background-redux-new.js:2:9632157)
+    at background-redux-new.js:2:9633147
+le @ background-redux-new.js:2
+Unchecked runtime.lastError: Cannot create item with duplicate id LastPass https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id separator https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Item https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Password https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Address https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add Payment Card https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Add other item https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Save all entered data https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+Unchecked runtime.lastError: Cannot create item with duplicate id Generate Secure Password https://js.stripe.com/v3/m-outer-3437aaddcdf6922d623e172c2d6f9278.html
+index-BAQhQkHJ.js:204 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+index-BAQhQkHJ.js:564 App initializing - pathname: / search: 
+index-BAQhQkHJ.js:564 Showing landing page - isAuthenticated: null currentView: landing
+index-BAQhQkHJ.js:564 🔧 useEffect triggered - currentView: landing isAuthenticated: null
+index-BAQhQkHJ.js:564 🔧 Auto-recovery disabled - setting as not authenticated
+index-BAQhQkHJ.js:466 [PWA] Service worker ready, automatic updates disabled
+index-BAQhQkHJ.js:564 Showing landing page - isAuthenticated: false currentView: landing
+(index):113 PWA Debug: Checking installation eligibility...
+(index):114 PWA Debug: HTTPS: true
+(index):115 PWA Debug: Service Worker supported: true
+(index):116 PWA Debug: Manifest linked: true
+(index):65 JournOwl SW registered:  ServiceWorkerRegistration
+manifest.json:1 Manifest: scope_extensions entry ignored, required properties 'type' and 'origin' are missing.
+manifest.json:1 Manifest: scope_extensions entry ignored, required properties 'type' and 'origin' are missing.
+(index):1 <meta name="apple-mobile-web-app-capable" content="yes"> is deprecated. Please include <meta name="mobile-web-app-capable" content="yes">
+(index):93 🎉 PWA Install Event Triggered! JournOwl can be installed!
+(index):94 beforeinstallprompt event details: BeforeInstallPromptEvent
+(index):1 Banner not shown: beforeinstallpromptevent.preventDefault() called. The page must call beforeinstallpromptevent.prompt() to show the banner.
+index-BAQhQkHJ.js:564 Get Started clicked - navigating to auth
+index-BAQhQkHJ.js:564 Rendering auth page - isAuthenticated: false currentView: auth
+index-BAQhQkHJ.js:564 🔧 useEffect triggered - currentView: auth isAuthenticated: false
+index-BAQhQkHJ.js:564 🔧 Skipping auth check for auth page
+index-BAQhQkHJ.js:466 [PWA] Service worker ready, automatic updates disabled
+index-BAQhQkHJ.js:564 Rendering auth page - isAuthenticated: false currentView: auth
+(index):124 PWA Debug: beforeinstallprompt fired: true
+(index):125 PWA Debug: Global deferredPrompt available: true
+/api/auth/login:1  Failed to load resource: the server responded with a status of 400 ()
