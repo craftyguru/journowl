@@ -1,0 +1,112 @@
+What you should do now
+
+Open the file in Replit (or your editor)
+
+Left sidebar → Files
+
+Navigate: server/lib/mail.ts
+
+Open that file.
+
+Find your mail transport setup
+You’ll see something like one of these:
+
+// Example A – nodemailer SMTP
+const transporter = nodemailer.createTransport({
+  host: 'smtp.sendgrid.net',
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.SENDGRID_USER,   // ← usually wrong
+    pass: process.env.SENDGRID_API_KEY
+  },
+});
+
+
+or
+
+// Example B – using SendGrid SDK, plus maybe some old transporter still hanging around
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+
+
+If you are using SMTP (nodemailer), fix the auth block like this:
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.sendgrid.net',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'apikey',                          // MUST be literally this
+    pass: process.env.SENDGRID_API_KEY!,     // your real key from SendGrid
+  },
+});
+
+
+– No email address as user.
+– No other username.
+– Just "apikey" + the API key.
+
+If the username isn’t "apikey", you get SASL_SIGNATURE_MISMATCH.
+
+If you’re using the SendGrid SDK only, delete any old SMTP transporter
+
+Make sure you don’t still have a nodemailer.createTransport being used for auth/welcome emails.
+A safe minimal mail.ts using only the Web API looks like:
+
+import sgMail from '@sendgrid/mail';
+
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
+if (!SENDGRID_API_KEY) {
+  throw new Error('SENDGRID_API_KEY is not set');
+}
+
+sgMail.setApiKey(SENDGRID_API_KEY);
+
+type SendEmailOptions = {
+  to: string;
+  subject: string;
+  html: string;
+  fromEmail: string;
+  fromName?: string;
+};
+
+export async function sendEmail({
+  to,
+  subject,
+  html,
+  fromEmail,
+  fromName,
+}: SendEmailOptions) {
+  await sgMail.send({
+    to,
+    from: {
+      email: fromEmail,
+      name: fromName ?? 'UrSite',
+    },
+    subject,
+    html,
+  });
+}
+
+
+That completely avoids SASL / SMTP and uses HTTPS instead.
+
+Regenerate and re-add your SendGrid key if needed
+
+If you’ve messed with keys a lot already:
+
+In SendGrid → API Keys → delete the old one
+
+Create a new key
+
+Paste it into SENDGRID_API_KEY in Replit env
+
+Restart the server
+
+Restart app and try signup/login again
+
+The red “Sign in failed – SASL_SIGNATURE_MISMATCH” should disappear once:
+
+username = "apikey" for SMTP, or
+
+you’ve removed SMTP entirely and only use the SDK.
