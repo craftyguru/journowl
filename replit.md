@@ -5,7 +5,9 @@ JournOwl is a multi-mode enterprise journaling platform with a single core engin
 
 ## BUILD STATUS: ✅ PRODUCTION-READY (December 7, 2025)
 
-### Latest Updates (December 7, 2025):
+### Latest Updates (December 7, 2025 - MIGRATION COMPLETE):
+- ✅ **DATABASE MIGRATION**: MIGRATED TO SUPABASE ONLY - Replit native DB completely removed
+- ✅ **IMPORTANT**: Never use Replit native database again - all operations use Supabase (DATABASE_URL)
 - ✅ **Email Verification FIXED**: Verification links now use correct dynamic URL from request headers
 - ✅ **SendGrid Integration Working**: Email delivery confirmed via SendGrid (status 202)
 - ✅ **User Registration Complete**: Full signup flow with email verification functional
