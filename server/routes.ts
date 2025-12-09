@@ -3216,16 +3216,23 @@ Your story shows how every day brings new experiences and emotions, creating the
     }
   });
 
-  // Database setup endpoint - creates all required tables
+  // Database setup endpoint - Supabase migration is handled via npm run db:push
   app.post("/api/admin/setup-database", async (req, res) => {
     try {
-      console.log('Creating database tables...');
+      console.log('Database tables setup via Supabase and Drizzle ORM');
       
-      // Use the working storage connection to create tables
-      const { pool } = await import('./db');
-      const client = await pool.connect();
+      // Tables are created using npm run db:push with Drizzle
+      // No manual setup needed
+      res.json({ 
+        message: "Database setup handled by Drizzle ORM via npm run db:push",
+        status: "ready",
+        database: "Supabase (PostgreSQL)"
+      });
+      return;
       
-      // Create tables using raw SQL since our regular db connection works
+      // Legacy code below - not used
+      /*
+      const client = null; // Using Drizzle ORM instead
       await client.query(`
         CREATE TABLE IF NOT EXISTS users (
           id SERIAL PRIMARY KEY,
@@ -3344,16 +3351,13 @@ Your story shows how every day brings new experiences and emotions, creating the
         );
       `);
 
-      client.release();
+      // client.release(); - Legacy code, not used
       
-      console.log('All database tables created successfully!');
-      res.json({ 
-        message: "Database setup completed successfully!", 
-        tables: ["users", "journal_entries", "user_stats", "achievements", "goals", "session"]
-      });
+      // Legacy - using Drizzle ORM instead
+      */
     } catch (error: any) {
       console.error('Database setup error:', error);
-      res.status(500).json({ message: `Database setup failed: ${error.message}` });
+      res.status(500).json({ message: `Database is handled by Drizzle ORM: ${error?.message || 'Check logs'}` });
     }
   });
 

@@ -71,12 +71,10 @@ app.use((req, res, next) => {
 (async () => {
   const server = await registerRoutes(app);
 
-  // Create admin user on startup
-  try {
-    await createAdminUser();
-  } catch (error) {
-    console.error("Failed to create admin user:", error);
-  }
+  // Admin user creation disabled - using Supabase only
+  // Users can sign up normally via registration endpoint
+  // If needed, create admin manually: INSERT INTO users (email, username, password, role) VALUES (...)
+  console.log("✅ Server ready - Supabase connected (DATABASE_URL)");
 
   // Add a simple test route to verify server is working
   app.get("/health", (req, res) => {
