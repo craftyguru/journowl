@@ -371,7 +371,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/auth/register", async (req, res) => {
     try {
       console.log('Registration request body:', req.body);
-      const userData = insertUserSchema.parse(req.body);
+      // Extract only the fields we need, ignore extra fields like captchaToken
+      const { email, username, password } = req.body;
+      const userData = insertUserSchema.parse({ email, username, password });
       console.log('Parsed user data:', userData);
       
       // Generate email verification token
@@ -384,8 +386,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await createUser({
         ...userData,
         emailVerificationToken: verificationToken,
-        emailVerificationExpires: verificationExpires,
-        organizationId: 1
+        emailVerificationExpires: verificationExpires
       } as any); // Storage layer handles additional email verification fields
       console.log('User created successfully:', user.id, user.email);
       
@@ -394,7 +395,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Initialize user progress tracking
       try {
-        await storage.createUserStats(user.id, 1);
+        await storage.createUserStats(user.id);
         const { AchievementTracker } = await import("./services/achievement-tracker");
         await AchievementTracker.initializeUserProgress(user.id);
       } catch (initError) {

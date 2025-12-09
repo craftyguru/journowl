@@ -404,9 +404,9 @@ export class DatabaseStorage implements IStorage {
     await db.update(userStats).set({ ...stats as any, updatedAt: new Date() as any }).where(eq(userStats.userId, userId));
   }
 
-  async createUserStats(userId: number, organizationId: number = 1): Promise<UserStats> {
+  async createUserStats(userId: number): Promise<UserStats> {
     try {
-      const result = await db.insert(userStats).values({ userId, organizationId }).returning();
+      const result = await db.insert(userStats).values({ userId }).returning();
       return result[0];
     } catch (error: any) {
       // If user stats already exist, just return them

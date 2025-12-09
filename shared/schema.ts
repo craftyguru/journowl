@@ -190,7 +190,6 @@ export const achievements = pgTable("achievements", {
 
 export const userStats = pgTable("user_stats", {
   id: serial("id").primaryKey(),
-  organizationId: integer("organization_id").references(() => organizations.id),
   userId: integer("user_id").references(() => users.id).notNull(),
   totalEntries: integer("total_entries").default(0),
   totalWords: integer("total_words").default(0),
@@ -198,9 +197,7 @@ export const userStats = pgTable("user_stats", {
   longestStreak: integer("longest_streak").default(0),
   lastEntryDate: timestamp("last_entry_date"),
   updatedAt: timestamp("updated_at").defaultNow(),
-}, (table) => ({
-  orgUserUnique: unique().on(table.organizationId, table.userId),
-}));
+});
 
 export const moodTrends = pgTable("mood_trends", {
   id: serial("id").primaryKey(),
