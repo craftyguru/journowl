@@ -48,14 +48,21 @@ if (!process.env.DATABASE_URL) {
 
 let dbUrl = process.env.DATABASE_URL.replace(/^DATABASE_URL=/, "").trim();
 
-// Debug: log connection attempt (masked)
-const maskedUrl = dbUrl.replace(/:.+@/, ':*****@');
-console.log("✅ Using Supabase (DATABASE_URL) - Connecting to:", maskedUrl);
-
 // Ensure URL is not empty
 if (!dbUrl || dbUrl.length === 0) {
   throw new Error("DATABASE_URL is empty. Check your Supabase connection string.");
 }
+
+// Validate connection string format (accept both postgres:// and postgresql://)
+if (!dbUrl.includes("@") || (!dbUrl.includes("postgres://") && !dbUrl.includes("postgresql://"))) {
+  console.error("❌ INVALID DATABASE_URL format:", dbUrl.substring(0, 50) + "...");
+  throw new Error("DATABASE_URL must be a valid PostgreSQL connection string");
+}
+
+// Debug: log connection attempt (masked)
+const maskedUrl = dbUrl.replace(/:[^@]*@/, ':*****@');
+console.log("✅ Using Supabase (DATABASE_URL) - URL format: VALID");
+console.log("✅ Connecting to:", maskedUrl);
 
 // Supabase requires specific SSL configuration with postgres library
 const client = postgres(dbUrl, {
@@ -63,7 +70,16 @@ const client = postgres(dbUrl, {
   max: 20,
   idle_timeout: 20,
   connect_timeout: 10,
+  onnotice: () => {}, // Suppress notices
 });
+
+// Test connection immediately
+client`SELECT 1`.then(() => {
+  console.log("✅ Supabase connection verified");
+}).catch((err: any) => {
+  console.error("❌ Supabase connection failed:", err.message);
+});
+
 export const db = drizzle(client);
 
 export interface IStorage {
