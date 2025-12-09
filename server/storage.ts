@@ -46,9 +46,16 @@ if (!process.env.DATABASE_URL) {
   throw new Error("DATABASE_URL is required. Set your Supabase connection string in environment variables.");
 }
 
-let dbUrl = process.env.DATABASE_URL.replace(/^DATABASE_URL=/, "");
+let dbUrl = process.env.DATABASE_URL.replace(/^DATABASE_URL=/, "").trim();
 
-console.log("✅ Using Supabase (DATABASE_URL) - Replit native DB disabled");
+// Debug: log connection attempt (masked)
+const maskedUrl = dbUrl.replace(/:.+@/, ':*****@');
+console.log("✅ Using Supabase (DATABASE_URL) - Connecting to:", maskedUrl);
+
+// Ensure URL is not empty
+if (!dbUrl || dbUrl.length === 0) {
+  throw new Error("DATABASE_URL is empty. Check your Supabase connection string.");
+}
 
 // Supabase requires specific SSL configuration with postgres library
 const client = postgres(dbUrl, {

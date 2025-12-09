@@ -1,0 +1,86 @@
+Now the error is different:
+
+Error creating admin user: Error: getaddrinfo ENOTFOUND postgres
+  errno: -3008,
+  code: 'ENOTFOUND',
+  syscall: 'getaddrinfo',
+  hostname: 'postgres'
+
+
+That means:
+
+Node is trying to connect to a database host called postgres, and DNS can’t resolve that name.
+
+So somewhere in your backend, the DB client is still using a config like:
+
+host: process.env.PGHOST || 'postgres'
+
+
+instead of the real Supabase host (db.asjcxaiabjsbjbasssfe.supabase.co).
+
+The log line:
+
+Using Supabase (DATABASE_URL)
+
+
+is coming from your Supabase wiring, but the “create admin user” path is ignoring that and using the fallback host postgres.
+
+What this means in practice
+
+Credentials: ✅ fixed
+
+Supabase URL in DATABASE_URL: likely ✅
+
+Admin-seeding / DB-init code: ❌ still pointing at host: 'postgres'
+
+Your dev server starts (“serving on port 5000”), but the “create admin user” step fails because it can’t reach any DB at hostname postgres.
+
+Logins may or may not work depending on whether they use the same misconfigured client.
+
+How to fix it (straightforward way)
+
+Print the DB URL at startup
+
+In your server startup file (where the app boots), add:
+
+const dbUrl = process.env.DATABASE_URL;
+console.log('DB URL (masked):', dbUrl?.replace(/:.+@/, ':*****@'));
+
+
+Restart npm run dev and confirm it prints:
+
+postgresql://postgres:*****@db.asjcxaiabjsbjbasssfe.supabase.co:6543/postgres
+
+
+Update the admin-user creation code to use DATABASE_URL
+
+Find the code that logs Error creating admin user. In that file, change the DB client creation so it uses the connection string, not a hard-coded host:
+
+import { Pool } from 'pg';
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
+
+
+and remove any config like:
+
+host: 'postgres',
+port: 5432,
+user: 'postgres',
+...
+
+
+If you can’t find it, set the host env it expects
+
+Many templates use the standard Postgres env vars. In your Replit secrets, try adding:
+
+PGHOST=db.asjcxaiabjsbjbasssfe.supabase.co
+PGPORT=6543
+PGUSER=postgres
+PGPASSWORD=<your Supabase DB password>
+PGDATABASE=postgres
+
+
+Then restart npm run dev and see if the ENOTFOUND postgres goes away.
