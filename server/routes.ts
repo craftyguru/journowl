@@ -384,7 +384,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await createUser({
         ...userData,
         emailVerificationToken: verificationToken,
-        emailVerificationExpires: verificationExpires
+        emailVerificationExpires: verificationExpires,
+        organizationId: 1
       } as any); // Storage layer handles additional email verification fields
       console.log('User created successfully:', user.id, user.email);
       
@@ -393,7 +394,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Initialize user progress tracking
       try {
-        await storage.createUserStats(user.id);
+        await storage.createUserStats(user.id, 1);
         const { AchievementTracker } = await import("./services/achievement-tracker");
         await AchievementTracker.initializeUserProgress(user.id);
       } catch (initError) {
