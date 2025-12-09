@@ -65,7 +65,11 @@ export function setupOAuth() {
           firstName: profile.name?.givenName,
           lastName: profile.name?.familyName,
           lastLoginAt: new Date(),
-          emailVerified: true
+          emailVerified: true,
+          termsAccepted: true,
+          privacyAccepted: true,
+          termsAcceptedAt: new Date(),
+          privacyAcceptedAt: new Date()
         });
         user = await storage.getUser(user.id);
       } else {
@@ -79,7 +83,11 @@ export function setupOAuth() {
           firstName: profile.name?.givenName,
           lastName: profile.name?.familyName,
           emailVerified: true,
-          lastLoginAt: new Date()
+          lastLoginAt: new Date(),
+          termsAccepted: true,
+          privacyAccepted: true,
+          termsAcceptedAt: new Date(),
+          privacyAcceptedAt: new Date()
         });
         
         // Create user stats
@@ -124,7 +132,11 @@ export function setupOAuth() {
           firstName: profile.name?.givenName,
           lastName: profile.name?.familyName,
           lastLoginAt: new Date(),
-          emailVerified: true
+          emailVerified: true,
+          termsAccepted: true,
+          privacyAccepted: true,
+          termsAcceptedAt: new Date(),
+          privacyAcceptedAt: new Date()
         });
         user = await storage.getUser(user.id);
       } else {
@@ -137,7 +149,11 @@ export function setupOAuth() {
           firstName: profile.name?.givenName,
           lastName: profile.name?.familyName,
           emailVerified: true,
-          lastLoginAt: new Date()
+          lastLoginAt: new Date(),
+          termsAccepted: true,
+          privacyAccepted: true,
+          termsAcceptedAt: new Date(),
+          privacyAcceptedAt: new Date()
         });
         
         await storage.createUserStats(user.id);
