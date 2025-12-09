@@ -65,15 +65,11 @@ export function setupOAuth() {
           firstName: profile.name?.givenName,
           lastName: profile.name?.familyName,
           lastLoginAt: new Date(),
-          emailVerified: true,
-          termsAccepted: true,
-          privacyAccepted: true,
-          termsAcceptedAt: new Date(),
-          privacyAcceptedAt: new Date()
+          emailVerified: true
         });
         user = await storage.getUser(user.id);
       } else {
-        // Create new user
+        // Create new user - consent will be set on first successful login
         user = await storage.createUser({
           email,
           username: email.split('@')[0] + '_' + Date.now(),
@@ -83,11 +79,7 @@ export function setupOAuth() {
           firstName: profile.name?.givenName,
           lastName: profile.name?.familyName,
           emailVerified: true,
-          lastLoginAt: new Date(),
-          termsAccepted: true,
-          privacyAccepted: true,
-          termsAcceptedAt: new Date(),
-          privacyAcceptedAt: new Date()
+          lastLoginAt: new Date()
         });
         
         // Create user stats
@@ -132,11 +124,7 @@ export function setupOAuth() {
           firstName: profile.name?.givenName,
           lastName: profile.name?.familyName,
           lastLoginAt: new Date(),
-          emailVerified: true,
-          termsAccepted: true,
-          privacyAccepted: true,
-          termsAcceptedAt: new Date(),
-          privacyAcceptedAt: new Date()
+          emailVerified: true
         });
         user = await storage.getUser(user.id);
       } else {
@@ -149,11 +137,7 @@ export function setupOAuth() {
           firstName: profile.name?.givenName,
           lastName: profile.name?.familyName,
           emailVerified: true,
-          lastLoginAt: new Date(),
-          termsAccepted: true,
-          privacyAccepted: true,
-          termsAcceptedAt: new Date(),
-          privacyAcceptedAt: new Date()
+          lastLoginAt: new Date()
         });
         
         await storage.createUserStats(user.id);

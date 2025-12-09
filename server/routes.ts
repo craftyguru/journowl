@@ -386,7 +386,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await createUser({
         ...userData,
         emailVerificationToken: verificationToken,
-        emailVerificationExpires: verificationExpires
+        emailVerificationExpires: verificationExpires,
+        termsAccepted: true,
+        privacyAccepted: true,
+        termsAcceptedAt: new Date(),
+        privacyAcceptedAt: new Date()
       } as any); // Storage layer handles additional email verification fields
       console.log('User created successfully:', user.id, user.email);
       
@@ -637,6 +641,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // Set terms & privacy acceptance (user agreed by signing in)
+      try {
+        await storage.updateUser(user.id, {
+          termsAccepted: true,
+          privacyAccepted: true,
+          termsAcceptedAt: new Date(),
+          privacyAcceptedAt: new Date()
+        });
+      } catch (error) {
+        console.error('Error updating terms acceptance:', error);
+      }
+      
       req.session.userId = user.id;
       console.log('✅ Login successful, setting session userId to:', user.id);
       console.log('🔧 Session before save:', { 
@@ -808,6 +824,18 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
       req.session.userId = req.user.id;
       console.log('Google OAuth - Set session userId:', req.user.id);
       
+      // Set terms & privacy acceptance (user agreed by clicking "Continue with Google")
+      try {
+        await storage.updateUser(req.user.id, {
+          termsAccepted: true,
+          privacyAccepted: true,
+          termsAcceptedAt: new Date(),
+          privacyAcceptedAt: new Date()
+        });
+      } catch (error) {
+        console.error('Error updating terms acceptance:', error);
+      }
+      
       // Send welcome email for new users and create initial data
       if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
         // Create initial user stats
@@ -866,6 +894,18 @@ const logActivity = async (userId: number, action: string, details: any = {}, re
       
       req.session.userId = req.user.id;
       console.log('Facebook OAuth - Set session userId:', req.user.id);
+      
+      // Set terms & privacy acceptance (user agreed by clicking "Continue with Facebook")
+      try {
+        await storage.updateUser(req.user.id, {
+          termsAccepted: true,
+          privacyAccepted: true,
+          termsAcceptedAt: new Date(),
+          privacyAcceptedAt: new Date()
+        });
+      } catch (error) {
+        console.error('Error updating terms acceptance:', error);
+      }
       
       if (req.user.createdAt && new Date().getTime() - new Date(req.user.createdAt).getTime() < 60000) {
         // Create initial user stats

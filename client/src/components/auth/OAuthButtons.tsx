@@ -4,6 +4,20 @@ import { Button } from "@/components/ui/button";
 export const OAuthButtons = () => {
   return (
     <>
+      {/* Consent Notice */}
+      <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-3 mb-4 text-xs text-blue-300">
+        <p>
+          By continuing with Google or Facebook, you agree to our{" "}
+          <a href="/terms" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-200">
+            Terms of Service
+          </a>
+          {" "}and{" "}
+          <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-200">
+            Privacy Policy
+          </a>
+        </p>
+      </div>
+
       {/* Social Login Divider */}
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
