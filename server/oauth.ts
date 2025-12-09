@@ -10,6 +10,17 @@ const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET || '';
 const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID || '';
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET || '';
 
+// Determine the base URL for OAuth callbacks
+const getOAuthBaseURL = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://journowl.app';
+  }
+  // For development, use the request origin
+  return process.env.OAUTH_CALLBACK_URL || 'http://localhost:5000';
+};
+
+const OAUTH_BASE_URL = getOAuthBaseURL();
+
 export function setupOAuth() {
   // Serialize/deserialize user for session
   passport.serializeUser((user: any, done) => {
@@ -29,7 +40,7 @@ export function setupOAuth() {
   passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID || 'placeholder',
     clientSecret: GOOGLE_CLIENT_SECRET || 'placeholder',
-    callbackURL: "/api/auth/google/callback"
+    callbackURL: `${OAUTH_BASE_URL}/api/auth/google/callback`
   }, async (accessToken, refreshToken, profile, done) => {
     // Check if OAuth is properly configured
     if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
@@ -89,7 +100,7 @@ export function setupOAuth() {
   passport.use(new FacebookStrategy({
     clientID: FACEBOOK_APP_ID || 'placeholder',
     clientSecret: FACEBOOK_APP_SECRET || 'placeholder',
-    callbackURL: "/api/auth/facebook/callback",
+    callbackURL: `${OAUTH_BASE_URL}/api/auth/facebook/callback`,
     profileFields: ['id', 'emails', 'name', 'photos']
   }, async (accessToken, refreshToken, profile, done) => {
     // Check if OAuth is properly configured
