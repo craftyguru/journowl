@@ -48,11 +48,6 @@ if (!process.env.DATABASE_URL) {
 
 let dbUrl = process.env.DATABASE_URL.replace(/^DATABASE_URL=/, "");
 
-// Ensure Supabase connection string includes proper parameters
-if (!dbUrl.includes("sslmode=")) {
-  dbUrl += (dbUrl.includes("?") ? "&" : "?") + "sslmode=require";
-}
-
 console.log("✅ Using Supabase (DATABASE_URL) - Replit native DB disabled");
 
 const client = postgres(dbUrl, {
