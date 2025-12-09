@@ -614,7 +614,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { identifier, email, password } = req.body;
       // Support both old 'email' field and new 'identifier' field for backwards compatibility
-      const loginIdentifier = identifier || email;
+      const loginIdentifier = (identifier || email || '').trim();
       
       console.log('Login attempt:', { identifier: loginIdentifier, passwordProvided: !!password });
       
