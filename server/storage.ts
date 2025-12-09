@@ -64,6 +64,19 @@ const maskedUrl = dbUrl.replace(/:[^@]*@/, ':*****@');
 console.log("✅ Using Supabase (DATABASE_URL) - URL format: VALID");
 console.log("✅ Connecting to:", maskedUrl);
 
+// Parse connection URL to verify format
+try {
+  const urlObj = new URL(dbUrl);
+  console.log("✅ URL Parse successful:");
+  console.log("   Protocol:", urlObj.protocol);
+  console.log("   Hostname:", urlObj.hostname);
+  console.log("   Port:", urlObj.port);
+  console.log("   Database:", urlObj.pathname);
+  console.log("   Username:", urlObj.username);
+} catch (err: any) {
+  console.error("❌ URL Parse failed:", err.message);
+}
+
 // Supabase requires specific SSL configuration with postgres library
 const client = postgres(dbUrl, {
   ssl: "require",
@@ -78,6 +91,7 @@ client`SELECT 1`.then(() => {
   console.log("✅ Supabase connection verified");
 }).catch((err: any) => {
   console.error("❌ Supabase connection failed:", err.message);
+  console.error("   Error code:", err.code);
 });
 
 export const db = drizzle(client);
