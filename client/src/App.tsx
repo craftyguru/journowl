@@ -24,6 +24,7 @@ const ImportPage = lazy(() => import("@/pages/ImportPage"));
 const SharePage = lazy(() => import("@/pages/SharePage"));
 const PrivacyPolicy = lazy(() => import("@/pages/privacy-policy"));
 const TermsOfService = lazy(() => import("@/pages/terms"));
+const DataDeletion = lazy(() => import("@/pages/data-deletion"));
 const FAQ = lazy(() => import("@/components/shared/FAQ").then(m => ({ default: m.FAQ })));
 const PricingPage = lazy(() => import("@/pages/PricingPage").then(m => ({ default: m.PricingPage })));
 const OnboardingFlow = lazy(() => import("@/pages/OnboardingFlow").then(m => ({ default: m.OnboardingFlow })));
@@ -51,7 +52,7 @@ const LoadingFallback = () => (
 
 function App() {
   // Check if demo mode is requested from URL params
-  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "faq" | "pricing" | "profile">(() => {
+  const [currentView, setCurrentView] = useState<"dashboard" | "insights" | "referral" | "demo" | "landing" | "auth" | "email-confirmation" | "email-verified" | "import" | "share" | "privacy-policy" | "terms" | "data-deletion" | "faq" | "pricing" | "profile">(() => {
     const urlParams = new URLSearchParams(window.location.search);
     console.log('App initializing - pathname:', window.location.pathname, 'search:', window.location.search);
     if (urlParams.get('demo') === 'true') return 'demo';
@@ -63,6 +64,7 @@ function App() {
     if (window.location.pathname === '/share') return 'share';
     if (window.location.pathname === '/privacy-policy') return 'privacy-policy';
     if (window.location.pathname === '/terms') return 'terms';
+    if (window.location.pathname === '/data-deletion') return 'data-deletion';
     if (window.location.pathname === '/faq' || window.location.pathname === '/help') return 'faq';
     if (window.location.pathname.startsWith('/profile/')) return 'profile';
     if (window.location.pathname === '/email-verified' || urlParams.get('success') === '1' || urlParams.get('success') === '0' || urlParams.get('verified') === 'true') {
@@ -92,7 +94,7 @@ function App() {
     if (tabOptions.includes(view)) {
       setActiveTab(view);
       setCurrentView("dashboard");
-    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "faq" || view === "pricing") {
+    } else if (view === "dashboard" || view === "insights" || view === "referral" || view === "demo" || view === "landing" || view === "auth" || view === "import" || view === "share" || view === "privacy-policy" || view === "terms" || view === "data-deletion" || view === "faq" || view === "pricing") {
       setCurrentView(view as any);
       if (view === "dashboard") setActiveTab("journal");
     }
@@ -208,6 +210,22 @@ function App() {
             <Toaster />
             <Suspense fallback={<LoadingFallback />}>
               <TermsOfService />
+            </Suspense>
+          </TooltipProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    );
+  }
+
+  // Data Deletion page (no auth required)
+  if (currentView === "data-deletion") {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Suspense fallback={<LoadingFallback />}>
+              <DataDeletion />
             </Suspense>
           </TooltipProvider>
         </ThemeProvider>
