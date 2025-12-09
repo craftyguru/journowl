@@ -50,8 +50,9 @@ let dbUrl = process.env.DATABASE_URL.replace(/^DATABASE_URL=/, "");
 
 console.log("✅ Using Supabase (DATABASE_URL) - Replit native DB disabled");
 
+// Supabase requires specific SSL configuration with postgres library
 const client = postgres(dbUrl, {
-  ssl: { rejectUnauthorized: false },
+  ssl: "require",
   max: 20,
   idle_timeout: 20,
   connect_timeout: 10,
